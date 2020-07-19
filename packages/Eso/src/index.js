@@ -19,15 +19,7 @@ class Perso extends Eso {
     return this;
   }
 }
-/* 
-const attrs = {
-  // class: o('toto'),
-  style: o({ color: 'red' }),
-  onclick(e) {
-    console.log(this);
-  },
-};
- */
+
 
 const initial = {
   classes: 'toto',
@@ -38,23 +30,7 @@ const initial = {
 };
 const Persos = {
   bloc: new Perso({ id: 'bloc', nature: 'bloc', initial }),
-  /* 
-  xbloc: {
-    node: null,
-    component: Bloc,
-    attrs,
-    update(props) {
-      for (const prop in props) {
-        if (!this.attrs[prop]) {
-          this.attrs[prop] = o(props[prop]);
-          api.property(this.node, this.attrs[prop](), prop);
-        } else {
-          this.attrs[prop](props[prop]);
-        }
-      }
-    },
-  },
-   */
+
 };
 
 function Bloc(props) {
@@ -67,27 +43,24 @@ function Bloc(props) {
 }
 
 document.body.append(Persos.bloc.node);
-/* 
-document.body.append(initPerso(Persos.bloc));
 
-function initPerso(perso) {
-  perso.node = perso.component(perso.attributes);
-  return perso.node;
-}
- */
 const interval = setInterval(() => {
   counter(counter() + 1);
   if (counter() === 10) clearInterval(interval);
 }, 1000);
 
+
 const attr1 = {
-  classes: 'tontonton',
-  statStyle: { color: 'blue', 'font-size': '24px' },
-  'data-config': 'tintin',
+	toto: "tsoin-tsoin",
+	classes: "tontonton",
+	statStyle: { color: "blue", "font-size": "24px" },
+	"data-config": "tintin",
 };
+
 
 setTimeout(() => {
   Persos.bloc.update(attr1);
-}, 2000);
+	counter(counter() + 1);
+	if (counter() === 10) clearInterval(interval);
+}, 1000);
 
-// console.log(new Perso({ id: 'titi', initial: {}, fn }));

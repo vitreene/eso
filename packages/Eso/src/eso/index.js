@@ -42,13 +42,7 @@ export class Eso {
     this.uuid = { uuid: nanoid(6), nature };
     createPerso(this.uuid);
     this.render = render.bind(this);
-    this.init(initial);
-  }
-
-  init(props) {
-    this._revise(props);
-    this.prerender();
-    this.render(this.current);
+    this.update(initial);
   }
 
   update(props) {
