@@ -18,17 +18,17 @@ export class Eso {
   static getElementOffset = getElementOffset;
 
   id;
+  uuid;
   zoom = 1;
   box = {};
   cssClass;
   revision;
-  node;
   history = {}; // TODO faire une Map
-  attributes = {};
   current = {}; // etat actuel avant prerender
+  attributes = {}; // attributs du node
 
   constructor(story, emitter) {
-    const { id, initial, nature } = story;
+    const { id, initial, perso } = story;
     this.id = id;
     this.revision = {
       classes: doClasses,
@@ -40,21 +40,21 @@ export class Eso {
       // FIXME retirer les transitions pour commencer
       // transition: transition.call(this, emitter),
     };
-    this.uuid = { uuid: nanoid(6), nature };
-
+    this.uuid = { uuid: nanoid(6), perso };
     this.render = render.bind(this);
-    // this.update(initial);
+
     this.init(initial);
   }
 
   init(props) {
     this._revise(props);
     this.prerender();
-    const { node, attributes } = createPerso(this.uuid, this.current);
-    this.node = node;
+    const attributes = createPerso(this.uuid, this.current);
+
     this.attributes = attributes;
     console.log('attributes', attributes);
   }
+
   update(props) {
     console.log('PROPS', props);
     // séparer : calculer les diffs, puis assembler
