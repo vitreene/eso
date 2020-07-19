@@ -1,5 +1,6 @@
 import { nanoid } from 'nanoid';
 
+import { createPerso } from '../register/create-perso';
 import { getElementOffset } from './lib/get-element-offset';
 import { registerKeyEvents } from './lib/register-keyEvents';
 import { doDimensions } from './lib/dimensions-comp';
@@ -40,11 +41,20 @@ export class Eso {
       // transition: transition.call(this, emitter),
     };
     this.uuid = { uuid: nanoid(6), nature };
-    createPerso(this.uuid);
+
     this.render = render.bind(this);
-    this.update(initial);
+    // this.update(initial);
+    this.init(initial);
   }
 
+  init(props) {
+    this._revise(props);
+    this.prerender();
+    const { node, attributes } = createPerso(this.uuid, this.current);
+    this.node = node;
+    this.attributes = attributes;
+    console.log('attributes', attributes);
+  }
   update(props) {
     console.log('PROPS', props);
     // séparer : calculer les diffs, puis assembler
