@@ -30,6 +30,7 @@ export class Eso {
 	constructor(story, emitter) {
 		const { id, initial, perso } = story;
 		this.id = id;
+		this.uuid = { uuid: nanoid(6), perso };
 		this.revision = {
 			classes: doClasses,
 			dimensions: doDimensions,
@@ -40,7 +41,6 @@ export class Eso {
 			// FIXME retirer les transitions pour commencer
 			// transition: transition.call(this, emitter),
 		};
-		this.uuid = { uuid: nanoid(6), perso };
 		this.render = render.bind(this);
 
 		this.init(initial);

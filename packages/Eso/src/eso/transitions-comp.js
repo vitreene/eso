@@ -21,52 +21,52 @@ import { selectTransition, directTransition } from "./lib/select-transition";
 import { fromTo } from "./lib/from-to";
 
 export function transition(emitter) {
-  const self = this;
-  const accumulate = syncRafUpdate(self);
+	const self = this;
+	const accumulate = syncRafUpdate(self);
 
-  function update(props) {
-    (Array.isArray(props) ? props : [props]).forEach(doTransition);
-    return props;
-  }
+	function update(props) {
+		(Array.isArray(props) ? props : [props]).forEach(doTransition);
+		return props;
+	}
 
-  function doTransition(props) {
-    // FIXME from et to peuvent etre nuls ?
-    const options = props.direct
-      ? directTransition(props)
-      : selectTransition(props);
+	function doTransition(props) {
+		// FIXME from et to peuvent etre nuls ?
+		const options = props.direct
+			? directTransition(props)
+			: selectTransition(props);
 
-    // from-to
-    const interpolation = fromTo(options, self.store, self.node);
+		// from-to
+		const interpolation = fromTo(options, self.history, self.uuid);
 
-    //lancer la ou les transitions
-    if (interpolation) {
-      // mettre à jour la position avant le rafraichissement
-      self.update({ between: interpolation.from });
-      controlAnimations.tween({
-        id: self.id,
-        interpolation,
-        update: interpolate,
-        complete() {
-          [self?.oncomplete, props?.oncomplete]
-            .flat()
-            .forEach(function(action) {
-              if (!action) return;
-              const { event, data } = action;
-              console.log("action oncomplete", action);
-              accumulate.add(function emit() {
-                emitter.emit([event.ns, event.name], data);
-              });
-            });
-        },
-      });
-    }
-  }
+		//lancer la ou les transitions
+		if (interpolation) {
+			// mettre à jour la position avant le rafraichissement
+			self.update({ between: interpolation.from });
+			controlAnimations.tween({
+				id: self.id,
+				interpolation,
+				update: interpolate,
+				complete() {
+					[self?.oncomplete, props?.oncomplete]
+						.flat()
+						.forEach(function (action) {
+							if (!action) return;
+							const { event, data } = action;
+							console.log("action oncomplete", action);
+							accumulate.add(function emit() {
+								emitter.emit([event.ns, event.name], data);
+							});
+						});
+				},
+			});
+		}
+	}
 
-  function interpolate(between) {
-    accumulate.add(between);
-  }
+	function interpolate(between) {
+		accumulate.add(between);
+	}
 
-  return { update };
+	return { update };
 }
 
 // si plusieurs transitions en cours,
@@ -76,27 +76,27 @@ export function transition(emitter) {
 
 // TODO déplacer la fonction pour centraliser les appels à raf
 function syncRafUpdate(self) {
-  return {
-    cumul: [],
-    add(value) {
-      if (!this.cumul.length) requestAnimationFrame(() => this.flush());
-      this.cumul.push(value);
-    },
+	return {
+		cumul: [],
+		add(value) {
+			if (!this.cumul.length) requestAnimationFrame(() => this.flush());
+			this.cumul.push(value);
+		},
 
-    update() {
-      // executer les fonctions après les updates
-      let between = {};
-      let fn = [];
+		update() {
+			// executer les fonctions après les updates
+			let between = {};
+			let fn = [];
 
-      for (const acc of this.cumul) {
-        typeof acc === "function" ? fn.push(acc) : Object.assign(between, acc);
-      }
-      self.update({ between });
-      fn.forEach((f) => f());
-    },
-    flush() {
-      this.update();
-      this.cumul = [];
-    },
-  };
+			for (const acc of this.cumul) {
+				typeof acc === "function" ? fn.push(acc) : Object.assign(between, acc);
+			}
+			self.update({ between });
+			fn.forEach((f) => f());
+		},
+		flush() {
+			this.update();
+			this.cumul = [];
+		},
+	};
 }

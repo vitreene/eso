@@ -41,6 +41,10 @@ const updatePerso = {
 	classes: "tontonton",
 	statStyle: { color: "blue", "font-size": "24px" },
 	"data-config": "tintin",
+	transition: {
+		from: { color: "#e1d1f1" },
+		to: { color: "#a1d1e1" },
+	},
 	content: storeNodes.get(casting.inner.uuid),
 };
 
