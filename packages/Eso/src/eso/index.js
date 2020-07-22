@@ -39,7 +39,7 @@ export class Eso {
 			dynStyle,
 			content,
 			// FIXME retirer les transitions pour commencer
-			// transition: transition.call(this, emitter),
+			transition: transition.call(this, emitter),
 		};
 		this.render = render.bind(this);
 
@@ -119,7 +119,6 @@ export class Eso {
 				newState.set(revise, diff);
 			}
 		}
-		// TODO renvoyer attributs et events sur le node
 		state.props = newState;
 		this._addToHistory(state, props.chrono);
 	}
@@ -150,8 +149,7 @@ export class Eso {
 		});
 		this.history.attributes = attributes;
 		this.history.events = events;
-		// chrono &&
-		console.log(chrono, this.id, this.history);
+		chrono && console.log(chrono, this.id, this.history);
 	}
 
 	// TODO  mise en cache des classes

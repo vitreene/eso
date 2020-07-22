@@ -10,7 +10,7 @@ export function render(current) {
 		} else {
 			this.attributes[p](current[p]);
 		}
-		console.log("current[%s]", p, current[p]);
+		// console.log("current[%s]", p, current[p]);
 	}
 
 	// console.log("attributes", this.attributes);

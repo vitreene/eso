@@ -25,6 +25,9 @@ export function transition(emitter) {
 	const accumulate = syncRafUpdate(self);
 
 	function update(props) {
+		console.log("update", props);
+		if (!props || !props.to || Object.keys(props.to).length === 0) return null;
+
 		(Array.isArray(props) ? props : [props]).forEach(doTransition);
 		return props;
 	}
@@ -38,6 +41,7 @@ export function transition(emitter) {
 		// from-to
 		const interpolation = fromTo(options, self.history, self.uuid);
 
+		console.log("interpolation", interpolation);
 		//lancer la ou les transitions
 		if (interpolation) {
 			// mettre à jour la position avant le rafraichissement

@@ -34,6 +34,7 @@ export function fromTo(options, store, uuid) {
 			to[key] = options.to[key];
 		} else {
 			if (!keyStore) keyStore = flattenStore(store);
+			console.log("flattenStore", store);
 			if (key in keyStore) from[key] = keyStore[key];
 			else {
 				if (!styler) styler = window.getComputedStyle(node);

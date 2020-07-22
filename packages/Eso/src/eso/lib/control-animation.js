@@ -1,7 +1,6 @@
-// import { tween } from "popmotion/lib";
-import { tween } from "shifty";
+import { tween } from "popmotion/lib";
+// import { tween } from "shifty";
 
-console.log(tween);
 // tween({
 //   from: 0,
 //   to: { x: 300, rotate: 180 },
