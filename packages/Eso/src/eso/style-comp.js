@@ -17,68 +17,82 @@ Prerender
 
  */
 
-import { css } from 'goober';
+import { css } from "goober";
 
-import { whiteListCssProps, positionCssProps } from '../data/constantes';
-import { hasProperties, pipe } from './lib/helpers';
-import { mapRelatives } from './lib/map-relatives';
+import { whiteListCssProps, positionCssProps } from "../data/constantes";
+import { hasProperties, pipe } from "./lib/helpers";
+import { mapRelatives } from "./lib/map-relatives";
 // import { removeAliasProps } from "./lib/remove-alias-props";
-import { extractTransform, withTransform } from './lib/transform-comp';
+import { extractTransform, withTransform } from "./lib/transform-comp";
 export const doStyle = {
-  css(style) {
-    return css(style);
-  },
-  update(props, state) {
-    /* 
+	css(style) {
+		return css(style);
+	},
+	update(props, state) {
+		/* 
     simplifier mapRelatives
     - les valeurs unitless peuvent le rester
     - retrait de u
     */
-    const mapProps = mapRelatives(state);
+		const mapProps = mapRelatives(state);
 
-    const newStyle = pipe(mapProps /* removeAliasProps */)(props);
-    // console.log(props, newStyle);
+		const newStyle = pipe(
+			mapProps,
+			removeEmptyProps /* removeAliasProps */
+		)(props);
+		// console.log(props, newStyle);
 
-    // FIXME pos absolute si déplacement, sinon relative ?
-    const position = hasProperties(positionCssProps, props) && 'absolute';
+		// FIXME pos absolute si déplacement, sinon relative ?
+		const position = hasProperties(positionCssProps, props) && "absolute";
 
-    return {
-      ...(position && { position }),
-      ...newStyle,
-    };
-  },
-  prerender(box, newStyle) {
-    if (!newStyle) return;
-    // console.log('BOX', box);
-    if (!box) box = defaultBox;
-    if (typeof box === 'number') box = { ...defaultBox, zoom: box };
+		return {
+			...(position && { position }),
+			...newStyle,
+		};
+	},
+	prerender(box, newStyle) {
+		if (!newStyle) return;
+		// console.log('BOX', box);
+		if (!box) box = defaultBox;
+		if (typeof box === "number") box = { ...defaultBox, zoom: box };
 
-    // calculer styles : appliquer zoom sur unitless
-    const newRenderStyle = {};
+		// calculer styles : appliquer zoom sur unitless
+		const newRenderStyle = {};
 
-    for (const prop in newStyle) {
-      if (whiteListCssProps.has(prop) && typeof newStyle[prop] === 'number') {
-        newRenderStyle[prop] = newStyle[prop] * box.zoom + 'px';
-      } else newRenderStyle[prop] = newStyle[prop];
-    }
-    // TODO placer des limites :
-    // https://css-tricks.com/simplified-fluid-typography/
-    if ('fontSize' in newStyle && typeof newStyle.fontSize === 'number') {
-      newRenderStyle.fontSize = newStyle.fontSize * box.zoom + 'px';
-    }
-    const { style, transform } = extractTransform(newRenderStyle);
-    return {
-      ...style,
-      ...withTransform(transform, box.zoom),
-    };
-  },
+		for (const prop in newStyle) {
+			if (whiteListCssProps.has(prop) && typeof newStyle[prop] === "number") {
+				newRenderStyle[prop] = newStyle[prop] * box.zoom + "px";
+			} else newRenderStyle[prop] = newStyle[prop];
+		}
+		// TODO placer des limites :
+		// https://css-tricks.com/simplified-fluid-typography/
+		if ("fontSize" in newStyle && typeof newStyle.fontSize === "number") {
+			newRenderStyle.fontSize = newStyle.fontSize * box.zoom + "px";
+		}
+		const { style, transform } = extractTransform(newRenderStyle);
+		return {
+			...style,
+			...withTransform(transform, box.zoom),
+		};
+	},
 };
 
 const defaultBox = {
-  left: 0,
-  top: 0,
-  width: 0,
-  height: 0,
-  ratio: 1,
-  zoom: 1,
+	left: 0,
+	top: 0,
+	width: 0,
+	height: 0,
+	ratio: 1,
+	zoom: 1,
 };
+
+function removeEmptyProps(props) {
+	const values = {};
+	for (const val in props) if (isValue(props[val])) values[val] = props[val];
+	return values;
+}
+
+// 0 est une valeur valable
+function isValue(val) {
+	return val !== undefined && val !== null && val !== "";
+}

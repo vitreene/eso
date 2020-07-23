@@ -34,11 +34,11 @@ export function fromTo(options, store, uuid) {
 			to[key] = options.to[key];
 		} else {
 			if (!keyStore) keyStore = flattenStore(store);
-			console.log("flattenStore", store);
 			if (key in keyStore) from[key] = keyStore[key];
 			else {
 				if (!styler) styler = window.getComputedStyle(node);
 				from[key] = styler.getPropertyValue(key);
+				console.log(key, styler.getPropertyValue(key));
 			}
 			to[key] = options.to[key];
 		}
@@ -48,7 +48,6 @@ export function fromTo(options, store, uuid) {
 	// convertir couleurs et valeurs
 	for (const key in from) from[key] = getCssValue(from[key]);
 	for (const key in to) to[key] = getCssValue(to[key]);
-
 	return {
 		from,
 		to,

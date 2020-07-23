@@ -56,7 +56,7 @@ export class Eso {
 	}
 
 	update(props) {
-		console.log("PROPS", props);
+		// console.log("PROPS", props);
 		// séparer : calculer les diffs, puis assembler
 		// les diffs seront stockés pour la timeline (il faut le time)
 		let up = props;
@@ -98,6 +98,7 @@ export class Eso {
 		// TODO separer les attributs, les events
 
 		const revision = Object.keys(this.revision);
+		const newState = new Map();
 		const state = {
 			attributes: new Map(),
 			events: new Map(),
@@ -109,13 +110,13 @@ export class Eso {
 			else state.attributes.set(p, props[p]);
 		}
 
-		const newState = new Map();
 		for (const revise in this.revision) {
 			if (props[revise]) {
 				const diff = this.revision[revise].update(
 					props[revise],
 					this.history[revise]
 				);
+
 				newState.set(revise, diff);
 			}
 		}
@@ -136,7 +137,6 @@ export class Eso {
 					break;
 				case "classes":
 				case "content":
-					// console.log(this.id, revise, diff);
 					this.history[revise] = diff;
 					break;
 				case "transition":
@@ -195,6 +195,7 @@ export class Eso {
 			...Object.fromEntries(events),
 			...other,
 		};
+
 		box && this.render(this.current);
 	}
 }

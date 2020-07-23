@@ -25,7 +25,8 @@ export function transition(emitter) {
 	const accumulate = syncRafUpdate(self);
 
 	function update(props) {
-		console.log("update", props);
+		console.log("update", self.history?.dynStyle, props);
+
 		if (!props || !props.to || Object.keys(props.to).length === 0) return null;
 
 		(Array.isArray(props) ? props : [props]).forEach(doTransition);
