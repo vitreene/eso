@@ -38,7 +38,6 @@ export class Eso {
 			between: dynStyle,
 			dynStyle,
 			content,
-			// FIXME retirer les transitions pour commencer
 			transition: transition.call(this, emitter),
 		};
 		this.render = render.bind(this);
@@ -49,10 +48,7 @@ export class Eso {
 	init(props) {
 		this._revise(props);
 		this.prerender();
-		const attributes = createPerso(this.uuid, this.current);
-
-		this.attributes = attributes;
-		console.log("attributes", attributes);
+		this.attributes = createPerso(this.uuid, this.current);
 	}
 
 	update(props) {
@@ -124,6 +120,7 @@ export class Eso {
 		this._addToHistory(state, props.chrono);
 	}
 
+	// TODO history doit accumuler les changements
 	_addToHistory({ props, attributes, events }, chrono) {
 		props.forEach((diff, revise) => {
 			switch (revise) {

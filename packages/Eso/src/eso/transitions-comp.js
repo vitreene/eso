@@ -41,8 +41,6 @@ export function transition(emitter) {
 
 		// from-to
 		const interpolation = fromTo(options, self.history, self.uuid);
-
-		console.log("interpolation", interpolation);
 		//lancer la ou les transitions
 		if (interpolation) {
 			// mettre à jour la position avant le rafraichissement

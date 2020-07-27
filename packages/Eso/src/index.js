@@ -18,7 +18,14 @@ const counter = o(0);
 
 const outer = {
 	classes: "outer",
-	dynStyle: { color: "#ff0000" },
+	statStyle: {
+		"background-color": "royalblue",
+		padding: "1rem",
+		margin: "auto",
+	},
+	dynStyle: {
+		color: "#ff0000",
+	},
 	onclick: function (e) {
 		console.log(this);
 	},
@@ -49,7 +56,7 @@ const updatePerso2 = {
 	transition: {
 		// from: { color: "#e4349e" },
 		to: { color: "#5fe434" },
-		duration: 500,
+		duration: 2500,
 	},
 };
 

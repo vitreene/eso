@@ -25,6 +25,34 @@ import { tween } from "popmotion/lib";
  - stopper les animations d'un Actor est nécessaire quand l'Actor est supprimé.
  
  */
+
+/* 
+ créer une interface pour tween qui cache l'implémentation
+ anime = createTween({from, to, options})
+ anime.start (update, complete)
+ */
+
+function anime(interpolation) {
+	const animation = new Tweenable();
+	return {
+		start(update, complete) {
+			animation
+				.setConfig({ ...interpolation, step: update })
+				.tween()
+				.then(complete);
+		},
+		play() {
+			animation.resume();
+		},
+		pause() {
+			animation.pause();
+		},
+		seek(millisecond) {
+			animation.seek(millisecond);
+		},
+	};
+}
+
 export class ControlAnimations {
 	tweens = new Map(); // key:  tween-id, value: tween()
 	tweenSet = new Map(); // key: actor-id , values: tween-id[]

@@ -22,8 +22,8 @@ import { css } from "goober";
 import { whiteListCssProps, positionCssProps } from "../data/constantes";
 import { hasProperties, pipe } from "./lib/helpers";
 import { mapRelatives } from "./lib/map-relatives";
-// import { removeAliasProps } from "./lib/remove-alias-props";
 import { extractTransform, withTransform } from "./lib/transform-comp";
+
 export const doStyle = {
 	css(style) {
 		return css(style);

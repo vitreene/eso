@@ -8,14 +8,12 @@ entree :
 
 sortie : {from, to, duration}
 */
-import { storeNodes } from "../../register/create-perso";
+import { getComputedStyle } from "../../register/create-perso";
 import { transformColor, isColorFactory } from "./colors";
-// import { removeAliasProps } from "./remove-alias-props";
+
 import { DEFAULT_STYLES, DEFAULT_DURATION } from "../../data/constantes";
 
 export function fromTo(options, store, uuid) {
-	const node = storeNodes.get(uuid);
-
 	if (!options.from && !options.to) return null;
 	const { duration = DEFAULT_DURATION } = options;
 
@@ -36,7 +34,7 @@ export function fromTo(options, store, uuid) {
 			if (!keyStore) keyStore = flattenStore(store);
 			if (key in keyStore) from[key] = keyStore[key];
 			else {
-				if (!styler) styler = window.getComputedStyle(node);
+				if (!styler) styler = getComputedStyle(uuid);
 				from[key] = styler.getPropertyValue(key);
 				console.log(key, styler.getPropertyValue(key));
 			}
