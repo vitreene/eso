@@ -1,5 +1,4 @@
-import { tween } from "popmotion/lib";
-// import { tween } from "shifty";
+import { Tweenable } from "shifty";
 
 // tween({
 //   from: 0,
@@ -17,30 +16,27 @@ import { tween } from "popmotion/lib";
  */
 
 /* 
- à un Actor peut etre associé un tableau de tweens ; si l'on souhaite agir sur l'actor, il faut toucher l'ensemble des tweens. 
+ à un Perso peut etre associé un tableau de tweens ; si l'on souhaite agir sur le perso, il faut toucher l'ensemble des tweens. 
  anime serait un objet de clés id et pour valeur une Map de tweens.
  ou bien, un objet contenant les clés lié à un id d'une map générale.
  -> intéret : la plupart du temps, la fonction status est globale à toutes les animations.
  - Faut-il ici distinguer des anims qui ne seraient  pas pilotées par la telco ?
- - stopper les animations d'un Actor est nécessaire quand l'Actor est supprimé.
+ - stopper les animations d'un Perso est nécessaire quand le Perso est supprimé.
  
  */
 
 /* 
- créer une interface pour tween qui cache l'implémentation
- anime = createTween({from, to, options})
- anime.start (update, complete)
- */
+deplacer comme ressource 
+*/
+const defaultsTransition = {
+	duration: 500,
+	easing: "easeOutQuad",
+};
 
-function anime(interpolation) {
+function Anime(interpolation) {
 	const animation = new Tweenable();
-	return {
-		start(update, complete) {
-			animation
-				.setConfig({ ...interpolation, step: update })
-				.tween()
-				.then(complete);
-		},
+
+	const facade = {
 		play() {
 			animation.resume();
 		},
@@ -49,6 +45,18 @@ function anime(interpolation) {
 		},
 		seek(millisecond) {
 			animation.seek(millisecond);
+		},
+	};
+
+	return {
+		start(update, complete) {
+			animation
+				.tween({ ...defaultsTransition, ...interpolation, step: update })
+				.then(() => {
+					animation.dispose();
+					complete();
+				});
+			return facade;
 		},
 	};
 }
@@ -65,7 +73,7 @@ export class ControlAnimations {
 					requestAnimationFrame(this.tweens.get(key)[status]);
 				});
 		} else {
-			this.tweens.forEach((tween) => requestAnimationFrame(tween[status]));
+			this.tweens.forEach((anime) => requestAnimationFrame(anime[status]));
 		}
 	};
 	pause = () => this.status("pause");
@@ -86,16 +94,14 @@ export class ControlAnimations {
 
 	// new
 	tween = (options) => {
-		const { id, interpolation, update, pipe } = options;
+		const { id, interpolation, update } = options;
 		// TODO decouper les anims par durée
 		this.uuid++;
-
-		let animation = tween(interpolation);
-		pipe && (animation = animation.pipe(...pipe));
-		const complete = this.completeTween(id, this.uuid, options);
-
 		this.addTween(id, this.uuid);
-		this.tweens.set(this.uuid, animation.start({ update, complete }));
+
+		const animation = new Anime(interpolation);
+		const complete = this.completeTween(id, this.uuid, options);
+		this.tweens.set(this.uuid, animation.start(update, complete));
 	};
 
 	completeTween = (id, uuid, options) => () => {
