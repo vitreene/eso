@@ -3,11 +3,11 @@ const h = api.h;
 
 export const storeNodes = new WeakMap();
 
-export function createPerso(key, props) {
+export function createPerso(key, tag, props) {
 	const attributes = { content: o("") };
 	for (const p in props) attributes[p] = o(props[p]);
 	const Perso = Persos[key.perso];
-	storeNodes.set(key, Perso(attributes));
+	storeNodes.set(key, Perso({ tag, ...attributes }));
 	return attributes;
 }
 
@@ -18,11 +18,18 @@ export function getComputedStyle(uuid) {
 /* 
 props permet de parser des propriétés à l'initialisation du composant
 */
-function Bloc(props) {
-	const { content, ...attrs } = props;
-	return <div {...attrs}>{content}</div>;
+function bloc(props) {
+	const { tag = "div", content = "", ...attrs } = props;
+	return h(tag, attrs, content);
 }
 
 const Persos = {
-	bloc: Bloc,
+	bloc,
 };
+
+/* 
+reunir le rendu et la definition ensemble comme un composant de type React.
+le "render" de Eso doit-il etre renommé ?
+commit ? 
+rapprocher render.js de createperso.js
+*/

@@ -45,10 +45,10 @@ export class Eso {
 		this.init(initial);
 	}
 
-	init(props) {
+	init({ tag, ...props }) {
 		this._revise(props);
 		this.prerender();
-		this.attributes = createPerso(this.uuid, this.current);
+		this.attributes = createPerso(this.uuid, tag, this.current);
 	}
 
 	update(props) {

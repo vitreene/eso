@@ -30,11 +30,13 @@ const outer = {
 		console.log(this);
 	},
 	content: "vat",
+	tag: "article",
 };
 
 const inner = {
 	classes: "inner",
 	content: counter,
+	tag: "button",
 };
 
 const casting = {
