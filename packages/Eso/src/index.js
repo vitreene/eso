@@ -1,19 +1,28 @@
-import { o } from "sinuous";
+import { o, api } from "sinuous";
+const { h } = api;
 import { Eso } from "./eso";
 
 import { storeNodes } from "./register/create-perso";
 
-class Toto extends Eso {
+class Bloc extends Eso {
+	render(props) {
+		const { tag = "div", content = "", ...attrs } = props;
+		return h(tag, attrs, content);
+	}
+}
+
+class Toto extends Bloc {
 	constructor(props) {
 		super(props);
 		this.revision.toto = {
 			update(props, state) {
-				console.log("(props, state)", props, state);
+				console.log("(TOTO)", props, state);
 				return props;
 			},
 		};
 	}
 }
+
 const counter = o(0);
 
 const outer = {
@@ -26,22 +35,23 @@ const outer = {
 	dynStyle: {
 		color: "#ff0000",
 	},
-	onclick: function (e) {
-		console.log(this);
-	},
+
 	content: "vat",
-	tag: "article",
+	// tag: "article",
 };
 
 const inner = {
 	classes: "inner",
 	content: counter,
-	tag: "button",
+	// tag: "button",
+	onclick: function (e) {
+		console.log(this);
+	},
 };
 
 const casting = {
-	outer: new Toto({ id: "outer", perso: "bloc", initial: outer }),
-	inner: new Eso({ id: "inner", perso: "bloc", initial: inner }),
+	outer: new Toto({ id: "outer", initial: outer }),
+	inner: new Bloc({ id: "inner", tag: "button", initial: inner }),
 };
 
 // TODO comment retirer une prop de style ?
@@ -55,9 +65,13 @@ const updatePerso = {
 	transition: {},
 };
 const updatePerso2 = {
+	statStyle: {
+		"font-weight": "bold",
+		"text-align": "center",
+	},
 	transition: {
 		// from: { color: "#e4349e" },
-		to: { color: "#5fe434" },
+		to: { "font-size": "48px", color: "#5fe434" },
 		duration: 2500,
 	},
 };
@@ -74,5 +88,5 @@ setTimeout(() => {
 }, 1000);
 
 setTimeout(() => {
-	casting.outer.update(updatePerso2);
+	casting.inner.update(updatePerso2);
 }, 2000);

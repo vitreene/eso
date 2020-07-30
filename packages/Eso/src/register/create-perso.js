@@ -1,35 +1,29 @@
 import { o, api } from "sinuous";
-const h = api.h;
+const { h, property } = api;
 
 export const storeNodes = new WeakMap();
 
-export function createPerso(key, tag, props) {
+export function createPerso() {
 	const attributes = { content: o("") };
-	for (const p in props) attributes[p] = o(props[p]);
-	const Perso = Persos[key.perso];
-	storeNodes.set(key, Perso({ tag, ...attributes }));
-	return attributes;
+	for (const p in this.current) attributes[p] = o(this.current[p]);
+	storeNodes.set(this.uuid, this.render({ tag: this.tag, ...attributes }));
+	this.attributes = attributes;
+}
+
+export function commit(current) {
+	const node = storeNodes.get(this.uuid);
+	for (const p in current) {
+		if (!this.attributes[p]) {
+			this.attributes[p] = o(current[p]);
+			node && property(node, this.attributes[p], p);
+		} else {
+			this.attributes[p](current[p]);
+		}
+		// console.log("current[%s]", p, current[p]);
+	}
 }
 
 export function getComputedStyle(uuid) {
 	const node = storeNodes.get(uuid);
 	return window ? window.getComputedStyle(node) : null;
 }
-/* 
-props permet de parser des propriétés à l'initialisation du composant
-*/
-function bloc(props) {
-	const { tag = "div", content = "", ...attrs } = props;
-	return h(tag, attrs, content);
-}
-
-const Persos = {
-	bloc,
-};
-
-/* 
-reunir le rendu et la definition ensemble comme un composant de type React.
-le "render" de Eso doit-il etre renommé ?
-commit ? 
-rapprocher render.js de createperso.js
-*/

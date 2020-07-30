@@ -1,6 +1,6 @@
 import { nanoid } from "nanoid";
 
-import { createPerso } from "../register/create-perso";
+import { createPerso, commit } from "../register/create-perso";
 import { getElementOffset } from "./lib/get-element-offset";
 import { registerKeyEvents } from "./lib/register-keyEvents";
 import { doDimensions } from "./lib/dimensions-comp";
@@ -9,7 +9,6 @@ import { doStyle } from "./style-comp";
 import { doClasses } from "./classes-comp";
 import { content } from "./content-comp";
 import { DEFAULT_NS, DEFAULT_TRANSITION_OUT } from "../data/constantes";
-import { render } from "./render";
 
 const { css, ...dynStyle } = doStyle;
 // TODO attr
@@ -19,6 +18,7 @@ export class Eso {
 
 	id;
 	uuid;
+	tag;
 	zoom = 1;
 	box = {};
 	cssClass;
@@ -28,9 +28,10 @@ export class Eso {
 	attributes = {}; // attributs du node
 
 	constructor(story, emitter) {
-		const { id, initial, perso } = story;
+		const { id, initial, tag } = story;
+		this.tag = tag;
 		this.id = id;
-		this.uuid = { uuid: nanoid(6), perso };
+		this.uuid = { uuid: nanoid(8), id };
 		this.revision = {
 			classes: doClasses,
 			dimensions: doDimensions,
@@ -40,15 +41,17 @@ export class Eso {
 			content,
 			transition: transition.call(this, emitter),
 		};
-		this.render = render.bind(this);
+		this.commit = commit.bind(this);
+		this.createPerso = createPerso.bind(this);
 
 		this.init(initial);
 	}
 
-	init({ tag, ...props }) {
+	init(props) {
 		this._revise(props);
 		this.prerender();
-		this.attributes = createPerso(this.uuid, tag, this.current);
+		this.createPerso();
+		// this.attributes = createPerso(this.uuid, tag, this.current);
 	}
 
 	update(props) {
@@ -61,14 +64,13 @@ export class Eso {
 
 		this._revise(up);
 		this.prerender();
-		this.render(this.current);
+		this.commit(this.current);
 	}
 	_onEnter(props) {
 		return props;
 	}
 	_onLeave(props) {
 		//ajouter ce  oncomplete dans la prop oncomplete de la dernière transition
-
 		const oncomplete = {
 			event: { ns: DEFAULT_NS, name: "leave-" + props?.id },
 			// pas de data si l'event est partag' par plusieurs elements
@@ -193,6 +195,6 @@ export class Eso {
 			...other,
 		};
 
-		box && this.render(this.current);
+		box && this.commit(this.current);
 	}
 }
