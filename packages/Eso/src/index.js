@@ -4,6 +4,8 @@ import { Eso } from "./eso";
 
 import { storeNodes } from "./register/create-perso";
 
+import { Img } from "./composants/Img";
+
 class Bloc extends Eso {
 	render(props) {
 		const { tag = "div", content = "", ...attrs } = props;
@@ -49,9 +51,14 @@ const inner = {
 	},
 };
 
+const img = {
+	classes: "mysvg",
+};
+
 const casting = {
 	outer: new Toto({ id: "outer", initial: outer }),
 	inner: new Bloc({ id: "inner", tag: "button", initial: inner }),
+	img: new Img({ id: "picture", initial: img }),
 };
 
 // TODO comment retirer une prop de style ?
@@ -76,7 +83,8 @@ const updatePerso2 = {
 	},
 };
 
-document.body.append(storeNodes.get(casting.outer.uuid));
+// document.body.append(storeNodes.get(casting.outer.uuid));
+document.body.append(storeNodes.get(casting.img.uuid));
 
 const interval = setInterval(() => {
 	counter(counter() + 1);
@@ -85,6 +93,7 @@ const interval = setInterval(() => {
 
 setTimeout(() => {
 	casting.outer.update(updatePerso);
+	casting.img.update({ content: "./img/Aesthedes.jpg" });
 }, 1000);
 
 setTimeout(() => {
