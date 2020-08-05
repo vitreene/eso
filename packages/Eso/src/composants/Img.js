@@ -50,10 +50,12 @@ export class Img extends Eso {
 
 	constructor(story, emitter) {
 		super(story, emitter);
-		this.img;
+		imageCollection.has(story.initial.content) &&
+			this.img(imageCollection.get(story.initial.content));
 		this.meetOrSlice = constrainImage[story.initial.fit];
 	}
 
+	// TODO ajouter img à this.content
 	update(props) {
 		super.update(props);
 		this.img(imageCollection.get(props.content));

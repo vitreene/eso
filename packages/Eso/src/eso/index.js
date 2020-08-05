@@ -20,7 +20,7 @@ export class Eso {
 	uuid;
 	tag;
 	zoom = 1;
-	box = {};
+	box;
 	cssClass;
 	revision;
 	history = {}; // TODO faire une Map

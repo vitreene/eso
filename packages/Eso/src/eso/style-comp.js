@@ -56,6 +56,7 @@ export const doStyle = {
 		if (!box) box = defaultBox;
 		if (typeof box === "number") box = { ...defaultBox, zoom: box };
 
+		// console.log(box);
 		// calculer styles : appliquer zoom sur unitless
 		const newRenderStyle = {};
 
