@@ -5078,10 +5078,10 @@ sinuous-context@0.3.1:
   resolved "https://registry.yarnpkg.com/sinuous-context/-/sinuous-context-0.3.1.tgz#661586b26e730f701f4dbb0c93008970deed19b9"
   integrity sha512-geHUiUAr0N8FBT4BFGQOz29LbSQhAMrfGL2yz54J4bg1PE4roBy2zhEAiCPEWTDyx07onQlQTtB8OboIcZCbHA==
 
-sinuous@0.27.7:
-  version "0.27.7"
-  resolved "https://registry.yarnpkg.com/sinuous/-/sinuous-0.27.7.tgz#1fe52072dc807c451e2b0084b1a11aefacbbf422"
-  integrity sha512-wVHJek5SazVQmzF6UjvEqENYgNAm1BUPssLRHC3lslwzXViW+FWqO9zjnpmQFA/Zh6bjRnBAe74mDFMIeipCfQ==
+sinuous@0.27.6:
+  version "0.27.6"
+  resolved "https://registry.yarnpkg.com/sinuous/-/sinuous-0.27.6.tgz#fd510b66e1e7e9e2164a6ea736ab88d3234e7471"
+  integrity sha512-yNskbQ7nBdkoh61Z+BergnWGodJ/oZjXl663u06t3ch88mDoXeWJDYdPNFWeLZSbnh7+UYgOnp0P5c8tPCTe0A==
 
 snapdragon-node@^2.0.1:
   version "2.1.1"

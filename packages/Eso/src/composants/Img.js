@@ -1,5 +1,6 @@
 import { o, api } from "sinuous";
-const { h } = api;
+import { computed } from "sinuous/observable";
+const { hs: h } = api;
 
 import { Eso } from "../eso";
 
@@ -61,11 +62,12 @@ export class Img extends Eso {
 
 	render(props) {
 		this.img = o({});
-		// FIXME n'est pas reactif
-		const img = this.img();
-		console.log("RENDER", img, typeof img);
 		const { id, content, ...attrs } = props;
-		const viewBox = `0 0 ${img?.width || 0} ${img?.height || 0}`;
+		const viewBox = computed(
+			() => `0 0 ${this.img()?.width || 0} ${this.img()?.height || 0}`
+		);
+		const src = computed(() => this.img()?.src);
+
 		return (
 			<svg
 				id={props.id}
@@ -73,7 +75,7 @@ export class Img extends Eso {
 				viewBox={viewBox}
 				preserveAspectRatio={"xMidYMid " + (this.meetOrSlice || "slice")}
 			>
-				<image xlinkHref={img?.src || ""} width="100%" height="100%" />
+				<image href={src} width="100%" height="100%" />
 			</svg>
 		);
 	}
