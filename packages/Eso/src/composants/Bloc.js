@@ -2,16 +2,20 @@ import { Eso } from "../eso";
 import { o, api, html } from "sinuous";
 const { h } = api;
 import { storeNodes } from "../register/create-perso";
+import { emitter } from "../index";
 
+// Composant minimal
 export class Bloc extends Eso {
 	render(props) {
 		const { tag = "div", content = "", ...attrs } = props;
 		return h(tag, attrs, content);
 	}
 }
+
+// Ajouter des propriétés spécifiques au prerender
 export class Toto extends Bloc {
-	constructor(props) {
-		super(props);
+	constructor(initial, emitter) {
+		super(initial, emitter);
 		this.revision.toto = {
 			update(props, state) {
 				console.log("(TOTO)", props, state);
@@ -35,8 +39,9 @@ const initial = {
 	content: "BLEK OUTER",
 };
 
-const innner = new Toto({ id: "initial", initial });
+const innner = new Toto({ id: "initial", initial }, emitter);
 
+// rendre un composant à l'intérieur d'un autre
 export class Blek extends Eso {
 	render(props) {
 		const { tag = "div", content = "TITIUT", ...attrs } = props;

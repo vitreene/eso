@@ -6,13 +6,29 @@ import { Img } from "./composants/Img";
 import { Toto, Bloc } from "./composants/Bloc";
 import { Perso } from "./composants/Perso";
 
+import { STRAP, TC, PAUSE } from "./data/constantes";
+
+export const emitter = { emit: (...args) => console.log("EMIT----->", args) };
+
 function exe() {
 	const counter = o(0);
 
-	const Test = new Perso({
-		id: "test",
-		initial: { classes: "perso", content: "PPPERSOOO" },
-	});
+	const Test = new Perso(
+		{
+			id: "test",
+			initial: { classes: "perso", content: "PPPERSOOO" },
+			emit: {
+				mousedown: {
+					event: { ns: STRAP, name: "move" },
+					data: { id: "text-sample", event: "move" },
+				},
+				click: {
+					event: { ns: TC, name: PAUSE },
+				},
+			},
+		},
+		emitter
+	);
 
 	const outer = {
 		classes: "outer",
@@ -43,9 +59,9 @@ function exe() {
 	};
 
 	const casting = {
-		outer: new Toto({ id: "outer", initial: outer }),
-		inner: new Bloc({ id: "inner", tag: "button", initial: inner }),
-		img: new Img({ id: "picture", initial: img }),
+		outer: new Toto({ id: "outer", initial: outer }, emitter),
+		inner: new Bloc({ id: "inner", tag: "button", initial: inner }, emitter),
+		img: new Img({ id: "picture", initial: img }, emitter),
 	};
 
 	console.log("casting", casting);
