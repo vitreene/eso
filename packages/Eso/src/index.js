@@ -3,10 +3,16 @@ import { o } from "sinuous";
 import { storeNodes } from "./register/create-perso";
 
 import { Img } from "./composants/Img";
-import { Toto, Bloc, Blek } from "./composants/Bloc";
+import { Toto, Bloc } from "./composants/Bloc";
+import { Perso } from "./composants/Perso";
 
 function exe() {
 	const counter = o(0);
+
+	const Test = new Perso({
+		id: "test",
+		initial: { classes: "perso", content: "PPPERSOOO" },
+	});
 
 	const outer = {
 		classes: "outer",
@@ -19,12 +25,12 @@ function exe() {
 			color: "#ff0000",
 		},
 
-		content: "vat",
+		content: Test,
 	};
 
 	const inner = {
 		classes: "inner",
-		// content: counter,
+		content: counter,
 		onclick: function (e) {
 			console.log(this);
 		},
@@ -38,12 +44,12 @@ function exe() {
 
 	const casting = {
 		outer: new Toto({ id: "outer", initial: outer }),
-		// inner: new Bloc({ id: "inner", tag: "button", initial: inner }),
-		inner: new Blek({ id: "inner", tag: "section", initial: inner }),
+		inner: new Bloc({ id: "inner", tag: "button", initial: inner }),
 		img: new Img({ id: "picture", initial: img }),
 	};
 
-	console.log(casting);
+	console.log("casting", casting);
+
 	// TODO comment retirer une prop de style ?
 	const updatePerso = {
 		toto: "tsoin-tsoin",
@@ -51,7 +57,7 @@ function exe() {
 		classes: "tontonton",
 		statStyle: { color: "#00ff00", "font-size": "24px" },
 		"data-config": "tintin",
-		content: storeNodes.get(casting.inner.uuid),
+		// content: storeNodes.get(casting.inner.uuid),
 		transition: {},
 	};
 	const updatePerso2 = {
@@ -85,6 +91,7 @@ function exe() {
 	}, 2000);
 
 	setTimeout(() => {
+		Test({ content: "Lululululu", dynStyle: { color: "white" } });
 		casting.inner.update(updatePerso2);
 	}, 3000);
 }
