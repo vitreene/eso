@@ -3,7 +3,7 @@ import { o } from "sinuous";
 import { storeNodes } from "./register/create-perso";
 
 import { Img } from "./composants/Img";
-import { Toto, Bloc } from "./composants/Bloc";
+import { Toto, Bloc, Blek } from "./composants/Bloc";
 
 function exe() {
 	const counter = o(0);
@@ -24,7 +24,7 @@ function exe() {
 
 	const inner = {
 		classes: "inner",
-		content: counter,
+		// content: counter,
 		onclick: function (e) {
 			console.log(this);
 		},
@@ -38,10 +38,12 @@ function exe() {
 
 	const casting = {
 		outer: new Toto({ id: "outer", initial: outer }),
-		inner: new Bloc({ id: "inner", tag: "button", initial: inner }),
+		// inner: new Bloc({ id: "inner", tag: "button", initial: inner }),
+		inner: new Blek({ id: "inner", tag: "section", initial: inner }),
 		img: new Img({ id: "picture", initial: img }),
 	};
 
+	console.log(casting);
 	// TODO comment retirer une prop de style ?
 	const updatePerso = {
 		toto: "tsoin-tsoin",
