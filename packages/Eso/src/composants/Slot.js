@@ -1,12 +1,7 @@
-import { o, api, html } from "sinuous";
-const { h } = api;
+import { o } from 'sinuous';
 
 export const storeSlots = new Map();
 export function Slot({ uuid }) {
-	storeSlots.set(uuid, o());
-	return (
-		<>
-			<div id={uuid}>{storeSlots.get(uuid)}</div>
-		</>
-	);
+  !storeSlots.has(uuid) && storeSlots.set(uuid, o());
+  return storeSlots.get(uuid);
 }

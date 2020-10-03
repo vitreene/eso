@@ -1,8 +1,16 @@
 .toto {
-	background-color: blue;
+  background-color: blue;
 }
 .tontonton {
-	background-color: violet;
-	color: white;
-	font-weight: bold;
+  background-color: violet;
+  color: white;
+  font-weight: bold;
+}
+#grid-01 article {
+  outline: 1px purple solid;
+}
+#grid-01 {
+  width: 100%;
+  height: 200px;
+  background-color: yellow;
 }

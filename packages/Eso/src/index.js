@@ -1,14 +1,15 @@
 import { o } from 'sinuous';
+import './index.css';
 
 import { STRAP, TC, PAUSE } from './data/constantes';
 import { Img } from './composants/Img';
 import { Toto, Bloc } from './composants/Bloc';
 import { Perso } from './composants/Perso';
-import { storeSlots, Slot } from './composants/Slot';
+import { storeSlots, Slot } from './composants/slot';
 import { Layer } from './composants/Layer';
 
 import { storeNodes } from './register/create-perso';
-import { layerGrid01 } from './stories/story01/story-01-persos';
+import { layerGrid01 } from './stories/story01/layer';
 
 export const emitter = { emit: (...args) => console.log('EMIT----->', args) };
 
@@ -99,8 +100,8 @@ function exe() {
 
   document.body.append(storeNodes.get(casting.outer.uuid));
   document.body.append(storeNodes.get(casting.img.uuid));
-  document.body.append(casting.slot);
-  document.body.append($layer);
+  // document.body.append(casting.slot);
+  document.body.append(storeNodes.get($layer.uuid));
 
   const interval = setInterval(() => {
     counter(counter() + 1);
@@ -115,10 +116,10 @@ function exe() {
       classes: 'tutu',
       content: './img/Aesthedes.jpg',
     });
-    storeSlots.get(uuid)(`le bon numéro : ${Math.random()}`);
   }, 2000);
 
   setTimeout(() => {
+    storeSlots.get('grid-01_s01')(`le bon numéro : ${Math.random()}`);
     $test({ content: 'Lululululu', dynStyle: { color: 'white' } });
     casting.inner.update(updatePerso2);
     storeSlots.get(uuid)(storeNodes.get(casting.img.uuid));

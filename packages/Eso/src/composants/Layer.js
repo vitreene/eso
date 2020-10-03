@@ -1,50 +1,39 @@
-import { o, api, html } from "sinuous";
+import { o, api } from 'sinuous';
+
+import { Eso } from '../eso';
+import { Slot } from './slot';
+import { joinId } from '../eso/lib/helpers';
+
 const { h } = api;
 
-import { Eso } from "../eso";
-import { Slot } from "./Slot";
-
 export class Layer extends Eso {
-	static nature = "layer";
-	constructor(_initial, emitter) {
-		const { layout, ...initial } = _initial;
-		super(initial, emitter);
-		this.layout = layout;
-	}
-
-	render(props) {
-		console.log("RENDER", props, this.layout);
-		return (
-			<section id={this.id} style={props.style} class={props.class}>
-				{innerLayer(this.layout, this.id)}
-			</section>
-		);
-	}
-}
-
-class LayerItem extends Eso {
-	static nature = "bloc";
-	render(props) {
-		const slot = new Slot({ statStyle: config.statStyle, id: this.id });
-
-		return (
-			<article id={this.id} style={props.style} class={props.class}>
-				{slot}
-			</article>
-		);
-	}
+  static nature = 'layer';
+  render(props) {
+    const layout = innerLayer(props.content(), this.id);
+    return (
+      <section id={this.id} style={props.style} class={props.class}>
+        {layout}
+      </section>
+    );
+  }
 }
 
 function innerLayer(content, layerId) {
-	if (!content || Object.keys(content).length === 0) return;
-	const layer = [];
-	for (const config of content) {
-		const id = joinId(layerId, config.id);
-		const item = new LayerItem({ statStyle: config.statStyle, id });
-		layer.push(item);
-	}
-	console.log("innerLayer", layer);
+  if (!content || Object.keys(content).length === 0) return null;
+  const layer = [];
+  for (const config of content) {
+    const id = joinId(layerId, config.id);
+    const item = new LayerItem({ style: config.statStyle, id });
+    layer.push(item);
+  }
+  return layer;
+}
 
-	return layer;
-	// return h(layer);
+function LayerItem(props) {
+  const slot = new Slot({ uuid: props.id });
+  return (
+    <article id={props.id} style={props.style} class={props.class}>
+      {slot}
+    </article>
+  );
 }

@@ -45,7 +45,6 @@ export class Eso {
     };
 
     this.commit = commit.bind(this);
-    this.createPerso = createPerso.bind(this);
 
     const events = Eso.registerKeyEvents(story.emit, emitter);
     this.init(initial, events);
@@ -55,8 +54,7 @@ export class Eso {
     const props = { ...initial, ...events };
     this._revise(props);
     this.prerender();
-    this.node = this.createPerso();
-    // this.attributes = createPerso(this.uuid, tag, this.current);
+    this.node = createPerso.call(this);
   }
 
   update(props) {
@@ -86,20 +84,13 @@ export class Eso {
     lastTransition.oncomplete
       ? lastTransition.oncomplete.push(oncomplete)
       : (lastTransition.oncomplete = [oncomplete]);
-
     transition.push(lastTransition);
 
-    const up = {
-      ...props,
-      transition,
-    };
-    return up;
+    return { ...props, transition };
   }
 
   _revise(props) {
     if (!props) return;
-    // TODO separer les attributs, les events
-
     const revision = Object.keys(this.revision);
 
     const state = {
@@ -107,13 +98,6 @@ export class Eso {
       attributes: new Map(),
       events: new Map(),
     };
-
-    /* 
-    events :
-    ici, les events seraient passés dans l'init ou l'update
-    Mais les events sont contenus dans l'objet story.emit et incorporés dans createPerso 
-    but : faire passer les emits via cette fonction
-    */
 
     for (const p in props) {
       if (revision.includes(p)) continue;
@@ -131,8 +115,7 @@ export class Eso {
       }
     }
 
-    // console.log("REVISE", props, state);
-
+    // side effect : ajouter a l'historique
     this._addToHistory(state, props.chrono);
   }
 
