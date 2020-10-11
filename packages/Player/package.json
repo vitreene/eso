@@ -1,0 +1,8 @@
+{
+	"name": "v-eso-player",
+	"main": "index.js",
+	"version": "0.1.0",
+	"dependencies": {
+		"v-eso": "latest"
+	}
+}
