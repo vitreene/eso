@@ -1,7 +1,7 @@
 import { o, api, html } from 'sinuous';
 
 import { Eso } from 'v-eso';
-import { storeNodes } from 'v-eso/create-perso';
+import { storeNodes } from '../../xx-Eso/create-perso';
 import { emitter } from '../index';
 
 const { h } = api;
