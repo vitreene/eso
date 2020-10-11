@@ -1,8 +1,8 @@
 import { o, api } from 'sinuous';
 
-import { Eso } from '../eso';
+import { Eso } from '../Eso';
 import { Slot } from './slot';
-import { joinId } from '../eso/lib/helpers';
+import { joinId } from '../Eso/lib/helpers';
 
 const { h } = api;
 

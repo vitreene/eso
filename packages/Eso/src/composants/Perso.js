@@ -1,4 +1,4 @@
-import { Eso } from '../eso';
+import { Eso } from '../Eso';
 import { api } from 'sinuous';
 const { h } = api;
 //entrée : props ->update
