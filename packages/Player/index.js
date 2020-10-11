@@ -8,7 +8,7 @@ import { Perso } from './composants/Perso';
 import { storeSlots, Slot } from './composants/slot';
 import { Layer } from './composants/Layer';
 
-import { storeNodes } from '../xx-Eso/create-perso';
+import { storeNodes } from '../Eso/create-perso';
 import { layerGrid01 } from './stories/story01/layer';
 
 export const emitter = { emit: (...args) => console.log('EMIT----->', args) };
