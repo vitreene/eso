@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { setClassNames } from './lib/classNames-comp';
+import { setClassNames } from '../helpers/classNames';
 
 export const doClasses = {
   /*   init(props) {

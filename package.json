@@ -5,25 +5,50 @@
     "packages/*"
   ],
   "dependencies": {
-    "babel-plugin-transform-jsx-to-htm": "^2.0.0",
     "@babel/plugin-transform-runtime": "^7.11.5",
+    "babel-plugin-transform-jsx-to-htm": "^2.0.0",
     "nanoid": "^3.1.12",
     "sinuous": "^0.27.9"
   },
   "devDependencies": {
     "@babel/cli": "^7.11.6",
     "@babel/core": "^7.11.6",
+    "@babel/plugin-proposal-class-properties": "^7.8.3",
+    "@babel/plugin-proposal-decorators": "^7.8.3",
     "@babel/plugin-transform-react-jsx": "^7.10.4",
     "@babel/preset-env": "^7.11.5",
     "@babel/preset-react": "^7.10.4",
+    "@babel/preset-typescript": "^7.9.0",
     "babel-core": "7.0.0-bridge.0",
     "babel-loader": "^8.1.0",
     "babel-plugin-transform-runtime": "^6.23.0",
+    "clean-webpack-plugin": "^3.0.0",
+    "copy-webpack-plugin": "^5.1.1",
+    "css-loader": "^3.5.3",
+    "file-loader": "^5.1.0",
+    "html-webpack-plugin": "^4.5.0",
     "lerna": "^3.22.1",
-    "webpack": "^4.44.2"
+    "mini-css-extract-plugin": "^0.9.0",
+    "optimize-css-assets-webpack-plugin": "^5.0.3",
+    "postcss": "^7.0.29",
+    "postcss-loader": "^3.0.0",
+    "postcss-preset-env": "^6.7.0",
+    "style-loader": "^1.2.1",
+    "typescript": "^3.8.3",
+    "uglifyjs-webpack-plugin": "^2.2.0",
+    "webpack": "^4.4.0",
+    "webpack-bundle-analyzer": "^3.7.0",
+    "webpack-cli": "3.3.12",
+    "webpack-dev-server": "^3.11.0",
+    "webpack-merge": "^4.2.2"
   },
   "scripts": {
     "build": "lerna exec --parallel -- babel --root-mode upward src -d lib --ignore **/*.story.js,**/*.spec.js",
     "bootstrap": "lerna bootstrap --use-workspaces"
-  }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "ie 11"
+  ]
 }

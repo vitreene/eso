@@ -1,10 +1,10 @@
 import { o, api } from 'sinuous';
 
-import { Eso } from 'v-eso';
+import { Eso } from 'veso';
 import { Slot } from './slot';
-import { joinId } from '../Eso/lib/helpers';
 
 const { h } = api;
+
 
 export class Layer extends Eso {
   static nature = 'layer';
@@ -36,4 +36,8 @@ function LayerItem(props) {
       {slot}
     </article>
   );
+}
+
+function joinId(...args) {
+  return args.filter((a) => a !== '').join('_');
 }

@@ -1,10 +1,10 @@
-import { o, api } from 'sinuous';
+import { o, /* api, */ svg } from 'sinuous';
 import { computed } from 'sinuous/observable';
-const { hs: h } = api;
+// const { hs: h } = api;
 
-import { Eso } from 'v-eso';
+import { Eso } from 'veso';
 
-const src = './img/Aesthedes.jpg';
+const src = './ikono/Aesthedes.jpg';
 
 const imageCollection = new Map();
 loadImages([src]);
@@ -58,7 +58,9 @@ export class Img extends Eso {
   // TODO ajouter img à this.content
   update(props) {
     super.update(props);
-    this.img(imageCollection.get(props.content));
+    props.content &&
+      imageCollection.has(props.content) &&
+      this.img(imageCollection.get(props.content));
     props.fit && (this.meetOrSlice = constrainImage[props.fit]);
   }
 
@@ -70,15 +72,13 @@ export class Img extends Eso {
     );
     const src = computed(() => this.img()?.src);
 
-    return (
-      <svg
-        id={props.id}
-        {...attrs}
-        viewBox={viewBox}
-        preserveAspectRatio={'xMidYMid ' + (this.meetOrSlice || 'slice')}
+    return svg`<svg
+        id=${props.id}
+        viewBox=${viewBox}
+        ...${attrs}
+        preserveAspectRatio=${'xMidYMid ' + (this.meetOrSlice || 'slice')}
       >
-        <image href={src} width="100%" height="100%" />
-      </svg>
-    );
+        <image href=${src} width="100%" height="100%" />
+      </svg>`;
   }
 }

@@ -1,8 +1,11 @@
 {
-	"name": "v-eso-player",
-	"main": "index.js",
+	"name": "veso-player",
+	"main": "lib/index.js",
 	"version": "0.1.0",
 	"dependencies": {
-		"v-eso": "latest"
+		"veso": "^0.1.0"
+	},
+	"scripts": {
+		"player": "webpack-dev-server  --mode development --config ../../webpack.config.js"
 	}
 }

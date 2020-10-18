@@ -1,6 +1,7 @@
 {
-	"name": "v-eso",
+	"name": "veso",
 	"version": "0.1.0",
+	"main": "src/index.js",
 	"dependencies": {
 		"clsx": "^1.1.1",
 		"csstype": "^2.6.2",

@@ -1,5 +1,5 @@
 import { api } from 'sinuous';
-import { Eso } from 'v-eso';
+import { Eso } from 'veso';
 
 const { h } = api;
 export function createSpriteClass(imagesCollection) {

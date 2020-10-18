@@ -19,10 +19,10 @@ Prerender
 
 import { css } from 'goober';
 
-import { whiteListCssProps, positionCssProps } from '../data/constantes';
-import { hasProperties, pipe } from './lib/helpers';
-import { mapRelatives } from './lib/map-relatives';
-import { extractTransform, withTransform } from './lib/transform-comp';
+import { whiteListCssProps, positionCssProps } from '../helpers/constantes';
+import { hasProperties, pipe } from '../helpers/helpers';
+import { mapRelatives } from '../helpers/map-relatives';
+import { extractTransform, withTransform } from '../helpers/transform';
 
 export const doStyle = {
   css(style) {

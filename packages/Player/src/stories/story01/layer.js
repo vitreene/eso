@@ -5,7 +5,7 @@ export const layerGrid01 = {
   nature: 'layer',
   initial: {
     statStyle: {
-      position: 'absolute',
+      position: 'static',
       top: 0,
       left: 0,
       display: 'grid',

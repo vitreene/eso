@@ -1,4 +1,5 @@
 import { o } from 'sinuous';
+import { storeNodes } from 'veso';
 import './index.css';
 
 import { STRAP, TC, PAUSE } from './data/constantes';
@@ -8,12 +9,9 @@ import { Perso } from './composants/Perso';
 import { storeSlots, Slot } from './composants/slot';
 import { Layer } from './composants/Layer';
 
-import { storeNodes } from '../Eso/create-perso';
 import { layerGrid01 } from './stories/story01/layer';
 
 export const emitter = { emit: (...args) => console.log('EMIT----->', args) };
-
-// FIXME les transitions ne fonctionnent plus
 
 function exe() {
   const $layer = new Layer(layerGrid01, emitter);
@@ -64,7 +62,7 @@ function exe() {
   const img = {
     classes: 'mysvg',
     dimensions: { width: 50, height: 100 },
-    content: './img/Aesthedes.jpg',
+    content: './ikono/Aesthedes.jpg',
   };
 
   const casting = {
@@ -114,7 +112,7 @@ function exe() {
     casting.img.update({
       dimensions: { width: 250, height: 500 },
       classes: 'tutu',
-      content: './img/Aesthedes.jpg',
+      content: './ikono/Aesthedes.jpg',
     });
   }, 2000);
 
