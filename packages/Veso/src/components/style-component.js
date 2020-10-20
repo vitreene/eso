@@ -72,6 +72,7 @@ export const doStyle = {
       newRenderStyle['font-size'] = newStyle['font-size'] * box.zoom + 'px';
     }
     const { style, transform } = extractTransform(newRenderStyle);
+
     return {
       ...style,
       ...withTransform(transform, box.zoom),

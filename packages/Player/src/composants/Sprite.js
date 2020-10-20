@@ -2,6 +2,7 @@ import { api } from 'sinuous';
 import { Eso } from 'veso';
 
 const { h } = api;
+
 export function createSpriteClass(imagesCollection) {
   return class Sprite extends Eso {
     static nature = 'sprite';

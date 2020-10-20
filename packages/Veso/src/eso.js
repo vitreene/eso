@@ -7,7 +7,7 @@ import { registerKeyEvents } from './helpers/register-keyEvents';
 import { doDimensions } from './components/dimensions-component';
 import { transition } from './components/transitions-component';
 import { doStyle } from './components/style-component';
-import { doClasses } from './components/classes-component';
+import { doClasses } from './components/classNames-component';
 import { content } from './components/content-component';
 
 import { DEFAULT_NS, DEFAULT_TRANSITION_OUT } from './helpers/constantes';
@@ -37,7 +37,7 @@ export class Eso {
     this.uuid = { uuid: nanoid(8), id };
 
     this.revision = {
-      classes: doClasses,
+      className: doClasses,
       dimensions: doDimensions,
       statStyle: dynStyle,
       between: dynStyle,
@@ -56,6 +56,7 @@ export class Eso {
     const props = { ...initial, ...events };
     this._revise(props);
     this.prerender();
+    //  this.node() appelle storeNodes
     this.node = createPerso.call(this);
   }
 
@@ -102,9 +103,22 @@ export class Eso {
     };
 
     for (const p in props) {
-      if (revision.includes(p)) continue;
-      else if (p[0] === 'o' && p[1] === 'n') state.events.set(p, props[p]);
-      else state.attributes.set(p, props[p]);
+      switch (true) {
+        // filtrer ce qui n'est pas dans revision
+        case revision.includes(p):
+          break;
+        // si c'est un evenement
+        case p[0] === 'o' && p[1] === 'n':
+          state.events.set(p, props[p]);
+          props.statStyle = { ...props.statStyle, pointerEvents: 'all' };
+          break;
+        // si c'est un attribut
+        //FIXME evoluer vers data et aria
+        case p === 'attr':
+          for (const attr in props[p])
+            state.attributes.set(attr, props[p][attr]);
+          break;
+      }
     }
 
     for (const revise in this.revision) {
@@ -116,7 +130,6 @@ export class Eso {
         state.props.set(revise, diff);
       }
     }
-
     // side effect : ajouter a l'historique
     this._addToHistory(state, props.chrono);
   }
@@ -133,7 +146,7 @@ export class Eso {
         case 'between':
           this.history['dynStyle'] = { ...this.history['dynStyle'], ...diff };
           break;
-        case 'classes':
+        case 'className':
         case 'content':
           this.history[revise] = diff;
           break;
@@ -164,11 +177,12 @@ export class Eso {
       dynStyle,
       statStyle,
       dimensions,
-      classes,
+      className,
       attributes,
       events,
       ...other
     } = this.history;
+
     // const pointerEvents = options.pointerEvents ? "all" : "none";
     const style = this.revision.dynStyle.prerender(this.box, dynStyle);
 
@@ -183,7 +197,10 @@ export class Eso {
       this.cssClass = css(cssClass);
     }
 
-    const theClasses = this.revision.classes.prerender(this.cssClass, classes);
+    const theClasses = this.revision.className.prerender(
+      this.cssClass,
+      className
+    );
 
     this.current = {
       style,

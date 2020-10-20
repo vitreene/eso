@@ -1,20 +1,19 @@
-import { o, api } from 'sinuous';
+import { api, html } from 'sinuous';
 
 import { Eso } from 'veso';
 import { Slot } from './slot';
-
-const { h } = api;
-
 
 export class Layer extends Eso {
   static nature = 'layer';
   render(props) {
     const layout = innerLayer(props.content(), this.id);
-    return (
-      <section id={this.id} style={props.style} class={props.class}>
-        {layout}
-      </section>
-    );
+    return html`<section
+      id=${this.id}
+      style=${props.style}
+      class=${props.class}
+    >
+      ${layout}
+    </section>`;
   }
 }
 
@@ -31,11 +30,11 @@ function innerLayer(content, layerId) {
 
 function LayerItem(props) {
   const slot = new Slot({ uuid: props.id });
-  return (
-    <article id={props.id} style={props.style} class={props.class}>
-      {slot}
-    </article>
-  );
+  // const style = { ...props.style, pointerEvents: 'none' };
+
+  return html`<article id=${props.id} style=${props.style} class=${props.class}>
+    ${slot}
+  </article>`;
 }
 
 function joinId(...args) {

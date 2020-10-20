@@ -1,11 +1,16 @@
-import { o, api } from 'sinuous';
+import { o } from 'sinuous';
+import { property } from './helpers/property';
 
 export const storeNodes = new WeakMap();
 
 export function createPerso() {
-  console.log('createPerso', this);
+  // console.log('createPerso', this);
   const attributes = { content: o('') };
-  for (const p in this.current) attributes[p] = o(this.current[p]);
+  for (const p in this.current) {
+    if (p[0] === 'o' && p[1] === 'n') attributes[p] = this.current[p];
+    else attributes[p] = o(this.current[p]);
+    // attributes[p] = o(this.current[p]);
+  }
   storeNodes.set(this.uuid, this.render({ tag: this.tag, ...attributes }));
   this.attributes = attributes;
   return () => storeNodes.get(this.uuid);
@@ -13,14 +18,13 @@ export function createPerso() {
 
 export function commit(current) {
   const node = storeNodes.get(this.uuid);
-  // console.log('node', node, current);
   for (const p in current) {
+    p === 'onmousedown' && console.log('p', p, current[p]);
     if (!this.attributes[p]) {
       this.attributes[p] = o(current[p]);
-      node && api.property(node, this.attributes[p], p);
-    } else {
-      this.attributes[p](current[p]);
-    }
+      node && property(node, this.attributes[p], p);
+    } else if (!(p[0] === 'o' && p[1] === 'n')) this.attributes[p](current[p]);
+
     // p === 'style' && console.log('current[%s]', p, current[p]);
   }
 }

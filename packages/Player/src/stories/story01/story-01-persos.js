@@ -26,6 +26,7 @@ export const root = {
           display: 'grid',
           gridColumn: 1,
           gridRow: 1,
+          pointerEvents: 'none',
         },
       },
     ],
@@ -195,7 +196,7 @@ export const imageSample = {
   id: 'image',
   nature: 'img',
   initial: {
-    content: 'vignette.jpg',
+    content: './ikono/vignette.jpg',
     fit: 'cover', //"cover"
     statStyle: {
       position: 'absolute',
@@ -255,7 +256,7 @@ export const imageSample2 = {
   id: 'image2',
   nature: 'img',
   initial: {
-    content: 'perfume_002.jpg',
+    content: './ikono/perfume_002.jpg',
     fit: 'cover', //"cover"
     statStyle: {
       position: 'absolute',
@@ -295,7 +296,7 @@ export const imageSample2 = {
   ],
 };
 
-export const togglePlay = {
+/* export */ const togglePlay = {
   id: 'togglePlay',
   nature: 'button',
   initial: {
