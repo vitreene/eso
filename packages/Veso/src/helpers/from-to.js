@@ -10,6 +10,7 @@ sortie : {from, to, duration}
 */
 import { getComputedStyle } from '../create-perso';
 import { transformColor, isColorFactory } from './colors';
+import { stringToLowercase } from './js-to-css';
 
 import { DEFAULT_STYLES, DEFAULT_DURATION } from './constantes';
 
@@ -35,8 +36,13 @@ export function fromTo(options, store, uuid) {
       if (key in keyStore) from[key] = keyStore[key];
       else {
         if (!styler) styler = getComputedStyle(uuid);
-        from[key] = styler.getPropertyValue(key);
-        console.log(key, styler.getPropertyValue(key));
+
+        from[key] = styler.getPropertyValue(stringToLowercase(key));
+        console.log(
+          key,
+          stringToLowercase(key),
+          styler.getPropertyValue(stringToLowercase(key))
+        );
       }
       to[key] = options.to[key];
     }

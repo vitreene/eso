@@ -23,6 +23,8 @@ import { whiteListCssProps, positionCssProps } from '../helpers/constantes';
 import { hasProperties, pipe } from '../helpers/helpers';
 import { mapRelatives } from '../helpers/map-relatives';
 import { extractTransform, withTransform } from '../helpers/transform';
+import { keyToLowercase, stringToLowercase } from '../helpers/js-to-css';
+const whiteListCss = new Set(Array.from(whiteListCssProps, stringToLowercase));
 
 export const doStyle = {
   css(style) {
@@ -38,7 +40,8 @@ export const doStyle = {
 
     const newStyle = pipe(
       mapProps,
-      removeEmptyProps /* removeAliasProps */
+      removeEmptyProps,
+      keyToLowercase /* removeAliasProps */
     )(props);
     // console.log(props, newStyle);
 
@@ -51,7 +54,7 @@ export const doStyle = {
     };
   },
   prerender(box, newStyle) {
-    // console.log('newStyle', newStyle);
+    console.log('newStyle', newStyle);
     if (!newStyle) return;
     // console.log('BOX', box);
     if (!box) box = defaultBox;
@@ -62,7 +65,7 @@ export const doStyle = {
     const newRenderStyle = {};
 
     for (const prop in newStyle) {
-      if (whiteListCssProps.has(prop) && typeof newStyle[prop] === 'number') {
+      if (whiteListCss.has(prop) && typeof newStyle[prop] === 'number') {
         newRenderStyle[prop] = newStyle[prop] * box.zoom + 'px';
       } else newRenderStyle[prop] = newStyle[prop];
     }

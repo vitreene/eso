@@ -165,7 +165,7 @@ export const textSample = {
           rotate: 200,
           scale: 0.4,
           fontSize: '48px',
-          backgroundColor: 'green',
+          backgroundColor: '#00ffff',
           color: '#0033FF',
         },
         duration: 2000, // race condition ?
@@ -192,7 +192,7 @@ export const textSample = {
   ],
 };
 
-export const imageSample = {
+/* export */ const imageSample = {
   id: 'image',
   nature: 'img',
   initial: {
@@ -252,7 +252,7 @@ export const imageSample = {
   ],
 };
 
-export const imageSample2 = {
+/* export */ const imageSample2 = {
   id: 'image2',
   nature: 'img',
   initial: {
@@ -296,7 +296,7 @@ export const imageSample2 = {
   ],
 };
 
-/* export */ const togglePlay = {
+export const togglePlay = {
   id: 'togglePlay',
   nature: 'button',
   initial: {
@@ -347,11 +347,11 @@ export const imageSample2 = {
   },
 };
 
-/* export  */ const spriteSample = {
+/* export */ const spriteSample = {
   id: 'sprite',
   nature: 'sprite',
   initial: {
-    content: 'Mystery-80.png',
+    content: './ikono/Mystery-80.png',
     dimensions: { height: 300 },
     statStyle: { opacity: 0 },
   },
