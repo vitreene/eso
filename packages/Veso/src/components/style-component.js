@@ -54,7 +54,7 @@ export const doStyle = {
     };
   },
   prerender(box, newStyle) {
-    console.log('newStyle', newStyle);
+    // console.log('newStyle', newStyle);
     if (!newStyle) return;
     // console.log('BOX', box);
     if (!box) box = defaultBox;

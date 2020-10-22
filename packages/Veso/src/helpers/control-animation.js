@@ -67,7 +67,6 @@ export class ControlAnimations {
   uuid = Math.random();
 
   status = (status, id = null) => {
-    console.log('this.tweens', this.tweens);
     if (id) {
       this.tweenSet.has(id) &&
         this.tweenSet.get(id).forEach((key) => {
@@ -114,6 +113,7 @@ export class ControlAnimations {
     if (this.tweenSet.has(id)) {
       this.tweenSet.get(id).delete(uuid);
     }
+    this.tweens.has(uuid) && this.tweens.delete(uuid);
   };
 
   addTween = (id, uuid) => {

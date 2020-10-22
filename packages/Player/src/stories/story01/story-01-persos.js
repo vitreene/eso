@@ -108,7 +108,7 @@ export const layerGrid01 = {
   ],
 };
 
-export const textSample = {
+/* export */ const textSample = {
   id: 'text-sample',
   nature: 'bloc',
   initial: {
@@ -347,7 +347,7 @@ export const togglePlay = {
   },
 };
 
-/* export */ const spriteSample = {
+export const spriteSample = {
   id: 'sprite',
   nature: 'sprite',
   initial: {

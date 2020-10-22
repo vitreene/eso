@@ -36,13 +36,7 @@ export function fromTo(options, store, uuid) {
       if (key in keyStore) from[key] = keyStore[key];
       else {
         if (!styler) styler = getComputedStyle(uuid);
-
         from[key] = styler.getPropertyValue(stringToLowercase(key));
-        console.log(
-          key,
-          stringToLowercase(key),
-          styler.getPropertyValue(stringToLowercase(key))
-        );
       }
       to[key] = options.to[key];
     }
