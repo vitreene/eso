@@ -38,20 +38,18 @@ export const doStyle = {
     */
     const mapProps = mapRelatives(state);
 
-    const newStyle = pipe(
-      mapProps,
-      removeEmptyProps,
-      keyToLowercase /* removeAliasProps */
-    )(props);
+    const newStyle = pipe(mapProps, removeEmptyProps, keyToLowercase)(props);
     // console.log(props, newStyle);
 
     // FIXME pos absolute si déplacement, sinon relative ?
-    const position = hasProperties(positionCssProps, props) && 'absolute';
+    /*     const position = hasProperties(positionCssProps, props) && 'absolute';
 
     return {
       ...(position && { position }),
       ...newStyle,
     };
+     */
+    return newStyle;
   },
   prerender(box, newStyle) {
     // console.log('newStyle', newStyle);
@@ -60,16 +58,15 @@ export const doStyle = {
     if (!box) box = defaultBox;
     if (typeof box === 'number') box = { ...defaultBox, zoom: box };
 
-    // console.log(box);
     // calculer styles : appliquer zoom sur unitless
     const newRenderStyle = {};
-
     for (const prop in newStyle) {
       if (whiteListCss.has(prop) && typeof newStyle[prop] === 'number') {
         newRenderStyle[prop] = newStyle[prop] * box.zoom + 'px';
       } else newRenderStyle[prop] = newStyle[prop];
     }
-    // TODO placer des limites :
+
+    // TODO placer des limites pour font-size :
     // https://css-tricks.com/simplified-fluid-typography/
     if ('font-size' in newStyle && typeof newStyle['font-size'] === 'number') {
       newRenderStyle['font-size'] = newStyle['font-size'] * box.zoom + 'px';

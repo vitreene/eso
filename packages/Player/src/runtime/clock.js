@@ -34,13 +34,17 @@ export function clock(timeLiner, emitter) {
   emitter.emit('*.init', { chrono: 0 });
 
   const timeLine = timeLiner.timeLine;
+  const { eventDatas } = timeLiner;
   console.log('timeLine', timeLine);
+  console.log('eventDatas', eventDatas);
 
   const emitEvent = (count) => (tm) => (NS) => {
     if (tm[NS][count]) {
-      const _emitEvent = (name) =>
-        console.log('name', name) ||
-        emitter.emit([NS, name], { chrono: count });
+      const _emitEvent = (name) => {
+        const data = ((eventDatas[NS] || {})[count] || {})[name];
+        console.log('name', name, data);
+        emitter.emit([NS, name], { ...data, chrono: count });
+      };
       tm[NS][count].forEach(_emitEvent);
     }
   };

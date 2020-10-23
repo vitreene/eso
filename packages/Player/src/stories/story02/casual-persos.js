@@ -1,104 +1,104 @@
-import { STRAP, CONTAINER_ESO } from "../../data/constantes";
+import { STRAP, CONTAINER_ESO } from '../../data/constantes';
 
 export const casualEventimes = {
-  name: "start",
+  name: 'start',
   start: 0,
   events: [
-    { start: 100, name: "go" },
-    { start: 500, name: "initCard" },
-    { start: 1000, name: "hover_casse_1_." },
+    { start: 100, name: 'go' },
+    { start: 500, name: 'initCard' },
+    { start: 2000, name: 'hover_casse_1_.' },
   ],
 };
 
 const casse = {
-  id: "casse",
-  nature: "bloc",
+  id: 'casse',
+  nature: 'bloc',
   initial: {
     dimensions: {
-      height: "100%",
+      height: '100%',
       width: 100,
     },
 
-    classes: "casse",
-    content: "•",
+    className: 'casse',
+    content: '•',
   },
   listen: [
-    { event: "initCard", action: "enter" },
-    { event: "enter", action: "mouseenter" },
-    { event: "leave", action: "mouseleave" },
-    { event: "drop", action: "drop" },
-    { event: "hover", action: "hover" },
+    { event: 'initCard', action: 'enter' },
+    { event: 'enter', action: 'mouseenter' },
+    { event: 'leave', action: 'mouseleave' },
+    { event: 'drop', action: 'drop' },
+    { event: 'hover', action: 'hover' },
   ],
   actions: [
     {
-      name: "enter",
-      move: { layer: "presentoir", slot: "presentoir_s01" },
-      transition: { to: "fadeIn", duration: 1000 },
+      name: 'enter',
+      move: { layer: 'presentoir', slot: 'presentoir_s01' },
+      transition: { to: 'fadeIn', duration: 1000 },
     },
     {
-      name: "mouseenter",
-      classes: "+=casse-canhover",
-      dynStyle: { borderRadius: "50%" },
+      name: 'mouseenter',
+      className: '+=casse-canhover',
+      dynStyle: { borderRadius: '50%' },
     },
     {
-      name: "mouseleave",
-      classes: "-=casse-canhover",
+      name: 'mouseleave',
+      className: '-=casse-canhover',
       dynStyle: {
         borderRadius: null,
         backgroundColor: null,
       },
     },
-    { name: "drop" },
+    { name: 'drop' },
     {
-      name: "hover",
-      dynStyle: { backgroundColor: "#ff0000" },
+      name: 'hover',
+      dynStyle: { backgroundColor: '#ff0000' },
     },
   ],
 };
 
 const card = {
-  id: "card",
-  nature: "bloc",
+  id: 'card',
+  nature: 'bloc',
   initial: {
     dimensions: {
       width: 130,
       ratio: 3 / 4,
     },
-    classes: "card",
-    content: "CARD",
+    className: 'card',
+    content: 'CARD',
   },
   listen: [
-    { event: "initCard", action: "enter" },
-    { event: "moveCard", action: "moveCard" },
-    { event: "dropCard", action: "dropCard" },
+    { event: 'initCard', action: 'enter' },
+    { event: 'moveCard', action: 'moveCard' },
+    { event: 'dropCard', action: 'dropCard' },
   ],
   actions: [
     {
-      name: "moveCard",
+      name: 'moveCard',
       dynStyle: {
-        backgroundColor: "#00FF00",
+        backgroundColor: '#00FF00',
+        scale: 1.2,
       },
     },
     {
-      name: "dropCard",
+      name: 'dropCard',
       dynStyle: {
         backgroundColor: null,
+        scale: 1,
       },
-
-      transition: { duration: 300, to: { left: 0, top: 0 } },
     },
 
     {
-      name: "enter",
-      move: { layer: "sabot", slot: "sabot_s01" },
-      transition: { to: "fadeIn" },
+      name: 'enter',
+      move: { layer: 'sabot', slot: 'sabot_s01' },
+      transition: { to: 'fadeIn' },
     },
   ],
 
   emit: {
     pointerdown: {
-      event: { ns: STRAP, name: "drag" },
-      data: { id: "card", event: "moveCard" },
+      event: { ns: STRAP, name: 'drag' },
+      data: { id: 'card', event: 'moveCard' },
     },
   },
 };
@@ -108,19 +108,19 @@ const card = {
 // ============================================================
 const root = {
   id: CONTAINER_ESO,
-  nature: "layer",
+  nature: 'layer',
   initial: {
-    classes: "container",
+    className: 'container',
     content: [
       {
-        id: "s01",
+        id: 's01',
         statStyle: {
-          position: "absolute",
+          position: 'absolute',
           top: 0,
           left: 0,
           right: 0,
           bottom: 0,
-          display: "grid",
+          display: 'grid',
           gridColumn: 1,
           gridRow: 1,
         },
@@ -131,106 +131,106 @@ const root = {
 };
 
 const casual = {
-  id: "casual",
-  nature: "layer",
+  id: 'casual',
+  nature: 'layer',
   initial: {
-    style: { background: "#ff00ee" },
-    classes: "casual",
+    style: { background: '#ff00ee' },
+    className: 'casual',
     content: [
-      { id: "s01", statStyle: { gridRow: 1 } },
-      { id: "s02", statStyle: { gridRow: 2 } },
-      { id: "s03", statStyle: { gridRow: 3 } },
-      { id: "s04", statStyle: { gridRow: 4 } },
+      { id: 's01', statStyle: { gridRow: 1 } },
+      { id: 's02', statStyle: { gridRow: 2 } },
+      { id: 's03', statStyle: { gridRow: 3 } },
+      { id: 's04', statStyle: { gridRow: 4 } },
     ],
   },
-  listen: [{ event: "start", action: "enter" }],
+  listen: [{ event: 'start', action: 'enter' }],
   actions: [
     {
-      name: "enter",
-      move: { layer: CONTAINER_ESO, slot: CONTAINER_ESO + "_s01" },
+      name: 'enter',
+      move: { layer: CONTAINER_ESO, slot: CONTAINER_ESO + '_s01' },
       order: 1,
     },
   ],
 };
 
 const plateau = {
-  id: "plateau",
-  nature: "layer",
+  id: 'plateau',
+  nature: 'layer',
   initial: {
-    classes: "plateau",
-    content: [{ id: "s01" }],
+    className: 'plateau',
+    content: [{ id: 's01' }],
   },
-  listen: [{ event: "go", action: "enter" }],
+  listen: [{ event: 'go', action: 'enter' }],
   actions: [
     {
-      name: "enter",
-      move: { layer: "casual", slot: "casual_s03" },
+      name: 'enter',
+      move: { layer: 'casual', slot: 'casual_s03' },
       order: 1,
     },
   ],
 };
 
 const presentoir = {
-  id: "presentoir",
-  nature: "layer",
+  id: 'presentoir',
+  nature: 'layer',
   initial: {
     dimensions: {
-      width: "80%",
+      width: '80%',
     },
-    classes: "presentoir",
-    content: [{ id: "s01" }],
+    className: 'presentoir',
+    content: [{ id: 's01' }],
   },
-  listen: [{ event: "go", action: "enter" }],
+  listen: [{ event: 'go', action: 'enter' }],
   actions: [
     {
-      name: "enter",
-      move: { layer: "casual", slot: "casual_s02" },
+      name: 'enter',
+      move: { layer: 'casual', slot: 'casual_s02' },
       order: 1,
     },
   ],
 };
 
 const sabot = {
-  id: "sabot",
-  nature: "layer",
+  id: 'sabot',
+  nature: 'layer',
   initial: {
-    dimensions: { width: "80%" },
-    classes: "sabot",
-    content: [{ id: "s01", statStyle: { gridRow: 1 } }],
+    dimensions: { width: '80%' },
+    className: 'sabot',
+    content: [{ id: 's01', statStyle: { gridRow: 1 } }],
   },
-  listen: [{ event: "go", action: "enter" }],
+  listen: [{ event: 'go', action: 'enter' }],
   actions: [
     {
-      name: "enter",
-      move: { layer: "casual", slot: "casual_s04" },
+      name: 'enter',
+      move: { layer: 'casual', slot: 'casual_s04' },
       order: 1,
     },
   ],
 };
 
 const infos = {
-  id: "infos",
-  nature: "bloc",
+  id: 'infos',
+  nature: 'bloc',
   initial: {
     dimensions: {
-      width: "80%",
+      width: '80%',
     },
-    classes: "infos h1",
-    content: "Devinez le mot !",
+    className: 'infos h1',
+    content: 'Devinez le mot !',
   },
-  listen: [{ event: "go", action: "enter" }],
+  listen: [{ event: 'go', action: 'enter' }],
   actions: [
     {
-      name: "enter",
-      move: { layer: "casual", slot: "casual_s01" },
+      name: 'enter',
+      move: { layer: 'casual', slot: 'casual_s01' },
       order: 1,
     },
   ],
 };
 
 const empty = {
-  id: "",
-  nature: "",
+  id: '',
+  nature: '',
   initial: {},
   listen: [],
   actions: [],

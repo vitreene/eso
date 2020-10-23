@@ -108,7 +108,7 @@ export const layerGrid01 = {
   ],
 };
 
-/* export */ const textSample = {
+export const textSample = {
   id: 'text-sample',
   nature: 'bloc',
   initial: {
@@ -192,7 +192,7 @@ export const layerGrid01 = {
   ],
 };
 
-/* export */ const imageSample = {
+export const imageSample = {
   id: 'image',
   nature: 'img',
   initial: {
@@ -252,7 +252,7 @@ export const layerGrid01 = {
   ],
 };
 
-/* export */ const imageSample2 = {
+export const imageSample2 = {
   id: 'image2',
   nature: 'img',
   initial: {

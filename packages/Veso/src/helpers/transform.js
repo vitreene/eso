@@ -39,10 +39,12 @@ export function withTransform(props, zoom) {
 
     transform += transformList[tr].transform + '(' + value + unit + ') ';
   }
-  if (dX || dY) {
+  if (typeof dX === 'number' || typeof dY === 'number') {
+    // if (dX || dY) {
     const coords = transformCoords(dX, dY, other.rotate, other.scale);
-    transform += ` matrix(1,0,0,1,${coords.x * zoom || 0},${coords.y * zoom ||
-      0})`;
+    transform += ` matrix(1,0,0,1,${coords.x * zoom || 0},${
+      coords.y * zoom || 0
+    })`;
   }
   return transform ? { transform } : null;
 }
