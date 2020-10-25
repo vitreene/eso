@@ -8,6 +8,7 @@ export function createSpriteClass(imagesCollection) {
       super(story, emitter);
       this.sprite = imagesCollection.get(story?.initial?.content);
       this.update({
+        statStyle: { position: 'absolute' },
         dimensions: {
           ...story.initial.dimensions,
           ratio: this.sprite.ratio,

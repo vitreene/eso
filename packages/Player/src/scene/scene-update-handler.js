@@ -1,7 +1,7 @@
 import { storeNodes } from 'veso';
 
 import { zoom, getElementOffsetZoomed } from '../zoom';
-import { DEFAULT_NS } from '../data/constantes';
+import { DEFAULT_NS, DEFAULT_DURATION } from '../data/constantes';
 
 // déclenche les updates
 // ============================================================
@@ -55,6 +55,8 @@ export function sceneUpdateHandler(onScene, persos, slots) {
       }
     }
 
+    console.log('perso, old, current', perso, old, current);
+
     if (old && current) {
       // en cas de resize, il faudrait recalculer la position des blocs, en gardant la valeur progress de l'interpolation
       const position = {
@@ -65,7 +67,7 @@ export function sceneUpdateHandler(onScene, persos, slots) {
       transition.push({
         from: position,
         to: { dX: 0, dY: 0 },
-        duration: 1000,
+        duration: DEFAULT_DURATION,
       });
 
       // rescale
@@ -82,7 +84,7 @@ export function sceneUpdateHandler(onScene, persos, slots) {
         transition.push({
           from: oldDimensions,
           to: currentDimensions,
-          duration: 1000,
+          duration: DEFAULT_DURATION,
           oncomplete: [
             {
               event: { ns: DEFAULT_NS, name: 'end-rescale-' + update?.id },

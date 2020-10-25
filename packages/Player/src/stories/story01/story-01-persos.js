@@ -241,7 +241,7 @@ export const imageSample = {
       move: { layer: 'fond', slot: 'fond_s01', rescale: true },
       transition: {
         to: { opacity: 0.5 },
-        oncomplete: { event: { ns: DEFAULT_NS, name: 'leave-sprite' } },
+        // oncomplete: { event: { ns: DEFAULT_NS, name: 'leave-sprite' } },
       },
     },
     {
