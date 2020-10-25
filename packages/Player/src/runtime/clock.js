@@ -51,7 +51,7 @@ export function clock(timeLiner, emitter) {
 
   function loop() {
     if (isPlaying) {
-      // tout les diziemes de seconde
+      // tout les dixièmes de seconde
       if (count % 100 === 0) {
         const emitEventCount = emitEvent(count);
         for (const timeEvent of timeLine) {

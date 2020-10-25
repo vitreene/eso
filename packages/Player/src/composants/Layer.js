@@ -6,9 +6,9 @@ import { Slot } from './slot';
 export class Layer extends Eso {
   static nature = 'layer';
   render(props) {
-    const layout = innerLayer(props.content(), this.id);
+    const layout = innerLayer(props.content(), props.id());
     return html`<section
-      id=${this.id}
+      id=${props.id}
       style=${props.style}
       class=${props.class}
     >

@@ -47,7 +47,7 @@ export function createImgClass(imageCollection) {
         () => `xMidYMid ${constrainImage[this.fit()]}` || 'slice'
       );
       return svg`<svg
-        id=${props.id}
+        id=${id}
         viewBox=${viewBox}
         preserveAspectRatio=${preserveAspectRatio}
         ...${attrs}

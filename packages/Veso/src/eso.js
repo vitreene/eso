@@ -49,11 +49,11 @@ export class Eso {
     this.commit = commit.bind(this);
 
     const events = Eso.registerKeyEvents(story.emit, emitter);
-    this.init(initial, events);
+    this.init(id, initial, events);
   }
 
-  init(initial, events) {
-    const props = { ...initial, ...events };
+  init(id, initial, events) {
+    const props = { id, ...initial, ...events };
     this._revise(props);
     this.prerender();
     //  this.node() appelle storeNodes
@@ -72,6 +72,7 @@ export class Eso {
     this.prerender();
     this.commit(this.current);
   }
+
   _onEnter(props) {
     return props;
   }
@@ -118,6 +119,10 @@ export class Eso {
           for (const attr in props[p])
             state.attributes.set(attr, props[p][attr]);
           break;
+
+        case p === 'id':
+          state.attributes.set('id', props[p]);
+          break;
       }
     }
 
@@ -160,7 +165,7 @@ export class Eso {
     });
     this.history.attributes = attributes;
     this.history.events = events;
-    chrono && console.log(chrono, this.id, this.history);
+    // chrono && console.log(chrono, this.id, this.history);
   }
 
   // TODO  mise en cache des classes

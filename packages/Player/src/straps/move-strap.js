@@ -1,4 +1,4 @@
-import { Eso } from 'veso';
+// import { Eso } from 'veso';
 
 import { zoom } from '../zoom';
 import { DEFAULT_NS, STRAP } from '../data/constantes';
@@ -56,7 +56,6 @@ export function moveStrap(emitter) {
 
       // sous le pointer
       const below = document.elementFromPoint(e.clientX, e.clientY);
-      // console.log('below', below);
       const belowChanged = below && below.id !== this.below;
       const absPointer = {
         x: window.scrollX + e.clientX,
@@ -149,14 +148,12 @@ export function moveStrap(emitter) {
       document.addEventListener('pointermove', this.move);
       document.addEventListener('pointerup', this.up);
 
-      // console.log('data.e.target', this.data.e.target);
-      const pos = Eso.getElementOffset(this.data.e.target);
-      const rel = Eso.getElementOffset(this.data.e.target.offsetParent);
-      this.initialElPosition = {
-        x: pos.x - rel.x,
-        y: pos.y - rel.y,
-      };
-      // console.log('position', this.initialElPosition);
+      // const pos = Eso.getElementOffset(this.data.e.target);
+      // const rel = Eso.getElementOffset(this.data.e.target.offsetParent);
+      // this.initialElPosition = {
+      //   x: pos.x - rel.x,
+      //   y: pos.y - rel.y,
+      // };
 
       const z = zoom.box.zoom;
 
@@ -164,7 +161,7 @@ export function moveStrap(emitter) {
         dynStyle: {
           left: this.initialElPosition.x / z,
           top: this.initialElPosition.y / z,
-          position: 'absolute',
+          position: 'relative',
           pointerEvents: 'none',
         },
       });

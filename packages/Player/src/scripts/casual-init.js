@@ -5,7 +5,7 @@ charge et lance le jeu
 -  init la state machine
 
 */
-import { STRAP, STATIC_TO_ABSOLUTE } from '../data/constantes';
+import { DEFAULT_NS, STRAP, STATIC_TO_ABSOLUTE } from '../data/constantes';
 import { vocabulary } from '../stories/story02/casual-vocabulary';
 
 export function generateCasual(datas) {
@@ -27,6 +27,18 @@ export function generateCasual(datas) {
       data: cards.map((card) => card.id),
     },
   ];
+  // ajouter un event à la dernière carte
+  // action.name ==='enter' -> transition.oncomplete-> event
+
+  // const lastCard = cards[cards.length - 1];
+  // const [enterAction] = lastCard.actions.filter(
+  //   (action) => action.name === 'enter'
+  // );
+  // console.log('enterAction', enterAction);
+  // enterAction.transition.oncomplete = {
+  //   event: { ns: DEFAULT_NS, name: STATIC_TO_ABSOLUTE },
+  // };
+  // console.log('cards[cards.length-1]', cards[cards.length - 1]);
 
   stories.push(...cards, ...casses);
 

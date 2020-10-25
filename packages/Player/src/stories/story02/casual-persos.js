@@ -1,4 +1,8 @@
-import { STRAP, CONTAINER_ESO } from '../../data/constantes';
+import {
+  STRAP,
+  CONTAINER_ESO,
+  STATIC_TO_ABSOLUTE,
+} from '../../data/constantes';
 
 export const casualEventimes = {
   name: 'start',
@@ -71,6 +75,7 @@ const card = {
     { event: 'initCard', action: 'enter' },
     { event: 'moveCard', action: 'moveCard' },
     { event: 'dropCard', action: 'dropCard' },
+    { event: STATIC_TO_ABSOLUTE, action: STATIC_TO_ABSOLUTE },
   ],
   actions: [
     {
@@ -93,6 +98,13 @@ const card = {
       move: { layer: 'sabot', slot: 'sabot_s01' },
       transition: { to: 'fadeIn' },
     },
+    // {
+    //   name: STATIC_TO_ABSOLUTE,
+    //   position: STATIC_TO_ABSOLUTE,
+    //   dynStyle: {
+    //     backgroundColor: 'blue',
+    //   },
+    // },
   ],
 
   emit: {

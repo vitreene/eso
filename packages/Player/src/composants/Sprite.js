@@ -1,7 +1,5 @@
-import { api } from 'sinuous';
+import { html } from 'sinuous';
 import { Eso } from 'veso';
-
-const { h } = api;
 
 export function createSpriteClass(imagesCollection) {
   return class Sprite extends Eso {
@@ -18,15 +16,8 @@ export function createSpriteClass(imagesCollection) {
     }
 
     render(props) {
-      return (
-        <img
-          id={this.id}
-          style={props.style}
-          class={props.class}
-          src={props.content}
-          alt={props?.attr?.alt}
-        />
-      );
+      const { id, content, attr, ...others } = props;
+      return html`<img id=${id} src=${content} ...${others} ...${attr} />`;
     }
   };
 }

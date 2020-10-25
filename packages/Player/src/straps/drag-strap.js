@@ -52,6 +52,7 @@ export default function dragStrap(emitter) {
     };
 
     guard_hover = ({ leave, hover }) => {
+      console.log('{ leave, hover }', { leave, hover });
       this.targets.includes(leave) &&
         emitter.emit([DEFAULT_NS, 'leave_' + leave]);
       this.targets.includes(hover) &&

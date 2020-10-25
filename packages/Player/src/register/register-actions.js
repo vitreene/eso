@@ -1,4 +1,4 @@
-import { DEFAULT_NS } from "../data/constantes";
+import { DEFAULT_NS } from '../data/constantes';
 
 export function registerActions(stories, emitter) {
   const actionsList = [];
@@ -9,17 +9,24 @@ export function registerActions(stories, emitter) {
     listen &&
       listen.forEach((e) => {
         const NS = e.ns || DEFAULT_NS;
-        const { name, ...other } = actions.find((a) => a.name === e.action);
-        const action = {
-          NS,
-          name: e.event,
-          data: {
-            id,
-            action: name,
-            ...other,
-          },
-        };
-        actionsList.push(action);
+        const actionFound = actions.find((a) => a.name === e.action);
+        if (actionFound) {
+          const { name, ...other } = actionFound;
+          const action = {
+            NS,
+            name: e.event,
+            data: {
+              id,
+              action: name,
+              ...other,
+            },
+          };
+          actionsList.push(action);
+        } else
+          console.warn(
+            'l’action %s n’a pas été trouvée. Vérifier les persos.',
+            e.action
+          );
       });
   }
 

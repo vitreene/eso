@@ -19,7 +19,6 @@ export function createPerso() {
 export function commit(current) {
   const node = storeNodes.get(this.uuid);
   for (const p in current) {
-    p === 'onmousedown' && console.log('p', p, current[p]);
     if (!this.attributes[p]) {
       this.attributes[p] = o(current[p]);
       node && property(node, this.attributes[p], p);
