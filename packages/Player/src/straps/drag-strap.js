@@ -1,6 +1,14 @@
 import { DEFAULT_NS, STRAP } from '../data/constantes';
 
 /* 
+TODO :
+ajouter des slots aux cibles
+targets doit posséder un layer et un id slot 
+(->vérifier si un slot n'a pas un nom unique ?)
+
+*/
+
+/* 
  - definir les cibles -> attribuer une réaction
  faut-il définir les réactions à la volée (et comment ?)
  il n'est pas prévu d'attacher un event dynamiquement.
@@ -12,6 +20,7 @@ const defaultCallback = () => console.log('callback');
 
 export default function dragStrap(emitter) {
   return class Drag {
+    // TODO une seule cible à la construction
     constructor(data, targets = ['casse_4_.', 'casse_3_.', 'casse_2_.'], cb) {
       this.source = data.id;
       this.targets = targets;
@@ -23,9 +32,9 @@ export default function dragStrap(emitter) {
     startDrag(data) {
       console.log('ma DRAG', data);
       emitter.emit([STRAP, 'move'], data);
-      emitter.once([STRAP, 'end_' + data.event], this.endDrag);
       emitter.emit([DEFAULT_NS, 'moveCard_' + this.source]);
 
+      emitter.once([STRAP, 'end_' + data.event], this.endDrag);
       emitter.on([STRAP, 'guard_hover'], this.guard_hover);
     }
     endDrag = (d) => {
@@ -33,19 +42,25 @@ export default function dragStrap(emitter) {
       console.log('d.target', d.target);
       console.log(' this.source,', this.source);
 
-      this.targets.includes(d.target) && console.log('WIN !', d.target);
       emitter.off([STRAP, 'guard_hover'], this.guard_hover);
 
-      console.log('DROP---_>', d.initialElPosition);
-      emitter.emit([DEFAULT_NS, 'dropCard_' + this.source], {
-        transition: {
-          to: {
-            left: d.initialElPosition.x,
-            top: d.initialElPosition.y,
-            // backgroundColor: 'red',
-          },
-        },
-      });
+      const win = this.targets.includes(d.target);
+      win && console.log('WIN !', d.target);
+
+      win
+        ? emitter.emit([DEFAULT_NS, 'dropCard_' + this.source], {
+            move: { layer: 'casual', slot: 'casual_s03' },
+            transition: { to: { left: 0, top: 0 } },
+          })
+        : emitter.emit([DEFAULT_NS, 'dropCard_' + this.source], {
+            transition: {
+              to: {
+                left: d.initialElPosition.x,
+                top: d.initialElPosition.y,
+                backgroundColor: 'red',
+              },
+            },
+          });
       // emitter.emit([DEFAULT_NS, 'dropCard_' + this.source]);
 
       this.cb();

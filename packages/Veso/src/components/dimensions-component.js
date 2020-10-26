@@ -1,5 +1,7 @@
-import { splitUnitValue } from '../helpers/helpers';
+import { splitUnitValue } from '../helpers/utils';
 
+// TODO transformer les % en px
+// si % lire les dimensions du node
 export const doDimensions = {
   update(dimensions) {
     // dimensions ; width,height,ratio

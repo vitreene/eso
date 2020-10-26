@@ -1,5 +1,3 @@
-// import { Eso } from 'veso';
-
 import { zoom } from '../zoom';
 import { DEFAULT_NS, STRAP } from '../data/constantes';
 /* 
@@ -148,20 +146,11 @@ export function moveStrap(emitter) {
       document.addEventListener('pointermove', this.move);
       document.addEventListener('pointerup', this.up);
 
-      // const pos = Eso.getElementOffset(this.data.e.target);
-      // const rel = Eso.getElementOffset(this.data.e.target.offsetParent);
-      // this.initialElPosition = {
-      //   x: pos.x - rel.x,
-      //   y: pos.y - rel.y,
-      // };
-
       const z = zoom.box.zoom;
 
       emitter.emit([DEFAULT_NS, event], {
         dynStyle: {
-          left: this.initialElPosition.x / z,
-          top: this.initialElPosition.y / z,
-          position: 'relative',
+          ...(this.isStatic && { position: 'relative' }),
           pointerEvents: 'none',
         },
       });

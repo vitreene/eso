@@ -20,7 +20,7 @@ const casse = {
   initial: {
     dimensions: {
       height: '100%',
-      width: 100,
+      width: 140,
     },
 
     className: 'casse',

@@ -18,10 +18,10 @@ export function throttle(callback, limit) {
 
 export function debounce(func, wait, immediate) {
   var timeout;
-  return function() {
+  return function () {
     var context = this,
       args = arguments;
-    var later = function() {
+    var later = function () {
       timeout = null;
       if (!immediate) func.apply(context, args);
     };
@@ -102,7 +102,7 @@ export function objToFixed(obj) {
 }
 
 export function round(precision) {
-  return function(value) {
+  return function (value) {
     return Number(value.toFixed(precision));
   };
 }
@@ -135,5 +135,8 @@ export function splitUnitValue(val) {
     unit: match[2],
   };
 }
-export const compose = (...fns) => (x) => fns.reduceRight((v, f) => f(v), x);
-export const pipe = (...fns) => (x) => fns.reduce((v, f) => f(v), x);
+const execute = (v, f) => {
+  return typeof f === 'function' ? f(v) : v;
+};
+export const compose = (...fns) => (x) => fns.reduceRight(execute, x);
+export const pipe = (...fns) => (x) => fns.reduce(execute, x);

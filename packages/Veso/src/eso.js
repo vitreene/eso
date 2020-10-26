@@ -3,6 +3,7 @@ import { nanoid } from 'nanoid';
 import { createPerso, commit } from './create-perso';
 import { getElementOffset } from './helpers/get-element-offset';
 import { registerKeyEvents } from './helpers/register-keyEvents';
+import { pipe } from './helpers/utils';
 
 import { doDimensions } from './components/dimensions-component';
 import { transition } from './components/transitions-component';
@@ -36,14 +37,20 @@ export class Eso {
     this.node;
     this.uuid = { uuid: nanoid(8), id };
 
+    this._revise = this._revise.bind(this);
+    this._pre = this._pre.bind(this);
+
     this.revision = {
       className: doClasses,
-      dimensions: doDimensions,
       statStyle: dynStyle,
       between: dynStyle,
       dynStyle,
-      content,
       transition: transition.call(this, emitter),
+      content,
+    };
+
+    this.prep = {
+      dimensions: doDimensions,
     };
 
     this.commit = commit.bind(this);
@@ -54,7 +61,7 @@ export class Eso {
 
   init(id, initial, events) {
     const props = { id, ...initial, ...events };
-    this._revise(props);
+    pipe(this._pre, this._revise)(props);
     this.prerender();
     //  this.node() appelle storeNodes
     this.node = createPerso.call(this);
@@ -64,11 +71,14 @@ export class Eso {
     // console.log("PROPS", props);
     // séparer : calculer les diffs, puis assembler
     // les diffs seront stockés pour la timeline (il faut le time)
-    let up = props;
-    props?.enter && (up = this._onEnter(props));
-    props?.exit && (up = this._onLeave(props));
 
-    this._revise(up);
+    pipe(
+      props?.enter && this._onEnter,
+      props?.exit && this._onLeave,
+      this._pre,
+      this._revise
+    )(props);
+
     this.prerender();
     this.commit(this.current);
   }
@@ -80,7 +90,7 @@ export class Eso {
     //ajouter ce  oncomplete dans la prop oncomplete de la dernière transition
     const oncomplete = {
       event: { ns: DEFAULT_NS, name: 'leave-' + props?.id },
-      // pas de data si l'event est partag' par plusieurs elements
+      // pas de data si l'event est partagé par plusieurs elements
       // data: { leave: true }
     };
     const transition = props.transition || [{ to: DEFAULT_TRANSITION_OUT }];
@@ -91,6 +101,18 @@ export class Eso {
     transition.push(lastTransition);
 
     return { ...props, transition };
+  }
+
+  _pre(props) {
+    // transforme les données qui ne sont pas directement des attributs :
+    // dimensions, transitions, etc.
+    if (!props.dimensions) return props;
+
+    const dimensions = this.prep.dimensions.update(
+      props.dimensions,
+      this.history[dimensions]
+    );
+    return { ...props, statStyle: { ...props.statStyle, ...dimensions } };
   }
 
   _revise(props) {
@@ -181,7 +203,6 @@ export class Eso {
     const {
       dynStyle,
       statStyle,
-      dimensions,
       className,
       attributes,
       events,
@@ -191,17 +212,10 @@ export class Eso {
     // const pointerEvents = options.pointerEvents ? "all" : "none";
     const style = this.revision.dynStyle.prerender(this.box, dynStyle);
 
-    if (statStyle || dimensions) {
-      const cssClass = this.revision.dynStyle.prerender(this.box, {
-        ...statStyle,
-        ...dimensions,
-        //   ,pointerEvents
-      });
-      // console.log(this.id, this.box, dimensions, cssClass);
-
+    if (statStyle) {
+      const cssClass = this.revision.dynStyle.prerender(this.box, statStyle);
       this.cssClass = css(cssClass);
     }
-
     const theClasses = this.revision.className.prerender(
       this.cssClass,
       className

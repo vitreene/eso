@@ -20,7 +20,7 @@ Prerender
 import { css } from 'goober';
 
 import { whiteListCssProps, positionCssProps } from '../helpers/constantes';
-import { hasProperties, pipe } from '../helpers/helpers';
+import { hasProperties, pipe } from '../helpers/utils';
 import { mapRelatives } from '../helpers/map-relatives';
 import { extractTransform, withTransform } from '../helpers/transform';
 import { keyToLowercase, stringToLowercase } from '../helpers/js-to-css';

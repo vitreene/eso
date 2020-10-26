@@ -55,8 +55,6 @@ export function sceneUpdateHandler(onScene, persos, slots) {
       }
     }
 
-    console.log('perso, old, current', perso, old, current);
-
     if (old && current) {
       // en cas de resize, il faudrait recalculer la position des blocs, en gardant la valeur progress de l'interpolation
       const position = {
