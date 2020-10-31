@@ -1,17 +1,17 @@
-import { nanoid } from "nanoid";
+import { nanoid } from 'nanoid';
 
-import { createPerso, commit } from "./create-perso";
-import { getElementOffset } from "./helpers/get-element-offset";
-import { registerKeyEvents } from "./helpers/register-keyEvents";
-import { pipe } from "./helpers/utils";
+import { createPerso, commit } from './create-perso';
+import { getElementOffset } from './helpers/get-element-offset';
+import { registerKeyEvents } from './helpers/register-keyEvents';
+import { pipe } from './helpers/utils';
 
-import { doDimensions } from "./components/dimensions-component";
-import { transition } from "./components/transitions-component";
-import { doStyle } from "./components/style-component";
-import { doClasses } from "./components/classNames-component";
-import { content } from "./components/content-component";
+import { doDimensions } from './components/dimensions-component';
+import { transition } from './components/transitions-component';
+import { doStyle } from './components/style-component';
+import { doClasses } from './components/classNames-component';
+import { content } from './components/content-component';
 
-import { DEFAULT_NS, DEFAULT_TRANSITION_OUT } from "./helpers/constantes";
+import { DEFAULT_NS, DEFAULT_TRANSITION_OUT } from './helpers/constantes';
 
 const { css, ...dynStyle } = doStyle;
 // TODO attr
@@ -40,17 +40,17 @@ export class Eso {
 		this._revise = this._revise.bind(this);
 		this._pre = this._pre.bind(this);
 
+		this.prep = {
+			dimensions: doDimensions,
+			transition: transition.call(this, emitter),
+		};
+
 		this.revision = {
 			className: doClasses,
 			statStyle: dynStyle,
 			between: dynStyle,
-			dynStyle,
-			transition: transition.call(this, emitter),
 			content,
-		};
-
-		this.prep = {
-			dimensions: doDimensions,
+			dynStyle,
 		};
 
 		this.commit = commit.bind(this);
@@ -90,7 +90,7 @@ export class Eso {
 	_onLeave(props) {
 		//ajouter ce  oncomplete dans la prop oncomplete de la dernière transition
 		const oncomplete = {
-			event: { ns: DEFAULT_NS, name: "leave-" + props?.id },
+			event: { ns: DEFAULT_NS, name: 'leave-' + props?.id },
 			// pas de data si l'event est partagé par plusieurs elements
 			// data: { leave: true }
 		};
@@ -148,19 +148,19 @@ export class Eso {
 				case revision.includes(p):
 					break;
 				// si c'est un evenement
-				case p[0] === "o" && p[1] === "n":
+				case p[0] === 'o' && p[1] === 'n':
 					state.events.set(p, props[p]);
-					props.statStyle = { ...props.statStyle, pointerEvents: "all" };
+					props.statStyle = { ...props.statStyle, pointerEvents: 'all' };
 					break;
 				// si c'est un attribut
 				//FIXME evoluer vers data et aria
-				case p === "attr":
+				case p === 'attr':
 					for (const attr in props[p])
 						state.attributes.set(attr, props[p][attr]);
 					break;
 
-				case p === "id":
-					state.attributes.set("id", props[p]);
+				case p === 'id':
+					state.attributes.set('id', props[p]);
 					break;
 			}
 		}
@@ -183,22 +183,18 @@ export class Eso {
 	_addToHistory({ props, attributes, events }, chrono) {
 		props.forEach((diff, revise) => {
 			switch (revise) {
-				case "dynStyle":
-				case "statStyle":
-				case "dimensions":
+				case 'dynStyle':
+				case 'statStyle':
+				case 'dimensions':
 					this.history[revise] = { ...this.history[revise], ...diff };
 					break;
-				case "between":
-					this.history["dynStyle"] = { ...this.history["dynStyle"], ...diff };
+				case 'between':
+					this.history['dynStyle'] = { ...this.history['dynStyle'], ...diff };
 					break;
-				case "className":
-				case "content":
+				case 'className':
+				case 'content':
 					this.history[revise] = diff;
 					break;
-				case "transition":
-					// où et pour qui cette info sera utile ? pour timeline ?
-					break;
-
 				default:
 					break;
 			}
@@ -216,7 +212,6 @@ export class Eso {
 
 		// calculer styles : appliquer zoom sur unitless
 		// ajouter box offset sur left et top ; et sur translate ?
-		// transformer style statique  + dimensions + pointerevent en classe
 
 		const {
 			dynStyle,
