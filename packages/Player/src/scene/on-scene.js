@@ -50,18 +50,18 @@ simplifier leave :
 */
 
 export class OnScene {
-  constructor(slots) {
-    // if (!slots || typeof slots !== "object") return false;
-    if (!slots || !(slots instanceof Map)) return false;
-    this._slots = new Map(Array.from(slots.keys(), (id) => [id, []]));
-    this.areOnScene = new Map();
+	constructor(slots) {
+		// if (!slots || typeof slots !== "object") return false;
+		if (!slots || !(slots instanceof Map)) return false;
+		this._slots = new Map(Array.from(slots.keys(), (id) => [id, []]));
+		this.areOnScene = new Map();
 
-    this.update = this.update.bind(this);
-    this._addToScene = this._addToScene.bind(this);
-    this._moveToSlot = this._moveToSlot.bind(this);
-    this._leaveScene = this._leaveScene.bind(this);
-  }
-  /* 
+		this.update = this.update.bind(this);
+		this._addToScene = this._addToScene.bind(this);
+		this._moveToSlot = this._moveToSlot.bind(this);
+		this._leaveScene = this._leaveScene.bind(this);
+	}
+	/* 
   TODO un élément qui a quitté la scene ne peut revenir que par un autre "enter"
   ainsi, si un élément est supprimé, aucun autre évent ne peut le ramener s'il n'a pas de propriété "enter".
   - comment faire fonctionner ce procédé avec la timeline ?
@@ -69,93 +69,95 @@ export class OnScene {
   - quels sont les cas ou c'est utile ?
  */
 
-  update(up) {
-    let action = (update) => ({ changed: null, update });
-    if (!up.id) return this._getError("id", up);
-    if (this.areOnScene.has(up.id)) {
-      const isLeaving = up.leave;
-      const { move } = up;
-      const changeSlot = move && move.layer && move.slot;
+	update(up) {
+		let action = (update) => ({ changed: null, update });
+		if (!up.id) return this._getError('id', up);
+		if (this.areOnScene.has(up.id)) {
+			const isLeaving = up.leave;
+			const { move } = up;
+			const changeSlot = move /* && move.layer */ && move.slot;
+			// console.log('changeSlot', changeSlot, move);
+			changeSlot && (action = this._moveToSlot);
+			isLeaving && (action = this._leaveScene);
+		} else action = this._addToScene;
 
-      changeSlot && (action = this._moveToSlot);
-      isLeaving && (action = this._leaveScene);
-    } else action = this._addToScene;
+		return action(up);
+	}
 
-    return action(up);
-  }
+	_addToScene(up) {
+		if (!up.move) {
+			console.warn('_addToScene fail');
+			return;
+		}
+		const { move } = up;
+		const slotId = move.slot;
 
-  _addToScene(up) {
-    if (!up.move) {
-      console.warn("_addToScene fail");
-      return;
-    }
-    const { move } = up;
-    const slotId = move.slot;
+		if (!slotId || !this._slots.has(slotId)) return this._getError('slot', up);
 
-    if (!slotId || !this._slots.has(slotId)) return this._getError("slot", up);
+		// TODO trier selon l'ordre
+		const inslot = this._slots.get(slotId).concat(up.id);
+		this._slots.set(slotId, inslot);
+		this.areOnScene.set(up.id, slotId);
+		const changed = { add: [slotId, inslot] };
+		return {
+			changed,
+			update: { ...up, enter: true },
+		};
+	}
 
-    // TODO trier selon l'ordre
-    const inslot = this._slots.get(slotId).concat(up.id);
-    this._slots.set(slotId, inslot);
-    this.areOnScene.set(up.id, slotId);
-    const changed = { add: [slotId, inslot] };
-    return {
-      changed,
-      update: { ...up, enter: true },
-    };
-  }
+	_moveToSlot(up) {
+		console.log('OnScene _moveToSlot--- up', up);
 
-  _moveToSlot(up) {
-    if (!up.move) {
-      console.warn("_moveToSlot fail");
-      return;
-    }
-    const { move } = up;
+		if (!up.move) {
+			console.warn('_moveToSlot fail');
+			return;
+		}
+		const { move } = up;
 
-    const oldSlotId = this.areOnScene.get(up.id);
-    const slotId = move.slot;
+		const oldSlotId = this.areOnScene.get(up.id);
+		const slotId = move.slot;
 
-    const oldInslot = this._slots.get(oldSlotId).filter((s) => s !== up.id);
-    if (!this._slots.get(slotId)) return this._getError("move", up);
+		const oldInslot = this._slots.get(oldSlotId).filter((s) => s !== up.id);
+		if (!this._slots.get(slotId)) return this._getError('move', up);
 
-    const inslot = this._slots.get(slotId).concat(up.id);
-    this._slots.set(oldSlotId, oldInslot);
-    this._slots.set(slotId, inslot);
-    this.areOnScene.set(up.id, slotId);
+		const inslot = this._slots.get(slotId).concat(up.id);
+		this._slots.set(oldSlotId, oldInslot);
+		this._slots.set(slotId, inslot);
+		this.areOnScene.set(up.id, slotId);
 
-    const changed = {
-      remove: [oldSlotId, oldInslot],
-      add: [slotId, inslot],
-    };
-    return {
-      changed,
-      update: { ...up, reslot: true },
-    };
-  }
+		const changed = {
+			remove: [oldSlotId, oldInslot],
+			add: [slotId, inslot],
+		};
+		return {
+			changed,
+			update: { ...up, reslot: true },
+		};
+	}
 
-  _leaveScene(up) {
-    const { id } = up;
-    const slotId = this.areOnScene.get(id);
-    const inslot = this._slots.get(slotId).filter((s) => s !== id);
-    this._slots.set(slotId, inslot);
-    this.areOnScene.delete(id);
-    const changed = { remove: [slotId, inslot] };
-    return {
-      changed,
-      update: up,
-    };
-  }
+	_leaveScene(up) {
+		const { id } = up;
+		const slotId = this.areOnScene.get(id);
+		const inslot = this._slots.get(slotId).filter((s) => s !== id);
+		this._slots.set(slotId, inslot);
+		this.areOnScene.delete(id);
+		const changed = { remove: [slotId, inslot] };
+		return {
+			changed,
+			update: up,
+		};
+	}
 
-  _getError = (errorId, up) => ({
-    areOnScene: this.areOnScene,
-    slots: this._slots,
-    changed: errors[errorId],
-    update: up,
-  });
+	_getError = (errorId, up) => ({
+		areOnScene: this.areOnScene,
+		slots: this._slots,
+		changed: errors[errorId],
+		update: up,
+	});
 }
 
 const errors = {
-  move: "error move: not a valid slot",
-  slot: "error: not a valid slot",
-  id: "error: not a valid id",
+	move: 'error move: not a valid slot',
+	slot: 'error: not a valid slot',
+	id: 'error: not a valid id',
 };

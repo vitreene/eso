@@ -1,78 +1,79 @@
 #casual {
-  background-color: darkgreen;
-  display: grid;
-  grid-template-rows: 1fr 2fr 4fr 2fr;
+	background-color: darkgreen;
+	display: grid;
+	grid-template-rows: 1fr minmax(max-content, max-content) 4fr 2fr;
 }
 
 #presentoir {
-  background-color: green;
-  position: relative;
-  margin: auto;
+	background-color: green;
+	position: relative;
+	margin: auto;
 }
 #presentoir_s01 {
-  justify-content: center;
+	justify-content: center;
 }
 
 #sabot_s01 {
-  justify-content: center;
-  align-items: stretch;
+	justify-content: center;
+	align-items: stretch;
 }
 
 #sabot {
-  background-color: green;
-  position: relative;
+	background-color: green;
+	position: relative;
 }
 
 .card {
-  position: relative !important;
-  background-color: honeydew;
-  border: 4px solid #16c341;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 3rem;
-  text-transform: uppercase;
-  font-weight: bold;
-  color: darkorange;
-  border-radius: 1rem;
-  cursor: grab;
-  user-select: none;
+	position: relative !important;
+	background-color: honeydew;
+	border: 4px solid #16c341;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 3rem;
+	text-transform: uppercase;
+	font-weight: bold;
+	color: darkorange;
+	border-radius: 1rem;
+	cursor: grab;
+	user-select: none;
 }
 .casse {
-  background-color: darkolivegreen;
-  border: 4px solid honeydew;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 3rem;
-  text-transform: uppercase;
-  font-weight: bold;
-  color: whitesmoke;
-  transition: background-color 0.3s;
-  pointer-events: all;
-  user-select: none;
+	background-color: darkolivegreen;
+	border: 4px solid honeydew;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 3rem;
+	text-transform: uppercase;
+	font-weight: bold;
+	color: whitesmoke;
+	transition: background-color 0.3s;
+	pointer-events: all;
+	user-select: none;
 }
 
 /* .casse:hover {
   background-color: olive;
 } */
 #infos {
-  margin: 0 auto;
+	margin: 0 auto;
 }
 
 .h1 {
-  color: #ff3e00;
-  text-transform: uppercase;
-  font-size: 2em;
-  font-weight: 100;
+	color: #ff3e00;
+	text-transform: uppercase;
+	font-size: 2em;
+	font-weight: 100;
 }
 .casse-canhover {
-  background-color: darkred;
+	background-color: darkred;
+	transition: all 0.3s;
 }
 
 #presentoir_simple-slot {
-  justify-content: space-between;
+	justify-content: space-between;
 }
 #sabot_simple-slot {
-  justify-content: center;
+	justify-content: center;
 }

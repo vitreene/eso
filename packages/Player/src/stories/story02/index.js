@@ -1,14 +1,15 @@
 import './casual.css';
-import { prepCasuals, casuals, casualEventimes } from './casual-persos';
+import { modelCasuals, casuals, casualEventimes } from './casual-persos';
 import { generateCasual } from '../../scripts/casual-init';
 
-const { stories: cards, events: casualEvents } = generateCasual(prepCasuals);
+const { stories: cards, eventime: casualEvents } = generateCasual(modelCasuals);
 
+const events = [...casualEventimes.events, ...casualEvents];
 const eventimes = {
-  ...casualEventimes,
-  events: [...casualEventimes.events, ...casualEvents],
+	...casualEventimes,
+	events,
 };
-console.log('eventimes', eventimes);
+// console.log('eventimes', eventimes);
 
 const stories = {};
 for (const story of casuals.concat(cards)) stories[story.id] = story;
