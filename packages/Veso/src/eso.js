@@ -94,8 +94,16 @@ export class Eso {
 			// pas de data si l'event est partagé par plusieurs elements
 			// data: { leave: true }
 		};
-		const transition = props.transition || [{ to: DEFAULT_TRANSITION_OUT }];
+		const transition = props.transition?.length
+			? props.transition
+			: [{ to: DEFAULT_TRANSITION_OUT }];
 		const lastTransition = transition.pop();
+		console.log(
+			'lastTransition , transition.',
+			props,
+			lastTransition,
+			transition
+		);
 		lastTransition.oncomplete
 			? lastTransition.oncomplete.push(oncomplete)
 			: (lastTransition.oncomplete = [oncomplete]);

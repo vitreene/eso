@@ -1,11 +1,20 @@
-import { STRAP, CONTAINER_ESO } from '../../data/constantes';
+/* 
+TODO simplifier :
+- toutes les actions non listées dans listen sont ajoutées avec leur propre nom
+ex: { event: 'drop', action: 'drop' },
+- les events sans actions ont une action vide ex. { name: 'drop' }
+
+*/
+
+import { STRAP, CONTAINER_ESO, DEFAULT_NS } from '../../data/constantes';
 
 export const casualEventimes = {
 	name: 'start',
 	start: 0,
 	events: [
 		{ start: 100, name: 'go' },
-		{ start: 500, name: 'initCard' },
+		// { start: 500, name: 'initCard' },
+		{ start: 500, name: 'enter-play-game' },
 	],
 };
 
@@ -25,7 +34,6 @@ const casse = {
 		{ event: 'enter', action: 'mouseenter' },
 		{ event: 'leave', action: 'mouseleave' },
 		{ event: 'drop', action: 'drop' },
-		// { event: 'hover', action: 'hover' },
 		{ event: 'hover', action: 'mouseenter' },
 	],
 	actions: [
@@ -47,13 +55,43 @@ const casse = {
 			},
 		},
 		{ name: 'drop' },
-		{
-			name: 'hover',
-			dynStyle: { backgroundColor: '#ff0000' },
-		},
 	],
 };
 
+const playGame = {
+	id: 'play-game',
+	nature: 'button',
+	initial: {
+		className: 'button-play',
+		content: 'Jouer',
+	},
+	listen: [
+		{ event: 'enter-play-game', action: 'enter' },
+		{ event: 'initCard', action: 'exit' },
+		{ event: 'leave-play-game', action: 'leave' },
+	],
+	actions: [
+		{
+			name: 'enter',
+			move: { layer: 'plateau', slot: 'plateau_s01' },
+			transition: { to: 'fadeIn' },
+		},
+		{
+			name: 'exit',
+			transition: { to: 'fadeOutScaleOut' },
+			exit: true,
+		},
+		{
+			name: 'leave',
+			leave: true,
+		},
+	],
+	emit: {
+		click: {
+			event: { ns: DEFAULT_NS, name: 'initCard' },
+		},
+	},
+};
 const card = {
 	id: 'card',
 	nature: 'bloc',
@@ -166,7 +204,13 @@ const plateau = {
 	nature: 'layer',
 	initial: {
 		className: 'plateau',
-		content: [{ id: 's01' }],
+		content: [
+			{
+				id: 's01',
+				className: 'plateau-slot',
+				statStyle: { justifyContent: 'center', alignItems: 'center' },
+			},
+		],
 	},
 	listen: [{ event: 'go', action: 'enter' }],
 	actions: [
@@ -258,4 +302,12 @@ const empty = {
 };
 
 export const modelCasuals = [card, casse];
-export const casuals = [root, casual, sabot, plateau, presentoir, infos];
+export const casuals = [
+	root,
+	casual,
+	sabot,
+	plateau,
+	presentoir,
+	infos,
+	playGame,
+];

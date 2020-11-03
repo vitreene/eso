@@ -51,13 +51,18 @@ const targets = (id) => ({
 		},
 	}),
 });
-/* 
-			exemple 
-			letters: (7) ["a", ".", ".", ".", ".", ".", "e"]
-			remains: (5) ["o", "i", "m", "t", "r"]
-			word: "amortie"
-			*/
 
+/* 
+TODO utiliser init pour créer les elements et play pour demarrer le jeu
+- comment effacer les persos créés en fin de jeu
+- timer 
+- animation de debut, win et lost
+- bouton jouer
+- bouton rejouer
+- design du jeu
+- choix de difficulté
+
+*/
 export default function GameStrap(emitter) {
 	return class Game {
 		state = {};
@@ -87,9 +92,6 @@ export default function GameStrap(emitter) {
 			this.state.targets = targets(data.id);
 			this._createTargets(data);
 
-			/* 
-doit envoyer à drag : ({ id, source, targets, cb, ...data })
-*/
 			emitter.emit([STRAP, 'drag'], {
 				...data,
 				event: eventType + data.id,

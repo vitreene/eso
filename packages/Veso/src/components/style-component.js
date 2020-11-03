@@ -19,7 +19,7 @@ Prerender
 
 import { css } from 'goober';
 
-import { whiteListCssProps, positionCssProps } from '../helpers/constantes';
+import { whiteListCssProps } from '../helpers/constantes';
 import { pipe } from '../helpers/utils';
 import { mapRelatives } from '../helpers/map-relatives';
 import { extractTransform, withTransform } from '../helpers/transform';

@@ -7,23 +7,7 @@ charge et lance le jeu
 */
 
 /* 
-placement gagnant, 2 possibilités :
-1. transfert des contenus
-2. transfert du perso carte. dans ce cas, le conteneur doit etre un slot
-un slot peut-il contenir un simple textNode ou faut-il un perso ?
-*/
-
-/* 
-dans un mot, des lettres peuvent etre répétées ; autoriser autant de cibles que de lettres identiques.
-Si un slot est déja occupé :
-- il n'est plus disponible comme cible.
-- ou il renvoie son contenu a son emplacement d'origine ou bien swappe
-
-*/
-
-/* 
 TODO ajouter un event qui initialise le jeu, avec les id des cartes, case et mot à deviner
-
 */
 
 import { Slot } from '../composants/slot';
