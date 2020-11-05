@@ -1,4 +1,4 @@
-import { DEFAULT_NS, STRAP } from '../../../Veso/src/helpers/constantes';
+import { DEFAULT_NS, STRAP } from '../data/constantes';
 
 // comportements evalués au drop
 // _win est remplacé par la cible voulue,
@@ -69,6 +69,7 @@ export default function GameStrap(emitter) {
 		constructor(data) {
 			console.log('GAME data', data);
 
+			this.lost = this.lost.bind(this);
 			this.turnDrag = this.turnDrag.bind(this);
 			this.turnDrop = this.turnDrop.bind(this);
 
@@ -106,6 +107,7 @@ export default function GameStrap(emitter) {
 		}
 		win() {
 			console.log('VICTOIRE', this.state.word.join(''));
+			emitter.emit([STRAP, 'minuteur-stop']);
 			emitter.emit([DEFAULT_NS, 'win']);
 			this._off();
 		}
@@ -118,10 +120,12 @@ export default function GameStrap(emitter) {
 		_on() {
 			emitter.on([STRAP, 'game-turnDrag'], this.turnDrag);
 			emitter.on([STRAP, 'game-turnDrop'], this.turnDrop);
+			emitter.on([STRAP, 'game-lost'], this.lost);
 		}
 		_off() {
 			emitter.off([STRAP, 'game-turnDrag'], this.turnDrag);
 			emitter.off([STRAP, 'game-turnDrop'], this.turnDrop);
+			emitter.off([STRAP, 'game-lost'], this.lost);
 		}
 
 		_createTargets({ letter }) {

@@ -58,6 +58,26 @@ const casse = {
 	],
 };
 
+const timer = {
+	id: 'timer',
+	nature: 'bloc',
+	initial: {
+		className: 'timer',
+		content: 'Go-go',
+	},
+	listen: [
+		{ event: 'enter-play-game', action: 'enter' },
+		{ event: 'update-counter', action: 'update' },
+	],
+	actions: [
+		{
+			name: 'enter',
+			move: { layer: 'casual', slot: 'casual_s01' },
+			transition: { to: 'fadeIn' },
+		},
+		{ name: 'update' },
+	],
+};
 const playGame = {
 	id: 'play-game',
 	nature: 'button',
@@ -87,9 +107,10 @@ const playGame = {
 		},
 	],
 	emit: {
-		click: {
-			event: { ns: DEFAULT_NS, name: 'initCard' },
-		},
+		click: [
+			{ event: { ns: DEFAULT_NS, name: 'initCard' } },
+			{ event: { ns: STRAP, name: 'minuteur' } },
+		],
 	},
 };
 const card = {
@@ -310,4 +331,5 @@ export const casuals = [
 	presentoir,
 	infos,
 	playGame,
+	timer,
 ];

@@ -94,3 +94,7 @@
 .button-play:active {
 	background-color: red;
 }
+.timer {
+	font-size: 3rem;
+	color: white;
+}

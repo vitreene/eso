@@ -3,7 +3,7 @@ import { nanoid } from 'nanoid';
 import { createPerso, commit } from './create-perso';
 import { getElementOffset } from './helpers/get-element-offset';
 import { registerKeyEvents } from './helpers/register-keyEvents';
-import { pipe } from './helpers/utils';
+import { pipe, isVoid } from './helpers/utils';
 
 import { doDimensions } from './components/dimensions-component';
 import { transition } from './components/transitions-component';
@@ -174,7 +174,7 @@ export class Eso {
 		}
 
 		for (const revise in this.revision) {
-			if (props[revise]) {
+			if (!isVoid(props[revise])) {
 				const diff = this.revision[revise].update(
 					props[revise],
 					this.history[revise]

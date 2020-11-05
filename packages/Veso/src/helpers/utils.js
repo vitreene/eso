@@ -32,6 +32,7 @@ export function debounce(func, wait, immediate) {
 	};
 }
 
+// est lu vrai la première fois, faux ensuite
 export class TrueOnce {
 	value = false;
 	set on(v = true) {
@@ -45,7 +46,7 @@ export class TrueOnce {
 }
 
 export class GetSet {
-	constructor(label, value = "") {
+	constructor(label, value = '') {
 		this.label = label;
 		let val = value;
 		this[label] = {
@@ -72,9 +73,11 @@ export function hasProperties(properties, style) {
 	return flag;
 }
 
+// raccourci pour hasOwnProperty
 export const hasOwn = (obj, key) =>
 	Object.prototype.hasOwnProperty.call(obj, key);
 
+// transforme un tableau en objet
 export function arrayToObject(arr) {
 	const obj = {};
 	try {
@@ -85,12 +88,13 @@ export function arrayToObject(arr) {
 	return obj;
 }
 
+// creer des noms composés
 export function joinId(...args) {
-	return args.filter((a) => a !== "").join("_");
+	return args.filter((a) => a !== '').join('_');
 }
 
 export function isPlainObject(obj) {
-	return Object.prototype.toString.call(obj) === "[object Object]";
+	return Object.prototype.toString.call(obj) === '[object Object]';
 }
 
 // ne teste pas la validité de obj
@@ -101,6 +105,7 @@ export function objToFixed(obj) {
 	return r;
 }
 
+// nombres arrondis
 export function round(precision) {
 	return function (value) {
 		return Number(value.toFixed(precision));
@@ -108,35 +113,44 @@ export function round(precision) {
 }
 export const toFixed2 = round(2);
 
+// stocke une queue de fonctions
 export const deferOnMount = {
 	dequeue() {
 		let exe;
 		do {
 			exe = this.exe;
-			typeof exe === "function" && exe();
-		} while (exe !== "empty");
+			typeof exe === 'function' && exe();
+		} while (exe !== 'empty');
 	},
 	values: [],
 	set exe(fn) {
 		this.values.push(fn);
 	},
 	get exe() {
-		return this.values.length > 0 ? this.values.shift() : "empty";
+		return this.values.length > 0 ? this.values.shift() : 'empty';
 	},
 };
 
+// separe valeur et unités
 const separate = /\s*(\d+)\s*(\D*)/;
 export function splitUnitValue(val) {
 	if (val === undefined) return null;
-	if (typeof val === "number") return { value: val, unit: null };
+	if (typeof val === 'number') return { value: val, unit: null };
 	const match = val.match(separate);
 	return {
 		value: match[1],
 		unit: match[2],
 	};
 }
+
+// pipe et compose
 const execute = (v, f) => {
-	return typeof f === "function" ? f(v) : v;
+	return typeof f === 'function' ? f(v) : v;
 };
 export const compose = (...fns) => (x) => fns.reduceRight(execute, x);
 export const pipe = (...fns) => (x) => fns.reduce(execute, x);
+
+// true si null, undefined, ou ""
+export function isVoid(x) {
+	return !x && x !== 0;
+}

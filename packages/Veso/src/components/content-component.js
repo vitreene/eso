@@ -1,6 +1,8 @@
 export const content = {
-  update(content) {
-    return content;
-  },
-  prerender() {}
+	update(content) {
+		console.log('content', content);
+		return content;
+		// return isNaN(content) ? content : content.toString();
+	},
+	prerender() {},
 };

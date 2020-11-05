@@ -5,6 +5,7 @@ import Drag from '../straps/drag-strap';
 import toggle from '../straps/toggle';
 
 import GameStrap from '../straps/game-logic-strap';
+import { MinuteurStrap } from '../straps/minuteur';
 
 /* 
 Par composition, ajouter aux straps :
@@ -29,5 +30,10 @@ export function registerStraps(chrono, timeLiner, emitter) {
 	emitter.on([STRAP, TOGGLE], (data) => toggleStrap(data));
 
 	const Game = GameStrap(emitter);
-	emitter.on([STRAP, 'game'], (data) => new Game(data));
+	emitter.on([STRAP, Game.name.toLowerCase()], (data) => new Game(data));
+	const Minuteur = MinuteurStrap(chrono, emitter);
+	emitter.on(
+		[STRAP, Minuteur.name.toLowerCase()],
+		(data) => new Minuteur(data)
+	);
 }
