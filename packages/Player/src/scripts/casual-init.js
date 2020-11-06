@@ -1,33 +1,17 @@
 /* 
-charge et lance le jeu
-- choisit un mot du vocabulaire,
-- crée les cartes et les casses,
--  init la state machine
-
-*/
-
-/* 
 TODO ajouter un event qui initialise le jeu, avec les id des cartes, case et mot à deviner
 */
 
 import { Slot } from '../composants/slot';
-
-import { DEFAULT_NS, STRAP } from '../data/constantes';
 import { vocabulary } from '../stories/story02/casual-vocabulary';
+import { STRAP } from '../data/constantes';
 
-export function generateCasual(models) {
-	const cardModel = models.find((d) => d.id === 'card');
-	const casseModel = models.find((d) => d.id === 'casse');
-
-	console.log('cardModel', models, cardModel);
-
+export function generateCasual({ cardModel, casseModel }) {
 	const stories = [];
 	const { word, letters, remains } = randomWord();
-	const cards = generateCards(cardModel, remains);
-
-	const casses = generateCasses(casseModel, letters);
-
-	const eventime = [
+	const cards = remains.map(cardModel);
+	const casses = letters.map(casseModel(Slot));
+	const eventimes = [
 		{
 			start: 600,
 			ns: STRAP,
@@ -36,8 +20,7 @@ export function generateCasual(models) {
 		},
 	];
 	stories.push(...cards, ...casses);
-
-	return { stories, eventime };
+	return { stories, eventimes };
 }
 
 function randomWord() {
@@ -51,101 +34,6 @@ function randomWord() {
 		.sort(() => 0.5 - Math.random())
 		.sort(() => 0.5 - Math.random());
 	return { word, letters, remains };
-}
-
-function generateCasses(cardModel, letters) {
-	const casses = letters.map((letter, index) => {
-		const id = cardModel.id + '_' + index + '_' + letter;
-		const uuid = 'slot_' + id;
-		const slot = new Slot({ uuid });
-		slot(letter);
-		const [drop, hover, leave] = ['drop', 'hover', 'leave'].map((ev) =>
-			cardModel.listen.findIndex((action) => action.event === ev)
-		);
-
-		const listen = cardModel.listen.map((l, i) => {
-			switch (i) {
-				case drop:
-					return { ...l, event: 'drop_' + id };
-				case hover:
-					return { ...l, event: 'hover_' + id };
-				case leave:
-					return { ...l, event: 'leave_' + id };
-				default:
-					return l;
-			}
-		});
-
-		return {
-			...cardModel,
-			id,
-			initial: {
-				...cardModel.initial,
-				content: slot,
-			},
-			listen,
-		};
-	});
-	console.log('casses', casses);
-	return casses;
-}
-
-function generateCards(cardModel, letters) {
-	const cards = letters.map((letter, index) => {
-		// const index = i + 1;
-		const id = cardModel.id + '_' + index + '_' + letter;
-
-		const event = cardModel.emit.pointerdown.data.event + '_' + id;
-		const pointerdown = {
-			...cardModel.emit.pointerdown,
-			data: {
-				...cardModel.emit.pointerdown.data,
-				id,
-				event,
-				letter,
-				index,
-			},
-		};
-
-		// index des events
-		const [moveCard, dropCard, winCard, idle] = [
-			'moveCard',
-			'dropCard',
-			'winCard',
-			'idle',
-		].map((ev) => cardModel.listen.findIndex((action) => action.event === ev));
-
-		const listen = cardModel.listen.map((l, i) => {
-			switch (i) {
-				case moveCard:
-					return { ...l, event: 'moveCard_' + id };
-				case dropCard:
-					return { ...l, event: 'dropCard_' + id };
-				case winCard:
-					return { ...l, event: 'winCard_' + id };
-				case idle:
-					return { ...l, event: 'idle_' + id };
-				default:
-					return l;
-			}
-		});
-
-		return {
-			...cardModel,
-			id,
-			initial: {
-				...cardModel.initial,
-				content: letter,
-			},
-			listen,
-			emit: {
-				...cardModel.emit,
-				pointerdown,
-			},
-		};
-	});
-
-	return cards;
 }
 
 // ajouter un event à la dernière carte

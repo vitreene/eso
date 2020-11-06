@@ -6,7 +6,7 @@ import { TC, PLAY, PAUSE, REWIND } from '../data/constantes';
 export function clock(timeLiner, emitter) {
 	const beat = 10; // tout les 1/100e de seconde
 	const startTime = Date.now();
-	const maxCount = 20000 + 1;
+	const maxCount = 100000 + 1;
 
 	let tick = beat;
 	let count = 0;

@@ -1,17 +1,23 @@
 import './casual.css';
-import { modelCasuals, casuals, casualEventimes } from './casual-persos';
+
+import { persos } from './persos';
+import { layers } from './layers';
+import { models } from './models';
+import { casualEventimes } from './eventimes';
+
 import { generateCasual } from '../../scripts/casual-init';
 
-const { stories: cards, eventime: casualEvents } = generateCasual(modelCasuals);
+const casual = generateCasual(models);
 
-const events = [...casualEventimes.events, ...casualEvents];
 const eventimes = {
 	...casualEventimes,
-	events,
+	events: [...casualEventimes.events, ...casual.eventimes],
 };
-// console.log('eventimes', eventimes);
 
 const stories = {};
-for (const story of casuals.concat(cards)) stories[story.id] = story;
+for (const story of layers.concat(persos, casual.stories)) {
+	console.log('story', story);
+	stories[story.id] = story;
+}
 
 export { stories, eventimes };

@@ -15,11 +15,11 @@ export function sceneUpdateHandler(onScene, persos, slots) {
 	};
 
 	// ============================================================
-	function updateScene({ changed, update }) {
+	function updateScene({ changed, update, ...others }) {
 		// console.log('update', update);
 		if (!update || Object.keys(update).length === 0) return;
 		if (typeof changed === 'string') {
-			console.error(changed, update);
+			console.error(changed, update, others);
 			return;
 		}
 		const rescale = update.move?.rescale;

@@ -4,8 +4,9 @@ export function MinuteurStrap(chrono, emitter) {
 	return class Minuteur {
 		constructor(data) {
 			this.count = this.count.bind(this);
+			this.stop = this.stop.bind(this);
 			this.duration = data.duration || 15e3;
-			console.log('Minuteur', this.start, this.duration);
+			// console.log('Minuteur', this.start, this.duration);
 			emitter.on('secondes', this.count);
 			emitter.on([STRAP, 'minuteur-stop'], this.stop);
 		}
@@ -13,7 +14,7 @@ export function MinuteurStrap(chrono, emitter) {
 		count(secondes) {
 			if (!this.start) this.start = secondes * 1000;
 			const elapsed = this.duration + (this.start - secondes * 1000);
-			console.log('Minuteur count', elapsed / 1000);
+			// console.log('Minuteur count', elapsed / 1000);
 			// FIXME valeur 0 pour content doit s'afficher
 			emitter.emit([DEFAULT_NS, 'update-counter'], {
 				content: elapsed / 1000,

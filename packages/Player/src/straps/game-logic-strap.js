@@ -1,15 +1,16 @@
+import { joinId } from '../shared/utils';
 import { DEFAULT_NS, STRAP } from '../data/constantes';
 
 // comportements evalués au drop
 // _win est remplacé par la cible voulue,
 // default si la cible n'est pas atteinte
-
+const target = 'presentoir';
 const targets = (id) => ({
 	_start: () => ({
 		event: [DEFAULT_NS, 'moveCard_' + id],
 	}),
 	_win: ({ target, index }) => () => {
-		const slot = 'slot_' + target;
+		const slot = joinId('presentoir', target);
 		return [
 			{
 				event: [DEFAULT_NS, 'winCard_' + id],
@@ -68,7 +69,9 @@ export default function GameStrap(emitter) {
 		state = {};
 		constructor(data) {
 			console.log('GAME data', data);
-
+			// this.win = this.win.bind(this);
+			// this._on = this._on.bind(this);
+			// this._off = this._off.bind(this);
 			this.lost = this.lost.bind(this);
 			this.turnDrag = this.turnDrag.bind(this);
 			this.turnDrop = this.turnDrop.bind(this);
@@ -76,7 +79,6 @@ export default function GameStrap(emitter) {
 			this.state.hit = data.letters.map((l) => l !== '.');
 			this.state.word = data.word.split('');
 			this.state.allTargets = data.casses.map((c) => c.id);
-
 			this._on();
 		}
 
@@ -84,7 +86,8 @@ export default function GameStrap(emitter) {
 		play() {}
 
 		turnDrag(data) {
-			console.log('turnDrag data', data);
+			// emitter.emit([DEFAULT_NS, 'card-auto-move_' + data.id]);
+			// console.log('turnDrag data', data);
 			// data.letter = e
 			// data.index = 2
 			// data.id = card_2_e
@@ -107,13 +110,16 @@ export default function GameStrap(emitter) {
 		}
 		win() {
 			console.log('VICTOIRE', this.state.word.join(''));
+
 			emitter.emit([STRAP, 'minuteur-stop']);
 			emitter.emit([DEFAULT_NS, 'win']);
+
 			this._off();
 		}
 
 		lost() {
 			emitter.emit([DEFAULT_NS, 'lost']);
+			// TODO animer la réponse : les  lettres rejoignent leur case
 			this._off();
 		}
 
@@ -144,6 +150,12 @@ export default function GameStrap(emitter) {
 					index,
 				});
 			}
+		}
+		// rassemble les dernières lettres pour donner la solution
+		endPlay() {
+			/* 
+			
+			*/
 		}
 	};
 }
