@@ -5,7 +5,7 @@ import { layers } from './layers';
 import { models } from './models';
 import { casualEventimes } from './eventimes';
 
-import { generateCasual } from '../../scripts/casual-init';
+import { generateCasual } from './casual-init';
 
 const casual = generateCasual(models);
 
@@ -16,7 +16,7 @@ const eventimes = {
 
 const stories = {};
 for (const story of layers.concat(persos, casual.stories)) {
-	console.log('story', story);
+	// console.log('story', story);
 	stories[story.id] = story;
 }
 

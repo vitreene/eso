@@ -4,55 +4,6 @@ import { DEFAULT_NS, STRAP } from '../data/constantes';
 // comportements evalués au drop
 // _win est remplacé par la cible voulue,
 // default si la cible n'est pas atteinte
-const target = 'presentoir';
-const targets = (id) => ({
-	_start: () => ({
-		event: [DEFAULT_NS, 'moveCard_' + id],
-	}),
-	_win: ({ target, index }) => () => {
-		const slot = joinId('presentoir', target);
-		return [
-			{
-				event: [DEFAULT_NS, 'winCard_' + id],
-				data: {
-					move: { layer: '', slot },
-					dynStyle: {
-						color: 'yellow',
-					},
-					transition: {
-						to: { left: 0, top: 0, scale: 1 },
-					},
-				},
-			},
-
-			{
-				event: [STRAP, 'game-turnDrop'],
-				data: { index },
-			},
-		];
-	},
-	main: () => ({
-		event: [DEFAULT_NS, 'idle_' + id],
-		data: {
-			transition: {
-				to: { scale: 1 },
-			},
-		},
-	}),
-	default: (d) => ({
-		event: [DEFAULT_NS, 'dropCard_' + id],
-		data: {
-			transition: {
-				to: {
-					left: d.initialElPosition.x,
-					top: d.initialElPosition.y,
-					backgroundColor: 'red',
-				},
-			},
-		},
-	}),
-});
-
 /* 
 TODO utiliser init pour créer les elements et play pour demarrer le jeu
 - comment effacer les persos créés en fin de jeu
@@ -64,9 +15,17 @@ TODO utiliser init pour créer les elements et play pour demarrer le jeu
 - choix de difficulté
 
 */
+
+const target = 'casse';
+const point = '.';
+
 export default function GameStrap(emitter) {
 	return class Game {
-		state = {};
+		hit;
+		word;
+		targets;
+		allTargets;
+
 		constructor(data) {
 			console.log('GAME data', data);
 			// this.win = this.win.bind(this);
@@ -76,9 +35,9 @@ export default function GameStrap(emitter) {
 			this.turnDrag = this.turnDrag.bind(this);
 			this.turnDrop = this.turnDrop.bind(this);
 
-			this.state.hit = data.letters.map((l) => l !== '.');
-			this.state.word = data.word.split('');
-			this.state.allTargets = data.casses.map((c) => c.id);
+			this.hit = data.letters.map((l) => l !== '.');
+			this.word = data.word.split('');
+			this.allTargets = data.casses.map((c) => c.id);
 			this._on();
 		}
 
@@ -92,28 +51,31 @@ export default function GameStrap(emitter) {
 			// data.index = 2
 			// data.id = card_2_e
 
-			const eventType = 'moveCard_';
-			this.state.targets = targets(data.id);
+			//TODO cancel drag
+			// emitter.emit([STRAP, 'move-cancel']);
+
+			const event = joinId('moveCard', data.id);
+			// this.targets = targets(data.id);
+			this.targets = data.targetActions;
 			this._createTargets(data);
 
 			emitter.emit([STRAP, 'drag'], {
 				...data,
-				event: eventType + data.id,
-				targets: this.state.targets,
-				allTargets: this.state.allTargets,
+				event,
+				targets: this.targets,
+				allTargets: this.allTargets,
 			});
 		}
 		turnDrop({ index }) {
-			this.state.hit[index] = true;
-			const hasWon = this.state.hit.reduce((a, c) => a && c, true);
+			this.hit[index] = true;
+			const hasWon = this.hit.reduce((a, c) => a && c, true);
 			hasWon && this.win();
 		}
 		win() {
-			console.log('VICTOIRE', this.state.word.join(''));
+			console.log('VICTOIRE', this.word.join(''));
 
 			emitter.emit([STRAP, 'minuteur-stop']);
 			emitter.emit([DEFAULT_NS, 'win']);
-
 			this._off();
 		}
 
@@ -135,17 +97,15 @@ export default function GameStrap(emitter) {
 		}
 
 		_createTargets({ letter }) {
-			const radix = 'casse_';
-			const point = '.';
 			const indexes = [];
-			this.state.word.forEach(
-				(l, i) => l === letter && !this.state.hit[i] && indexes.push(i)
+			this.word.forEach(
+				(l, i) => l === letter && !this.hit[i] && indexes.push(i)
 			);
 
 			for (const index of indexes) {
-				const target = radix + index + '_' + point;
-				this.state.targets[target] = this.state.targets._win({
-					target,
+				const targetLetter = joinId(target, index, point);
+				this.targets[targetLetter] = this.targets._win({
+					targetLetter,
 					letter,
 					index,
 				});

@@ -1,61 +1,68 @@
+import { Slot } from '../../composants/slot';
+
 import { joinId } from '../../shared/utils';
 import { STRAP, DEFAULT_NS } from '../../data/constantes';
 
 /// ============================================================
 // Modèles
 /// ============================================================
-const target = 'presentoir';
-const targetsDragConfig = (id) => ({
-	_start: () => ({
-		event: [DEFAULT_NS, 'moveCard_' + id],
-	}),
-	_win: ({ target, index }) => () => {
-		const slot = joinId('presentoir', target);
-		return [
-			{
-				event: [DEFAULT_NS, 'winCard_' + id],
-				data: {
-					move: { layer: '', slot },
-					dynStyle: {
-						color: 'yellow',
+
+const targetsDragConfigActions = (id) => {
+	const layer = 'presentoir';
+	return {
+		_start: () => ({
+			event: [DEFAULT_NS, joinId('moveCard', id)],
+		}),
+		_win: ({ targetLetter, index }) => () => {
+			const slot = joinId(layer, targetLetter);
+			return [
+				{
+					event: [DEFAULT_NS, joinId('winCard', id)],
+					data: {
+						move: { layer: '', slot },
+						dynStyle: {
+							color: 'yellow',
+						},
+						transition: {
+							to: { left: 0, top: 0, scale: 1 },
+						},
 					},
-					transition: {
-						to: { left: 0, top: 0, scale: 1 },
+				},
+
+				{
+					event: [STRAP, 'game-turnDrop'],
+					data: { index },
+				},
+			];
+		},
+		main: () => ({
+			event: [DEFAULT_NS, joinId('idle', id)],
+			data: {
+				transition: {
+					to: { scale: 1 },
+				},
+			},
+		}),
+		default: (d) => ({
+			event: [DEFAULT_NS, joinId('dropCard', id)],
+			data: {
+				transition: {
+					to: {
+						left: d.initialElPosition.x,
+						top: d.initialElPosition.y,
+						backgroundColor: 'red',
 					},
 				},
 			},
+		}),
+	};
+};
 
-			{
-				event: [STRAP, 'game-turnDrop'],
-				data: { index },
-			},
-		];
-	},
-	main: () => ({
-		event: [DEFAULT_NS, 'idle_' + id],
-		data: {
-			transition: {
-				to: { scale: 1 },
-			},
-		},
-	}),
-	default: (d) => ({
-		event: [DEFAULT_NS, 'dropCard_' + id],
-		data: {
-			transition: {
-				to: {
-					left: d.initialElPosition.x,
-					top: d.initialElPosition.y,
-					backgroundColor: 'red',
-				},
-			},
-		},
-	}),
-});
-
-const casseModel = (Slot) => (letter, index) => {
-	const id = joinId('casse', index, letter);
-	const uuid = joinId(target, id);
+const casseModel = (letter, index) => {
+	const layer = 'presentoir';
+	const target = 'casse';
+	const id = joinId(target, index, letter);
+	const uuid = joinId(layer, id);
 	const slot = new Slot({ uuid });
 	slot(letter);
 
@@ -80,7 +87,7 @@ const casseModel = (Slot) => (letter, index) => {
 		actions: [
 			{
 				name: 'enter',
-				move: { layer: target, slot: joinId(target, 's01') },
+				move: { layer, slot: joinId(layer, 's01') },
 				transition: { to: 'fadeIn', duration: 1000 },
 			},
 			{
@@ -101,6 +108,9 @@ const casseModel = (Slot) => (letter, index) => {
 };
 
 const cardModel = (letter, i) => {
+	const target = 'casse';
+	const point = '.';
+	const layer = 'sabot';
 	const index = i + 1;
 	const id = joinId('card', index, letter);
 	return {
@@ -140,7 +150,7 @@ const cardModel = (letter, i) => {
 
 			{
 				name: 'enter',
-				move: { layer: 'sabot', slot: 'sabot_s01' },
+				move: { layer, slot: joinId(layer, 's01') },
 				transition: { to: 'fadeIn' },
 			},
 			{
@@ -155,17 +165,23 @@ const cardModel = (letter, i) => {
 				dynStyle: {
 					backgroundColor: 'cyan',
 				},
-				move: { layer: '', slot: joinId('presentoir_casse', index, '.') },
+				move: { layer: '', slot: joinId(target, index, point) },
 			},
 		],
 
 		emit: {
 			pointerdown: {
-				event: { ns: STRAP, name: 'game-turnDrag', targetsDragConfig },
-				data: { id, event: joinId('moveCard', id), letter, index },
+				event: { ns: STRAP, name: 'game-turnDrag' },
+				data: {
+					id,
+					event: joinId('moveCard', id),
+					targetActions: targetsDragConfigActions(id),
+					letter,
+					index,
+				},
 			},
 		},
 	};
 };
 
-export const models = { /* targetsDragConfig, */ casseModel, cardModel };
+export const models = { casseModel, cardModel };

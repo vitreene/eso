@@ -1,6 +1,9 @@
 import { DEFAULT_NS, STRAP } from '../data/constantes';
+import { joinId } from '../shared/utils';
 
-const defaultCallback = () => console.log('callback');
+const defaultCallback = (data) => console.log('DRAG', data);
+// passer des noms d'events a emettre
+const reactions = { hover: 'drag-guard-hover' };
 
 export default function dragStrap(emitter) {
 	return class Drag {
@@ -22,16 +25,16 @@ export default function dragStrap(emitter) {
 			const actions = this.targetsActions._start(d);
 			toArray(actions).forEach(({ event, data }) => emitter.emit(event, data));
 
-			emitter.emit([STRAP, 'move'], d);
-			emitter.once([STRAP, 'end_' + d.event], this.endDrag);
-			emitter.on([STRAP, 'drag_guard_hover'], this._guard_hover);
+			emitter.emit([STRAP, 'move'], { ...d, reactions });
+			emitter.once([STRAP, joinId('end', d.event)], this.endDrag);
+			emitter.on([STRAP, 'drag-guard-hover'], this._guardHover);
 		}
 
 		endDrag = (d) => {
 			// console.log('END DRAG', d);
 			// console.log('d.target', d.target);
 
-			emitter.off([STRAP, 'drag_guard_hover'], this._guard_hover);
+			emitter.off([STRAP, 'drag-guard-hover'], this._guardHover);
 
 			const hit = this.targets.includes(d.target);
 			const actions = hit
@@ -39,10 +42,10 @@ export default function dragStrap(emitter) {
 				: this.targetsActions.default(d);
 			toArray(actions).forEach(({ event, data }) => emitter.emit(event, data));
 
-			this.cb();
+			this.cb(d);
 		};
 
-		_guard_hover = ({ leave, hover }) => {
+		_guardHover = ({ leave, hover }) => {
 			// console.log('this.allTargets', this.allTargets);
 			// console.log('{ leave, hover }', { leave, hover });
 			this.allTargets.includes(leave) &&

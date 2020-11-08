@@ -2,15 +2,14 @@
 TODO ajouter un event qui initialise le jeu, avec les id des cartes, case et mot à deviner
 */
 
-import { Slot } from '../composants/slot';
-import { vocabulary } from '../stories/story02/casual-vocabulary';
-import { STRAP } from '../data/constantes';
+import { vocabulary } from './casual-vocabulary';
+import { STRAP } from '../../data/constantes';
 
 export function generateCasual({ cardModel, casseModel }) {
 	const stories = [];
 	const { word, letters, remains } = randomWord();
 	const cards = remains.map(cardModel);
-	const casses = letters.map(casseModel(Slot));
+	const casses = letters.map(casseModel);
 	const eventimes = [
 		{
 			start: 600,
@@ -30,6 +29,7 @@ function randomWord() {
 	const remains = word
 		.split('')
 		.slice(1, word.length - 1)
+		// bien bien bien mélanger
 		.sort(() => 0.5 - Math.random())
 		.sort(() => 0.5 - Math.random())
 		.sort(() => 0.5 - Math.random());
