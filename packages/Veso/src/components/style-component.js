@@ -19,11 +19,11 @@ Prerender
 
 import { css } from 'goober';
 
-import { whiteListCssProps } from '../helpers/constantes';
-import { pipe } from '../helpers/utils';
-import { mapRelatives } from '../helpers/map-relatives';
-import { extractTransform, withTransform } from '../helpers/transform';
-import { keyToLowercase, stringToLowercase } from '../helpers/js-to-css';
+import { whiteListCssProps } from '../shared/constantes';
+import { pipe } from '../shared/utils';
+import { mapRelatives } from '../shared/map-relatives';
+import { extractTransform, withTransform } from '../shared/transform';
+import { keyToLowercase, stringToLowercase } from '../shared/js-to-css';
 const whiteListCss = new Set(Array.from(whiteListCssProps, stringToLowercase));
 
 export const doStyle = {

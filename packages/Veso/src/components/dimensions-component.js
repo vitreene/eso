@@ -1,4 +1,4 @@
-import { splitUnitValue } from "../helpers/utils";
+import { splitUnitValue } from '../shared/utils';
 
 // TODO transformer les % en px
 // si % lire les dimensions du node
@@ -18,21 +18,21 @@ export const doDimensions = {
 
 		// traiter toutes les combinaisons
 		if (hasNoWidth && hasNoHeight && hasNoRatio)
-			return { width: "100%", height: "100%" };
+			return { width: '100%', height: '100%' };
 
 		// width ou height, et ratio : la valeur manquante est calc( v * ou / ratio)
 		if (hasNoWidth && hasNoHeight)
 			return dimensions.ratio > 1
 				? {
-						width: "100%",
-						height: dimensions.ratio * 100 + "%",
+						width: '100%',
+						height: dimensions.ratio * 100 + '%',
 				  }
 				: {
-						width: (1 / dimensions.ratio) * 100 + "%",
-						height: "100%",
+						width: (1 / dimensions.ratio) * 100 + '%',
+						height: '100%',
 				  };
-		let width = "";
-		let height = "";
+		let width = '';
+		let height = '';
 
 		const hasUnits = {
 			w: regW && regW.unit,
@@ -54,8 +54,8 @@ export const doDimensions = {
 			: Math.round(parseInt(regH.value) * 100) / 100 + suffix.h;
 
 		// si w ou h, sans ratio
-		if (hasNoWidth && hasNoRatio) width = "100%";
-		if (hasNoHeight && hasNoRatio) height = "100%";
+		if (hasNoWidth && hasNoRatio) width = '100%';
+		if (hasNoHeight && hasNoRatio) height = '100%';
 
 		// console.log("dimensions", dimensions, { width, height });
 		return { statStyle: { width, height } };

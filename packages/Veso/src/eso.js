@@ -1,9 +1,9 @@
 import { nanoid } from 'nanoid';
 
 import { createPerso, commit } from './create-perso';
-import { getElementOffset } from './helpers/get-element-offset';
-import { registerKeyEvents } from './helpers/register-keyEvents';
-import { pipe, isVoid } from './helpers/utils';
+import { getElementOffset } from './shared/get-element-offset';
+import { registerKeyEvents } from './shared/register-keyEvents';
+import { pipe, isVoid } from './shared/utils';
 
 import { doDimensions } from './components/dimensions-component';
 import { transition } from './components/transitions-component';
@@ -11,7 +11,7 @@ import { doStyle } from './components/style-component';
 import { doClasses } from './components/classNames-component';
 import { content } from './components/content-component';
 
-import { DEFAULT_NS, DEFAULT_TRANSITION_OUT } from './helpers/constantes';
+import { DEFAULT_NS, DEFAULT_TRANSITION_OUT } from './shared/constantes';
 
 const { css, ...dynStyle } = doStyle;
 // TODO attr

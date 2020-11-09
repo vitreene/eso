@@ -15,6 +15,7 @@ TODO utiliser init pour créer les elements et play pour demarrer le jeu
 - choix de difficulté
 
 */
+const reactions = { lost: 'game-lost' };
 
 const target = 'casse';
 const point = '.';
@@ -42,7 +43,9 @@ export default function GameStrap(emitter) {
 		}
 
 		init() {}
-		play() {}
+		play() {
+			emitter.emit([STRAP, 'minuteur'], { duration: 15e3, reactions });
+		}
 
 		turnDrag(data) {
 			// emitter.emit([DEFAULT_NS, 'card-auto-move_' + data.id]);
@@ -80,12 +83,15 @@ export default function GameStrap(emitter) {
 		}
 
 		lost() {
+			emitter.emit([STRAP, 'move-cancel']);
 			emitter.emit([DEFAULT_NS, 'lost']);
 			// TODO animer la réponse : les  lettres rejoignent leur case
 			this._off();
+			this.endPlay();
 		}
 
 		_on() {
+			emitter.once([STRAP, 'game-play'], this.play);
 			emitter.on([STRAP, 'game-turnDrag'], this.turnDrag);
 			emitter.on([STRAP, 'game-turnDrop'], this.turnDrop);
 			emitter.on([STRAP, 'game-lost'], this.lost);
@@ -113,9 +119,8 @@ export default function GameStrap(emitter) {
 		}
 		// rassemble les dernières lettres pour donner la solution
 		endPlay() {
-			/* 
-			
-			*/
+			const remains = this.word.filter((_, index) => !this.hit[index]);
+			console.log('remains', remains);
 		}
 	};
 }

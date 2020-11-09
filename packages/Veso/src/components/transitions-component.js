@@ -16,12 +16,12 @@
  dans addToStore, progression et transition seront utilisés pour la timeline, style est destiné à prerender
  */
 
-import { controlAnimations } from '../helpers/control-animation';
+import { controlAnimations } from '../shared/control-animation';
 import {
 	selectTransition,
 	directTransition,
-} from '../helpers/select-transition';
-import { fromTo } from '../helpers/from-to';
+} from '../shared/select-transition';
+import { fromTo } from '../shared/from-to';
 
 export function transition(emitter) {
 	const self = this;

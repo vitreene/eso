@@ -5,7 +5,8 @@ export function MinuteurStrap(chrono, emitter) {
 		constructor(data) {
 			this.count = this.count.bind(this);
 			this.stop = this.stop.bind(this);
-			this.duration = data.duration || 15e3;
+			this.duration = data.duration || 10e3;
+			this.reactions = data.reactions;
 			// console.log('Minuteur', this.start, this.duration);
 			emitter.on('secondes', this.count);
 			emitter.on([STRAP, 'minuteur-stop'], this.stop);
@@ -17,12 +18,12 @@ export function MinuteurStrap(chrono, emitter) {
 			// console.log('Minuteur count', elapsed / 1000);
 			// FIXME valeur 0 pour content doit s'afficher
 			emitter.emit([DEFAULT_NS, 'update-counter'], {
-				content: elapsed / 1000,
+				content: Math.round(elapsed / 1000),
 			});
 
 			if (elapsed <= 0) {
 				emitter.off('secondes', this.count);
-				emitter.emit([STRAP, 'game-lost']);
+				emitter.emit([STRAP, this.reactions.lost]);
 			}
 		}
 

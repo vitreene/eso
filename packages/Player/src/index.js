@@ -1,4 +1,5 @@
 import './style.css';
+import { test } from './data/store';
 import { initRuntime } from './runtime';
 import { TimeLiner } from './runtime/solver';
 import { initStories } from './scene/init-stories';

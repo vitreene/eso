@@ -1,8 +1,8 @@
 import clsx from 'clsx';
-import { setClassNames } from '../helpers/classNames';
+import { setClassNames } from '../shared/classNames';
 
 export const doClasses = {
-  /*   init(props) {
+	/*   init(props) {
     const initialClassNames =
       props.className || (props.attr || {}).className || [];
     const arrayClassNames =
@@ -13,12 +13,12 @@ export const doClasses = {
       ? [arrayClassNames]
       : arrayClassNames;
   }, */
-  update(props, state) {
-    const theClassNames = setClassNames(props, state);
-    return theClassNames;
-  },
+	update(props, state) {
+		const theClassNames = setClassNames(props, state);
+		return theClassNames;
+	},
 
-  prerender(...classNames) {
-    return clsx(classNames);
-  },
+	prerender(...classNames) {
+		return clsx(classNames);
+	},
 };

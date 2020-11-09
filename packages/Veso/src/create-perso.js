@@ -1,5 +1,5 @@
 import { o } from 'sinuous';
-import { property, isVoid } from './helpers/property';
+import { property } from './shared/property';
 
 export const storeNodes = new WeakMap();
 

@@ -54,7 +54,7 @@ const playGame = {
 	emit: {
 		click: [
 			{ event: { ns: DEFAULT_NS, name: 'initCard' } },
-			{ event: { ns: STRAP, name: 'minuteur' } },
+			{ event: { ns: STRAP, name: 'game-play' } },
 		],
 	},
 };
