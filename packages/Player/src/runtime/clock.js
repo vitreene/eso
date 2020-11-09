@@ -1,9 +1,10 @@
 import { controlAnimations } from 'veso';
+import { emitter } from '../data/emitter';
 import { TC, PLAY, PAUSE, REWIND } from '../data/constantes';
 
 //////// CLOCK /////////////////////////
 // TODO use performance.now()
-export function clock(timeLiner, emitter) {
+export function clock(timeLiner) {
 	const beat = 10; // tout les 1/100e de seconde
 	const startTime = Date.now();
 	const maxCount = 100000 + 1;

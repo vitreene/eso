@@ -1,3 +1,5 @@
+import { emitter } from '../data/emitter';
+
 import addEventList from '../straps/add-event-list';
 
 import { moveStrap } from '../straps/move-strap';
@@ -5,7 +7,7 @@ import Drag from '../straps/drag-strap';
 import toggle from '../straps/toggle';
 
 import GameStrap from '../straps/game-logic-strap';
-import { MinuteurStrap } from '../straps/minuteur';
+import Minuteur from '../straps/minuteur';
 
 /* 
 Par composition, ajouter aux straps :
@@ -15,9 +17,17 @@ Par composition, ajouter aux straps :
 -> la gestion du play/pause est passée à clock
 */
 
+/* 
+les straps peuvent ils etre instanciées ou doivent-ils etre uniques ?
+- si instanciés, doivent etre appelés par un emitter distinct
+- sinon, doivent tenir un state distinct : envoyer une key comme identifiant à chaque appel.
+key est donc soit par appel, soit à la création d'instance.
+créer un cas réel.
+*/
+
 import { STRAP, TOGGLE, DRAG, MOVE } from '../data/constantes';
 
-export function registerStraps(chrono, timeLiner, emitter) {
+export function registerStraps(chrono, timeLiner) {
 	emitter.on([STRAP, 'add-event-list'], (data) =>
 		addEventList(data, chrono, timeLiner)
 	);
@@ -31,7 +41,7 @@ export function registerStraps(chrono, timeLiner, emitter) {
 
 	const Game = GameStrap(emitter);
 	emitter.on([STRAP, Game.name.toLowerCase()], (data) => new Game(data));
-	const Minuteur = MinuteurStrap(chrono, emitter);
+
 	emitter.on(
 		[STRAP, Minuteur.name.toLowerCase()],
 		(data) => new Minuteur(data)

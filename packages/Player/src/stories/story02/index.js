@@ -1,6 +1,6 @@
 import './casual.css';
 
-import { persos } from './persos';
+import { casting } from './persos';
 import { layers } from './layers';
 import { models } from './models';
 import { casualEventimes } from './eventimes';
@@ -13,11 +13,6 @@ const eventimes = {
 	...casualEventimes,
 	events: [...casualEventimes.events, ...casual.eventimes],
 };
-
-const stories = {};
-for (const story of layers.concat(persos, casual.stories)) {
-	// console.log('story', story);
-	stories[story.id] = story;
-}
+const stories = [...layers, ...casting, ...casual.stories];
 
 export { stories, eventimes };

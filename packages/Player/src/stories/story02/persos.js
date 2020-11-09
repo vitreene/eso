@@ -90,4 +90,4 @@ const infos = {
 	],
 };
 
-export const persos = [infos, timer, playGame];
+export const casting = [infos, timer, playGame];

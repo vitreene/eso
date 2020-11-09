@@ -49,17 +49,21 @@ simplifier leave :
     // le tout avant réaffichage
 */
 
+import { storeSlots } from '../data/store-slots';
 export class OnScene {
-	constructor(slots) {
-		// if (!slots || typeof slots !== "object") return false;
-		if (!slots || !(slots instanceof Map)) return false;
-		this._slots = new Map(Array.from(slots.keys(), (id) => [id, []]));
-		this.areOnScene = new Map();
+	constructor() {
+		// if (!storeSlots || !(storeSlots instanceof Map)) return false;
 
 		this.update = this.update.bind(this);
 		this._addToScene = this._addToScene.bind(this);
 		this._moveToSlot = this._moveToSlot.bind(this);
 		this._leaveScene = this._leaveScene.bind(this);
+		this.add_slots = this.add_slots.bind(this);
+
+		this.areOnScene = new Map();
+		this._slots = new Map(Array.from(storeSlots.keys(), (id) => [id, []]));
+		// en fin de scene
+		this.clear = storeSlots.subscribe(this.add_slots);
 	}
 	/* 
   TODO un élément qui a quitté la scene ne peut revenir que par un autre "enter"
@@ -69,6 +73,9 @@ export class OnScene {
   - quels sont les cas ou c'est utile ?
  */
 
+	add_slots(id) {
+		this._slots.set(id, []);
+	}
 	update(up) {
 		let action = (update) => ({ changed: null, update });
 		if (!up.id) return this._getError('id', up);
@@ -106,8 +113,7 @@ export class OnScene {
 	}
 
 	_moveToSlot(up) {
-		console.log('OnScene _moveToSlot--- up', up);
-
+		// console.log('OnScene _moveToSlot--- up', up);
 		if (!up.move) {
 			console.warn('_moveToSlot fail');
 			return;

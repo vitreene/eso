@@ -1,6 +1,5 @@
 import { o } from 'sinuous';
-
-export const storeSlots = new Map();
+import { storeSlots } from '../data/store-slots';
 
 export function Slot({ uuid }) {
 	// console.log('SLOT', uuid);

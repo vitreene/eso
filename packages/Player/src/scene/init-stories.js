@@ -1,21 +1,22 @@
-// register persos, actions, images, events
-
-import { emitter } from '../runtime/emitter';
-
+// register actions, images, events
 import { registerImages } from '../register/register-images';
 import { registerPersos } from '../register/register-persos';
 import { registerActions } from '../register/register-actions';
+import { registerStraps } from '../register/register-straps';
 
-import { storeSlots } from '../composants/slot';
+// import { sceneUpdateHandler } from '../scene/scene-update-handler';
 
-export const initStories = (stories) =>
-	registerImages(stories).then((imagesCollection) => {
-		const persos = registerPersos(stories, imagesCollection, emitter);
-		const actions = registerActions(stories, emitter);
+import { TimeLiner } from '../runtime/solver';
+import { clock } from '../runtime/clock';
 
-		return {
-			persos,
-			actions,
-			slots: storeSlots,
-		};
-	});
+export const initStories = async (stories, eventimes) => {
+	await registerImages(stories);
+	registerPersos(stories);
+
+	const timeLiner = new TimeLiner(eventimes);
+	const chrono = clock(timeLiner);
+	registerStraps(chrono, timeLiner);
+
+	/* const actions =  */ registerActions(stories);
+	// actions(sceneUpdateHandler);
+};
