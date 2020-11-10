@@ -1,4 +1,6 @@
 import { emitter } from '../data/emitter';
+import { TimeLiner } from '../runtime/solver';
+import { clock } from '../runtime/clock';
 
 import addEventList from '../straps/add-event-list';
 
@@ -9,6 +11,7 @@ import toggle from '../straps/toggle';
 import GameStrap from '../straps/game-logic-strap';
 import Minuteur from '../straps/minuteur';
 
+import { STRAP, TOGGLE, DRAG, MOVE } from '../data/constantes';
 /* 
 Par composition, ajouter aux straps :
 - raz du state,
@@ -25,9 +28,10 @@ key est donc soit par appel, soit à la création d'instance.
 créer un cas réel.
 */
 
-import { STRAP, TOGGLE, DRAG, MOVE } from '../data/constantes';
+export function registerStraps(eventimes) {
+	const timeLiner = new TimeLiner(eventimes);
+	const chrono = clock(timeLiner);
 
-export function registerStraps(chrono, timeLiner) {
 	emitter.on([STRAP, 'add-event-list'], (data) =>
 		addEventList(data, chrono, timeLiner)
 	);
