@@ -29,8 +29,9 @@ export class Eso {
 	history = {}; // TODO faire une Map
 	current = {}; // etat actuel avant prerender
 	attributes = {}; // attributs du node
+	propsInit = {};
 
-	constructor(story, emitter) {
+	constructor(story, emitter, init = true) {
 		const { id, initial, tag } = story;
 		this.id = id;
 		this.tag = tag;
@@ -55,15 +56,16 @@ export class Eso {
 
 		this.commit = commit.bind(this);
 
+		// TODO ajouter des events liés à l'app (ex: langues)
 		const events = Eso.registerKeyEvents(story.emit, emitter);
-		this.init(id, initial, events);
+		this.propsInit = { id, ...initial, ...events };
+		init && this.init();
 	}
 
-	init(id, initial, events) {
-		const props = { id, ...initial, ...events };
-		props && pipe(this._pre, this._revise)(props);
+	init() {
+		this.propsInit && pipe(this._pre, this._revise)(this.propsInit);
 		this.prerender();
-		//  this.node() appelle storeNodes
+		//  this.node() call storeNodes
 		this.node = createPerso.call(this);
 	}
 
@@ -111,13 +113,13 @@ export class Eso {
 
 		return { ...props, transition };
 	}
-
-	// transforme les données qui ne sont pas directement des attributs :
-	// dimensions, transitions, etc.
-	// les éléments transformés doivent etre contenus dans la propriété cible :
-
-	// ex : dimensions -> statStyle(width, height)
-	//TODO conformer les autres evenements : transition, (et between ?)
+	//  *  TODO conformer les autres evenements : transition, (et between ?)
+	/**
+	 * transforme les données qui ne sont pas directement des attributs :
+	 *  dimensions, transitions, etc.
+	 *  les éléments transformés doivent etre contenus dans la propriété cible :
+	 *  ex : dimensions -> statStyle(width, height)
+	 */
 	_pre(props) {
 		const modiffs = [];
 		for (const prep in this.prep) {

@@ -4,17 +4,25 @@ import { Eso } from 'veso';
 import { Slot } from './slot';
 import { DEFAULT_STYLES } from '../data/constantes';
 
+// surcharger content
+const content = (id) => {
+	return {
+		update(content) {
+			return innerLayer(content, id);
+		},
+		prerender() {},
+	};
+};
+
 export class Layer extends Eso {
 	static nature = 'layer';
-	render(props) {
-		const layout = innerLayer(props.content(), props.id());
-		return html`<section
-			id=${props.id}
-			style=${props.style}
-			class=${props.class}
-		>
-			${layout}
-		</section>`;
+	constructor(story, emitter) {
+		super(story, emitter, false);
+		this.revision.content = content(story.id);
+		this.init();
+	}
+	render({ id, content, ...attrs }) {
+		return html`<section id=${id} ...${attrs}>${content}</section>`;
 	}
 }
 
@@ -33,11 +41,9 @@ function innerLayer(content, layerId) {
 	return layer;
 }
 
-function LayerItem(props) {
-	const slot = new Slot({ uuid: props.id });
-	return html`<article id=${props.id} style=${props.style} class=${props.class}>
-		${slot}
-	</article>`;
+function LayerItem({ id, ...attrs }) {
+	const slot = new Slot({ uuid: id });
+	return html`<article id=${id} ...${attrs}>${slot}</article>`;
 }
 
 // viennent de Eso/helpers

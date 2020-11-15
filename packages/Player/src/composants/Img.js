@@ -26,7 +26,8 @@ export class Img extends Eso {
 		this.fit(story.initial.fit);
 	}
 
-	// TODO ajouter img à this.content
+	// TODO virer this.img et this.fit et tout passer par this.content
+	// voir content dans Layers
 	update(props) {
 		super.update(props);
 		const hasContent = props.content && imagesCollection.has(props.content);
