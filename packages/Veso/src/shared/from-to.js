@@ -19,8 +19,8 @@ export function fromTo(opts, store, uuid) {
 	const { duration = DEFAULT_DURATION } = opts;
 	const options = {};
 	for (const prop in opts) options[prop] = keyToLowercase(opts[prop]);
-	uuid.id === 'text-sample' &&
-		console.log('%s, opts, options', uuid.id, opts, options);
+	// uuid.id === 'text-sample' &&
+	// 	console.log('%s, opts, options', uuid.id, opts, options);
 
 	let keyStore, styler;
 

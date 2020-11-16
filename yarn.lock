@@ -6168,6 +6168,11 @@ media-typer@0.3.0:
   resolved "https://registry.yarnpkg.com/media-typer/-/media-typer-0.3.0.tgz#8710d7af0aa626f8fffa1ce00168545263255748"
   integrity sha1-hxDXrwqmJvj/+hzgAWhUUmMlV0g=
 
+memo@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/memo/-/memo-1.0.1.tgz#58c15674ed01cfab54d0efcbb14e685dab038784"
+  integrity sha512-fm6jIx2UgihPOiQqKzi+LBl5HT0I7kLyhmDu7zZvdEbmH83lTWOjLW3ef7RoWwgxMpgEYwsyHr+S03QcnFUsfQ==
+
 memory-fs@^0.4.1:
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/memory-fs/-/memory-fs-0.4.1.tgz#3a9a20b8462523e447cfbc7e8bb80ed667bfc552"
@@ -8697,6 +8702,11 @@ simple-swizzle@^0.2.2:
   integrity sha1-pNprY1/8zMoz9w0Xy5JZLeleVXo=
   dependencies:
     is-arrayish "^0.3.1"
+
+sinuous-trace@^2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/sinuous-trace/-/sinuous-trace-2.3.0.tgz#d8abcfe0408b34e1a534ffe5b0d60c533c0926e2"
+  integrity sha512-J4+/eu+3M6n63V/1oAtuxthzbUE21CEK0p6WQXAijcp+E0KFQRhpMgpT1ObnGiJFRrJKkRIZp0xaxUEknnn5sA==
 
 sinuous@^0.27.9:
   version "0.27.9"

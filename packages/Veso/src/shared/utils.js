@@ -154,3 +154,8 @@ export const pipe = (...fns) => (x) => fns.reduce(execute, x);
 export function isVoid(x) {
 	return !x && x !== 0;
 }
+
+// true si null ou undefined ('' -> false)
+export function isNull(x) {
+	return x == null;
+}

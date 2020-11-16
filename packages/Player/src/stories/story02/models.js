@@ -63,7 +63,7 @@ const casseModel = (letter, index) => {
 	const target = 'casse';
 	const id = joinId(target, index, letter);
 	const uuid = joinId(layer, id);
-	const slot = new Slot({ uuid });
+	const slot = new Slot(uuid);
 	slot(letter);
 
 	return {

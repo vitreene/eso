@@ -1,0 +1,20 @@
+.container-text {
+	width: 100%;
+	height: 100%;
+}
+.new-text {
+	position: absolute;
+	position: absolute;
+	display: block;
+	width: 100%;
+	height: 100%;
+	color: red;
+}
+.old-text {
+	position: absolute;
+	position: absolute;
+	display: block;
+	width: 100%;
+	height: 100%;
+	color: yellow;
+}

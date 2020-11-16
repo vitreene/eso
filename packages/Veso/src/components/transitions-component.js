@@ -59,7 +59,7 @@ export function transition(emitter) {
 						.forEach(function (action) {
 							if (!action) return;
 							const { event, data } = action;
-							console.log('action oncomplete', action);
+							// console.log('action oncomplete', action);
 							accumulate.add(function emit() {
 								emitter.emit([event.ns, event.name], data);
 							});

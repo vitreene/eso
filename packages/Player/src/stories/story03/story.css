@@ -1,0 +1,40 @@
+.container-text {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	display: grid;
+	grid-template: 1fr;
+}
+.inner-text-under,
+.inner-text-over {
+	grid-area: 1/1;
+}
+
+.new-text {
+	/* color: red; */
+	animation: 0.5s fade-in forwards;
+	transition: color 0.3s;
+}
+.old-text {
+	/* color: yellow; */
+	animation: 0.5s fade-out forwards;
+	transition: color 0.3s;
+}
+
+@keyframes fade-in {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+@keyframes fade-out {
+	from {
+		opacity: 1;
+	}
+	to {
+		opacity: 0;
+	}
+}

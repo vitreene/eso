@@ -10,7 +10,6 @@ const content = (id) => {
 		update(content) {
 			return innerLayer(content, id);
 		},
-		prerender() {},
 	};
 };
 
@@ -42,7 +41,7 @@ function innerLayer(content, layerId) {
 }
 
 function LayerItem({ id, ...attrs }) {
-	const slot = new Slot({ uuid: id });
+	const slot = new Slot(id);
 	return html`<article id=${id} ...${attrs}>${slot}</article>`;
 }
 

@@ -187,7 +187,12 @@ export const textSample = {
 				},
 				duration: 1000,
 			},
-			content: 'arrivé',
+			content: {
+				lang: 'en',
+				refLang: 'sous-titre',
+				ref: 'txt01',
+				effect: 'toto',
+			},
 		},
 	],
 };

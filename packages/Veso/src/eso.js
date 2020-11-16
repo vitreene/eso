@@ -229,8 +229,13 @@ export class Eso {
 			className,
 			attributes,
 			events,
+			content: contentToRender,
 			...other
 		} = this.history;
+
+		const content = this.revision.content.prerender
+			? this.revision.content.prerender(contentToRender)
+			: contentToRender;
 
 		// const pointerEvents = options.pointerEvents ? "all" : "none";
 		const style = this.revision.dynStyle.prerender(this.box, dynStyle);
@@ -247,6 +252,7 @@ export class Eso {
 		this.current = {
 			style,
 			class: theClasses,
+			content,
 			...Object.fromEntries(attributes || []),
 			...Object.fromEntries(events || []),
 			...other,
