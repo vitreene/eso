@@ -35,8 +35,8 @@ export const root = {
 		{ event: 'leave-root', action: 'leave' },
 	],
 	actions: [
-		{ name: 'ev0', dynStyle: { x: 50 } },
-		{ name: 'leave', transition: { to: 'fadeOut' } },
+		{ name: 'ev0', transition: { to: { x: 50 } } },
+		// { name: 'leave', transition: { to: 'fadeOut' } },
 	],
 };
 
@@ -56,9 +56,9 @@ export const textSample = {
 	listen: [
 		{ event: 'ev011', action: 'enter' },
 		{ event: 'ev012', action: 'step02' },
-		// { event: 'ev013', action: 'step03' },
+		{ event: 'ev013', action: 'step03' },
 		{ event: 'ev014', action: 'step04' },
-		{ event: 'ev015', action: 'step03' },
+		{ event: 'ev015', action: 'step05' },
 	],
 	actions: [
 		{
@@ -91,6 +91,12 @@ export const textSample = {
 				effect: 'fade',
 			},
 		},
+		// {
+		// 	name: 'step04',
+		// 	content: {
+		// 		ref: 'txt02',
+		// 	},
+		// },
 		{
 			name: 'step04',
 			content: {
@@ -113,6 +119,7 @@ export const imageSample = {
 		fit: 'cover', //"cover"
 		statStyle: {
 			position: 'absolute',
+			zIndex: -1,
 		},
 	},
 	listen: [{ event: 'go', action: 'enter' }],
@@ -126,7 +133,7 @@ export const imageSample = {
 	],
 };
 
-/* export */ const togglePlay = {
+export const togglePlay = {
 	id: 'togglePlay',
 	nature: 'button',
 	initial: {
@@ -140,7 +147,7 @@ export const imageSample = {
 			textTransform: 'uppercase',
 			textAlign: 'center',
 		},
-		// dimensions: { width: 80, ratio: 1 },
+		dimensions: { width: 200, ratio: 1.5 },
 		content: 'pause',
 	},
 
@@ -152,7 +159,7 @@ export const imageSample = {
 	actions: [
 		{
 			name: 'enter',
-			move: { layer: 'grid-01', slot: 'grid-01_s05' },
+			move: { layer: CONTAINER_ESO, slot: CONTAINER_ESO + '_s01' },
 		},
 		{
 			name: 'play',

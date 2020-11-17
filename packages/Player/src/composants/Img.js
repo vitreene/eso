@@ -1,4 +1,4 @@
-import { o, svg, html, api } from 'sinuous';
+import { o, svg, api } from 'sinuous';
 import { computed } from 'sinuous/observable';
 
 import { imagesCollection } from '../data/images-collection';

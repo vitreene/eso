@@ -1,13 +1,14 @@
-import { html } from 'sinuous';
-import { isNull } from '../shared/utils';
+import { tinyEffects } from '../shared/tiny-effects';
 
 const textes = {
 	langue: {
 		fr: {
 			txt01: 'Bonjour',
+			txt02: `il est ${new Date()}`,
 		},
 		en: {
 			txt01: 'Hello',
+			txt02: 'How are you ?',
 		},
 	},
 	'sous-titre': {
@@ -32,8 +33,11 @@ export const content = {
 			ref,
 			lang = current?.lang || defaults.lang,
 			refLang = current?.refLang || defaults.refLang,
-			effect,
+			effect = current?.effect,
 		} = content;
+
+		// console.log('ref,lang,refLang,effect', ref, lang, refLang, effect);
+
 		let text = ref ? textes[refLang][lang][ref] : content.text;
 
 		if (effect) {
@@ -54,36 +58,6 @@ export const content = {
 		return tinyEffects(effect, text, oldText);
 	},
 };
-
-function tinyEffects(effect, text, oldText) {
-	const status = getTextStatus(text, oldText);
-
-	console.log('status, text, oldtext', status, text, oldText);
-
-	return html`
-		<div class="container-text">
-			<div class="inner-text-under">
-				<span class="old-text">${oldText}</span>
-			</div>
-			<div class="inner-text-over">
-				<span class="new-text">${text}</span>
-			</div>
-		</div>
-	`;
-}
-
-function getTextStatus(text, oldText) {
-	const isText = !isNull(text);
-	const isOldText = !isNull(oldText);
-	const res = [
-		isText && !isOldText && 'enter',
-		isText && isOldText && 'update',
-		!isText && isOldText && 'leave',
-	]
-		.filter(Boolean)
-		.pop();
-	return res;
-}
 
 function isRawContent(content) {
 	// console.log('content', typeof content, content);

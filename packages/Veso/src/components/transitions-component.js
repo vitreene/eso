@@ -25,48 +25,44 @@ import { fromTo } from '../shared/from-to';
 
 export function transition(emitter) {
 	const self = this;
-	const accumulate = syncRafUpdate(self);
+	const callback = (between) => self.update({ between });
+	const accumulate = syncRafUpdate(callback);
 
 	function update(props) {
-		// console.log('update transition', !props.to, props);
-
 		if (!props) return null;
-
 		(Array.isArray(props) ? props : [props]).forEach(doTransition);
 		return props;
 	}
 
+	// FIXME from et to peuvent etre nuls ?
 	function doTransition(props) {
-		// FIXME from et to peuvent etre nuls ?
 		const options = props.direct
 			? directTransition(props)
 			: selectTransition(props);
 
 		// from-to
 		const interpolation = fromTo(options, self.history, self.uuid);
-		// debugger;
+		if (!interpolation) return;
+
+		// mettre à jour la position avant le rafraichissement
+		self.update({ between: interpolation.from });
+
 		//lancer la ou les transitions
-		if (interpolation) {
-			// mettre à jour la position avant le rafraichissement
-			self.update({ between: interpolation.from });
-			controlAnimations.tween({
-				id: self.id,
-				interpolation,
-				update: interpolate,
-				complete() {
-					[self?.oncomplete, props?.oncomplete]
-						.flat()
-						.forEach(function (action) {
-							if (!action) return;
-							const { event, data } = action;
-							// console.log('action oncomplete', action);
-							accumulate.add(function emit() {
-								emitter.emit([event.ns, event.name], data);
-							});
-						});
-				},
-			});
-		}
+		controlAnimations.tween({
+			id: self.id,
+			interpolation,
+			update: interpolate,
+			complete() {
+				[self?.oncomplete, props?.oncomplete].flat().forEach(function (action) {
+					if (!action) return;
+					const { event, data } = action;
+					// console.log('action oncomplete', action);
+					accumulate.add(function emit() {
+						emitter.emit([event.ns, event.name], data);
+					});
+				});
+			},
+		});
 	}
 
 	function interpolate(between) {
@@ -76,13 +72,16 @@ export function transition(emitter) {
 	return { update };
 }
 
-// si plusieurs transitions en cours,
-//il faut reduire les valeurs sorties par chacune.
-
-// il arrive que deux transitions se suivant, la première l'emporte en priorité sur la suivant.
+/**
+ *
+ * @param {*} callback // lance l'update du perso
+ * si plusieurs transitions en cours,
+ * il faut reduire les valeurs sorties par chacune.
+ * il arrive que deux transitions se suivant, la première l'emporte en priorité sur la suivant.
+ */
 
 // TODO déplacer la fonction pour centraliser les appels à raf
-function syncRafUpdate(self) {
+function syncRafUpdate(callback) {
 	return {
 		cumul: [],
 		add(value) {
@@ -99,7 +98,7 @@ function syncRafUpdate(self) {
 				typeof acc === 'function' ? fn.push(acc) : Object.assign(between, acc);
 			}
 
-			self.update({ between });
+			callback(between);
 			fn.forEach((f) => f());
 		},
 		flush() {
