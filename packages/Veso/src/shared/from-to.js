@@ -9,7 +9,7 @@ entree :
 sortie : {from, to, duration}
 */
 import { getComputedStyle } from '../create-perso';
-import { transformColor, isColorFactory } from './colors';
+import { getCssValue } from './colors';
 import { keyToLowercase, stringToLowercase } from './js-to-css';
 
 import { DEFAULT_STYLES, DEFAULT_DURATION } from './constantes';
@@ -19,8 +19,6 @@ export function fromTo(opts, store, uuid) {
 	const { duration = DEFAULT_DURATION } = opts;
 	const options = {};
 	for (const prop in opts) options[prop] = keyToLowercase(opts[prop]);
-	// uuid.id === 'text-sample' &&
-	// 	console.log('%s, opts, options', uuid.id, opts, options);
 
 	let keyStore, styler;
 
@@ -60,17 +58,6 @@ export function fromTo(opts, store, uuid) {
 		to,
 		duration,
 	};
-}
-
-const isColor = isColorFactory();
-
-function getCssValue(cssProp) {
-	const val = isColor(cssProp)
-		? transformColor(cssProp)
-		: isNaN(cssProp)
-		? cssProp
-		: parseFloat(cssProp);
-	return val;
 }
 
 function flattenStore(store) {

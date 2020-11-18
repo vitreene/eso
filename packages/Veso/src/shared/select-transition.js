@@ -1,5 +1,5 @@
 import { DEFAULT_DURATION } from './constantes';
-import { effect } from './effect';
+import { effect } from '../presets/transition-effects-presets';
 
 /* 
 propTo :

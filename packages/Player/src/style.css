@@ -26,18 +26,10 @@ h1 {
 	margin: 0;
 	color: red;
 }
-.toto {
-	text-transform: uppercase;
-}
-.tom {
-	color: orange;
-	font-weight: bold;
-}
-.tutu {
-	background-color: red;
-	color: wheat;
-}
 
+.totoo {
+	width: auto;
+}
 /* section { */
 /* display: grid; */
 /* grid-template-columns: repeat(3, 1fr); */
@@ -45,11 +37,12 @@ h1 {
 /* grid-auto-rows: minmax(100px, auto); */
 /* } */
 
-article section {
+.layer-item .top-layer {
 	flex: 1;
 	display: flex;
 }
-article {
+
+.layer-item {
 	position: relative;
 	display: flex;
 	flex: 1;
@@ -58,7 +51,7 @@ article {
 
 	border: blue solid 1px;
 }
-article div {
+.top-layer .layer-item {
 	display: flex;
 
 	justify-content: center;
@@ -71,4 +64,9 @@ article div {
 } */
 .grid-item {
 	outline: 2px solid green;
+}
+
+.tiny-effects-list-item {
+	display: inline-block;
+	white-space: pre;
 }

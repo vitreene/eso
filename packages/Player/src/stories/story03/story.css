@@ -10,12 +10,12 @@
 	grid-area: 1/1;
 }
 
-.new-text {
+.x-new-text {
 	/* color: red; */
 	animation: 0.5s fade-in forwards;
 	transition: color 0.3s;
 }
-.old-text {
+.x-old-text {
 	/* color: yellow; */
 	animation: 0.5s fade-out forwards;
 	transition: color 0.3s;

@@ -3,6 +3,7 @@ import { html } from 'sinuous';
 import { Eso } from 'veso';
 import { Slot } from './slot';
 import { DEFAULT_STYLES } from '../data/constantes';
+import { computed } from 'sinuous/observable';
 
 // surcharger content
 const content = (id) => {
@@ -20,8 +21,11 @@ export class Layer extends Eso {
 		this.revision.content = content(story.id);
 		this.init();
 	}
-	render({ id, content, ...attrs }) {
-		return html`<section id=${id} ...${attrs}>${content}</section>`;
+	render({ id, content, class: classes, ...attrs }) {
+		const className = addToClassName('layer-top', classes);
+		return html`<section id=${id} class=${className} ...${attrs}>
+			${content}
+		</section>`;
 	}
 }
 
@@ -40,11 +44,19 @@ function innerLayer(content, layerId) {
 	return layer;
 }
 
-function LayerItem({ id, ...attrs }) {
+function LayerItem({ id, class: classes, ...attrs }) {
 	const slot = new Slot(id);
-	return html`<article id=${id} ...${attrs}>${slot}</article>`;
+	const className = addToClassName('layer-item', classes);
+	return html`<article id=${id} lass=${className} ...${attrs}>
+		${slot}
+	</article>`;
 }
 
+function addToClassName(name, classes) {
+	return typeof classes === 'function'
+		? computed(() => `${name} ${classes()}`)
+		: name;
+}
 // viennent de Eso/helpers
 // un export pour une fonction simplifiée non-réactive, des classes et fonctions ?
 function joinId(...args) {

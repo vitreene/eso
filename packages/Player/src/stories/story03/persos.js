@@ -69,7 +69,7 @@ export const textSample = {
 				fontSize: 100,
 				backgroundColor: '#49b6b6cf',
 				x: 200,
-				y: 200,
+				y: 100,
 			},
 			className: 'new-text',
 		},
@@ -106,7 +106,10 @@ export const textSample = {
 		},
 		{
 			name: 'step05',
-			content: "c'est fini",
+			content: {
+				text: 'c’est fini',
+				effect: 'letters-top-down',
+			},
 		},
 	],
 };
