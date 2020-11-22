@@ -16,6 +16,7 @@ const constrainImage = {
 	slice: 'cover',
 	undefined: 'slice',
 };
+// TODO passer des parametres pour l'image via content
 
 export class Img extends Eso {
 	static nature = 'img';

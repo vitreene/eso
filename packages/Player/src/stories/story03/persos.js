@@ -13,29 +13,16 @@ export const root = {
 	nature: 'layer',
 	initial: {
 		className: 'container',
-		content: [
-			{
-				id: 's01',
-				statStyle: {
-					position: 'absolute',
-					top: 0,
-					left: 0,
-					right: 0,
-					bottom: 0,
-					display: 'grid',
-					gridColumn: 1,
-					gridRow: 1,
-					pointerEvents: 'none',
-				},
-			},
-		],
+		content: 's01',
 	},
 	listen: [
-		{ event: 'ev013', action: 'ev0' },
-		{ event: 'leave-root', action: 'leave' },
+		{ event: 'ev011', action: 'ev11' },
+		// { event: 'ev013', action: 'ev0' },
+		// { event: 'leave-root', action: 'leave' },
 	],
 	actions: [
-		{ name: 'ev0', transition: { to: { x: 50 } } },
+		// { name: 'ev0', transition: { to: { x: 50 } } },
+		{ name: 'ev11', className: '-=layer-top /=toptip container' },
 		// { name: 'leave', transition: { to: 'fadeOut' } },
 	],
 };
@@ -44,12 +31,14 @@ export const textSample = {
 	id: 'text-sample',
 	nature: 'bloc',
 	initial: {
-		dimensions: { width: 621, height: 314 },
-		className: 'totoo',
+		className: 'bloc-center',
 		statStyle: {
 			color: 'white',
 			fontWeight: 'bold',
-			padding: '8px',
+			padding: 24,
+			borderRadius: 16,
+			gridArea: '1/1',
+			margin: 'auto',
 		},
 		content: 'dimanche',
 	},
@@ -63,13 +52,13 @@ export const textSample = {
 	actions: [
 		{
 			name: 'enter',
-			move: { layer: CONTAINER_ESO, slot: CONTAINER_ESO + '_s01' },
+			move: { slot: 's01' },
 			transition: { to: 'fadeIn' },
 			statStyle: {
 				fontSize: 100,
 				backgroundColor: '#49b6b6cf',
-				x: 200,
-				y: 100,
+				// x: 200,
+				// y: 100,
 			},
 			className: 'new-text',
 		},
@@ -100,7 +89,7 @@ export const textSample = {
 		{
 			name: 'step04',
 			content: {
-				text: 'A bientot',
+				text: 'A bientot pour un prochain essai',
 				effect: 'fade',
 			},
 		},
@@ -129,7 +118,7 @@ export const imageSample = {
 	actions: [
 		{
 			name: 'enter',
-			move: { layer: CONTAINER_ESO, slot: CONTAINER_ESO + '_s01' },
+			move: { slot: 's01' },
 			dimensions: { width: '100%', height: '100%' },
 			transition: { to: 'fadeIn' },
 		},
@@ -149,6 +138,7 @@ export const togglePlay = {
 			padding: '1rem',
 			textTransform: 'uppercase',
 			textAlign: 'center',
+			gridArea: '1/1',
 		},
 		dimensions: { width: 200, ratio: 1.5 },
 		content: 'pause',
@@ -162,7 +152,7 @@ export const togglePlay = {
 	actions: [
 		{
 			name: 'enter',
-			move: { layer: CONTAINER_ESO, slot: CONTAINER_ESO + '_s01' },
+			move: { slot: 's01' },
 		},
 		{
 			name: 'play',

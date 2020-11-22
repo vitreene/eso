@@ -43,16 +43,16 @@ when:
 
 # approche par perso
 perso: 
-  subtitles:
-    content:
-    when:
-    - go:  'ref-text-01'
-    - +2:  'ref-text-02'
-    - +15: 'ref-text-03'
-  list:
+  - subtitles:
+      content:
+        when:
+        - go:  'ref-text-01'
+        - +2:  'ref-text-02'
+        - +15: 'ref-text-03'
+  - list:
     content: [ref1,ref2,ref3]
-    when: go
-    stagger: 0,25
+      when: go
+      stagger: 0,25
 
 
 strap:

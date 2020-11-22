@@ -1,0 +1,20 @@
+# TEST 01
+eventimes:
+  - start: 0
+  - go: start + 0.5
+
+# approche par event
+when: #eventime
+  start:
+    - layer01:
+        move: root
+    - layer02:
+        move: layer01-slot01
+
+  go:
+    - item1: { name: enter, move: 'slot1', transition: 'fadIn' }
+    - item2: { move: 'slot3', transition: 'fromLeft' }
+    - item3:
+        move: slot3
+        transition:
+          to: { x: 0, y: -200, scale: 1.2, backgroundColor: 'red' }

@@ -25,6 +25,8 @@ langues = {
 
 ```
 
+voir aussi : https://lingui.js.org/index.html
+
 Les clés reposent sur des conventions de nommage par commodité, mais ne doivent pas servir à déduire la position d'un texte dans la narration
 
 le parametre de langue est envoyé au composant eso qui conserve sa valeur pour les éléments suivants, utile pour les sous-titres par exemple.
@@ -53,9 +55,10 @@ Dans le perso, ce parametre :
 - est traité par content. Les autres paramètres comme le changement de classe est traité en amont par le strap.
 
 ## Content dans Bloc
-Content peut recevoir 3 types de parametres:
+Content peut recevoir 4 types de parametres:
 - une string : renvoie la string sans traitement
 - un Node : idem *const isDOM = el => el instanceof Element*
+- une fonction, par exemple un observable comme Slot
 - un object, avec les propriétés : 
     - ref: clé du texte à renvoyer ou
     - text: une string ou un Node

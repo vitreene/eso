@@ -53,15 +53,24 @@ par chapitre :
     - ref titre 
     - visible dans le sommaire
 
-### pages
+### pages / Scene
 - id
 - titre
-- story initial
-- story root
-- liste de stories
-    - id
-    - root
-    - start
+- start : initialisation
+    - story root // layer de base, conteneur
+    - story initial
+        - liste de stories
+            - id
+            - root
+            - start
+- Eventimes
+- clock
+- Telco
+- leave
+    - détruit les nodes et objets. 
+    - distinct de end qui stoppe clock (et permet encore une relecture)
+    - leave peut s'appeler via next-page
+
 
 - parametres d'initialisation 
     - contraintes de navigation 
@@ -76,6 +85,34 @@ une story peut envoyer et recevoir des messages d'une autre story. il faut s'ass
 Les persos, et events sont ajoutés au store général. 
 le store est effacé au changement de page. 
 si on utilise une timeline, il vaut mieux conserver tous les élements, meme ceux disparus de la scène.
+
+**revoir la partie root**
+
+pour l'instant il n'est pas prévu qu'une story demarre à l'intérieur d'une autre. 
+
+Que manque t-il :
+- la gestion des events
+Les stories peuvent déjà partager un meme espace d'events, des events peuvent etre ajoutés en cours de route. 
+Tous les events doivent être décalés en fonction de leur départ.
+-> Eventime doit appartenir à Scene comme Telco
+
+- le zoom 
+le zoom est calculé par rapport à l'élément unique root. 
+-> chaque story doit avoir son propre root
+-> le zoom peut etre calculé sur un élément arbitraire : par exemple, une story est jouée dans un cadre à l'intérieur d'une scène plus large, mais ses dimensions sont calculées par rapport à l'élément root principal = viewport 
+
+une story est insérée via un Slot : 
+- le slot doit connaitre le parent où il est inséré (au minimum l'uuid avec accès à storeNodes) 
+- le slot doit transmettre au contenu la valeur de zoom qui sera calculée à l'insertion
+
+- une limite  : zoom n'est sensible qu'à l'événement 'resize' et non pas au redimensionnement du root lui-meme
+
+## Refactoriser Player:
+créer Scene et Story :
+Scène appelera des Stories
+Les stories sont chargées via les fichiers YAML
+-> où ranger les medias ?
+
 
 **Instances** : une story peut etre appelée plusieurs fois, séquentiellement (un jeu) ou simultanément (un input pourrait etre une story)
 - comment anvoyer des messages à une instance dont on ne connait pas forcément le nom, ou dont on veut ignorer le nom car il n'y a qu'une instance à la fois ?
@@ -130,3 +167,11 @@ La story terminée n'est pas effacée au cas où la timeline revienne dessus
 - soit il y a une limite à la quantité d'elements stockés (difficile à gérer), 
 - soit les nodes sont recréés ad-hoc en cas de manip de la timeline : c'est lourd, mais ce mode n'est pas censé etre optimisé pour la vitesse. 
 - je peux prévoir une purge auto de la story en fin de lecture, au loisir de ne pas s'en servir.
+
+
+## variantes de blocs
+il est dificile de créer un bloc qui aura un usage multiple : texte, liste, image, conteneur... sans indicateur du positionnement intérieur du contenu
+
+Un paragraphe, une liste, commencent en général en haut de pavé et se déroulent.
+Les titres et messages courts ont besoin plutot d'etre centrés dans leur bloc. 
+La dimension du bloc peut etre définie par son contenu, avec des limites (max-width)

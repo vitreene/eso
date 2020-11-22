@@ -78,39 +78,25 @@ export function tinyEffects(effect, current, old) {
 		}
 	}
 
-	return portee === 'all' ? Container(anim) : Container2(anim);
+	return Container(anim);
 }
 
 const Container = (anim) => html`
-	<div class="container-text">
-		<div class="inner-text-under">
-			<span id=${anim.old.id} class="old-text" style=${anim.old.style}
-				>${anim.old.content}</span
-			>
-		</div>
-		<div class="inner-text-over">
-			<span
-				id=${anim.current.id}
-				class="current-text"
-				style=${anim.current.style}
-				>${anim.current.content}</span
-			>
-		</div>
+	<div class="tiny-effect-inner-text-under">
+		<span id=${anim.old.id} class="old-text" style=${anim.old.style}>
+			${anim.old.content}
+		</span>
+	</div>
+	<div class="tiny-effect-inner-text-over">
+		<span
+			id=${anim.current.id}
+			class="current-text"
+			style=${anim.current.style}
+		>
+			${anim.current.content}
+		</span>
 	</div>
 `;
-const Container2 = (anim) =>
-	html`
-		<div class="container-text">
-			<div class="inner-text-under">
-				<span id=${anim.old.id} class="old-text">${anim.old.content}</span>
-			</div>
-			<div class="inner-text-over">
-				<span id=${anim.current.id} class="current-text"
-					>${anim.current.content}</span
-				>
-			</div>
-		</div>
-	`;
 
 function renderUpdate(styler) {
 	return function (rendered) {

@@ -1,0 +1,54 @@
+#TEST 02
+# approche par perso
+perso:
+  subtitles:
+    content:
+      when:
+        - go: ref-text-01
+        - =+2: ref-text-02
+        - =+15: ref-text-03
+
+  # stagger ok , mais cet exemple est trop spécifique
+  list:
+    content:
+      when:
+        go: [ref1, ref2, ref3]
+        stagger: 0.25
+
+strap:
+  game: { when: { go: '' } }
+
+# stagger dans eventimes
+eventimes:
+  enter: 0.5
+  # crée 4 events ev000, ev001, ev002,
+  ev0: { stagger: 0.25, suffix: 00, times: 4 }
+
+when:
+  # référence définie par eventimes
+  enter:
+    text-sample:
+      content: { ref: txt01 }
+    subtitle:
+      content: { ref: txt02, lang: langue }
+  # durée absolue
+  1:
+    text-sample:
+      content: { ref: txt02 }
+  # durée relative à la précédente
+  =+3:
+    text-sample:
+      content: { ref: txt03 }
+  #  durée relative à une référence
+  enter+5:
+    text-sample:
+      leave: true
+      transition: { to: fadeIn }
+
+  # effet stagger avec des contenus "=*" signale un effet de décalage
+  =*ev0:
+    text-sample:
+      content: [{ ref: txt01 }, { ref: txt02 }, { ref: txt03 }, { ref: txt04 }]
+      # ou bien, raccourci :
+      ref: [txt01, txt02, txt03, txt04]
+      text: [Bonjour, comment, ça va ?]

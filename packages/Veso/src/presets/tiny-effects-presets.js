@@ -9,7 +9,7 @@ export const tinyEffectsPresets = {
 				interpolation: {
 					from: { opacity: 1, scale: 1 },
 					to: { opacity: 0, scale: 0 },
-					duration: 300,
+					duration: 600,
 				},
 			},
 			{

@@ -3,13 +3,14 @@ import { html } from 'sinuous';
 import { Eso } from 'veso';
 import { Slot } from './slot';
 import { DEFAULT_STYLES } from '../data/constantes';
-import { computed } from 'sinuous/observable';
 
 // surcharger content
-const content = (id) => {
+const contentRevision = (id) => {
 	return {
 		update(content) {
-			return innerLayer(content, id);
+			return typeof content === 'string'
+				? Slot(content)
+				: innerLayer(content, id);
 		},
 	};
 };
@@ -17,15 +18,13 @@ const content = (id) => {
 export class Layer extends Eso {
 	static nature = 'layer';
 	constructor(story, emitter) {
+		story.initial.className = story.initial.className + ' layer-top ';
 		super(story, emitter, false);
-		this.revision.content = content(story.id);
+		this.revision.content = contentRevision(story.id);
 		this.init();
 	}
-	render({ id, content, class: classes, ...attrs }) {
-		const className = addToClassName('layer-top', classes);
-		return html`<section id=${id} class=${className} ...${attrs}>
-			${content}
-		</section>`;
+	render({ id, content, ...attrs }) {
+		return html`<section id=${id} ...${attrs}>${content}</section>`;
 	}
 }
 
@@ -36,7 +35,7 @@ function innerLayer(content, layerId) {
 		const id = joinId(layerId, config.id);
 		const item = new LayerItem({
 			style: keyToLowercase(config.statStyle),
-			class: config.className,
+			class: 'layer-item ' + config.className ? config.className : '',
 			id,
 		});
 		layer.push(item);
@@ -44,19 +43,11 @@ function innerLayer(content, layerId) {
 	return layer;
 }
 
-function LayerItem({ id, class: classes, ...attrs }) {
-	const slot = new Slot(id);
-	const className = addToClassName('layer-item', classes);
-	return html`<article id=${id} lass=${className} ...${attrs}>
-		${slot}
-	</article>`;
+function LayerItem({ id, ...attrs }) {
+	const slot = Slot(id);
+	return html`<article id=${id} ...${attrs}>${slot}</article>`;
 }
 
-function addToClassName(name, classes) {
-	return typeof classes === 'function'
-		? computed(() => `${name} ${classes()}`)
-		: name;
-}
 // viennent de Eso/helpers
 // un export pour une fonction simplifiée non-réactive, des classes et fonctions ?
 function joinId(...args) {

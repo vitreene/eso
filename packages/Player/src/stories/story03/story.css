@@ -1,15 +1,3 @@
-.container-text {
-	position: absolute;
-	width: 100%;
-	height: 100%;
-	display: grid;
-	grid-template: 1fr;
-}
-.inner-text-under,
-.inner-text-over {
-	grid-area: 1/1;
-}
-
 .x-new-text {
 	/* color: red; */
 	animation: 0.5s fade-in forwards;

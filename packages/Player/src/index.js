@@ -1,3 +1,4 @@
+import { fetchStories } from './fetch/fetching';
 import './style.css';
 
 import { initRuntime } from './runtime';
@@ -17,6 +18,8 @@ const Player = async () => {
 
 Player();
 
+['/stories/file03.yaml'].forEach(fetchStories);
+// ['/stories/file01.yaml', '/stories/file02.yaml'].forEach(fetchStories);
 // test import json
 // ============================================================
 // fetch('stories/db.json')
