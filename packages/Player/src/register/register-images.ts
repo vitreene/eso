@@ -1,15 +1,19 @@
-import { imagesCollection } from '../data/images-collection';
-const composantTypeImage = ['img', 'sprite'];
+import { Nature } from '../../../types/ESO_Namespace';
+import { Perso } from '../../../types/initial';
 
-export async function registerImages(stories) {
-	const srcs = findSrcs(
+import { imagesCollection } from '../data/images-collection';
+const composantTypeImage = [Nature.IMG, Nature.SPRITE];
+
+type Srcs = string[];
+export async function registerImages(stories: Perso[]): Promise<void> {
+	const srcs: Srcs = findSrcs(
 		stories.filter((story) => composantTypeImage.includes(story.nature))
 	);
 	console.log('src', srcs);
 	await loadImages(srcs);
 }
 
-function findSrcs(imgs) {
+function findSrcs(imgs: Perso[]) {
 	const srcs = imgs.map((story) => story.initial.content).filter(Boolean);
 	for (const story of imgs) {
 		story.actions &&
@@ -17,9 +21,10 @@ function findSrcs(imgs) {
 				(action) => action.content && srcs.push(action.content)
 			);
 	}
-	return srcs;
+	return srcs as Srcs;
 }
-export async function loadImages(srcs) {
+
+export async function loadImages(srcs: string[]) {
 	return await Promise.all(
 		srcs.map(
 			(src) =>

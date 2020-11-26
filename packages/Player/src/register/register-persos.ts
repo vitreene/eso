@@ -2,8 +2,9 @@ import { persos } from '../data/store';
 import { emitter } from '../data/emitter';
 
 import initCreatePerso from './declare-persos';
+import { Perso } from '../../../types/initial';
 
-export function registerPersos(stories) {
+export function registerPersos(stories: Perso[]) {
 	const createPerso = initCreatePerso();
 	(Array.isArray(stories) ? stories : [stories]).forEach((story) => {
 		switch (story.nature) {

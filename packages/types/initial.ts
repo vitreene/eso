@@ -1,4 +1,6 @@
 import * as CSS from 'csstype';
+import { ESO_Namespace, ESO_Lang, Nature } from './ESO_Namespace';
+import { Eventime } from './eventime';
 
 export interface Style
 	extends CSS.Properties<string | number>,
@@ -11,7 +13,10 @@ export interface EsoEvent {
 	ns?: ESO_Namespace;
 	data?: any;
 }
+
+// Si je déclare comme tuple, la différence sera plus facile à controler
 export interface EsoEventCondensed {
+	// [event name: action]
 	[key: string]: string;
 }
 
@@ -38,7 +43,7 @@ export interface EsoAction extends EsoInitial {
 
 export interface Perso {
 	readonly id: string;
-	readonly nature: string;
+	readonly nature: Nature;
 	initial: EsoInitial;
 	listen?: EsoEvents;
 	actions: EsoActions;
@@ -52,7 +57,7 @@ type EsoEmit = {
 };
 
 interface EsoEmitEvent {
-	event: { name?: string; ns?: ESO_Namespace };
+	event: Eventime;
 	data?: any;
 }
 
@@ -85,29 +90,9 @@ interface EsoLang {
 
 type EsoContent = string | Array<EsoInitial> | EsoLang;
 
-// a recoller avec contantes.js
-export enum ESO_Namespace {
-	MAIN = 'anim',
-	TELCO = 'telco',
-	PLAY = 'play',
-	PAUSE = 'pause',
-	STOP = 'stop',
-	REWIND = 'rewind',
-	STRAP = 'strap',
-	TEMPO = 'tempo',
-	TOGGLE = 'toggle',
-	DEFAULT_NS = MAIN,
-	CONTAINER_ESO = 'main',
-}
-
-export enum ESO_Lang {
-	'fr',
-	'en',
-	'de',
-	'es',
-	'nl',
-	'it',
-	'pl',
-	'pt',
-	'ru',
+export interface CollectionImages {
+	width: number;
+	height: number;
+	ratio: number;
+	src: string;
 }

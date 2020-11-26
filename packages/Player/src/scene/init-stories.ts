@@ -1,10 +1,13 @@
 // register actions, images, action, events
+import { Perso } from '../../../types/initial';
+import { Eventimes } from '../../../types/eventime';
+
 import { registerImages } from '../register/register-images';
 import { registerPersos } from '../register/register-persos';
 import { registerActions } from '../register/register-actions';
 import { registerStraps } from '../register/register-straps';
 
-export const initStories = async (stories, eventimes) => {
+export const initStories = async (stories: Perso[], eventimes: Eventimes) => {
 	await registerImages(stories);
 	registerPersos(stories);
 	registerActions(stories);

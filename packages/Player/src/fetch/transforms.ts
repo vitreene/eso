@@ -1,20 +1,6 @@
-import { ESO_Namespace, ESO_Lang, Perso } from '../../../types/initial';
+import { Perso } from '../../../types/initial';
 
-const MAIN = ESO_Namespace.MAIN;
-const TELCO = ESO_Namespace.TELCO;
-const TC = ESO_Namespace.TELCO;
-const PLAY = ESO_Namespace.PLAY;
-const PAUSE = ESO_Namespace.PAUSE;
-const STOP = ESO_Namespace.STOP;
-const REWIND = ESO_Namespace.REWIND;
-const STRAP = ESO_Namespace.STRAP;
-const TEMPO = ESO_Namespace.TEMPO;
-const TOGGLE = ESO_Namespace.TOGGLE;
-const DEFAULT_NS = ESO_Namespace.MAIN;
-const CONTAINER_ESO = ESO_Namespace.CONTAINER_ESO;
-
-const FR = ESO_Lang.fr;
-const EN = ESO_Lang.en;
+import { STRAP, TC, PLAY, PAUSE, TOGGLE } from '../data/constantes';
 
 const actions: Perso = {
 	id: 'togglePlay',
@@ -70,5 +56,6 @@ const actions: Perso = {
 console.log(actions);
 
 export function transforms(story: any) {
+	console.log('yaml res:', JSON.stringify(story, null, 4));
 	return story;
 }

@@ -18,3 +18,7 @@
 	height: 100%;
 	color: yellow;
 }
+
+article {
+	outline: 1px solid cyan;
+}

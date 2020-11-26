@@ -1,3 +1,5 @@
+import { Nature } from '../../../../types/ESO_Namespace';
+import { Perso } from '../../../../types/initial';
 import {
 	CONTAINER_ESO,
 	STRAP,
@@ -5,13 +7,14 @@ import {
 	PLAY,
 	PAUSE,
 	TOGGLE,
-	DEFAULT_NS,
+	FR,
+	EN,
 } from '../../data/constantes';
 
 //FIXME  il doit entrer en scene et quitter
-export const root = {
+export const root: Perso = {
 	id: CONTAINER_ESO,
-	nature: 'layer',
+	nature: Nature.LAYER,
 	initial: {
 		className: 'container',
 		content: [
@@ -35,9 +38,9 @@ export const root = {
 	actions: [{ name: 'leave', leave: true }],
 };
 
-export const layerFond = {
+export const layerFond: Perso = {
 	id: 'fond',
-	nature: 'layer',
+	nature: Nature.LAYER,
 	initial: {
 		statStyle: {
 			position: 'absolute',
@@ -62,9 +65,9 @@ export const layerFond = {
 	],
 };
 
-export const layerGrid01 = {
+export const layerGrid01: Perso = {
 	id: 'grid-01',
-	nature: 'layer',
+	nature: Nature.LAYER,
 	initial: {
 		statStyle: {
 			position: 'absolute',
@@ -108,9 +111,9 @@ export const layerGrid01 = {
 	],
 };
 
-export const textSample = {
+export const textSample: Perso = {
 	id: 'text-sample',
-	nature: 'bloc',
+	nature: Nature.BLOC,
 	initial: {
 		dimensions: { width: 421, height: 214 },
 		className: 'totoo',
@@ -187,19 +190,14 @@ export const textSample = {
 				},
 				duration: 1000,
 			},
-			content: {
-				lang: 'en',
-				refLang: 'sous-titre',
-				ref: 'txt01',
-				effect: 'toto',
-			},
+			content: 'fini',
 		},
 	],
 };
 
-export const imageSample = {
+export const imageSample: Perso = {
 	id: 'image',
-	nature: 'img',
+	nature: Nature.IMG,
 	initial: {
 		content: './ikono/vignette.jpg',
 		fit: 'cover', //"cover"
@@ -257,9 +255,9 @@ export const imageSample = {
 	],
 };
 
-export const imageSample2 = {
+export const imageSample2: Perso = {
 	id: 'image2',
-	nature: 'img',
+	nature: Nature.IMG,
 	initial: {
 		content: './ikono/perfume_002.jpg',
 		fit: 'cover', //"cover"
@@ -301,9 +299,9 @@ export const imageSample2 = {
 	],
 };
 
-export const togglePlay = {
+export const togglePlay: Perso = {
 	id: 'togglePlay',
-	nature: 'button',
+	nature: Nature.BUTTON,
 	initial: {
 		statStyle: {
 			color: 'white',
@@ -352,9 +350,9 @@ export const togglePlay = {
 	},
 };
 
-export const spriteSample = {
+export const spriteSample: Perso = {
 	id: 'sprite',
-	nature: 'sprite',
+	nature: Nature.SPRITE,
 	initial: {
 		content: './ikono/Mystery-80.png',
 		dimensions: { height: 300 },

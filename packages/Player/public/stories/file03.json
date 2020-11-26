@@ -7,6 +7,27 @@
     "pause",
     "play"
   ],
+  "eventimes": {
+    "start": {
+      "startAt": 0,
+      "events": {
+        "0": {
+          "name": "go",
+          "data": [
+            "un",
+            "deux",
+            "trois"
+          ]
+        },
+        "1000": "ev011",
+        "3000": "ev012",
+        "5000": "ev013",
+        "7000": "ev014",
+        "9000": "ev015",
+        "15000": "leave-root"
+      }
+    }
+  },
   "perso": [
     {
       "layer": {

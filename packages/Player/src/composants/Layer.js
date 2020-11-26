@@ -35,7 +35,7 @@ function innerLayer(content, layerId) {
 		const id = joinId(layerId, config.id);
 		const item = new LayerItem({
 			style: keyToLowercase(config.statStyle),
-			class: 'layer-item ' + config.className ? config.className : '',
+			class: 'layer-item ' + (config.className ? config.className : ''),
 			id,
 		});
 		layer.push(item);
