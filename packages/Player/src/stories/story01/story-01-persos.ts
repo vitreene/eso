@@ -9,6 +9,7 @@ import {
 	TOGGLE,
 	FR,
 	EN,
+	DEFAULT_NS,
 } from '../../data/constantes';
 
 //FIXME  il doit entrer en scene et quitter
@@ -133,9 +134,6 @@ export const textSample: Perso = {
 			event: { ns: STRAP, name: 'move' },
 			data: { id: 'text-sample', event: 'move' },
 		},
-		click: {
-			event: { ns: TC, name: PAUSE },
-		},
 	},
 
 	listen: [
@@ -206,18 +204,23 @@ export const imageSample: Perso = {
 		},
 	},
 	emit: {
-		click: {
-			event: { ns: STRAP, name: 'add-event-list' },
-			data: {
-				name: 'click',
-				start: 0,
-				events: [
-					{ start: 0, name: 'ev010' },
-					{ start: 1000, name: 'ev011' },
-					{ start: 2000, name: 'ev014' },
-				],
+		click: [
+			{
+				event: { ns: TC, name: 'pause' },
 			},
-		},
+			// {
+			// 	event: { ns: STRAP, name: 'add-event-list' },
+			// 	data: {
+			// 		name: 'click',
+			// 		start: 0,
+			// 		events: [
+			// 			{ start: 0, name: 'ev010' },
+			// 			{ start: 1000, name: 'ev011' },
+			// 			{ start: 2000, name: 'ev014' },
+			// 		],
+			// 	},
+			// },
+		],
 	},
 	listen: [
 		{ event: 'go', action: 'enter' },

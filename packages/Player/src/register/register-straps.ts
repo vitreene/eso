@@ -12,6 +12,7 @@ import GameStrap from '../straps/game-logic-strap';
 import Minuteur from '../straps/minuteur';
 
 import { STRAP, TOGGLE, DRAG, MOVE } from '../data/constantes';
+import { Eventime } from '../../../types/eventime';
 /* 
 Par composition, ajouter aux straps :
 - raz du state,
@@ -28,14 +29,18 @@ key est donc soit par appel, soit à la création d'instance.
 créer un cas réel.
 */
 
-export function registerStraps(eventimes) {
+export function registerStraps(eventimes: Eventime): void {
 	const timeLiner = new TimeLiner(eventimes);
 	const chrono = clock(timeLiner);
 
-	emitter.on([STRAP, 'add-event-list'], (data) =>
+	emitter.on([STRAP, 'add-event-list'], (data: Eventime) =>
 		addEventList(data, chrono, timeLiner)
 	);
 
+	/* 
+	trouver une meilleure façon d'initialiser les strap 
+	ne pourrait-on  pas importer directement emitter dans chaque strap ?
+	*/
 	const DragStrap = Drag(emitter);
 	emitter.on([STRAP, DRAG], (data) => new DragStrap(data));
 	const Move = moveStrap(emitter);

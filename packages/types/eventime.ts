@@ -1,14 +1,10 @@
 import { ESO_Namespace } from './ESO_Namespace';
 
-export interface Eventimes {
-	name: string;
-	start: number;
-	events: Array<Eventime>;
-}
-
 export interface Eventime {
+	type?: string;
 	start?: number;
 	name?: string;
 	ns?: ESO_Namespace;
 	data?: any;
+	events?: Array<Eventime>;
 }

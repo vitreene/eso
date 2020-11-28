@@ -2,9 +2,9 @@
 // - TC, EV, ST...
 // si ns n'est pas précisé, c'est la valeurpar défaut.
 
-import { Eventimes } from '../../../../types/eventime';
+import { Eventime } from '../../../../types/eventime';
 
-export const eventimes: Eventimes = {
+export const eventimes: Eventime = {
 	name: 'start',
 	start: 0,
 	events: [
@@ -14,9 +14,14 @@ export const eventimes: Eventimes = {
 		{ start: 2000, name: 'ev013' },
 		{ start: 3000, name: 'ev014' },
 		{ start: 4000, name: 'ev015' },
-		{ start: 5000, name: 'leave-root' },
-		// preciser le namespace
-		// s'il n'est pas celui par défaut
-		// { ns: TC, start: 3500, name: PAUSE }
+		{
+			start: 5000,
+			name: 'leave-root',
+			events: [{ start: 1000, name: 'bye', data: ['quatre', 'cinq', 'six'] }],
+		},
 	],
 };
+
+// preciser le namespace
+// s'il n'est pas celui par défaut
+// { ns: TC, start: 3500, name: PAUSE }

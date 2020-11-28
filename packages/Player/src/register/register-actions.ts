@@ -1,4 +1,4 @@
-import { Perso, EsoEventCondensed } from '../../../types/initial';
+import { Perso } from '../../../types/initial';
 
 import { emitter } from '../data/emitter';
 import { DEFAULT_NS } from '../data/constantes';
@@ -12,46 +12,50 @@ export function registerActions(stories: Perso[]) {
 		if (!listen) continue;
 
 		for (const e of listen) {
-			let NS: string = DEFAULT_NS;
+			let ns: ESO_Namespace = DEFAULT_NS;
+			let name: string = null;
+			let action: string = null;
 			// e == string
 			if (typeof e == 'string') {
-				sub({ ns: NS, name: e });
-			} else {
-				let action: string = null;
-				let name: string = null;
+				action = e;
+				name = e;
 				// e == EsoEventCondensed
-				if (Object.keys(e).length === 1) [name, action] = Object.values(e);
-				// e = EsoEvent
-				else {
-					name = e.event;
-					action = e.action;
-					NS = e.ns || NS;
-				}
-				const actionFound = actions.find((a) => a.name === action);
-				if (actionFound) {
-					const { name: _, ...other } = actionFound;
-					sub({
-						ns: NS,
-						name,
-						data: { id, action, ...other },
-					});
-				} else
-					console.warn(
-						'l’action %s n’a pas été trouvée. Vérifier les persos.',
-						e.action
-					);
+			} else if (Array.isArray(e)) {
+				[name, action] = e;
 			}
+			// e = EsoEvent
+			else {
+				name = e.event;
+				action = e.action;
+				ns = e.ns || ns;
+			}
+
+			const actionFound = actions.find((a) => a.name === action);
+			if (actionFound) {
+				const { name: _, ...other } = actionFound;
+				subscribe({
+					ns: ns,
+					name,
+					data: { id, action, ...other },
+				});
+			} else
+				console.warn(
+					'l’action %s n’a pas été trouvée. Vérifier les persos.',
+					action
+				);
 		}
 	}
 }
 
-const pub = (story: any) => (other: any) =>
-	sceneUpdateHandler({ ...story, ...other });
-
 type Subscribe = {
-	ns: ESO_Namespace | string;
+	ns: ESO_Namespace;
 	name: string;
 	data?: any;
 };
-const sub = ({ ns, name, data: story = null }: Subscribe) =>
-	emitter.on([ns, name], pub(story));
+function subscribe({ ns, name, data = null }: Subscribe) {
+	return emitter.on([ns, name], publish(data));
+}
+
+function publish(data: any) {
+	return (other: any) => sceneUpdateHandler({ ...data, ...other });
+}

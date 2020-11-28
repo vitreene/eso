@@ -14,11 +14,7 @@ export interface EsoEvent {
 	data?: any;
 }
 
-// Si je déclare comme tuple, la différence sera plus facile à controler
-export interface EsoEventCondensed {
-	// [event name: action]
-	[key: string]: string;
-}
+export type EsoEventCondensed = [name: string, action: string]; // [event name, action]
 
 export interface EsoInitial {
 	id?: string;

@@ -1,21 +1,25 @@
+import { TimeLiner, TimeLine, TimelineKey } from './solver';
+
 import { controlAnimations } from 'veso';
 import { emitter } from '../data/emitter';
 import { TC, PLAY, PAUSE, REWIND } from '../data/constantes';
+import { ESO_Namespace } from '../../../types/ESO_Namespace';
 
 //////// CLOCK /////////////////////////
 // TODO use performance.now()
-export function clock(timeLiner) {
-	const beat = 10; // tout les 1/100e de seconde
-	const startTime = Date.now();
-	const maxCount = 100000 + 1;
+export function clock(timeLiner: TimeLiner) {
+	const beat: number = 10; // tout les 1/100e de seconde
+	const startTime: number = Date.now();
+	const maxCount: number = 100000 + 1;
 
-	let tick = beat;
-	let count = 0;
-	let elapsed = 0;
-	let secondes = 0;
-	let timeout;
+	let tick: number = beat;
+	let count: number = 0;
+	let elapsed: number = 0;
+	let secondes: number = 0;
+	let timeout: any;
 
-	let isPlaying = true;
+	let isPlaying: boolean = true;
+
 	emitter.on([TC, PLAY], () => {
 		isPlaying = true;
 		controlAnimations.play();
@@ -35,22 +39,24 @@ export function clock(timeLiner) {
 	emitter.emit('*.init', { chrono: 0 });
 
 	const timeLine = timeLiner.timeLine;
-	const { eventDatas } = timeLiner;
+	const eventDatas = timeLiner.eventDatas;
 	console.log('timeLine', timeLine);
 	console.log('eventDatas', eventDatas);
 
-	const emitEvent = (count) => (tm) => (NS) => {
+	const emitEvent = (count: number) => (tm: TimelineKey) => (
+		NS: ESO_Namespace
+	) => {
 		if (tm[NS][count]) {
-			const _emitEvent = (name) => {
-				const data = ((eventDatas[NS] || {})[count] || {})[name];
-				console.log('name', name, data);
+			const _emitEvent = (name: string) => {
+				const data: any = ((eventDatas[NS] || {})[count] || {})[name];
+				console.log('name', name, data ? data : '');
 				emitter.emit([NS, name], { ...data, chrono: count });
 			};
 			tm[NS][count].forEach(_emitEvent);
 		}
 	};
 
-	function loop() {
+	function loop(): void {
 		if (isPlaying) {
 			// tout les dixièmes de seconde
 			if (count % 100 === 0) {
@@ -74,5 +80,5 @@ export function clock(timeLiner) {
 	//  séparer le lancement de la boucle de emit init;
 	setTimeout(loop, 0);
 
-	return () => parseInt(count / 100) * 100 + 100; // next tick
+	return () => Math.round(count / 100) * 100 + 100; // next tick
 }
