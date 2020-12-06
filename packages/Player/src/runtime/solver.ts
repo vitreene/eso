@@ -122,9 +122,9 @@ export class TimeLiner {
 			!this.solved[NS] && (this.solved[NS] = {});
 
 			let startAt = null;
-			if (typeof event.start === 'number') startAt = event.start;
-			else if (this.solved[NS][event.start])
-				startAt = this.solved[NS][event.start][0];
+			if (typeof event.startAt === 'number') startAt = event.startAt;
+			else if (this.solved[NS][event.startAt])
+				startAt = this.solved[NS][event.startAt][0];
 			// else if (event.type === 'action') startAt = 0;
 
 			if (startAt !== null) {
@@ -141,7 +141,7 @@ export class TimeLiner {
 	private _mapEventDatas(evenTimes: Eventime, eventDatas: EventDatas = {}) {
 		for (const event of evenTimes.events) {
 			if (event.data) {
-				const startAt = (evenTimes.start || 0) + (event.start || 0);
+				const startAt = (evenTimes.startAt || 0) + (event.startAt || 0);
 				const NS = event.ns || DEFAULT_NS;
 				!eventDatas[NS] && (eventDatas[NS] = {});
 				!eventDatas[NS][startAt] && (eventDatas[NS][startAt] = {});

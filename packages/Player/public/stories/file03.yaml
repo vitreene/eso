@@ -8,16 +8,21 @@ defs:
   - &PLAY play
 
 eventimes:
-  start:
-    startAt: 0
+  0:
+    name: start
     events:
       0: { name: go, data: [un, deux, trois] }
-      1000: ev011
-      3000: ev012
-      5000: ev013
-      7000: ev014
-      9000: ev015
-      15000: leave-root
+      500: ev011
+      1000: ev012
+      2000: ev013
+      3000: ev014
+      4000: ev015
+      5000:
+        name: 'leave-root'
+        events:
+          1000:
+            name: 'bye'
+            data: ['quatre', 'cinq', 'six']
 
 perso:
   - layer:
@@ -110,49 +115,49 @@ perso:
           data: { id: telco, ns: *TC, valueA: *PAUSE, valueB: *PLAY }
 
   # traduction directe : déprécié
-  - root:
-      id: *CONTAINER_ESO
-      nature: layer
-      initial:
-        className: container
-        content: s01
-      listen:
-        - { event: ev011, action: ev011 }
-      actions:
-        - { name: ev011, className: -=layer-top /=toptip container }
+  # - root:
+  #     id: *CONTAINER_ESO
+  #     nature: layer
+  #     initial:
+  #       className: container
+  #       content: s01
+  #     listen:
+  #       - { event: ev011, action: ev011 }
+  #     actions:
+  #       - { name: ev011, className: -=layer-top /=toptip container }
 
-  - textSample:
-      id: text-sample
-      nature: bloc
-      initial:
-        dimensions: { width: 600, height: 60 }
-        className: bloc-center
-        statStyle:
-          {
-            color: white,
-            font-weight: bold,
-            padding: 24,
-            border-radius: 16,
-            grid-area: 1/1,
-            margin: auto,
-          }
-        content: dimanche
-      listen:
-        - { event: ev011, action: enter }
-        - { event: ev012, action: step02 }
-        - { event: ev013, action: step03 }
-        - { event: ev014, action: step04 }
-        - { event: ev015, action: step05 }
-      actions:
-        - name: enter
-          move: { slot: s01 }
-          transition: { to: fadeIn }
-          statStyle: { font-size: 100, background-color: '#49b6b6cf' }
-        - name: step02
-          content: { lang: fr, refLang: sous-titre, ref: txt01, effect: fade }
-        - name: step03
-          content: { lang: en, refLang: langue, ref: txt01, effect: fade }
-        - name: step04
-          content: { text: A bientot pour un prochain essai, effect: fade }
-        - name: step05
-          content: { text: c’est fini, effect: letters-top-down }
+  # - textSample:
+  #     id: text-sample
+  #     nature: bloc
+  #     initial:
+  #       dimensions: { width: 600, height: 60 }
+  #       className: bloc-center
+  #       statStyle:
+  #         {
+  #           color: white,
+  #           font-weight: bold,
+  #           padding: 24,
+  #           border-radius: 16,
+  #           grid-area: 1/1,
+  #           margin: auto,
+  #         }
+  #       content: dimanche
+  #     listen:
+  #       - { event: ev011, action: enter }
+  #       - { event: ev012, action: step02 }
+  #       - { event: ev013, action: step03 }
+  #       - { event: ev014, action: step04 }
+  #       - { event: ev015, action: step05 }
+  #     actions:
+  #       - name: enter
+  #         move: { slot: s01 }
+  #         transition: { to: fadeIn }
+  #         statStyle: { font-size: 100, background-color: '#49b6b6cf' }
+  #       - name: step02
+  #         content: { lang: fr, refLang: sous-titre, ref: txt01, effect: fade }
+  #       - name: step03
+  #         content: { lang: en, refLang: langue, ref: txt01, effect: fade }
+  #       - name: step04
+  #         content: { text: A bientot pour un prochain essai, effect: fade }
+  #       - name: step05
+  #         content: { text: c’est fini, effect: letters-top-down }

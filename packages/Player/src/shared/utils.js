@@ -154,3 +154,8 @@ export const pipe = (...fns) => (x) => fns.reduce(execute, x);
 export function isVoid(x) {
 	return !x && x !== 0;
 }
+
+// renvoie un tableau s'il n'en est pas un :
+export function toArray(value) {
+	return Array.isArray(value) ? value : [value];
+}

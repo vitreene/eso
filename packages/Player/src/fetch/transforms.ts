@@ -1,61 +1,33 @@
 import { Perso } from '../../../types/initial';
 
-import { STRAP, TC, PLAY, PAUSE, TOGGLE } from '../data/constantes';
+import { pipe } from '../shared/utils';
+import { transformEventimes } from './transform-eventimes';
 
-const actions: Perso = {
-	id: 'togglePlay',
-	nature: 'button',
-	initial: {
-		statStyle: {
-			color: 'white',
-			backgroundColor: 'blue',
-			borderRadius: '4px',
-			fontWeight: 'bold',
-			fontSize: '12px',
-			padding: '1rem',
-			textTransform: 'uppercase',
-			textAlign: 'center',
-		},
-		// dimensions: { width: 80, ratio: 1 },
-		content: 'pause',
-	},
+export interface Stories {
+	defs?: string[];
+	eventimes?: unknown;
+	perso?: unknown[];
+}
 
-	listen: [
-		{ event: 'go', action: 'enter' },
-		{ ns: TC, event: 'play', action: 'play' },
-		{ ns: TC, event: 'pause', action: 'pause' },
-	],
-	actions: [
-		{
-			name: 'enter',
-			move: { layer: 'grid-01', slot: 'grid-01_s05' },
-		},
-		{
-			name: 'play',
-			content: 'pause',
-		},
-		{
-			name: 'pause',
-			content: 'play',
-		},
-	],
+export function transforms(yamlStories: Stories) {
+	console.log('yaml res:', JSON.stringify(yamlStories, null, 4));
+	const stories = pipe(transformEventimes, natureSetProperty)(yamlStories);
+	return stories;
+}
 
-	emit: {
-		click: {
-			event: { ns: STRAP, name: TOGGLE },
-			data: {
-				id: 'telco',
-				ns: TC,
-				valueA: PAUSE,
-				valueB: PLAY,
-			},
-		},
-	},
-};
+function natureSetProperty(s: Stories) {
+	const _persos = s.perso;
+	const persos = [];
+	for (const _perso of _persos) {
+		console.log(_perso);
 
-console.log(actions);
+		const nature = Object.keys(_perso).pop();
+		const other = _perso[nature];
+		// si nature est déclaré, il est prioritaire ?
+		const perso: Perso = { nature, ...other };
+		persos.push(perso);
+	}
+	console.log('persos-->', persos);
 
-export function transforms(story: any) {
-	console.log('yaml res:', JSON.stringify(story, null, 4));
-	return story;
+	return { ...s, perso: persos };
 }

@@ -6,6 +6,12 @@
 		"veso": "^0.1.0"
 	},
 	"scripts": {
-		"player": "webpack-dev-server  --mode development --config ../../webpack.config.js"
+		"player": "webpack-dev-server  --mode development --config ../../webpack.config.js",
+		"test": "jest"
+	},
+	"jest": {
+		"transformIgnorePatterns": [
+			"<rootDir>.*(node_modules)(?!.*veso.*).*$"
+		]
 	}
 }

@@ -1,5 +1,6 @@
 // a recoller avec contantes.js
 
+// remplacer par ESO_Channel
 export enum ESO_Namespace {
 	MAIN = 'anim',
 	TELCO = 'telco',

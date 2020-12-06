@@ -2,24 +2,25 @@ import { Nature } from '../../../types/ESO_Namespace';
 import { Perso } from '../../../types/initial';
 
 import { imagesCollection } from '../data/images-collection';
+import { toArray } from '../shared/utils';
 const composantTypeImage = [Nature.IMG, Nature.SPRITE];
 
 type Srcs = string[];
-export async function registerImages(stories: Perso[]): Promise<void> {
+export async function registerImages(persos: Perso[]): Promise<void> {
 	const srcs: Srcs = findSrcs(
-		stories.filter((story) => composantTypeImage.includes(story.nature))
+		persos.filter((perso) => composantTypeImage.includes(perso.nature))
 	);
 	console.log('src', srcs);
 	await loadImages(srcs);
 }
 
 function findSrcs(imgs: Perso[]) {
-	const srcs = imgs.map((story) => story.initial.content).filter(Boolean);
-	for (const story of imgs) {
-		story.actions &&
-			story.actions.forEach(
-				(action) => action.content && srcs.push(action.content)
-			);
+	const srcs = imgs.map((perso) => perso.initial.content).filter(Boolean);
+	for (const perso of imgs) {
+		if (!perso.actions) continue;
+		toArray(perso.actions).forEach(
+			(action) => action.content && srcs.push(action.content)
+		);
 	}
 	return srcs as Srcs;
 }

@@ -10,7 +10,7 @@ export function registerActions(stories: Perso[]) {
 		const { id, listen, actions } = story;
 
 		if (!listen) continue;
-
+		// passer cette logique dans la transformation yaml
 		for (const e of listen) {
 			let ns: ESO_Namespace = DEFAULT_NS;
 			let name: string = null;
@@ -29,6 +29,10 @@ export function registerActions(stories: Perso[]) {
 				action = e.action;
 				ns = e.ns || ns;
 			}
+			// FIXME choisir le format objet ou tableau pour les actions
+			// const actionFound = Array.isArray(actions)
+			// 	? actions.find((a) => a.name === action)
+			// 	: actions[action];
 
 			const actionFound = actions.find((a) => a.name === action);
 			if (actionFound) {
