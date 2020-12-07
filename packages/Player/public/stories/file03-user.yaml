@@ -24,7 +24,7 @@ eventimes:
             name: 'bye'
             data: ['quatre', 'cinq', 'six']
 
-perso:
+persos:
   - layer:
       id: *CONTAINER_ESO
       initial:

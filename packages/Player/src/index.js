@@ -20,9 +20,9 @@ import { initStories } from './scene/init-stories';
 const Player = async () => {
 	const story = await Promise.all(['/stories/file04.yaml'].map(fetchStories));
 	console.log('STORY', story[0]);
-	const { perso, eventimes } = story[0];
+	const { persos, eventimes } = story[0];
 
-	await initStories(perso, eventimes);
+	await initStories(persos, eventimes);
 	initRuntime();
 };
 

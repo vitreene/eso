@@ -8,21 +8,23 @@ defs:
   - &PLAY play
 
 eventimes:
-  0:
-    name: start
-    events:
-      0: { name: go, data: [un, deux, trois] }
-      500: ev011
-      1000: ev012
-      2000: ev013
-      3000: ev014
-      4000: ev015
-      5000:
-        name: 'leave-root'
+  name: start
+  startAt: 0
+  events:
+    [
+      { startAt: 0, name: 'go', data: ['un', 'deux', 'trois'] },
+      { startAt: 500, name: 'ev011' },
+      { startAt: 1000, name: 'ev012' },
+      { startAt: 2000, name: 'ev013' },
+      { startAt: 3000, name: 'ev014' },
+      { startAt: 4000, name: 'ev015' },
+      {
+        startAt: 5000,
+        name: 'leave-root',
         events:
-          1000:
-            name: 'bye'
-            data: ['quatre', 'cinq', 'six']
+          [{ startAt: 1000, name: 'bye', data: ['quatre', 'cinq', 'six'] }],
+      },
+    ]
 
 persos:
   - layer:
