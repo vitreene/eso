@@ -5,7 +5,7 @@ import { Stories } from './transforms';
 export function transformEventimes(s: Stories) {
 	const _eventimes = s.eventimes;
 	const eventimes = pipe(eventimesStartAt)(_eventimes);
-	// console.log('eventimes', eventimes);
+	console.log('eventimes', eventimes);
 
 	return { ...s, eventimes };
 }
@@ -48,11 +48,24 @@ export function eventimesStartAt(eventimes) {
 					startAt: _event.startAt || Number(time),
 					name: _event.name || time,
 					...(_event.data && { data: _event.data }),
-					...(_event.events && { events: eventimesStartAt(_event.events) }),
+					...(_event.events && {
+						events: eventimesStartAt(objectToArray(_event.events)),
+					}),
 				};
 			}
 			return event;
 		};
 	}
 	return _e;
+}
+
+function objectToArray(obj) {
+	if (typeof obj !== 'object') {
+		console.warn("ce n'est pas un object : %s", obj);
+		return obj;
+	}
+	const arr = [];
+	// propriétés itérables seulement
+	for (const o in obj) arr.push({ [o]: obj[o] });
+	return arr;
 }

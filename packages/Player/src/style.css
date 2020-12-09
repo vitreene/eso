@@ -79,6 +79,10 @@ h1 {
 	white-space: pre;
 }
 
+.tiny-effect-inner-text-over {
+	white-space: nowrap;
+}
+
 .tiny-effect-inner-text-under {
 	/* white-space: nowrap;
 	width: max-content; */

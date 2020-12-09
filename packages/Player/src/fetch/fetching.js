@@ -8,7 +8,7 @@ export async function fetchStories(path) {
 		.then((blob) => blob.text())
 		.then((yamlAsString) => pipe(YAML.parse, transforms)(yamlAsString))
 		// console.log('yaml res:', JSON.stringify(res, null, 4));)
-		.catch((err) => console.log('yaml err:', err));
+		.catch((err) => console.log('erreur sur la story:', err));
 }
 
 // test import json
