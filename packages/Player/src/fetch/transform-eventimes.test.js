@@ -20,33 +20,8 @@ describe('eventimes', () => {
 				},
 			},
 		};
-		/* 
-		const _eventimes = {
-			0: {
-				name: 'start',
-				events: [
-					{ 0: { name: 'go', data: ['un', 'deux', 'trois'] } },
-					{ 500: 'ev011' },
-					{ 1000: 'ev012' },
-					{ 2000: 'ev013' },
-					{ 3000: 'ev014' },
-					{ 4000: 'ev015' },
-					{
-						5000: {
-							name: 'leave-root',
-							events: [
-								{ startAt: 1000, name: 'bye', data: ['quatre', 'cinq', 'six'] },
-							],
-						},
-					},
-				],
-			},
-		}; */
-		const _results = eventimes;
 
-		expect(eventimesStartAt(_eventimes[0].events[1])).toStrictEqual(
-			_results.events[1]
-		);
+		const _results = eventimes;
 		expect(eventimesStartAt(_eventimes)).toStrictEqual(_results);
 	});
 
