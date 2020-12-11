@@ -30,10 +30,9 @@ persos:
       initial:
         className: container
         content: s01
-      listen:
-        - { event: ev011, action: enter }
+      listen: [ev011]
       actions:
-        - name: enter
+        - name: ev011
           className: -=layer-top /=toptip container }
 
   - bloc:
@@ -51,12 +50,8 @@ persos:
             margin: auto,
           }
         content: 'dimanche'
-      listen:
-        - { event: ev011, action: enter }
-        - { event: ev012, action: step02 }
-        - { event: ev013, action: step03 }
-        - { event: ev014, action: ev014 }
-        - { event: ev015, action: ev015 }
+
+      listen: [ev011: enter, ev012: step02, ev013: step03, ev014, ev015]
       actions:
         - name: enter
           move: { slot: s01 }

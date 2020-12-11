@@ -21,7 +21,7 @@ const Player = async () => {
 	const story = await Promise.all(['/stories/file04.yaml'].map(fetchStories));
 	// console.log('STORY', story[0]);
 	const { persos, eventimes } = story[0];
-
+	console.log('PERSOS', persos);
 	await initStories(persos, eventimes);
 	initRuntime();
 };
