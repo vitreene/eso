@@ -1,7 +1,7 @@
 /* 
 TODO
 - prototype / basedOn / extends
-
+- when
 */
 
 import { EsoActions, EsoEvent, EsoEvents, Perso } from '../../../types/initial';
@@ -29,9 +29,9 @@ export function natureSetProperty(_persos: Story['persos']) {
 
 export function dispatchPersoProps(_persos: Story['persos']) {
 	const persos = _persos.map((_perso: any) => {
-		const _actions = _perso.actions;
+		const _actions = _perso.actions || [];
 		const actions = pipe(actionsToArray, moveExpandProps)(_actions);
-		const _listen = _perso.listen;
+		const _listen = _perso.listen || [];
 		const listen = listenDisptachProps(_listen, actions);
 		return { ..._perso, actions, listen };
 	});

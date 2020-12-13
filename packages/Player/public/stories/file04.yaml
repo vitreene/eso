@@ -30,7 +30,6 @@ persos:
       initial:
         className: container
         content: s01
-      listen: [ev011]
       actions:
         ev011: { className: -=layer-top /=toptip container }
 
@@ -49,17 +48,15 @@ persos:
             margin: auto,
           }
         content: 'dimanche'
-
-      listen: [ev011: enter, ev012: step02, ev013: step03, ev014, ev015]
       actions:
-        enter:
+        ev011:
           move: s01
           transition: { to: fadeIn }
           statStyle: { font-size: 100, background-color: '#49b6b6cf' }
           className: new-text
-        step02:
+        ev012:
           content: { lang: fr, refLang: sous-titre, ref: txt01, effect: fade }
-        step03:
+        ev013:
           content: { lang: en, refLang: langue, ref: txt01, effect: fade }
         ev014:
           content: { text: A bientot pour un prochain essai, effect: fade }
