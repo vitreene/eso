@@ -38,4 +38,5 @@ export enum Nature {
 	POLYGON = 'polygon',
 	SOUND = 'sound',
 	VIDEO = 'video',
+	PROTO = 'proto',
 }

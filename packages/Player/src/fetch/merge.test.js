@@ -1,19 +1,19 @@
 import { MAIN } from '../data/constantes';
-import { deepmerge } from './merge';
+import { merge } from './merge';
 
 describe('merge deux persos', () => {
 	test('merge style', () => {
 		const _proto = proto.initial.statStyle;
 		const _text = text.initial.statStyle;
 		const _result = result.initial.statStyle;
-		expect(deepmerge.style(_proto, _text)).toStrictEqual(_result);
+		expect(merge.style(_proto, _text)).toStrictEqual(_result);
 	});
 
 	test('merge classNames', () => {
 		const _proto = proto.initial.className;
 		const _text = text.initial.className;
 		const _result = result.initial.className;
-		expect(deepmerge.className(_proto, _text)).toStrictEqual(_result);
+		expect(merge.className(_proto, _text)).toStrictEqual(_result);
 	});
 
 	test('combine classNames', () => {
@@ -26,20 +26,20 @@ describe('merge deux persos', () => {
 		const _result_add = 'proto add text';
 		const _uniq = '/=text';
 		const _result_uniq = 'text';
-		expect(deepmerge.className(_proto, _rm)).toStrictEqual(_result_rm);
-		expect(deepmerge.className(_proto, _tg)).toStrictEqual(_result_tg);
-		expect(deepmerge.className(_proto, _add)).toStrictEqual(_result_add);
-		expect(deepmerge.className(_proto, _uniq)).toStrictEqual(_result_uniq);
+		expect(merge.className(_proto, _rm)).toStrictEqual(_result_rm);
+		expect(merge.className(_proto, _tg)).toStrictEqual(_result_tg);
+		expect(merge.className(_proto, _add)).toStrictEqual(_result_add);
+		expect(merge.className(_proto, _uniq)).toStrictEqual(_result_uniq);
 	});
 
 	test('initial merge', () => {
-		expect(deepmerge.initial(proto.initial, text.initial)).toStrictEqual(
+		expect(merge.initial(proto.initial, text.initial)).toStrictEqual(
 			result.initial
 		);
 	});
 
 	// test('total merge', () => {
-	// 	expect(deepmerge(proto, text)).toStrictEqual(result);
+	// 	expect(merge(proto, text)).toStrictEqual(result);
 	// });
 });
 

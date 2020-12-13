@@ -1,12 +1,18 @@
 import { EsoInitial, Style } from '../../../types/initial';
 import { setClassNames } from 'veso';
 
-export const deepmerge = {
+export function deepmerge(proto, ref) {
+	const initial = merge.initial(proto.initial, ref.initial);
+	return { ...ref, initial };
+}
+export const merge = {
 	style(proto: Style, ref: Style) {
 		const style = Object.assign({}, proto, ref);
 		return Object.keys(style).length ? style : null;
 	},
 	className(proto: string | [string], ref: string | [string]) {
+		console.log('className', proto, ref);
+
 		const className = setClassNames(ref, proto).join(' ');
 		return className ? className : null;
 	},

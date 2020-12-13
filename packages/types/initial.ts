@@ -44,6 +44,7 @@ export interface Perso {
 	listen?: EsoEvents;
 	actions: EsoActions;
 	emit?: EsoEmit;
+	extends?: string;
 }
 
 type EsoEmit = {

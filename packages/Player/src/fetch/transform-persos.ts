@@ -7,12 +7,32 @@ TODO
 import { EsoActions, EsoEvent, EsoEvents, Perso } from '../../../types/initial';
 import { MAIN } from '../data/constantes';
 import { pipe } from '../shared/utils';
+import { deepmerge } from './merge';
 import { Story, Perso as PersoInput } from './transforms';
+
+const PROTO = 'proto';
 
 export function transformPersos(s: Story) {
 	const _persos = s.persos;
-	const persos = pipe(natureSetProperty, dispatchPersoProps)(_persos);
+	const persos = pipe(
+		natureSetProperty,
+		dispatchPersoProps,
+		mergePersos
+	)(_persos);
 	return { ...s, persos };
+}
+
+export function mergePersos(_persos: Perso[]) {
+	const persos = _persos
+		.map((_perso) => {
+			const proto =
+				_perso.extends && _persos.find((perso) => perso.id === _perso.extends);
+			const perso = proto ? deepmerge(proto, _perso) : _perso;
+			return perso;
+		})
+		.filter((perso) => perso.nature !== PROTO);
+
+	return persos;
 }
 
 export function natureSetProperty(_persos: Story['persos']) {

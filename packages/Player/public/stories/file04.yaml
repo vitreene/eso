@@ -25,6 +25,13 @@ eventimes:
             data: ['quatre', 'cinq', 'six']
 
 persos:
+  - proto:
+      id: proto_bloc
+      initial:
+        className: initial
+      actions:
+        start: { move: s01, transition: { to: fadeIn } }
+
   - layer:
       id: *CONTAINER_ESO
       initial:
@@ -35,6 +42,7 @@ persos:
 
   - bloc:
       id: text-sample
+      extends: proto_bloc
       initial:
         dimensions: { width: 600, height: 60 }
         className: bloc-center
@@ -47,7 +55,7 @@ persos:
             grid-area: 1/1,
             margin: auto,
           }
-        content: 'dimanche'
+        content: dimanche
       actions:
         ev011:
           move: s01

@@ -1,5 +1,3 @@
-const deepmerge = require('deepmerge');
-
 import { pipe } from '../shared/utils';
 import { transformEventimes } from './transform-eventimes';
 import { transformPersos } from './transform-persos';
@@ -22,9 +20,5 @@ export interface Perso {
 export function transforms(yamlStories: Story) {
 	console.log('yaml res:', JSON.stringify(yamlStories, null, 4));
 	const stories = pipe(transformEventimes, transformPersos)(yamlStories);
-
-	let test = deepmerge(stories.persos[0], stories.persos[1]);
-	console.log('deepmerge', test);
-
 	return stories;
 }
