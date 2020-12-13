@@ -4,6 +4,7 @@ import {
 	listenExpandProps,
 	actionsToArray,
 	moveExpandProps,
+	listenCollectAll,
 } from './transform-persos';
 
 test('perso get nature', () => {
@@ -54,6 +55,16 @@ describe('perso.listen', () => {
 			{ ns: MAIN, event: 'ev015', action: 'ev015' },
 		];
 		expect(listenExpandProps(listen)).toStrictEqual(_result);
+	});
+
+	test('listen add actions', () => {
+		const listen = [{ ns: MAIN, event: 'ev011', action: 'enter' }];
+		const actions = [{ name: 'leave' }];
+		const _results = [
+			{ ns: MAIN, event: 'ev011', action: 'enter' },
+			{ ns: MAIN, event: 'leave', action: 'leave' },
+		];
+		expect(listenCollectAll(actions)(listen)).toStrictEqual(_results);
 	});
 });
 

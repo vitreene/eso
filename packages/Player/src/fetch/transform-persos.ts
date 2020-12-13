@@ -1,11 +1,10 @@
 /* 
 TODO
-- ajouter les actions non répertoriées à listen
 - prototype / basedOn / extends
 
 */
 
-import { Perso } from '../../../types/initial';
+import { EsoActions, EsoEvent, EsoEvents, Perso } from '../../../types/initial';
 import { MAIN } from '../data/constantes';
 import { pipe } from '../shared/utils';
 import { Story, Perso as PersoInput } from './transforms';
@@ -30,13 +29,31 @@ export function natureSetProperty(_persos: Story['persos']) {
 
 export function dispatchPersoProps(_persos: Story['persos']) {
 	const persos = _persos.map((_perso: any) => {
-		const _listen = _perso.listen;
-		const listen = listenExpandProps(_listen);
 		const _actions = _perso.actions;
 		const actions = pipe(actionsToArray, moveExpandProps)(_actions);
+		const _listen = _perso.listen;
+		const listen = listenDisptachProps(_listen, actions);
 		return { ..._perso, actions, listen };
 	});
 	return persos;
+}
+
+function listenDisptachProps(_listen: EsoEvents, actions: EsoActions) {
+	const listen = pipe(listenExpandProps, listenCollectAll(actions))(_listen);
+	return listen;
+}
+
+export function listenCollectAll(actions: EsoActions) {
+	return function (_listen: EsoEvent[]) {
+		const addNames = [];
+		const actionsName = new Set(actions.map((action) => action.name));
+		const listenName = new Set(_listen.map((l) => l.action));
+		actionsName.forEach((name) => {
+			if (!listenName.has(name)) addNames.push(name);
+		});
+		const addListen = listenExpandProps(addNames);
+		return _listen.concat(addListen);
+	};
 }
 
 /* 
