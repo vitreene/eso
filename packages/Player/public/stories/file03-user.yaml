@@ -32,7 +32,7 @@ persos:
         content: s01
       listen: [ev011]
       actions:
-        - ev011: { className: -=layer-top /=toptip container }
+        ev011: { className: -=layer-top /=toptip container }
 
   - bloc:
       id: text-sample

@@ -1,8 +1,8 @@
 import { Eventime } from '../../../types/eventime';
-import { pipe } from '../shared/utils';
-import { Stories } from './transforms';
+import { pipe, objectToArray } from '../shared/utils';
+import { Story } from './transforms';
 
-export function transformEventimes(s: Stories) {
+export function transformEventimes(s: Story) {
 	const _eventimes = s.eventimes;
 	const eventimes = pipe(eventimesStartAt)(_eventimes);
 	console.log('eventimes', eventimes);
@@ -57,14 +57,4 @@ function setParseEventime(time: string) {
 		}
 		return event;
 	};
-}
-function objectToArray(obj) {
-	if (typeof obj !== 'object') {
-		console.warn("ce n'est pas un object : %s", obj);
-		return obj;
-	}
-	const arr = [];
-	// propriétés itérables seulement
-	for (const o in obj) arr.push({ [o]: obj[o] });
-	return arr;
 }

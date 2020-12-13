@@ -159,3 +159,15 @@ export function isVoid(x) {
 export function toArray(value) {
 	return Array.isArray(value) ? value : [value];
 }
+
+// transforme un object en tableau
+export function objectToArray(obj) {
+	if (typeof obj !== 'object') {
+		console.warn("ce n'est pas un object : %s", obj);
+		return obj;
+	}
+	const arr = [];
+	// propriétés itérables seulement
+	for (const o in obj) arr.push({ [o]: obj[o] });
+	return arr;
+}

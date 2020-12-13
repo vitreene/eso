@@ -1,5 +1,10 @@
 import { MAIN } from '../data/constantes';
-import { natureSetProperty, listenExpandProps } from './transform-persos';
+import {
+	natureSetProperty,
+	listenExpandProps,
+	actionsToArray,
+	moveExpandProps,
+} from './transform-persos';
 
 test('perso get nature', () => {
 	const initial = {};
@@ -49,5 +54,24 @@ describe('perso.listen', () => {
 			{ ns: MAIN, event: 'ev015', action: 'ev015' },
 		];
 		expect(listenExpandProps(listen)).toStrictEqual(_result);
+	});
+});
+
+describe('perso actions', () => {
+	test('actionsToArray', () => {
+		const actions = {
+			enter: { dimensions: { width: '100%', height: '100%' } },
+		};
+		const _result = [
+			{ name: 'enter', dimensions: { width: '100%', height: '100%' } },
+		];
+		expect(actionsToArray(actions)).toStrictEqual(_result);
+	});
+
+	test('moveExpandProps', () => {
+		const actions = [{ name: 'enter', move: 's01' }];
+		const _result = [{ name: 'enter', move: { slot: 's01' } }];
+		expect(moveExpandProps(_result)).toStrictEqual(_result);
+		expect(moveExpandProps(actions)).toStrictEqual(_result);
 	});
 });

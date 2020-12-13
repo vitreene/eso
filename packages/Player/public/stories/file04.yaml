@@ -32,8 +32,7 @@ persos:
         content: s01
       listen: [ev011]
       actions:
-        - name: ev011
-          className: -=layer-top /=toptip container }
+        ev011: { className: -=layer-top /=toptip container }
 
   - bloc:
       id: text-sample
@@ -53,18 +52,18 @@ persos:
 
       listen: [ev011: enter, ev012: step02, ev013: step03, ev014, ev015]
       actions:
-        - name: enter
-          move: { slot: s01 }
+        enter:
+          move: s01
           transition: { to: fadeIn }
           statStyle: { font-size: 100, background-color: '#49b6b6cf' }
           className: new-text
-        - name: step02
+        step02:
           content: { lang: fr, refLang: sous-titre, ref: txt01, effect: fade }
-        - name: step03
+        step03:
           content: { lang: en, refLang: langue, ref: txt01, effect: fade }
-        - name: ev014
+        ev014:
           content: { text: A bientot pour un prochain essai, effect: fade }
-        - name: ev015
+        ev015:
           content: { text: c’est fini, effect: letters-top-down }
 
   - img:
@@ -75,8 +74,8 @@ persos:
         statStyle: { position: absolute, zIndex: -1 }
       listen: [{ event: go, action: enter }]
       actions:
-        - name: enter
-          move: { slot: s01 }
+        enter:
+          move: s01
           dimensions: { width: 100%, height: 100% }
           transition: { to: fadeIn }
 
@@ -104,11 +103,11 @@ persos:
           { ns: *TC, event: *PAUSE, action: *PAUSE },
         ]
       actions:
-        - name: enter
-          move: { slot: s01 }
-        - name: *PLAY
+        enter:
+          move: s01
+        *PLAY :
           content: Pause
-        - name: *PAUSE
+        *PAUSE :
           content: Play
       emit:
         click:
