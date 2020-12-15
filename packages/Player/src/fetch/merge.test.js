@@ -38,6 +38,11 @@ describe('merge deux persos', () => {
 		);
 	});
 
+	test('action merge', () => {
+		expect(merge.actions(proto.actions, text.actions)).toStrictEqual(
+			result.actions
+		);
+	});
 	// test('total merge', () => {
 	// 	expect(merge(proto, text)).toStrictEqual(result);
 	// });
