@@ -38,16 +38,43 @@ describe('merge deux persos', () => {
 		);
 	});
 
-	test('action merge', () => {
+	test('actions merge', () => {
 		expect(merge.actions(proto.actions, text.actions)).toStrictEqual(
 			result.actions
 		);
+	});
+
+	test('listen merge', () => {
+		const _proto = [
+			{ ns: MAIN, event: 'go', action: 'enter' },
+			{ ns: MAIN, event: 'commence', action: 'tutu' },
+			{ ns: MAIN, event: 'end', action: 'leave' },
+		];
+		const _text = [
+			{ ns: 'strap', event: 'go', action: 'enter' },
+			{ ns: MAIN, event: 'continue', action: 'toto' },
+			{ ns: MAIN, event: 'end', action: 'leave' },
+		];
+		const _result = [
+			{ ns: MAIN, event: 'go', action: 'enter' },
+			{ ns: MAIN, event: 'commence', action: 'tutu' },
+			{ ns: 'strap', event: 'go', action: 'enter' },
+			{ ns: MAIN, event: 'continue', action: 'toto' },
+			{ ns: MAIN, event: 'end', action: 'leave' },
+		];
+		expect(merge.listen(_proto, _text)).toStrictEqual(_result);
 	});
 	// test('total merge', () => {
 	// 	expect(merge(proto, text)).toStrictEqual(result);
 	// });
 });
 
+/* 
+placer des listen sur proto peut créer des contraintes trop fortes
+ex. tous les éléments hérités commencent en meme temps
+- soit accepter des surcharges : sur l'event ? sur l'action ?
+- soit mettre un mécanisme de retrait -> illogique : ne pas lutter contre une config
+*/
 const proto = {
 	id: 'proto',
 	nature: 'bloc',
@@ -59,10 +86,6 @@ const proto = {
 		},
 		content: 'test',
 	},
-	listen: [
-		{ ns: MAIN, event: 'start', action: 'enter' },
-		{ ns: MAIN, event: 'end', action: 'leave' },
-	],
 	actions: [
 		{ name: 'enter', enter: true, transition: { to: 'fadeIn' } },
 		{ name: 'leave', leave: true, transition: { to: 'fadeOut' } },
@@ -79,7 +102,10 @@ const text = {
 		},
 		content: 'nouveau',
 	},
-	listen: [{ ns: MAIN, event: 'go', action: 'enter' }],
+	listen: [
+		{ ns: MAIN, event: 'go', action: 'enter' },
+		{ ns: MAIN, event: 'end', action: 'leave' },
+	],
 	actions: [{ name: 'enter', move: { slot: 'so1' } }],
 };
 

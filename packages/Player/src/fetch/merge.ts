@@ -40,17 +40,27 @@ export const merge = {
 		);
 	},
 	/* 
-  ajouter les events, supprimer les doublons
+	ajouter les events, supprimer les doublons
+	proto et ref ont des events uniques
+	filtrer l'un des deux avec l'autre
+	- comparer chaque item de l'un chez l'autre, abandonner dès qu'une diff est vue
+	- signaler si un item est identique
   */
 	listen(proto: EsoEvent[], ref: EsoEvent[]) {
-		const listen = [];
-		for (const event of proto) {
-			let idem = false;
-
-			for (const prop in event) {
-				//  const found = ref
+		if (proto.length === 0) return ref;
+		if (ref.length === 0) return proto;
+		const _proto = proto.filter((event) => {
+			let unique = true;
+			for (const refEvent of ref) {
+				for (const prop in event) {
+					unique = true;
+					if (refEvent[prop] !== event[prop]) break;
+					unique = false;
+				}
 			}
-		}
+			return unique;
+		});
+		return _proto.concat(ref);
 	},
 	/* 
   si deux actions ont le meme nom, elles sont fusionnées, 
