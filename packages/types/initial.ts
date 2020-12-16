@@ -6,6 +6,7 @@ export interface Style
 	extends CSS.Properties<string | number>,
 		CSS.PropertiesHyphen<string | number> {}
 
+// en entrées YAML, resolues après
 export type EsoEvents = Array<EsoEvent | EsoEventCondensed | string>;
 export interface EsoEvent {
 	event: string;
@@ -41,13 +42,13 @@ export interface Perso {
 	readonly id: string;
 	readonly nature: Nature;
 	initial: EsoInitial;
-	listen?: EsoEvents;
+	listen?: EsoEvent[];
 	actions: EsoActions;
 	emit?: EsoEmit;
 	extends?: string;
 }
 
-type EsoEmit = {
+export type EsoEmit = {
 	readonly [key in keyof GlobalEventHandlersEventMap]?:
 		| EsoEmitEvent
 		| Array<EsoEmitEvent>;

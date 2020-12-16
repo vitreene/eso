@@ -1,7 +1,9 @@
 import {
 	EsoActions,
+	EsoEmit,
 	EsoEvent,
 	EsoInitial,
+	Perso,
 	Style,
 } from '../../../types/initial';
 import { setClassNames } from 'veso';
@@ -9,10 +11,15 @@ import { setClassNames } from 'veso';
 /* 
 TODO chaine d'héritage
 */
-export function deepmerge(proto, ref) {
-	const initial = merge.initial(proto.initial, ref.initial);
-	return { ...ref, initial };
+
+export function deepmerge(_persos: Perso[]) {
+	const persos = [];
+	for (const _perso of _persos) {
+	}
+
+	return persos;
 }
+
 export const merge = {
 	style(proto: Style, ref: Style) {
 		const style = Object.assign({}, proto, ref);
@@ -27,6 +34,8 @@ export const merge = {
   sauf className et style qui sont fusionnées
   */
 	initial(proto: EsoInitial, ref: EsoInitial) {
+		if (Object.keys(proto).length === 0) return ref;
+		if (Object.keys(ref).length === 0) return proto;
 		const className = this.className(proto.className, ref.className);
 		const statStyle = this.style(proto.statStyle, ref.statStyle);
 		const dynStyle = this.style(proto.dynStyle, ref.dynStyle);
@@ -67,6 +76,8 @@ export const merge = {
   sinon elles s'ajoutent
   */
 	actions(proto: EsoActions, ref: EsoActions) {
+		if (proto.length === 0) return ref;
+		if (ref.length === 0) return proto;
 		const protoNames = new Map();
 		proto.forEach((action) => protoNames.set(action.name, action));
 		const refNames = new Map();
@@ -82,4 +93,36 @@ export const merge = {
 		refNames.forEach((action) => actions.push(action));
 		return actions;
 	},
+	/* 
+   les propriétés sont surchargées
+	*/
+	emit(proto: EsoEmit, ref: EsoEmit) {
+		return { ...proto, ...ref };
+	},
+	/* 
+	merge persos
+	*/
+	persos(proto: Perso, ref: Perso) {
+		if (Object.keys(proto).length === 0) return ref;
+		if (Object.keys(ref).length === 0) return proto;
+		const initial = this.initial(proto.initial, ref.initial);
+		const actions = this.actions(proto.actions, ref.actions);
+		const listen = this.listen(proto.listen, ref.listen);
+		const emit = this.emit(proto.emit, ref.emit);
+		return { ...ref, initial, listen, actions, emit };
+	},
+
+	extends(id: string, persos: Perso[]) {
+		// if(!perso.extends) return perso
+	},
 };
+
+/* export function deepmerge(proto: Perso, ref: Perso) {
+	if (Object.keys(proto).length === 0) return ref;
+	if (Object.keys(ref).length === 0) return proto;
+	const initial = merge.initial(proto.initial, ref.initial);
+	const actions = merge.actions(proto.actions, ref.actions);
+	const listen = merge.listen(proto.listen, ref.listen);
+	const emit = merge.emit(proto.emit, ref.emit);
+	return { ...ref, initial, listen, actions, emit };
+} */
