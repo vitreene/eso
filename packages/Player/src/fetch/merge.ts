@@ -10,14 +10,35 @@ import { setClassNames } from 'veso';
 
 /* 
 TODO chaine d'héritage
+faire une fonction récursive
+faire référence à une copie de Persos qui sera modifié au fur et à mesure
+
+Persos : passer en revue
+- si le perso fait appel à un prototype (a)
+	- atteindre le proto
+	- ce proto a-t'il lui meme un proto -> (a)
+	- ref = merge (proto, ref)
 */
 
 export function deepmerge(_persos: Perso[]) {
-	const persos = [];
-	for (const _perso of _persos) {
+	const persos = new Map(
+		Array.from(_persos, (perso) => {
+			return [perso.id, perso];
+		})
+	);
+
+	for (let _perso of persos.values()) {
+		recMerge(_perso);
 	}
 
-	return persos;
+	function recMerge(_perso) {
+		if (!_perso.extends || !persos.has(_perso.extends)) return _perso;
+		const _proto = recMerge(persos.get(_perso.extends));
+		_proto && (_perso = merge.persos(_proto, _perso));
+		return _perso;
+	}
+
+	return Array.from(persos.values());
 }
 
 export const merge = {
@@ -34,8 +55,8 @@ export const merge = {
   sauf className et style qui sont fusionnées
   */
 	initial(proto: EsoInitial, ref: EsoInitial) {
-		if (Object.keys(proto).length === 0) return ref;
-		if (Object.keys(ref).length === 0) return proto;
+		if (!proto || Object.keys(proto).length === 0) return ref;
+		if (!ref || Object.keys(ref).length === 0) return proto;
 		const className = this.className(proto.className, ref.className);
 		const statStyle = this.style(proto.statStyle, ref.statStyle);
 		const dynStyle = this.style(proto.dynStyle, ref.dynStyle);
@@ -56,8 +77,8 @@ export const merge = {
 	- signaler si un item est identique
   */
 	listen(proto: EsoEvent[], ref: EsoEvent[]) {
-		if (proto.length === 0) return ref;
-		if (ref.length === 0) return proto;
+		if (!proto || proto.length === 0) return ref;
+		if (!ref || ref.length === 0) return proto;
 		const _proto = proto.filter((event) => {
 			let unique = true;
 			for (const refEvent of ref) {
@@ -76,8 +97,8 @@ export const merge = {
   sinon elles s'ajoutent
   */
 	actions(proto: EsoActions, ref: EsoActions) {
-		if (proto.length === 0) return ref;
-		if (ref.length === 0) return proto;
+		if (!proto || proto.length === 0) return ref;
+		if (!ref || ref.length === 0) return proto;
 		const protoNames = new Map();
 		proto.forEach((action) => protoNames.set(action.name, action));
 		const refNames = new Map();
@@ -103,13 +124,19 @@ export const merge = {
 	merge persos
 	*/
 	persos(proto: Perso, ref: Perso) {
-		if (Object.keys(proto).length === 0) return ref;
-		if (Object.keys(ref).length === 0) return proto;
+		if (!proto || Object.keys(proto).length === 0) return ref;
+		if (!ref || Object.keys(ref).length === 0) return proto;
 		const initial = this.initial(proto.initial, ref.initial);
 		const actions = this.actions(proto.actions, ref.actions);
 		const listen = this.listen(proto.listen, ref.listen);
 		const emit = this.emit(proto.emit, ref.emit);
-		return { ...ref, initial, listen, actions, emit };
+		return {
+			...ref,
+			...(initial && { initial }),
+			...(listen && { listen }),
+			...(actions && { actions }),
+			...(emit && { emit }),
+		};
 	},
 
 	extends(id: string, persos: Perso[]) {

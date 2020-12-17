@@ -64,9 +64,10 @@ describe('merge deux persos', () => {
 		];
 		expect(merge.listen(_proto, _text)).toStrictEqual(_result);
 	});
-	// test('total merge', () => {
-	// 	expect(merge(proto, text)).toStrictEqual(result);
-	// });
+
+	test('total merge', () => {
+		expect(merge.persos(proto, text)).toStrictEqual(result);
+	});
 });
 
 /* 
