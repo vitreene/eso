@@ -17,22 +17,10 @@ export function transformPersos(s: Story) {
 	const persos = pipe(
 		natureSetProperty,
 		dispatchPersoProps,
-		mergePersos
+		deepmerge,
+		filterProtos
 	)(_persos);
 	return { ...s, persos };
-}
-
-export function mergePersos(_persos: Perso[]) {
-	const persos = _persos
-		.map((_perso) => {
-			const proto =
-				_perso.extends && _persos.find((perso) => perso.id === _perso.extends);
-			const perso = proto ? deepmerge(proto, _perso) : _perso;
-			return perso;
-		})
-		.filter((perso) => perso.nature !== PROTO);
-
-	return persos;
 }
 
 export function natureSetProperty(_persos: Story['persos']) {
@@ -45,6 +33,10 @@ export function natureSetProperty(_persos: Story['persos']) {
 		persos.push(perso);
 	}
 	return persos;
+}
+
+export function filterProtos(_persos: Perso[]) {
+	return _persos.filter((perso) => perso.nature !== PROTO);
 }
 
 export function dispatchPersoProps(_persos: Story['persos']) {

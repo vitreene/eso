@@ -6,6 +6,10 @@ defs:
   - &TC telco
   - &PAUSE pause
   - &PLAY play
+  - &PROTO proto
+  - &LAYER layer
+  - &BLOC bloc
+  - &IMG img
 
 eventimes:
   0:
@@ -19,20 +23,17 @@ eventimes:
       4000: ev015
       5000:
         name: 'leave-root'
-        events:
-          1000:
-            name: 'bye'
-            data: ['quatre', 'cinq', 'six']
+        events: { 1000: { name: 'bye', data: ['quatre', 'cinq', 'six'] } }
 
 persos:
-  - proto:
+  - *PROTO :
       id: proto_bloc
       initial:
-        className: initial
-      actions:
-        start: { move: s01, transition: { to: fadeIn } }
+        className: bloc-center
+      # actions:
+      #   start: { move: s01, transition: { to: fadeIn } }
 
-  - layer:
+  - *LAYER :
       id: *CONTAINER_ESO
       initial:
         className: container
@@ -40,12 +41,11 @@ persos:
       actions:
         ev011: { className: -=layer-top /=toptip container }
 
-  - bloc:
+  - *BLOC :
       id: text-sample
       extends: proto_bloc
       initial:
         dimensions: { width: 600, height: 60 }
-        className: bloc-center
         statStyle:
           {
             color: white,
@@ -71,7 +71,7 @@ persos:
         ev015:
           content: { text: c’est fini, effect: letters-top-down }
 
-  - img:
+  - *IMG :
       id: image
       initial:
         content: ./ikono/vignette.jpg

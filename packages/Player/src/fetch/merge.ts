@@ -27,26 +27,29 @@ export function deepmerge(_persos: Perso[]) {
 		})
 	);
 
-	for (let _perso of persos.values()) {
-		recMerge(_perso);
-	}
+	for (let [id, _perso] of persos) recMerge(id, _perso);
 
-	function recMerge(_perso) {
+	function recMerge(id: string, _perso: Perso) {
 		if (!_perso.extends || !persos.has(_perso.extends)) return _perso;
-		const _proto = recMerge(persos.get(_perso.extends));
-		_proto && (_perso = merge.persos(_proto, _perso));
+		const _proto = recMerge(_perso.extends, persos.get(_perso.extends));
+		if (_proto) {
+			const { extends: string, ...others } = merge.persos(_proto, _perso);
+			persos.set(id, others);
+		}
 		return _perso;
 	}
 
 	return Array.from(persos.values());
 }
 
+type ClassName = undefined | string | [string] | [];
+
 export const merge = {
 	style(proto: Style, ref: Style) {
 		const style = Object.assign({}, proto, ref);
 		return Object.keys(style).length ? style : null;
 	},
-	className(proto: string | [string], ref: string | [string]) {
+	className(proto: ClassName, ref: ClassName) {
 		const className = setClassNames(ref, proto).join(' ');
 		return className ? className : null;
 	},
@@ -60,7 +63,7 @@ export const merge = {
 		const className = this.className(proto.className, ref.className);
 		const statStyle = this.style(proto.statStyle, ref.statStyle);
 		const dynStyle = this.style(proto.dynStyle, ref.dynStyle);
-		return Object.assign(
+		const initial = Object.assign(
 			{},
 			proto,
 			ref,
@@ -68,6 +71,7 @@ export const merge = {
 			statStyle && { statStyle },
 			dynStyle && { dynStyle }
 		);
+		return Object.keys(initial).length === 0 ? null : initial;
 	},
 	/* 
 	ajouter les events, supprimer les doublons
@@ -90,7 +94,8 @@ export const merge = {
 			}
 			return unique;
 		});
-		return _proto.concat(ref);
+		const listen = _proto.concat(ref);
+		return listen.length === 0 ? null : listen;
 	},
 	/* 
   si deux actions ont le meme nom, elles sont fusionnées, 
@@ -112,13 +117,14 @@ export const merge = {
 		}
 		const actions = [];
 		refNames.forEach((action) => actions.push(action));
-		return actions;
+		return actions.length === 0 ? null : actions;
 	},
 	/* 
    les propriétés sont surchargées
 	*/
 	emit(proto: EsoEmit, ref: EsoEmit) {
-		return { ...proto, ...ref };
+		const emit = { ...proto, ...ref };
+		return Object.keys(emit).length === 0 ? null : emit;
 	},
 	/* 
 	merge persos
@@ -137,10 +143,6 @@ export const merge = {
 			...(actions && { actions }),
 			...(emit && { emit }),
 		};
-	},
-
-	extends(id: string, persos: Perso[]) {
-		// if(!perso.extends) return perso
 	},
 };
 
