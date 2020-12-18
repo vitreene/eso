@@ -15,3 +15,8 @@ export interface Eventime {
 	data?: any;
 	events?: Array<Eventime>;
 }
+export interface EmitEvent {
+	name?: string;
+	ns?: ESO_Namespace;
+	data?: any;
+}

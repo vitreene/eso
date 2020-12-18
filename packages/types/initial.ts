@@ -1,6 +1,6 @@
 import * as CSS from 'csstype';
 import { ESO_Namespace, ESO_Lang, Nature } from './ESO_Namespace';
-import { Eventime } from './eventime';
+import { EmitEvent, Eventime } from './eventime';
 
 export interface Style
 	extends CSS.Properties<string | number>,
@@ -55,7 +55,7 @@ export type EsoEmit = {
 };
 
 interface EsoEmitEvent {
-	event: Eventime;
+	event: EmitEvent;
 	data?: any;
 }
 
