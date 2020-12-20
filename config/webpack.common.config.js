@@ -80,14 +80,7 @@ module.exports = {
 			// filename: "style.[hash].css"
 			filename: 'style.css',
 		}),
-		new CopyWebpackPlugin([
-			// { from: "./src/static/images", to: "assets/images" }
-			{ from: './public/ikono', to: 'ikono' },
-		]),
-		new CopyWebpackPlugin([
-			// { from: "./src/static/images", to: "assets/images" }
-			{ from: './public/stories', to: 'stories' },
-		]),
+		new CopyWebpackPlugin([{ from: './public', to: '' }]),
 		new CleanWebpackPlugin(),
 	],
 	optimization: {

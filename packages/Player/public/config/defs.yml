@@ -1,0 +1,12 @@
+# aliases
+aliases:
+  - &CONTAINER_ESO main
+  - &STRAP strap
+  - &TOGGLE toggle
+  - &TC telco
+  - &PAUSE pause
+  - &PLAY play
+  - &PROTO proto
+  - &LAYER layer
+  - &BLOC bloc
+  - &IMG img

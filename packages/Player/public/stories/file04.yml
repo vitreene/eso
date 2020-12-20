@@ -1,16 +1,3 @@
-# defs
-defs:
-  - &CONTAINER_ESO main
-  - &STRAP strap
-  - &TOGGLE toggle
-  - &TC telco
-  - &PAUSE pause
-  - &PLAY play
-  - &PROTO proto
-  - &LAYER layer
-  - &BLOC bloc
-  - &IMG img
-
 eventimes:
   0:
     name: start
@@ -30,8 +17,6 @@ persos:
       id: proto_bloc
       initial:
         className: bloc-center
-      # actions:
-      #   start: { move: s01, transition: { to: fadeIn } }
 
   - *LAYER :
       id: *CONTAINER_ESO

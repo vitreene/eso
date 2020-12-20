@@ -1,13 +1,19 @@
 import YAML from 'yaml';
 
 import { transforms } from './transforms';
-import { pipe } from '../shared/utils';
+
 export async function fetchStories(path) {
+	const pre = await fetch('/config/defs.yml')
+		.then((res) => res.blob())
+		.then((blob) => blob.text())
+		.catch((err) => console.log('erreur de configuration:', err));
+
 	return await fetch(path)
 		.then((res) => res.blob())
 		.then((blob) => blob.text())
-		.then((yamlAsString) => pipe(YAML.parse, transforms)(yamlAsString))
-		// console.log('yaml res:', JSON.stringify(res, null, 4));)
+		.then((text) => pre + text)
+		.then((yamlAsString) => YAML.parse(yamlAsString, { prettyErrors: true }))
+		.then((json) => transforms(json))
 		.catch((err) => console.log('erreur sur la story:', err));
 }
 

@@ -18,7 +18,7 @@ import { initStories } from './scene/init-stories';
 // console.log('stories', stories);
 
 const Player = async () => {
-	const story = await Promise.all(['/stories/file04.yaml'].map(fetchStories));
+	const story = await Promise.all(['/stories/file04.yml'].map(fetchStories));
 	// console.log('STORY', story[0]);
 	const { persos, eventimes } = story[0];
 	console.log('PERSOS', persos);

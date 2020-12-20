@@ -1,3 +1,14 @@
+
+# Articulation d'un projet
+**séparer le player du projet**
+chaque projet aura un script minimal qui permettra de charger ses propres ressources dans le player :
+- straps
+- tout js
+- style (avec scss)
+- medias
+
+
+
 ## Structure des Documents
 Les fichiers internes de l'app seront en json, mais comment seront lues les  instructions de construction ?
 
@@ -91,6 +102,11 @@ avec seulement quelques composants dédiés, on peu rapidement reproduire l'esse
   - texte, image, les deux
   - états : coché, décoché, neutre, pristine, correct, incorrect
 
+## un template de base
+
+## La story
+un groupe de persos et d'events 
+plusieurs story dans une scène, une seule instance de story dans une scène
 
 
 ## sur les Quiz
@@ -121,3 +137,4 @@ transitions prédéfinies
 - images : transitions 
   - par fondus
   - par volet
+
