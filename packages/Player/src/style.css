@@ -12,7 +12,7 @@
 	outline: 2px cyan solid;
 }
 
-#main {
+.container {
 	flex: 1;
 	min-width: 100%;
 	outline: 2px red solid;
@@ -30,12 +30,9 @@ h1 {
 .totoo {
 	width: auto;
 }
-/* section { */
-/* display: grid; */
-/* grid-template-columns: repeat(3, 1fr); */
-/* grid-gap: 10px; */
-/* grid-auto-rows: minmax(100px, auto); */
-/* } */
+.grid {
+	display: grid;
+}
 
 .layer-item .top-layer {
 	flex: 1;

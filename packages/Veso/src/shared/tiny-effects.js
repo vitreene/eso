@@ -62,18 +62,14 @@ export function tinyEffects(effect, current, old) {
 	} else {
 		for (const item in anim) {
 			const an = anim[item];
-
 			an.list.forEach((el, index) => {
 				const update = renderUpdate(el.style);
 				update(an.interpolation.from);
-
-				setTimeout(() => {
-					controlAnimations.tween({
-						id: `${an.id}-${index}`,
-						interpolation: an.interpolation,
-						update,
-					});
-				}, index * stagger);
+				controlAnimations.tween({
+					id: `${an.id}-${index}`,
+					interpolation: { ...an.interpolation, delay: index * stagger },
+					update,
+				});
 			});
 		}
 	}

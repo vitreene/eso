@@ -36,21 +36,23 @@ persos:
   - *LAYER :
       id: *CONTAINER_ESO
       initial:
-        className: container
+        className: container grid
         content: s01
       actions:
-        ev011: { className: -=layer-top /=toptip container }
+        ev011: { className: -=layer-top +=test }
 
   - *BLOC :
       id: text-sample
       extends: proto_bloc
       initial:
-        dimensions: { width: 600, height: 60 }
         statStyle:
           {
             color: white,
             font-weight: bold,
-            padding: 24,
+            padding-top: 12,
+            padding-bottom: 12,
+            padding-left: 24,
+            padding-right: 24,
             border-radius: 16,
             grid-area: 1/1,
             margin: auto,
@@ -76,7 +78,7 @@ persos:
       initial:
         content: ./ikono/vignette.jpg
         fit: cover
-        statStyle: { position: absolute, zIndex: -1 }
+        statStyle: { grid-area: 1/1 }
       listen: [{ event: go, action: enter }]
       actions:
         enter:

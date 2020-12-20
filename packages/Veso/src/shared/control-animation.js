@@ -29,106 +29,108 @@ import { Tweenable } from 'shifty';
 deplacer comme ressource 
 */
 const defaultsTransition = {
-  duration: 500,
-  easing: 'easeOutQuad',
+	duration: 500,
+	easing: 'easeOutQuad',
 };
 
 function Anime(interpolation) {
-  const animation = new Tweenable();
+	const animation = new Tweenable();
 
-  const facade = {
-    play() {
-      animation.resume();
-    },
-    pause() {
-      animation.pause();
-    },
-    seek(millisecond) {
-      animation.seek(millisecond);
-    },
-  };
+	const facade = {
+		play() {
+			animation.resume();
+		},
+		pause() {
+			animation.pause();
+		},
+		seek(millisecond) {
+			animation.seek(millisecond);
+		},
+	};
 
-  return {
-    start(update, complete) {
-      animation
-        .tween({ ...defaultsTransition, ...interpolation, step: update })
-        .then(() => {
-          animation.dispose();
-          complete();
-        });
-      return facade;
-    },
-  };
+	return {
+		start(update, complete) {
+			animation
+				.tween({ ...defaultsTransition, ...interpolation, step: update })
+				.then(() => {
+					animation.dispose();
+					complete();
+				});
+			return facade;
+		},
+	};
 }
 
 export class ControlAnimations {
-  tweens = new Map(); // key:  tween-id, value: tween()
-  tweenSet = new Map(); // key: actor-id , values: tween-id[]
-  uuid = Math.random();
+	tweens = new Map(); // key:  tween-id, value: tween()
+	tweenSet = new Map(); // key: actor-id , values: tween-id[]
+	uuid = Math.random();
 
-  status = (status, id = null) => {
-    if (id) {
-      this.tweenSet.has(id) &&
-        this.tweenSet.get(id).forEach((key) => {
-          requestAnimationFrame(this.tweens.get(key)[status]);
-        });
-    } else {
-      this.tweens.forEach((anime) => requestAnimationFrame(anime[status]));
-    }
-  };
-  pause = () => this.status('pause');
-  play = () => this.status('play');
-  stop = (id) => {
-    this.status('stop', id);
-    if (this.tweenSet.has(id)) {
-      this.tweenSet.get(id).forEach((key) => this.tweens.delete(key));
-      this.tweenSet.get(id).clear();
-    }
-  };
+	status = (status, id = null) => {
+		if (id) {
+			this.tweenSet.has(id) &&
+				this.tweenSet.get(id).forEach((key) => {
+					// requestAnimationFrame(this.tweens.get(key)[status]);
+					this.tweens.get(key)[status]();
+				});
+		} else {
+			// this.tweens.forEach((anime) => requestAnimationFrame(anime[status]));
+			this.tweens.forEach((anime) => anime[status]());
+		}
+	};
+	pause = () => this.status('pause');
+	play = () => this.status('play');
+	stop = (id) => {
+		this.status('stop', id);
+		if (this.tweenSet.has(id)) {
+			this.tweenSet.get(id).forEach((key) => this.tweens.delete(key));
+			this.tweenSet.get(id).clear();
+		}
+	};
 
-  reset = () => {
-    this.tweenSet.clear();
-    this.tweens.clear();
-    this.uuid = Math.random();
-  };
+	reset = () => {
+		this.tweenSet.clear();
+		this.tweens.clear();
+		this.uuid = Math.random();
+	};
 
-  // new
-  tween = (options) => {
-    const { id, interpolation, update } = options;
-    // TODO decouper les anims par durée
-    this.uuid++;
-    this.addTween(id, this.uuid);
+	// new
+	tween = (options) => {
+		const { id, interpolation, update } = options;
+		// TODO decouper les anims par durée
+		this.uuid++;
+		this.addTween(id, this.uuid);
 
-    const animation = new Anime(interpolation);
-    const complete = this.completeTween(id, this.uuid, options);
-    this.tweens.set(this.uuid, animation.start(update, complete));
-  };
+		const animation = new Anime(interpolation);
+		const complete = this.completeTween(id, this.uuid, options);
+		this.tweens.set(this.uuid, animation.start(update, complete));
+	};
 
-  completeTween = (id, uuid, options) => () => {
-    this.removeTween(id, uuid);
-    typeof options.complete === 'function' && options.complete();
-  };
+	completeTween = (id, uuid, options) => () => {
+		this.removeTween(id, uuid);
+		typeof options.complete === 'function' && options.complete();
+	};
 
-  removeTween = (id, uuid) => {
-    if (this.tweenSet.has(id)) {
-      this.tweenSet.get(id).delete(uuid);
-    }
-    this.tweens.has(uuid) && this.tweens.delete(uuid);
-  };
+	removeTween = (id, uuid) => {
+		if (this.tweenSet.has(id)) {
+			this.tweenSet.get(id).delete(uuid);
+		}
+		this.tweens.has(uuid) && this.tweens.delete(uuid);
+	};
 
-  addTween = (id, uuid) => {
-    if (this.tweenSet.has(id)) {
-      this.tweenSet.get(id).add(uuid);
-    } else {
-      this.tweenSet.set(id, new Set([this.uuid]));
-    }
-  };
+	addTween = (id, uuid) => {
+		if (this.tweenSet.has(id)) {
+			this.tweenSet.get(id).add(uuid);
+		} else {
+			this.tweenSet.set(id, new Set([this.uuid]));
+		}
+	};
 
-  info = () => {
-    console.log('this.tweens', this.tweens);
-    console.log('this.tweenSet', this.tweenSet);
-    console.log('this.uuid', this.uuid);
-  };
+	info = () => {
+		console.log('this.tweens', this.tweens);
+		console.log('this.tweenSet', this.tweenSet);
+		console.log('this.uuid', this.uuid);
+	};
 }
 
 export const controlAnimations = new ControlAnimations();
