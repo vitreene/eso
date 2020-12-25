@@ -1,3 +1,18 @@
+eventimes: 
+  name: start
+  startAt: 0
+  events:
+    - { startAt: 0, name: 'go', data: [un, deux, trois] }
+    - { startAt: 500, name: 'ev011' }
+    - { startAt: 1000, name: 'ev012' }
+    - { startAt: 2000, name: 'ev013' }
+    - { startAt: 3000, name: 'ev014' }
+    - { startAt: 4000, name: 'ev015' }
+    - { startAt: 5000,
+        name: leave-root,
+        events: [{ startAt: 1000, name: 'bye', data: [quatre, cinq, six]}]
+      }
+
 persos:
   - *PROTO :
       id: proto_bloc
@@ -40,12 +55,10 @@ persos:
           backgroundColor: cyan
         }
         content: [{ id: s01 }]
-    }
-    actions: 
-      - 
-        go:
-          move: { layer: *CONTAINER_ESO, slot: main_s01 }
-          transition: { to: fadeIn }
+      actions:
+          go:
+            move: { layer: *CONTAINER_ESO, slot: main_s01 }
+            transition: { to: fadeIn }
 
 
   - *LAYER :
@@ -70,10 +83,9 @@ persos:
           - { id: s05, statStyle: { gridColumn: 2 } }
           - { id: s06, statStyle: { gridColumn: 2 } }
       actions: 
-        - 
-          go:
-            move: { layer: *CONTAINER_ESO, slot: main_s01 }
-            transition: { to: fadeIn } 
+        go:
+          move: { layer: *CONTAINER_ESO, slot: main_s01 }
+          transition: { to: fadeIn } 
             
   - *BLOC :
       id: text-sample
@@ -85,23 +97,154 @@ persos:
         content: dimanche
       emit: 
         mousedown: 
-          event: { ns: STRAP, name: 'move' }
-          data: { id: 'text-sample', event: 'move' }
+          event: { ns: *STRAP, name: move }
+          data: { id: text-sample, event: move }
       listen:
         - { event: 'ev011', action: 'enter' }
         -	{ event: 'ev012', action: 'step01' }
         -	{ event: 'ev014', action: 'step02' }
         -	{ event: 'move', action: 'move' }
       actions: 
-        - move: {}
-        - enter: 
+        move: {}
+        enter: 
             move: { layer: grid-01, slot: grid-01_s01 }
             statStyle: {
               fontSize: 64,
               backgroundColor: '#ffff00',
               position: absolute
+            }
+        step01: 
+            content: lundi
+            move: { layer: 'grid-01', slot: 'grid-01_s02' }
+            transition: 
+              to: {
+                x: 100, y: 100,
+                rotate: 200, scale: 0.4,
+                fontSize: 100,
+                backgroundColor: '#00ffff', color: '#0033FF'
+              }
+              duration: 2000
+        step02:
+            move: { layer: 'grid-01', slot: 'grid-01_s03' }
+            transition:
+              to: {
+                scale: 1.5,	rotate: 40,
+                fontSize: 150,
+                backgroundColor: '#00ff00',	color: '#3300FF'
+              }
+              duration: 1000
+            content: fini
 
+  - *IMG : 
+      id: image
+      initial: 
+        content: ./ikono/vignette.jpg
+        fit: cover
+        statStyle: { position: absolute } 
+      emit:
+        click:
+          - {event: { ns: TC, name: pause }}
+      listen:
+        - { event: go, action: enter }
+        - { event: ev012, action: step01 }
+        - { event: ev014, action: step02 }
+        - { event: end-rescale-image, action: end-rescale-image }
+      actions:
+        end-rescale-image :
+          dynStyle: { outline: 20px solid red	}
+        enter: 
+          move: { layer: grid-01, slot: grid-01_s03}
+          dimensions: { width: 100%, height: 100%}
+          transition: { to: fadeIn }
+        step01:
+          move: { layer: fond, slot: fond_s01, rescale: true }
+          transition:
+            to: { opacity: 0.5 }
+        step02:
+          move: { layer: grid-01, slot: grid-01_s02, rescale: true }
+          transition:
+            to: { opacity: 1 }
 
+  - *IMG : 
+      id: image2
+      initial: 
+        content: ./ikono/perfume_002.jpg
+        fit: cover
+        statStyle: {position: absolute}
+      listen:
+        - { event: go, action: enter }
+        - { event: ev011, action: step01 }
+        - { event: ev013, action: step02 }
+        - { event: end-rescale-image2, action: end-rescale-image2 }
+      actions: 
+        end-rescale-image2 :
+          dynStyle: {	outline: 20px solid blue}
+        enter:
+          move: { layer: grid-01, slot: grid-01_s02 }
+          dimensions: { width: 100%, height: 100%}
+          transition: { to: fadeIn }
+        step01:
+          move: { layer: grid-01, slot: grid-01_s01, rescale: true }
+          transition: { to: { opacity: 0.5 } }
+        step02:
+          move: { layer: fond, slot: fond_s01, rescale: true }
+          transition: { to: { opacity: 1 } }
+            
+  - *BUTTON :
+      id: togglePlay
+      initial:
+          statStyle: {
+            color: white,
+            backgroundColor: blue,
+            borderRadius: 4px,
+            fontWeight: bold,
+            fontSize: 12px,
+            padding: 1rem,
+            textTransform: uppercase,
+            textAlign: center
+            }
+          content: pause
+      listen:
+        - { event: 'go', action: 'enter' }
+        - { ns: *TC, event: 'play', action: 'play' }
+        - { ns: *TC, event: 'pause', action: 'pause' }
+      actions:
+        enter: 
+          move: { layer: 'grid-01', slot: 'grid-01_s05' }
+        play:
+          content: pause
+        pause: 
+          content: play
+      emit: 
+        click: 
+          event: { ns: *STRAP, name: *TOGGLE }
+          data: { id: telco, ns: *TC,  valueA: pause, valueB: play }
 
-
-
+  - *SPRITE :
+      id: sprite
+      initial:
+        content: ./ikono/Mystery-80.png
+        dimensions: { height: 300 }
+        statStyle: { opacity: 0 }
+      listen:
+        - { event: ev011, action: enter }
+        - { event: ev013, action: step01 }
+        - { event: ev015, action: exit }
+        - { event: move-sprite, action: idle }
+        - { event: leave-sprite, action: leave }
+      actions:
+        enter:
+          move: { layer: grid-01, slot: grid-01_s03 }
+          transition: { to: { opacity: 1, x: -100, y: 10 } }
+        step01:
+          move: { layer: grid-01, slot: grid-01_s01 }
+          transition: { to: { x: 100, y: 50, rotate: 15 } }
+        exit:
+          exit: true
+          transition: { to: fadeOut }
+        leave: {leave: true}
+        idle: { }
+      emit:
+        mousedown:
+          event: { ns: *STRAP, name: move }
+          data: { id: sprite, event: move-sprite }

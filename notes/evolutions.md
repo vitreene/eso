@@ -107,6 +107,13 @@ une story est insérée via un Slot :
 
 - une limite  : zoom n'est sensible qu'à l'événement 'resize' et non pas au redimensionnement du root lui-meme
 
+## fetching est un composant
+les scènes peuvent etre contruites de différentes façons :
+- acturel standard pour veso : description des persos, eventimes, puis "when"
+- compatible Shell
+- editeur graphique
+- format Vitreene
+
 ## Refactoriser Player:
 créer Scene et Story :
 Scène appelera des Stories

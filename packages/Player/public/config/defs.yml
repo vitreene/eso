@@ -2,11 +2,13 @@
 aliases:
   - &CONTAINER_ESO main
   - &STRAP strap
-  - &TOGGLE toggle
   - &TC telco
-  - &PAUSE pause
+  - &TOGGLE toggle
   - &PLAY play
+  - &PAUSE pause
   - &PROTO proto
   - &LAYER layer
   - &BLOC bloc
   - &IMG img
+  - &SPRITE sprite
+  - &BUTTON button
