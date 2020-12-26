@@ -21,7 +21,7 @@ export interface EsoInitial {
 	id?: string;
 	className?: string | [string];
 	classStyle?: Style;
-	dynStyle?: Style;
+	style?: Style;
 	dimensions?: EsoDimensions;
 	transition?: EsoTansition;
 	content?: EsoContent;

@@ -89,7 +89,7 @@ function updateScene({ changed, update, ...others }) {
 					{
 						event: { channel: DEFAULT_NS, name: 'end-rescale-' + update?.id },
 						data: {
-							dynStyle: {
+							style: {
 								width: '100%',
 								height: '100%',
 							},

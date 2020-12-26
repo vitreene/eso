@@ -93,7 +93,7 @@ export function moveStrap(emitter) {
 			}
 
 			emitter.emit([DEFAULT_NS, event], {
-				dynStyle: {
+				style: {
 					dX: relativePointer.x,
 					dY: relativePointer.y,
 				},
@@ -122,7 +122,7 @@ export function moveStrap(emitter) {
 				y: this.pointer.y < 0 ? '-' : '+',
 			};
 			const z = zoom.box.zoom;
-			const dynStyle = {
+			const style = {
 				pointerEvents: this.pointerEvents,
 				left: `${sign.x}=${Math.abs(this.pointer.x / z)}`,
 				top: `${sign.y}=${Math.abs(this.pointer.y / z)}`,
@@ -135,12 +135,12 @@ export function moveStrap(emitter) {
 				y: window.scrollY + e.clientY,
 			};
 
-			emitter.emit([DEFAULT_NS, event], { dynStyle });
+			emitter.emit([DEFAULT_NS, event], { style });
 
 			emitter.emit([STRAP, joinId('end', event)], {
 				id,
 				event,
-				dynStyle,
+				style,
 				pointer: absPointer,
 				target: this.below,
 				initialElPosition: this.initialElPosition,
@@ -159,7 +159,7 @@ export function moveStrap(emitter) {
 			const z = zoom.box.zoom;
 
 			emitter.emit([DEFAULT_NS, event], {
-				dynStyle: {
+				style: {
 					...(this.isStatic && { position: 'relative' }),
 					pointerEvents: 'none',
 				},

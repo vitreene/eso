@@ -20,7 +20,7 @@ const targetsDragConfigActions = (id) => {
 					event: [DEFAULT_NS, joinId('winCard', id)],
 					data: {
 						move: { layer: '', slot },
-						dynStyle: {
+						style: {
 							color: 'yellow',
 						},
 						transition: {
@@ -93,12 +93,12 @@ const casseModel = (letter, index) => {
 			{
 				name: 'mouseenter',
 				className: '+=casse-canhover',
-				dynStyle: { borderRadius: '50%' },
+				style: { borderRadius: '50%' },
 			},
 			{
 				name: 'mouseleave',
 				className: '-=casse-canhover',
-				dynStyle: {
+				style: {
 					borderRadius: 0,
 				},
 			},
@@ -135,14 +135,14 @@ const cardModel = (letter, i) => {
 		actions: [
 			{
 				name: 'moveCard',
-				dynStyle: {
+				style: {
 					backgroundColor: '#00FF00',
 					scale: 1.2,
 				},
 			},
 			{
 				name: 'dropCard',
-				dynStyle: {
+				style: {
 					backgroundColor: null,
 					scale: 1,
 				},
@@ -155,14 +155,14 @@ const cardModel = (letter, i) => {
 			},
 			{
 				name: 'win',
-				dynStyle: {
+				style: {
 					backgroundColor: 'purple',
 				},
 			},
 			{ name: 'idle' },
 			{
 				name: 'card-auto-move',
-				dynStyle: {
+				style: {
 					backgroundColor: 'cyan',
 				},
 				move: { layer: '', slot: joinId(target, index, point) },

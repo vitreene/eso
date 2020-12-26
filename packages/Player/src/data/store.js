@@ -13,5 +13,5 @@ todo :
 // setTimeout(() => {
 // console.log('persos', persos);
 // persos.get('main').node().style.opacity = '0.5';
-// persos.get('main').update({ dynStyle: { opacity: 0.5 } });
+// persos.get('main').update({ style: { opacity: 0.5 } });
 // }, 4000);

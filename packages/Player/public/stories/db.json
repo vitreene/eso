@@ -65,14 +65,14 @@
             {
                 "name": "mouseenter",
                 "classes": "+=casse-canhover",
-                "dynStyle": {
+                "style": {
                     "borderRadius": "50%"
                 }
             },
             {
                 "name": "mouseleave",
                 "classes": "-=casse-canhover",
-                "dynStyle": {
+                "style": {
                     "borderRadius": null,
                     "backgroundColor": null
                 }
@@ -82,7 +82,7 @@
             },
             {
                 "name": "hover",
-                "dynStyle": {
+                "style": {
                     "backgroundColor": "#ff0000"
                 }
             }
@@ -116,13 +116,13 @@
         "actions": [
             {
                 "name": "moveCard",
-                "dynStyle": {
+                "style": {
                     "backgroundColor": "#00FF00"
                 }
             },
             {
                 "name": "dropCard",
-                "dynStyle": {
+                "style": {
                     "backgroundColor": null
                 },
                 "transition": {

@@ -61,12 +61,12 @@ export function fromTo(opts, store, uuid) {
 }
 
 function flattenStore(store) {
-	const { dynStyle, dimensions, between, classStyle } = store;
+	const { style, dimensions, between, classStyle } = store;
 	const flatStore = {
 		...DEFAULT_STYLES,
 		...classStyle,
 		...dimensions,
-		...dynStyle,
+		...style,
 		...between,
 	};
 	return flatStore;

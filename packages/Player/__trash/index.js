@@ -44,7 +44,7 @@ function exe() {
 			padding: '1rem',
 			margin: 'auto',
 		},
-		dynStyle: {
+		style: {
 			color: '#ff0000',
 		},
 
@@ -77,7 +77,7 @@ function exe() {
 	// TODO comment retirer une prop de style ?
 	const updatePerso = {
 		toto: 'tsoin-tsoin',
-		dynStyle: { color: '', 'font-weight': 'bold' },
+		style: { color: '', 'font-weight': 'bold' },
 		classes: 'tontonton',
 		classStyle: { color: '#00ff00', 'font-size': '24px' },
 		'data-config': 'tintin',
@@ -118,7 +118,7 @@ function exe() {
 
 	setTimeout(() => {
 		storeSlots.get('grid-01_s01')(`le bon numéro : ${Math.random()}`);
-		$test({ content: 'Lululululu', dynStyle: { color: 'white' } });
+		$test({ content: 'Lululululu', style: { color: 'white' } });
 		casting.inner.update(updatePerso2);
 		storeSlots.get(uuid)(storeNodes.get(casting.img.uuid));
 	}, 3000);

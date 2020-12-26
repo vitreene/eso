@@ -231,7 +231,7 @@ export const imageSample: Perso = {
 	actions: [
 		{
 			name: 'end-rescale-image',
-			dynStyle: {
+			style: {
 				outline: '20px solid red',
 			},
 		},
@@ -278,7 +278,7 @@ export const imageSample2: Perso = {
 	actions: [
 		{
 			name: 'end-rescale-image2',
-			dynStyle: {
+			style: {
 				outline: '20px solid blue',
 			},
 		},

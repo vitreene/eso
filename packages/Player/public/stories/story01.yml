@@ -151,7 +151,7 @@ persos:
         - { event: end-rescale-image, action: end-rescale-image }
       actions:
         end-rescale-image :
-          dynStyle: { outline: 20px solid red	}
+          style: { outline: 20px solid red	}
         enter: 
           move: { layer: grid-01, slot: grid-01_s03}
           dimensions: { width: 100%, height: 100%}
@@ -178,7 +178,7 @@ persos:
         - { event: end-rescale-image2, action: end-rescale-image2 }
       actions: 
         end-rescale-image2 :
-          dynStyle: {	outline: 20px solid blue}
+          style: {	outline: 20px solid blue}
         enter:
           move: { layer: grid-01, slot: grid-01_s02 }
           dimensions: { width: 100%, height: 100%}

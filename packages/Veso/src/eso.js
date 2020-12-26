@@ -13,7 +13,7 @@ import { content } from './components/content-component';
 
 import { DEFAULT_NS, DEFAULT_TRANSITION_OUT } from './shared/constantes';
 
-const { css, ...dynStyle } = doStyle;
+const { css, ...style } = doStyle;
 // TODO attr
 export class Eso {
 	static registerKeyEvents = registerKeyEvents;
@@ -24,7 +24,7 @@ export class Eso {
 	tag;
 	zoom = 1;
 	box;
-	cssClass;
+	classStyle;
 	revision;
 	history = {}; // TODO faire une Map
 	current = {}; // etat actuel avant prerender
@@ -48,10 +48,10 @@ export class Eso {
 
 		this.revision = {
 			className: doClasses,
-			classStyle: dynStyle,
-			between: dynStyle,
+			classStyle: style,
+			between: style,
 			content,
-			dynStyle,
+			style,
 		};
 
 		this.commit = commit.bind(this);
@@ -193,13 +193,13 @@ export class Eso {
 	_addToHistory({ props, attributes, events }, chrono) {
 		props.forEach((diff, revise) => {
 			switch (revise) {
-				case 'dynStyle':
+				case 'style':
 				case 'classStyle':
 				case 'dimensions':
 					this.history[revise] = { ...this.history[revise], ...diff };
 					break;
 				case 'between':
-					this.history['dynStyle'] = { ...this.history['dynStyle'], ...diff };
+					this.history['style'] = { ...this.history['style'], ...diff };
 					break;
 				case 'className':
 				case 'content':
@@ -224,8 +224,8 @@ export class Eso {
 		// ajouter box offset sur left et top ; et sur translate ?
 
 		const {
-			dynStyle,
-			classStyle,
+			style: _style,
+			classStyle: _classStyle,
 			className,
 			attributes,
 			events,
@@ -238,20 +238,20 @@ export class Eso {
 			: contentToRender;
 
 		// const pointerEvents = options.pointerEvents ? "all" : "none";
-		const style = this.revision.dynStyle.prerender(this.box, dynStyle);
+		const style = this.revision.style.prerender(this.box, _style);
 
-		if (classStyle) {
-			const cssClass = this.revision.dynStyle.prerender(this.box, classStyle);
-			this.cssClass = css(cssClass);
+		if (_classStyle) {
+			const classStyle = this.revision.style.prerender(this.box, _classStyle);
+			this.classStyle = css(classStyle);
 		}
-		const theClasses = this.revision.className.prerender(
-			this.cssClass,
+		const _class = this.revision.className.prerender(
+			this.classStyle,
 			className
 		);
 
 		this.current = {
 			style,
-			class: theClasses,
+			class: _class,
 			content,
 			...Object.fromEntries(attributes || []),
 			...Object.fromEntries(events || []),
