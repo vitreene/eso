@@ -26,7 +26,7 @@ persos:
         content:
           - 
             id: s01
-            statStyle: {
+            classStyle: {
               position: absolute,
               top: 0,
               left: 0,
@@ -43,7 +43,7 @@ persos:
   - *LAYER :
       id: fond
       initial: 
-        statStyle: {
+        classStyle: {
           position: absolute,
           top: 0,
           left: 0,
@@ -64,7 +64,7 @@ persos:
   - *LAYER :
       id: grid-01
       initial:
-        statStyle: {
+        classStyle: {
           position: absolute,
           top: 0,
           left: 0,
@@ -76,12 +76,12 @@ persos:
           height: calc(100vmin - 8rem)
         }
         content: 
-          - { id: s01, statStyle: { gridColumn: '1 / 3', gridRow: 1}}
-          - { id: s02, statStyle: { gridColumn: 1, gridRow: '2 / 6'}}
-          - { id: s03, statStyle: { gridRow: 2 } }
-          - { id: s04, statStyle: { gridColumn: 2 } }
-          - { id: s05, statStyle: { gridColumn: 2 } }
-          - { id: s06, statStyle: { gridColumn: 2 } }
+          - { id: s01, classStyle: { gridColumn: '1 / 3', gridRow: 1}}
+          - { id: s02, classStyle: { gridColumn: 1, gridRow: '2 / 6'}}
+          - { id: s03, classStyle: { gridRow: 2 } }
+          - { id: s04, classStyle: { gridColumn: 2 } }
+          - { id: s05, classStyle: { gridColumn: 2 } }
+          - { id: s06, classStyle: { gridColumn: 2 } }
       actions: 
         go:
           move: { layer: *CONTAINER_ESO, slot: main_s01 }
@@ -92,7 +92,7 @@ persos:
       initial: 
         dimensions: { width: 421, height: 214 }
         className: totoo
-        statStyle: { color: blue,fontWeight: bold, padding: 8px	}
+        classStyle: { color: blue,fontWeight: bold, padding: 8px	}
         attr: {data-letter: alphabet}
         content: dimanche
       emit: 
@@ -108,7 +108,7 @@ persos:
         move: {}
         enter: 
             move: { layer: grid-01, slot: grid-01_s01 }
-            statStyle: {
+            classStyle: {
               fontSize: 64,
               backgroundColor: '#ffff00',
               position: absolute
@@ -140,7 +140,7 @@ persos:
       initial: 
         content: ./ikono/vignette.jpg
         fit: cover
-        statStyle: { position: absolute } 
+        classStyle: { position: absolute } 
       emit:
         click:
           - {event: { channel: TC, name: pause }}
@@ -170,7 +170,7 @@ persos:
       initial: 
         content: ./ikono/perfume_002.jpg
         fit: cover
-        statStyle: {position: absolute}
+        classStyle: {position: absolute}
       listen:
         - { event: go, action: enter }
         - { event: ev011, action: step01 }
@@ -193,7 +193,7 @@ persos:
   - *BUTTON :
       id: togglePlay
       initial:
-          statStyle: {
+          classStyle: {
             color: white,
             backgroundColor: blue,
             borderRadius: 4px,
@@ -225,7 +225,7 @@ persos:
       initial:
         content: ./ikono/Mystery-80.png
         dimensions: { height: 300 }
-        statStyle: { opacity: 0 }
+        classStyle: { opacity: 0 }
       listen:
         - { event: ev011, action: enter }
         - { event: ev013, action: step01 }

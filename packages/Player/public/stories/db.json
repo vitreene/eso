@@ -165,7 +165,7 @@
             "content": [
                 {
                     "id": "s01",
-                    "statStyle": {
+                    "classStyle": {
                         "position": "absolute",
                         "top": 0,
                         "left": 0,
@@ -190,25 +190,25 @@
             "content": [
                 {
                     "id": "s01",
-                    "statStyle": {
+                    "classStyle": {
                         "gridRow": 1
                     }
                 },
                 {
                     "id": "s02",
-                    "statStyle": {
+                    "classStyle": {
                         "gridRow": 2
                     }
                 },
                 {
                     "id": "s03",
-                    "statStyle": {
+                    "classStyle": {
                         "gridRow": 3
                     }
                 },
                 {
                     "id": "s04",
-                    "statStyle": {
+                    "classStyle": {
                         "gridRow": 4
                     }
                 }
@@ -301,7 +301,7 @@
             "content": [
                 {
                     "id": "s01",
-                    "statStyle": {
+                    "classStyle": {
                         "gridRow": 1
                     }
                 }

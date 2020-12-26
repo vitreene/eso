@@ -61,14 +61,14 @@ export const merge = {
 		if (!proto || Object.keys(proto).length === 0) return ref;
 		if (!ref || Object.keys(ref).length === 0) return proto;
 		const className = this.className(proto.className, ref.className);
-		const statStyle = this.style(proto.statStyle, ref.statStyle);
+		const classStyle = this.style(proto.classStyle, ref.classStyle);
 		const dynStyle = this.style(proto.dynStyle, ref.dynStyle);
 		const initial = Object.assign(
 			{},
 			proto,
 			ref,
 			className && { className },
-			statStyle && { statStyle },
+			classStyle && { classStyle },
 			dynStyle && { dynStyle }
 		);
 		return Object.keys(initial).length === 0 ? null : initial;

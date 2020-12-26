@@ -20,7 +20,7 @@ export type EsoEventCondensed = [name: string, action: string]; // [event name, 
 export interface EsoInitial {
 	id?: string;
 	className?: string | [string];
-	statStyle?: Style;
+	classStyle?: Style;
 	dynStyle?: Style;
 	dimensions?: EsoDimensions;
 	transition?: EsoTansition;

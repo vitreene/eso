@@ -21,7 +21,7 @@ export const root: Perso = {
 		content: [
 			{
 				id: 's01',
-				statStyle: {
+				classStyle: {
 					position: 'absolute',
 					top: 0,
 					left: 0,
@@ -43,7 +43,7 @@ export const layerFond: Perso = {
 	id: 'fond',
 	nature: Nature.LAYER,
 	initial: {
-		statStyle: {
+		classStyle: {
 			position: 'absolute',
 			top: 0,
 			left: 0,
@@ -70,7 +70,7 @@ export const layerGrid01: Perso = {
 	id: 'grid-01',
 	nature: Nature.LAYER,
 	initial: {
-		statStyle: {
+		classStyle: {
 			position: 'absolute',
 			top: 0,
 			left: 0,
@@ -84,22 +84,22 @@ export const layerGrid01: Perso = {
 		content: [
 			{
 				id: 's01',
-				statStyle: {
+				classStyle: {
 					gridColumn: '1 / 3',
 					gridRow: 1,
 				},
 			},
 			{
 				id: 's02',
-				statStyle: {
+				classStyle: {
 					gridColumn: 1,
 					gridRow: '2 / 6',
 				},
 			},
-			{ id: 's03', statStyle: { gridRow: 2 } },
-			{ id: 's04', statStyle: { gridColumn: 2 } },
-			{ id: 's05', statStyle: { gridColumn: 2 } },
-			{ id: 's06', statStyle: { gridColumn: 2 } },
+			{ id: 's03', classStyle: { gridRow: 2 } },
+			{ id: 's04', classStyle: { gridColumn: 2 } },
+			{ id: 's05', classStyle: { gridColumn: 2 } },
+			{ id: 's06', classStyle: { gridColumn: 2 } },
 		],
 	},
 	listen: [{ event: 'go', action: 'enter' }],
@@ -118,7 +118,7 @@ export const textSample: Perso = {
 	initial: {
 		dimensions: { width: 421, height: 214 },
 		className: 'totoo',
-		statStyle: {
+		classStyle: {
 			color: 'blue',
 			fontWeight: 'bold',
 			// fontSize: '12px',
@@ -149,7 +149,7 @@ export const textSample: Perso = {
 		{
 			name: 'enter',
 			move: { layer: 'grid-01', slot: 'grid-01_s01' },
-			statStyle: {
+			classStyle: {
 				fontSize: 64,
 				backgroundColor: '#ffff00',
 				position: 'absolute',
@@ -199,7 +199,7 @@ export const imageSample: Perso = {
 	initial: {
 		content: './ikono/vignette.jpg',
 		fit: 'cover', //"cover"
-		statStyle: {
+		classStyle: {
 			position: 'absolute',
 		},
 	},
@@ -264,7 +264,7 @@ export const imageSample2: Perso = {
 	initial: {
 		content: './ikono/perfume_002.jpg',
 		fit: 'cover', //"cover"
-		statStyle: {
+		classStyle: {
 			position: 'absolute',
 		},
 	},
@@ -306,7 +306,7 @@ export const togglePlay: Perso = {
 	id: 'togglePlay',
 	nature: Nature.BUTTON,
 	initial: {
-		statStyle: {
+		classStyle: {
 			color: 'white',
 			backgroundColor: 'blue',
 			borderRadius: '4px',
@@ -359,7 +359,7 @@ export const spriteSample: Perso = {
 	initial: {
 		content: './ikono/Mystery-80.png',
 		dimensions: { height: 300 },
-		statStyle: { opacity: 0 },
+		classStyle: { opacity: 0 },
 	},
 	listen: [
 		{ event: 'ev011', action: 'enter' },

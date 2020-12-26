@@ -43,7 +43,7 @@ persos:
       initial:
         dimensions: { width: 600, height: 60 }
         className: bloc-center
-        statStyle:
+        classStyle:
           {
             color: white,
             font-weight: bold,
@@ -63,7 +63,7 @@ persos:
         - name: enter
           move: { slot: s01 }
           transition: { to: fadeIn }
-          statStyle: { font-size: 100, background-color: '#49b6b6cf' }
+          classStyle: { font-size: 100, background-color: '#49b6b6cf' }
           className: new-text
         - name: step02
           content: { lang: fr, refLang: sous-titre, ref: txt01, effect: fade }
@@ -79,7 +79,7 @@ persos:
       initial:
         content: ./ikono/vignette.jpg
         fit: cover
-        statStyle: { position: absolute, zIndex: -1 }
+        classStyle: { position: absolute, zIndex: -1 }
       listen: [{ event: go, action: enter }]
       actions:
         - name: enter
@@ -90,7 +90,7 @@ persos:
   - button:
       id: togglePlay
       initial:
-        statStyle:
+        classStyle:
           {
             color: white,
             background-color: blue,

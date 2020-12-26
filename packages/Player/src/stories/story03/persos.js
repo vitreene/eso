@@ -32,7 +32,7 @@ export const textSample = {
 	nature: 'bloc',
 	initial: {
 		className: 'bloc-center',
-		statStyle: {
+		classStyle: {
 			color: 'white',
 			fontWeight: 'bold',
 			padding: 24,
@@ -54,7 +54,7 @@ export const textSample = {
 			name: 'enter',
 			move: { slot: 's01' },
 			transition: { to: 'fadeIn' },
-			statStyle: {
+			classStyle: {
 				fontSize: 100,
 				backgroundColor: '#49b6b6cf',
 				// x: 200,
@@ -109,7 +109,7 @@ export const imageSample = {
 	initial: {
 		content: './ikono/vignette.jpg',
 		fit: 'cover', //"cover"
-		statStyle: {
+		classStyle: {
 			position: 'absolute',
 			zIndex: -1,
 		},
@@ -129,7 +129,7 @@ export const togglePlay = {
 	id: 'togglePlay',
 	nature: 'button',
 	initial: {
-		statStyle: {
+		classStyle: {
 			color: 'white',
 			backgroundColor: 'blue',
 			borderRadius: '4px',

@@ -11,7 +11,7 @@ const root = {
 		content: [
 			{
 				id: 's01',
-				statStyle: {
+				classStyle: {
 					position: 'absolute',
 					top: 0,
 					left: 0,
@@ -34,10 +34,10 @@ const casual = {
 		style: { background: '#ff00ee' },
 		className: 'casual',
 		content: [
-			{ id: 's01', statStyle: { gridRow: 1 } },
-			{ id: 's02', statStyle: { gridRow: 2 } },
-			{ id: 's03', statStyle: { gridRow: 3 } },
-			{ id: 's04', statStyle: { gridRow: 4 } },
+			{ id: 's01', classStyle: { gridRow: 1 } },
+			{ id: 's02', classStyle: { gridRow: 2 } },
+			{ id: 's03', classStyle: { gridRow: 3 } },
+			{ id: 's04', classStyle: { gridRow: 4 } },
 		],
 	},
 	listen: [{ event: 'start', action: 'enter' }],
@@ -59,7 +59,7 @@ const plateau = {
 			{
 				id: 's01',
 				className: 'plateau-slot',
-				statStyle: { justifyContent: 'center', alignItems: 'center' },
+				classStyle: { justifyContent: 'center', alignItems: 'center' },
 			},
 		],
 	},
@@ -99,7 +99,7 @@ const sabot = {
 	initial: {
 		dimensions: { width: '80%' },
 		className: 'sabot',
-		content: [{ id: 's01', statStyle: { gridRow: 1 } }],
+		content: [{ id: 's01', classStyle: { gridRow: 1 } }],
 	},
 	listen: [{ event: 'go', action: 'enter' }],
 	actions: [

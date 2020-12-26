@@ -58,7 +58,7 @@ export const doDimensions = {
 		if (hasNoHeight && hasNoRatio) height = '100%';
 
 		// console.log("dimensions", dimensions, { width, height });
-		return { statStyle: { width, height } };
+		return { classStyle: { width, height } };
 	},
 	prerender() {},
 };

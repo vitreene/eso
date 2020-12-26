@@ -30,7 +30,7 @@ persos:
       id: text-sample
       extends: proto_bloc
       initial:
-        statStyle:
+        classStyle:
           {
             color: white,
             font-weight: bold,
@@ -47,7 +47,7 @@ persos:
         ev011:
           move: s01
           transition: { to: fadeIn }
-          statStyle: { font-size: 100, background-color: '#49b6b6cf' }
+          classStyle: { font-size: 100, background-color: '#49b6b6cf' }
           className: new-text
         ev012:
           content: { lang: fr, refLang: sous-titre, ref: txt01, effect: fade }
@@ -63,7 +63,7 @@ persos:
       initial:
         content: ./ikono/vignette.jpg
         fit: cover
-        statStyle: { grid-area: 1/1 }
+        classStyle: { grid-area: 1/1 }
       listen: [{ event: go, action: enter }]
       actions:
         enter:
@@ -74,7 +74,7 @@ persos:
   - button:
       id: togglePlay
       initial:
-        statStyle:
+        classStyle:
           {
             color: white,
             background-color: blue,

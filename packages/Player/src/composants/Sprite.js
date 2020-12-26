@@ -9,7 +9,7 @@ export class Sprite extends Eso {
 		super(story, emitter);
 		this.sprite = imagesCollection.get(story?.initial?.content);
 		this.update({
-			statStyle: { position: 'absolute' },
+			classStyle: { position: 'absolute' },
 			dimensions: {
 				...story.initial.dimensions,
 				ratio: this.sprite.ratio,

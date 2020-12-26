@@ -3,9 +3,9 @@ import { deepmerge, merge } from './merge';
 
 describe('merge deux persos', () => {
 	test('merge style', () => {
-		const _proto = proto.initial.statStyle;
-		const _text = text.initial.statStyle;
-		const _result = result.initial.statStyle;
+		const _proto = proto.initial.classStyle;
+		const _text = text.initial.classStyle;
+		const _result = result.initial.classStyle;
 		expect(merge.style(_proto, _text)).toStrictEqual(_result);
 	});
 
@@ -92,7 +92,7 @@ const proto = {
 	nature: 'bloc',
 	initial: {
 		className: 'center',
-		statStyle: {
+		classStyle: {
 			backgroundColor: 'blue',
 			color: 'yellow',
 		},
@@ -108,7 +108,7 @@ const text = {
 	nature: 'bloc',
 	initial: {
 		className: 'ornament',
-		statStyle: {
+		classStyle: {
 			backgroundColor: 'red',
 			fontSize: '32px',
 		},
@@ -126,7 +126,7 @@ const result = {
 	nature: 'bloc',
 	initial: {
 		className: 'center ornament',
-		statStyle: {
+		classStyle: {
 			color: 'yellow',
 			backgroundColor: 'red',
 			fontSize: '32px',

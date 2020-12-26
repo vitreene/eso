@@ -48,7 +48,7 @@ export class Eso {
 
 		this.revision = {
 			className: doClasses,
-			statStyle: dynStyle,
+			classStyle: dynStyle,
 			between: dynStyle,
 			content,
 			dynStyle,
@@ -118,7 +118,7 @@ export class Eso {
 	 * transforme les données qui ne sont pas directement des attributs :
 	 *  dimensions, transitions, etc.
 	 *  les éléments transformés doivent etre contenus dans la propriété cible :
-	 *  ex : dimensions -> statStyle(width, height)
+	 *  ex : dimensions -> classStyle(width, height)
 	 */
 	_pre(props) {
 		const modiffs = [];
@@ -160,7 +160,7 @@ export class Eso {
 				// si c'est un evenement
 				case p[0] === 'o' && p[1] === 'n':
 					state.events.set(p, props[p]);
-					props.statStyle = { ...props.statStyle, pointerEvents: 'all' };
+					props.classStyle = { ...props.classStyle, pointerEvents: 'all' };
 					break;
 				// si c'est un attribut
 				//FIXME evoluer vers data et aria
@@ -194,7 +194,7 @@ export class Eso {
 		props.forEach((diff, revise) => {
 			switch (revise) {
 				case 'dynStyle':
-				case 'statStyle':
+				case 'classStyle':
 				case 'dimensions':
 					this.history[revise] = { ...this.history[revise], ...diff };
 					break;
@@ -225,7 +225,7 @@ export class Eso {
 
 		const {
 			dynStyle,
-			statStyle,
+			classStyle,
 			className,
 			attributes,
 			events,
@@ -240,8 +240,8 @@ export class Eso {
 		// const pointerEvents = options.pointerEvents ? "all" : "none";
 		const style = this.revision.dynStyle.prerender(this.box, dynStyle);
 
-		if (statStyle) {
-			const cssClass = this.revision.dynStyle.prerender(this.box, statStyle);
+		if (classStyle) {
+			const cssClass = this.revision.dynStyle.prerender(this.box, classStyle);
 			this.cssClass = css(cssClass);
 		}
 		const theClasses = this.revision.className.prerender(

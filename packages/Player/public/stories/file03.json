@@ -70,7 +70,7 @@
             "height": 60
           },
           "className": "bloc-center",
-          "statStyle": {
+          "classStyle": {
             "color": "white",
             "font-weight": "bold",
             "padding": 24,
@@ -100,7 +100,7 @@
             "transition": {
               "to": "fadeIn"
             },
-            "statStyle": {
+            "classStyle": {
               "font-size": 100,
               "background-color": "#49b6b6cf"
             },
@@ -147,7 +147,7 @@
         "initial": {
           "content": "./ikono/vignette.jpg",
           "fit": "cover",
-          "statStyle": {
+          "classStyle": {
             "position": "absolute",
             "zIndex": -1
           },
@@ -179,7 +179,7 @@
       "button": {
         "id": "togglePlay",
         "initial": {
-          "statStyle": {
+          "classStyle": {
             "color": "white",
             "background-color": "blue",
             "border-radius": "4px",

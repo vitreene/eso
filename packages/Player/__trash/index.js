@@ -39,7 +39,7 @@ function exe() {
 
 	const outer = {
 		classes: 'outer',
-		statStyle: {
+		classStyle: {
 			'background-color': 'royalblue',
 			padding: '1rem',
 			margin: 'auto',
@@ -79,13 +79,13 @@ function exe() {
 		toto: 'tsoin-tsoin',
 		dynStyle: { color: '', 'font-weight': 'bold' },
 		classes: 'tontonton',
-		statStyle: { color: '#00ff00', 'font-size': '24px' },
+		classStyle: { color: '#00ff00', 'font-size': '24px' },
 		'data-config': 'tintin',
 		// content: storeNodes.get(casting.inner.uuid),
 		transition: {},
 	};
 	const updatePerso2 = {
-		statStyle: {
+		classStyle: {
 			'font-weight': 'bold',
 			'text-align': 'center',
 		},
