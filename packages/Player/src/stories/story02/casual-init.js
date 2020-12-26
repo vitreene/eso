@@ -13,7 +13,7 @@ export function generateCasual({ cardModel, casseModel }) {
 	const eventimes = [
 		{
 			start: 600,
-			ns: STRAP,
+			channel: STRAP,
 			name: 'game',
 			data: { word, letters, remains, casses, cards },
 		},
@@ -45,6 +45,6 @@ function randomWord() {
 // );
 // console.log('enterAction', enterAction);
 // enterAction.transition.oncomplete = {
-//   event: { ns: DEFAULT_NS, name: STATIC_TO_ABSOLUTE },
+//   event: { channel: DEFAULT_NS, name: STATIC_TO_ABSOLUTE },
 // };
 // console.log('cards[cards.length-1]', cards[cards.length - 1]);

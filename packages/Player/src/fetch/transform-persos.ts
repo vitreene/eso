@@ -74,24 +74,24 @@ _listen peut avoir les formes :
 	- [[ev011, play], [ev012, step02], ...]
 	- [ {ev011: 'enter'},...]
 	- [{ event: go, action: enter }]
-	- [ { ns: *TC, event: *PLAY, action: *PLAY }]
+	- [ { channel: *TC, event: *PLAY, action: *PLAY }]
 	*/
 export function listenExpandProps(_listen) {
-	// TODO ns prendra la ref de sa story par defaut
-	const ns = MAIN;
+	// TODO channel prendra la ref de sa story par defaut
+	const channel = MAIN;
 	// console.log('LISTEN', _listen);
 	const listen = _listen.map((l) => {
 		// ['ev1','ev2',...]
-		if (typeof l === 'string') return { event: l, action: l, ns };
+		if (typeof l === 'string') return { event: l, action: l, channel };
 		// [[ev011, play],...]
-		if (Array.isArray(l)) return { event: l[0], action: l[1], ns };
+		if (Array.isArray(l)) return { event: l[0], action: l[1], channel };
 		// [ {ev011: 'enter'},...]
 		if (typeof l === 'object' && Object.keys(l).length === 1) {
 			const [event, action] = Object.entries(l)[0];
-			return { event, action, ns };
+			return { event, action, channel };
 		}
 		// [{ event: go, action: enter }]
-		if (!l.ns) return { ...l, ns };
+		if (!l.channel) return { ...l, channel };
 		return l;
 	});
 	return listen;

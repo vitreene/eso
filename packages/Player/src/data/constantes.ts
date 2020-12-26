@@ -1,17 +1,17 @@
-import { ESO_Lang, ESO_Namespace } from '../../../types/ESO_Namespace';
+import { ESO_Lang, ESO_Channel } from '../../../types/ESO_enum';
 
 export const APP_ID = 'app';
-export const CONTAINER_ESO = ESO_Namespace.CONTAINER_ESO;
+export const CONTAINER_ESO = ESO_Channel.CONTAINER_ESO;
 
-export const MAIN = ESO_Namespace.MAIN;
-export const TELCO = ESO_Namespace.TELCO;
-export const PLAY = ESO_Namespace.PLAY;
-export const PAUSE = ESO_Namespace.PAUSE;
-export const STOP = ESO_Namespace.STOP;
-export const REWIND = ESO_Namespace.REWIND;
+export const MAIN = ESO_Channel.MAIN;
+export const TELCO = ESO_Channel.TELCO;
+export const PLAY = ESO_Channel.PLAY;
+export const PAUSE = ESO_Channel.PAUSE;
+export const STOP = ESO_Channel.STOP;
+export const REWIND = ESO_Channel.REWIND;
 
-export const STRAP = ESO_Namespace.STRAP;
-export const TEMPO = ESO_Namespace.TEMPO;
+export const STRAP = ESO_Channel.STRAP;
+export const TEMPO = ESO_Channel.TEMPO;
 
 export const SUPPORT = 'support';
 export const ACTOR = 'actor';
@@ -19,7 +19,7 @@ export const ACTOR = 'actor';
 export const DRAG = 'drag';
 export const MOVE = 'move';
 export const STATIC_TO_ABSOLUTE = 'staticToAbsolute';
-export const TOGGLE = ESO_Namespace.TOGGLE;
+export const TOGGLE = ESO_Channel.TOGGLE;
 export const TICK = 100;
 export const DEFAULT_VOLUME = 0.1;
 

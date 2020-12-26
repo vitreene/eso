@@ -3,7 +3,7 @@ import { Perso } from '../../../types/initial';
 import { emitter } from '../data/emitter';
 import { DEFAULT_NS } from '../data/constantes';
 import { sceneUpdateHandler } from '../scene/scene-update-handler';
-import { ESO_Namespace } from '../../../types/ESO_Namespace';
+import { ESO_Channel } from '../../../types/ESO_enum';
 
 export function registerActions(stories: Perso[]) {
 	for (const story of stories) {
@@ -12,7 +12,7 @@ export function registerActions(stories: Perso[]) {
 		if (!listen) continue;
 		// passer cette logique dans la transformation yaml
 		for (const e of listen) {
-			let ns: ESO_Namespace = DEFAULT_NS;
+			let channel: ESO_Channel = DEFAULT_NS;
 			let name: string = null;
 			let action: string = null;
 			// e == string
@@ -27,7 +27,7 @@ export function registerActions(stories: Perso[]) {
 			else {
 				name = e.event;
 				action = e.action;
-				ns = e.ns || ns;
+				channel = e.channel || channel;
 			}
 			// FIXME choisir le format objet ou tableau pour les actions
 			// const actionFound = Array.isArray(actions)
@@ -38,7 +38,7 @@ export function registerActions(stories: Perso[]) {
 			if (actionFound) {
 				const { name: _, ...other } = actionFound;
 				subscribe({
-					ns: ns,
+					channel: channel,
 					name,
 					data: { id, action, ...other },
 				});
@@ -52,12 +52,12 @@ export function registerActions(stories: Perso[]) {
 }
 
 type Subscribe = {
-	ns: ESO_Namespace;
+	channel: ESO_Channel;
 	name: string;
 	data?: any;
 };
-function subscribe({ ns, name, data = null }: Subscribe) {
-	return emitter.on([ns, name], publish(data));
+function subscribe({ channel, name, data = null }: Subscribe) {
+	return emitter.on([channel, name], publish(data));
 }
 
 function publish(data: any) {

@@ -97,7 +97,7 @@ persos:
         content: dimanche
       emit: 
         mousedown: 
-          event: { ns: *STRAP, name: move }
+          event: { channel: *STRAP, name: move }
           data: { id: text-sample, event: move }
       listen:
         - { event: 'ev011', action: 'enter' }
@@ -143,7 +143,7 @@ persos:
         statStyle: { position: absolute } 
       emit:
         click:
-          - {event: { ns: TC, name: pause }}
+          - {event: { channel: TC, name: pause }}
       listen:
         - { event: go, action: enter }
         - { event: ev012, action: step01 }
@@ -206,8 +206,8 @@ persos:
           content: pause
       listen:
         - { event: 'go', action: 'enter' }
-        - { ns: *TC, event: 'play', action: 'play' }
-        - { ns: *TC, event: 'pause', action: 'pause' }
+        - { channel: *TC, event: 'play', action: 'play' }
+        - { channel: *TC, event: 'pause', action: 'pause' }
       actions:
         enter: 
           move: { layer: 'grid-01', slot: 'grid-01_s05' }
@@ -217,8 +217,8 @@ persos:
           content: play
       emit: 
         click: 
-          event: { ns: *STRAP, name: *TOGGLE }
-          data: { id: telco, ns: *TC,  valueA: pause, valueB: play }
+          event: { channel: *STRAP, name: *TOGGLE }
+          data: { id: telco, channel: *TC,  valueA: pause, valueB: play }
 
   - *SPRITE :
       id: sprite
@@ -246,5 +246,5 @@ persos:
         idle: { }
       emit:
         mousedown:
-          event: { ns: *STRAP, name: move }
+          event: { channel: *STRAP, name: move }
           data: { id: sprite, event: move-sprite }

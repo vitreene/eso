@@ -201,12 +201,12 @@
             "go": "enter"
           },
           {
-            "ns": "telco",
+            "channel": "telco",
             "event": "play",
             "action": "play"
           },
           {
-            "ns": "telco",
+            "channel": "telco",
             "event": "pause",
             "action": "pause"
           }
@@ -230,12 +230,12 @@
         "emit": {
           "click": {
             "event": {
-              "ns": "strap",
+              "channel": "strap",
               "name": "toggle"
             },
             "data": {
               "id": "telco",
-              "ns": "telco",
+              "channel": "telco",
               "valueA": "pause",
               "valueB": "play"
             }

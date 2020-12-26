@@ -1,5 +1,5 @@
 import * as CSS from 'csstype';
-import { ESO_Namespace, ESO_Lang, Nature } from './ESO_Namespace';
+import { ESO_Channel, ESO_Lang, Nature } from './ESO_enum';
 import { EmitEvent, Eventime } from './eventime';
 
 export interface Style
@@ -11,7 +11,7 @@ export type EsoEvents = Array<EsoEvent | EsoEventCondensed | string>;
 export interface EsoEvent {
 	event: string;
 	action?: string;
-	ns?: ESO_Namespace;
+	channel?: ESO_Channel;
 	data?: any;
 }
 

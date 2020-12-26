@@ -6,14 +6,14 @@ export function registerKeyEvents(emit, emitter) {
 		const emitEvent = (events, e) => {
 			(Array.isArray(events) ? events : [events]).forEach((event) => {
 				const {
-					event: { ns = MAIN, name },
+					event: { channel = MAIN, name },
 					data,
 				} = event;
-				// console.log(' ns, name, data : ', ns, name, data);
+				// console.log(' channel, name, data : ', channel, name, data);
 				// console.log(' E : ', e);
 				emitter.emit(
-					[ns, name],
-					{ ...data, ...(ns === STRAP && { e }) } || name
+					[channel, name],
+					{ ...data, ...(channel === STRAP && { e }) } || name
 				);
 			});
 		};

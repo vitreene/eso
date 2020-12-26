@@ -53,8 +53,8 @@ const playGame = {
 	],
 	emit: {
 		click: [
-			{ event: { ns: DEFAULT_NS, name: 'initCard' } },
-			{ event: { ns: STRAP, name: 'game-play' } },
+			{ event: { channel: DEFAULT_NS, name: 'initCard' } },
+			{ event: { channel: STRAP, name: 'game-play' } },
 		],
 	},
 };

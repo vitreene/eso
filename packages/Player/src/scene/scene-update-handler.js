@@ -87,7 +87,7 @@ function updateScene({ changed, update, ...others }) {
 				duration: DEFAULT_DURATION,
 				oncomplete: [
 					{
-						event: { ns: DEFAULT_NS, name: 'end-rescale-' + update?.id },
+						event: { channel: DEFAULT_NS, name: 'end-rescale-' + update?.id },
 						data: {
 							dynStyle: {
 								width: '100%',

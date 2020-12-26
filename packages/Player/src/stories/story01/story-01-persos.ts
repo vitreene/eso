@@ -1,4 +1,4 @@
-import { Nature } from '../../../../types/ESO_Namespace';
+import { Nature } from '../../../../types/ESO_enum';
 import { Perso } from '../../../../types/initial';
 import {
 	CONTAINER_ESO,
@@ -131,7 +131,7 @@ export const textSample: Perso = {
 	},
 	emit: {
 		mousedown: {
-			event: { ns: STRAP, name: 'move' },
+			event: { channel: STRAP, name: 'move' },
 			data: { id: 'text-sample', event: 'move' },
 		},
 	},
@@ -206,10 +206,10 @@ export const imageSample: Perso = {
 	emit: {
 		click: [
 			{
-				event: { ns: TC, name: 'pause' },
+				event: { channel: TC, name: 'pause' },
 			},
 			// {
-			// 	event: { ns: STRAP, name: 'add-event-list' },
+			// 	event: { channel: STRAP, name: 'add-event-list' },
 			// 	data: {
 			// 		name: 'click',
 			// 		start: 0,
@@ -247,7 +247,7 @@ export const imageSample: Perso = {
 			move: { layer: 'fond', slot: 'fond_s01', rescale: true },
 			transition: {
 				to: { opacity: 0.5 },
-				// oncomplete: { event: { ns: DEFAULT_NS, name: 'leave-sprite' } },
+				// oncomplete: { event: { channel: DEFAULT_NS, name: 'leave-sprite' } },
 			},
 		},
 		{
@@ -322,8 +322,8 @@ export const togglePlay: Perso = {
 
 	listen: [
 		{ event: 'go', action: 'enter' },
-		{ ns: TC, event: 'play', action: 'play' },
-		{ ns: TC, event: 'pause', action: 'pause' },
+		{ channel: TC, event: 'play', action: 'play' },
+		{ channel: TC, event: 'pause', action: 'pause' },
 	],
 	actions: [
 		{
@@ -342,10 +342,10 @@ export const togglePlay: Perso = {
 
 	emit: {
 		click: {
-			event: { ns: STRAP, name: TOGGLE },
+			event: { channel: STRAP, name: TOGGLE },
 			data: {
 				id: 'telco',
-				ns: TC,
+				channel: TC,
 				valueA: PAUSE,
 				valueB: PLAY,
 			},
@@ -394,7 +394,7 @@ export const spriteSample: Perso = {
 	],
 	emit: {
 		mousedown: {
-			event: { ns: STRAP, name: 'move' },
+			event: { channel: STRAP, name: 'move' },
 			data: { id: 'sprite', event: 'move-sprite' },
 		},
 	},

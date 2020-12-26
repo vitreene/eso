@@ -147,7 +147,7 @@
         "emit": {
             "pointerdown": {
                 "event": {
-                    "ns": "strap",
+                    "channel": "strap",
                     "name": "drag"
                 },
                 "data": {

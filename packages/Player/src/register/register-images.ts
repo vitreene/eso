@@ -1,4 +1,4 @@
-import { Nature } from '../../../types/ESO_Namespace';
+import { Nature } from '../../../types/ESO_enum';
 import { Perso } from '../../../types/initial';
 
 import { imagesCollection } from '../data/images-collection';

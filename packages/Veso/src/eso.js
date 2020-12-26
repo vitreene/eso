@@ -92,7 +92,7 @@ export class Eso {
 	_onLeave(props) {
 		//ajouter ce  oncomplete dans la prop oncomplete de la dernière transition
 		const oncomplete = {
-			event: { ns: DEFAULT_NS, name: 'leave-' + props?.id },
+			event: { channel: DEFAULT_NS, name: 'leave-' + props?.id },
 			// pas de data si l'event est partagé par plusieurs elements
 			// data: { leave: true }
 		};

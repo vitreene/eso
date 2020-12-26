@@ -58,7 +58,7 @@ export function transition(emitter) {
 					const { event, data } = action;
 					// console.log('action oncomplete', action);
 					accumulate.add(function emit() {
-						emitter.emit([event.ns, event.name], data);
+						emitter.emit([event.channel, event.name], data);
 					});
 				});
 			},

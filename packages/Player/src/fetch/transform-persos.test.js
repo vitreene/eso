@@ -19,24 +19,24 @@ test('perso get nature', () => {
 });
 
 describe('perso.listen', () => {
-	const ns = MAIN;
+	const channel = MAIN;
 	test('listen as string', () => {
 		const listen = ['ev011'];
-		// const _result = [{action: "play", event: "play",ns: "telco"}]
-		const _result = [{ event: 'ev011', action: 'ev011', ns }];
+		// const _result = [{action: "play", event: "play",channel: "telco"}]
+		const _result = [{ event: 'ev011', action: 'ev011', channel }];
 		expect(listenExpandProps(listen)).toStrictEqual(_result);
 	});
 
 	test('listen as array', () => {
 		const listen = [['ev011', 'play']];
-		// const _result = [{action: "play", event: "play",ns: "telco"}]
-		const _result = [{ event: 'ev011', action: 'play', ns }];
+		// const _result = [{action: "play", event: "play",channel: "telco"}]
+		const _result = [{ event: 'ev011', action: 'play', channel }];
 		expect(listenExpandProps(listen)).toStrictEqual(_result);
 	});
 
-	test('listen default ns', () => {
+	test('listen default channel', () => {
 		const listen = [{ event: 'ev011', action: 'play' }];
-		const _result = [{ event: 'ev011', action: 'play', ns }];
+		const _result = [{ event: 'ev011', action: 'play', channel }];
 		expect(listenExpandProps(listen)).toStrictEqual(_result);
 	});
 	test('listen complete', () => {
@@ -48,21 +48,21 @@ describe('perso.listen', () => {
 			'ev015',
 		];
 		const _result = [
-			{ ns: MAIN, event: 'ev011', action: 'enter' },
-			{ ns: MAIN, event: 'ev012', action: 'step02' },
-			{ ns: MAIN, event: 'ev013', action: 'step03' },
-			{ ns: MAIN, event: 'ev014', action: 'ev014' },
-			{ ns: MAIN, event: 'ev015', action: 'ev015' },
+			{ channel: MAIN, event: 'ev011', action: 'enter' },
+			{ channel: MAIN, event: 'ev012', action: 'step02' },
+			{ channel: MAIN, event: 'ev013', action: 'step03' },
+			{ channel: MAIN, event: 'ev014', action: 'ev014' },
+			{ channel: MAIN, event: 'ev015', action: 'ev015' },
 		];
 		expect(listenExpandProps(listen)).toStrictEqual(_result);
 	});
 
 	test('listen add actions', () => {
-		const listen = [{ ns: MAIN, event: 'ev011', action: 'enter' }];
+		const listen = [{ channel: MAIN, event: 'ev011', action: 'enter' }];
 		const actions = [{ name: 'leave' }];
 		const _results = [
-			{ ns: MAIN, event: 'ev011', action: 'enter' },
-			{ ns: MAIN, event: 'leave', action: 'leave' },
+			{ channel: MAIN, event: 'ev011', action: 'enter' },
+			{ channel: MAIN, event: 'leave', action: 'leave' },
 		];
 		expect(listenCollectAll(actions)(listen)).toStrictEqual(_results);
 	});

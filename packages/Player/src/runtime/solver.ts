@@ -21,9 +21,9 @@ eventDatas collecte les données additionnelles à un event enregistré
 this.timeLine :  { id, timeline}[]
 id: string
 timeline: { time: [name]} : number:string[]
-eventDatas[NS][count][name]
+eventDatas[channel][count][name]
 */
-import { ESO_Namespace } from '../../../types/ESO_Namespace';
+import { ESO_Channel } from '../../../types/ESO_enum';
 import { Eventime } from '../../../types/eventime';
 import { DEFAULT_NS, MAIN } from '../data/constantes';
 
@@ -33,11 +33,11 @@ export type TimeLine = {
 };
 
 export type TimelineKey = {
-	[key in ESO_Namespace]?: { [key: number]: string[] };
+	[key in ESO_Channel]?: { [key: number]: string[] };
 };
 
 type EventDatas = {
-	[key in ESO_Namespace]?:
+	[key in ESO_Channel]?:
 		| {
 				[key: number]: [{ [key: string]: string[] | undefined }];
 		  }
@@ -45,7 +45,7 @@ type EventDatas = {
 };
 
 type MapEvents = {
-	[key in ESO_Namespace]?: { [key: string]: number[] };
+	[key in ESO_Channel]?: { [key: string]: number[] };
 };
 
 type Options = {
@@ -118,21 +118,21 @@ export class TimeLiner {
 
 	private _tree(list: Eventime[], chrono: number) {
 		for (const event of list) {
-			const NS = event.ns || DEFAULT_NS;
-			!this.solved[NS] && (this.solved[NS] = {});
+			const channel = event.channel || DEFAULT_NS;
+			!this.solved[channel] && (this.solved[channel] = {});
 
 			let startAt = null;
 			if (typeof event.startAt === 'number') startAt = event.startAt;
-			else if (this.solved[NS][event.startAt])
-				startAt = this.solved[NS][event.startAt][0];
+			else if (this.solved[channel][event.startAt])
+				startAt = this.solved[channel][event.startAt][0];
 			// else if (event.type === 'action') startAt = 0;
 
 			if (startAt !== null) {
 				this.held = false;
 				const absTime = parseInt(startAt + chrono);
-				this.solved[NS][event.name]
-					? this.solved[NS][event.name].push(absTime)
-					: (this.solved[NS][event.name] = [absTime]);
+				this.solved[channel][event.name]
+					? this.solved[channel][event.name].push(absTime)
+					: (this.solved[channel][event.name] = [absTime]);
 				event.events && this._tree(event.events, absTime);
 			} else this._addEvent(event);
 		}
@@ -142,10 +142,10 @@ export class TimeLiner {
 		for (const event of evenTimes.events) {
 			if (event.data) {
 				const startAt = (evenTimes.startAt || 0) + (event.startAt || 0);
-				const NS = event.ns || DEFAULT_NS;
-				!eventDatas[NS] && (eventDatas[NS] = {});
-				!eventDatas[NS][startAt] && (eventDatas[NS][startAt] = {});
-				eventDatas[NS][startAt][event.name] = event.data;
+				const channel = event.channel || DEFAULT_NS;
+				!eventDatas[channel] && (eventDatas[channel] = {});
+				!eventDatas[channel][startAt] && (eventDatas[channel][startAt] = {});
+				eventDatas[channel][startAt][event.name] = event.data;
 			}
 			if (event.events) this._mapEventDatas(event, eventDatas);
 		}
@@ -155,13 +155,13 @@ export class TimeLiner {
 	private _mapTimeEvents(mapEvents: MapEvents) {
 		const evenTimes: TimelineKey = {};
 
-		for (const NS in mapEvents) {
-			for (const event in mapEvents[NS]) {
-				!evenTimes[NS] && (evenTimes[NS] = {});
-				mapEvents[NS][event].forEach((time) => {
-					evenTimes[NS][time]
-						? evenTimes[NS][time].push(event)
-						: (evenTimes[NS][time] = [event]);
+		for (const channel in mapEvents) {
+			for (const event in mapEvents[channel]) {
+				!evenTimes[channel] && (evenTimes[channel] = {});
+				mapEvents[channel][event].forEach((time) => {
+					evenTimes[channel][time]
+						? evenTimes[channel][time].push(event)
+						: (evenTimes[channel][time] = [event]);
 				});
 			}
 		}

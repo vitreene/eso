@@ -146,8 +146,8 @@ export const togglePlay = {
 
 	listen: [
 		{ event: 'go', action: 'enter' },
-		{ ns: TC, event: 'play', action: 'play' },
-		{ ns: TC, event: 'pause', action: 'pause' },
+		{ channel: TC, event: 'play', action: 'play' },
+		{ channel: TC, event: 'pause', action: 'pause' },
 	],
 	actions: [
 		{
@@ -166,10 +166,10 @@ export const togglePlay = {
 
 	emit: {
 		click: {
-			event: { ns: STRAP, name: TOGGLE },
+			event: { channel: STRAP, name: TOGGLE },
 			data: {
 				id: 'telco',
-				ns: TC,
+				channel: TC,
 				valueA: PAUSE,
 				valueB: PLAY,
 			},

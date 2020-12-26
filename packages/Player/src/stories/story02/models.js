@@ -171,7 +171,7 @@ const cardModel = (letter, i) => {
 
 		emit: {
 			pointerdown: {
-				event: { ns: STRAP, name: 'game-turnDrag' },
+				event: { channel: STRAP, name: 'game-turnDrag' },
 				data: {
 					id,
 					event: joinId('moveCard', id),

@@ -3,7 +3,7 @@ import { TimeLiner, TimeLine, TimelineKey } from './solver';
 import { controlAnimations } from 'veso';
 import { emitter } from '../data/emitter';
 import { TC, PLAY, PAUSE, REWIND } from '../data/constantes';
-import { ESO_Namespace } from '../../../types/ESO_Namespace';
+import { ESO_Channel } from '../../../types/ESO_enum';
 
 //////// CLOCK /////////////////////////
 // TODO use performance.now()
@@ -44,15 +44,15 @@ export function clock(timeLiner: TimeLiner) {
 	console.log('eventDatas', eventDatas);
 
 	const emitEvent = (count: number) => (tm: TimelineKey) => (
-		NS: ESO_Namespace
+		channel: ESO_Channel
 	) => {
-		if (tm[NS][count]) {
+		if (tm[channel][count]) {
 			const _emitEvent = (name: string) => {
-				const data: any = ((eventDatas[NS] || {})[count] || {})[name];
+				const data: any = ((eventDatas[channel] || {})[count] || {})[name];
 				console.log('name', name, data ? data : '');
-				emitter.emit([NS, name], { ...data, chrono: count });
+				emitter.emit([channel, name], { ...data, chrono: count });
 			};
-			tm[NS][count].forEach(_emitEvent);
+			tm[channel][count].forEach(_emitEvent);
 		}
 	};
 

@@ -107,8 +107,8 @@ persos:
       listen:
         [
           { event: go, action: enter },
-          { ns: *TC, event: *PLAY, action: *PLAY },
-          { ns: *TC, event: *PAUSE, action: *PAUSE },
+          { channel: *TC, event: *PLAY, action: *PLAY },
+          { channel: *TC, event: *PAUSE, action: *PAUSE },
         ]
       actions:
         - name: enter
@@ -119,5 +119,5 @@ persos:
           content: Play
       emit:
         click:
-          event: { ns: *STRAP, name: *TOGGLE }
-          data: { id: telco, ns: *TC, valueA: *PAUSE, valueB: *PLAY }
+          event: { channel: *STRAP, name: *TOGGLE }
+          data: { id: telco, channel: *TC, valueA: *PAUSE, valueB: *PLAY }

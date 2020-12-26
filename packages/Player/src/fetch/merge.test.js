@@ -46,21 +46,21 @@ describe('merge deux persos', () => {
 
 	test('listen merge', () => {
 		const _proto = [
-			{ ns: MAIN, event: 'go', action: 'enter' },
-			{ ns: MAIN, event: 'commence', action: 'tutu' },
-			{ ns: MAIN, event: 'end', action: 'leave' },
+			{ channel: MAIN, event: 'go', action: 'enter' },
+			{ channel: MAIN, event: 'commence', action: 'tutu' },
+			{ channel: MAIN, event: 'end', action: 'leave' },
 		];
 		const _text = [
-			{ ns: 'strap', event: 'go', action: 'enter' },
-			{ ns: MAIN, event: 'continue', action: 'toto' },
-			{ ns: MAIN, event: 'end', action: 'leave' },
+			{ channel: 'strap', event: 'go', action: 'enter' },
+			{ channel: MAIN, event: 'continue', action: 'toto' },
+			{ channel: MAIN, event: 'end', action: 'leave' },
 		];
 		const _result = [
-			{ ns: MAIN, event: 'go', action: 'enter' },
-			{ ns: MAIN, event: 'commence', action: 'tutu' },
-			{ ns: 'strap', event: 'go', action: 'enter' },
-			{ ns: MAIN, event: 'continue', action: 'toto' },
-			{ ns: MAIN, event: 'end', action: 'leave' },
+			{ channel: MAIN, event: 'go', action: 'enter' },
+			{ channel: MAIN, event: 'commence', action: 'tutu' },
+			{ channel: 'strap', event: 'go', action: 'enter' },
+			{ channel: MAIN, event: 'continue', action: 'toto' },
+			{ channel: MAIN, event: 'end', action: 'leave' },
 		];
 		expect(merge.listen(_proto, _text)).toStrictEqual(_result);
 	});
@@ -115,8 +115,8 @@ const text = {
 		content: 'nouveau',
 	},
 	listen: [
-		{ ns: MAIN, event: 'go', action: 'enter' },
-		{ ns: MAIN, event: 'end', action: 'leave' },
+		{ channel: MAIN, event: 'go', action: 'enter' },
+		{ channel: MAIN, event: 'end', action: 'leave' },
 	],
 	actions: [{ name: 'enter', move: { slot: 'so1' } }],
 };
@@ -134,8 +134,8 @@ const result = {
 		content: 'nouveau',
 	},
 	listen: [
-		{ ns: MAIN, event: 'go', action: 'enter' },
-		{ ns: MAIN, event: 'end', action: 'leave' },
+		{ channel: MAIN, event: 'go', action: 'enter' },
+		{ channel: MAIN, event: 'end', action: 'leave' },
 	],
 	actions: [
 		{
