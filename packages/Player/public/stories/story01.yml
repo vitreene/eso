@@ -88,7 +88,7 @@ persos:
           transition: { to: fadeIn } 
             
   - *BLOC :
-      id: text-sample
+      # id: text-sample
       initial: 
         dimensions: { width: 421, height: 214 }
         className: totoo
@@ -136,7 +136,7 @@ persos:
             content: fini
 
   - *IMG : 
-      id: image
+      # id: image
       initial: 
         content: ./ikono/vignette.jpg
         fit: cover
@@ -166,7 +166,7 @@ persos:
             to: { opacity: 1 }
 
   - *IMG : 
-      id: image2
+      # id: image2
       initial: 
         content: ./ikono/perfume_002.jpg
         fit: cover
@@ -191,7 +191,7 @@ persos:
           transition: { to: { opacity: 1 } }
             
   - *BUTTON :
-      id: togglePlay
+      # id: togglePlay
       initial:
           classStyle: {
             color: white,

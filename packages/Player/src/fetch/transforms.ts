@@ -5,10 +5,10 @@ import { transformPersos } from './transform-persos';
 export interface Story {
 	defs?: string[];
 	eventimes?: unknown;
-	persos?: Perso[];
+	persos?: PersoInput[];
 }
 
-export interface Perso {
+export interface PersoInput {
 	id: string;
 	nature: string;
 	initial: unknown;

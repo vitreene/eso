@@ -1,13 +1,13 @@
-import { persos } from '../data/store';
+import { persos } from '../data/store-persos';
 import { emitter } from '../data/emitter';
 
 import initCreatePerso from './declare-persos';
 import { Perso } from '../../../types/initial';
 
-export function registerPersos(stories: Perso[]) {
+export function registerPersos(_persos: Perso[]) {
 	const createPerso = initCreatePerso();
-	(Array.isArray(stories) ? stories : [stories]).forEach((story) => {
-		switch (story.nature) {
+	(Array.isArray(_persos) ? _persos : [_persos]).forEach((perso) => {
+		switch (perso.nature) {
 			case 'sound':
 				break;
 			case 'polygon':
@@ -17,7 +17,7 @@ export function registerPersos(stories: Perso[]) {
 			case 'button':
 			case 'img':
 			case 'sprite':
-				persos.set(story.id, createPerso.create(story, emitter));
+				persos.set(perso.id, createPerso.create(perso, emitter));
 				break;
 			default:
 				break;

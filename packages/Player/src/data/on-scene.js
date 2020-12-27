@@ -49,18 +49,16 @@ simplifier leave :
     // le tout avant réaffichage
 */
 
-import { storeSlots } from '../data/store-slots';
-export class OnScene {
+import { storeSlots } from './store-slots';
+class OnScene {
+	areOnScene = new Map();
 	constructor() {
-		// if (!storeSlots || !(storeSlots instanceof Map)) return false;
-
 		this.update = this.update.bind(this);
 		this._addToScene = this._addToScene.bind(this);
 		this._moveToSlot = this._moveToSlot.bind(this);
 		this._leaveScene = this._leaveScene.bind(this);
 		this.add_slots = this.add_slots.bind(this);
 
-		this.areOnScene = new Map();
 		this._slots = new Map(Array.from(storeSlots.keys(), (id) => [id, []]));
 		// en fin de scene
 		this.clear = storeSlots.subscribe(this.add_slots);
@@ -167,3 +165,5 @@ const errors = {
 	slot: 'error: not a valid slot',
 	id: 'error: not a valid id',
 };
+
+export const onScene = new OnScene();

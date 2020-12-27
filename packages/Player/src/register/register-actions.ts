@@ -5,9 +5,10 @@ import { DEFAULT_NS } from '../data/constantes';
 import { sceneUpdateHandler } from '../scene/scene-update-handler';
 import { ESO_Channel } from '../../../types/ESO_enum';
 
-export function registerActions(stories: Perso[]) {
-	for (const story of stories) {
-		const { id, listen, actions } = story;
+// TODO simplifier
+export function registerActions(persos: Perso[]) {
+	for (const perso of persos) {
+		const { id, listen, actions } = perso;
 
 		if (!listen) continue;
 		// passer cette logique dans la transformation yaml

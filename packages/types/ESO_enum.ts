@@ -1,18 +1,21 @@
 // a recoller avec contantes.js
 
 // remplacer par ESO_Channel
-export enum ESO_Channel {
-	MAIN = 'anim',
-	TELCO = 'telco',
+export enum ESO_EventName {
 	PLAY = 'play',
 	PAUSE = 'pause',
 	STOP = 'stop',
 	REWIND = 'rewind',
-	STRAP = 'strap',
 	TEMPO = 'tempo',
 	TOGGLE = 'toggle',
+}
+export enum ESO_Channel {
+	MAIN = 'anim',
+	TELCO = 'telco',
+	PLAY = 'play',
+	STRAP = 'strap',
 	DEFAULT_NS = MAIN,
-	CONTAINER_ESO = 'main',
+	CONTAINER_ESO = 'main', // n'est pas un channel !
 }
 
 export enum ESO_Lang {

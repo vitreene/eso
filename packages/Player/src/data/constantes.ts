@@ -1,4 +1,4 @@
-import { ESO_Lang, ESO_Channel } from '../../../types/ESO_enum';
+import { ESO_Lang, ESO_Channel, ESO_EventName } from '../../../types/ESO_enum';
 
 export const APP_ID = 'app';
 export const CONTAINER_ESO = ESO_Channel.CONTAINER_ESO;
@@ -6,12 +6,12 @@ export const CONTAINER_ESO = ESO_Channel.CONTAINER_ESO;
 export const MAIN = ESO_Channel.MAIN;
 export const TELCO = ESO_Channel.TELCO;
 export const PLAY = ESO_Channel.PLAY;
-export const PAUSE = ESO_Channel.PAUSE;
-export const STOP = ESO_Channel.STOP;
-export const REWIND = ESO_Channel.REWIND;
+export const PAUSE = ESO_EventName.PAUSE;
+export const STOP = ESO_EventName.STOP;
+export const REWIND = ESO_EventName.REWIND;
 
 export const STRAP = ESO_Channel.STRAP;
-export const TEMPO = ESO_Channel.TEMPO;
+export const TEMPO = ESO_EventName.TEMPO;
 
 export const SUPPORT = 'support';
 export const ACTOR = 'actor';
@@ -19,7 +19,7 @@ export const ACTOR = 'actor';
 export const DRAG = 'drag';
 export const MOVE = 'move';
 export const STATIC_TO_ABSOLUTE = 'staticToAbsolute';
-export const TOGGLE = ESO_Channel.TOGGLE;
+export const TOGGLE = ESO_EventName.TOGGLE;
 export const TICK = 100;
 export const DEFAULT_VOLUME = 0.1;
 

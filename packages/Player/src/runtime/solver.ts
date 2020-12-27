@@ -49,7 +49,7 @@ type MapEvents = {
 };
 
 type Options = {
-	level: string;
+	level?: string;
 	chrono?: number;
 	once?: boolean;
 	unique?: boolean;
@@ -65,15 +65,15 @@ export class TimeLiner {
 	private remains: Eventime[] = [];
 	private held: boolean = false;
 
-	public constructor(evenTimes: Eventime, level: string = DEFAULT_LEVEL) {
-		this.evenTimes = evenTimes;
-		this.addEventList(evenTimes, { level });
-	}
+	// TODO = level === channel ?
 
-	public addEventList(
-		evenTimes: Eventime,
-		{ level, chrono = 0, once = false, unique = false }: Options
-	) {
+	public addEventList(evenTimes: Eventime, options: Options = {}) {
+		const {
+			level = DEFAULT_LEVEL,
+			chrono = 0,
+			once = false,
+			unique = false,
+		} = options;
 		this.eventDatas = this._mapEventDatas(evenTimes);
 		const mapEvents = this._mapEvents(evenTimes, chrono);
 		const timeLine = this._mapTimeEvents(mapEvents);

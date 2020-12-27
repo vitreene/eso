@@ -1,5 +1,5 @@
-import { persos } from '../data/store';
-import { onScene } from '../data/onScene';
+import { persos } from '../data/store-persos';
+import { onScene } from '../data/on-scene';
 
 import { activateZoom } from '../zoom';
 import { Root } from '../composants/Root';

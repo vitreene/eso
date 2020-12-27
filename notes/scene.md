@@ -68,10 +68,16 @@ Ces facilités sont conçues pour la rédaction du yaml, et sont transformées e
 scene: 
   id: scene22
   name: nom de la scène
-  template: story00
-  root: story00-main
-  chain: [story01,story02,story03]
+  # template: story00
+  # root: story00-main
+  # chain: [story01,story02,story03]
   cast: 
+    - story00
+        startAt: go
+        root: *CONTAINER_ESO
+    - story01
+    - story02
+    - story03
     - story05:
         startAt: story04
         root: story00-main
@@ -87,6 +93,65 @@ scene:
 
 ```
 
+```js
+const story = new Story(_story, startAt, rootID)
+
+```
+
 todo
 - passer du yaml aux objets core
 - appliquer les modifications pour les syntaxes courtes
+
+
+## Deux facons d'incorporer des stories dans une scene :
+1. une story peut etre déclarée dans une autre story ;
+2. les stories sont déclarées dans la scène, un event monte chaque story, comme pour un composant. 
+Il faut s'assurer que le slot soit présent lorsque l'event est lancé
+C'est finalement une question d'écriture : techniquement, cela devrait revenir au meme.
+
+un composant d'une story n'est pas censé "passer" dans un autre ; les échanges se limitent aux messages
+
+## instance d'une story
+utiliser extends, commme pour les composants
+
+## portée des messages
+le channel par défaut est celui de la story ; le canal "main" est dédié à la scène elle-meme ; un strap peut intercepter des messages et les redistribuer à une story en particulier, la story la disptache à ses composants.
+Si on a besoin d'une communication inter-stories, nommer chaque instance des stories.
+Le nom d'une story sera le nom du channel
+dans story : name = id = channel 
+
+## appartenance des fonctions 
+### App
+- fetch
+- constantes
+
+### Chapter
+
+### Scene
+- emitter
+  quelle partie peut le remettre à zéro ? les events liés à la télécommande peuvent-ils etre rénitialisés à chaque changement de scène ?
+- zoom
+- runtime
+- images-collection
+- slots
+  slots et persos sont liés, c'est contradictoire de les affecter à un niveau différent
+- straps/
+  straps liés aux scenes, si necessaires
+
+
+### Story
+- composants/
+- register/
+- straps/
+  straps liés aux stories
+- on-scene 
+  pour un fonctionnement en silo 
+- persos
+  les persos de différentes stories ne communiquent pas entre eux directement
+- 
+
+
+Que désigne le package Player ?
+- scene
+- app
+App sera différent selon qu l'on sera sur veso ou vitreene ; en commun : scene

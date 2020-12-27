@@ -31,21 +31,16 @@ export class Eso {
 	attributes = {}; // attributs du node
 	propsInit = {};
 
-	constructor(story, emitter, init = true) {
-		const { id, initial, tag } = story;
+	constructor(perso, emitter, init = true) {
+		const { id, initial, tag } = perso;
 		this.id = id;
 		this.tag = tag;
 		this.node;
 		this.uuid = { uuid: nanoid(8), id };
-
-		this._revise = this._revise.bind(this);
-		this._pre = this._pre.bind(this);
-
 		this.prep = {
 			dimensions: doDimensions,
 			transition: transition.call(this, emitter),
 		};
-
 		this.revision = {
 			className: doClasses,
 			classStyle: style,
@@ -54,10 +49,12 @@ export class Eso {
 			style,
 		};
 
+		this._revise = this._revise.bind(this);
+		this._pre = this._pre.bind(this);
 		this.commit = commit.bind(this);
 
 		// TODO ajouter des events liés à l'app (ex: langues)
-		const events = Eso.registerKeyEvents(story.emit, emitter);
+		const events = Eso.registerKeyEvents(perso.emit, emitter);
 		this.propsInit = { id, ...initial, ...events };
 		init && this.init();
 	}

@@ -6,7 +6,7 @@ import { fetchStories } from './fetch/fetching';
 import './style.css';
 
 import { initRuntime } from './runtime';
-import { initStories } from './scene/init-stories';
+import { initStory } from './scene/init-story';
 
 //selectionner la scene à jouer
 // ============================================================
@@ -23,7 +23,7 @@ const Player = async () => {
 	// console.log('STORY', story[0]);
 	const { persos, eventimes } = story[0];
 	console.log('PERSOS', persos);
-	await initStories(persos, eventimes);
+	await initStory(persos, eventimes);
 	initRuntime();
 };
 

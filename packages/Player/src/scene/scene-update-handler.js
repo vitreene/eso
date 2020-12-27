@@ -1,7 +1,6 @@
-import { storeNodes } from 'veso';
-import { persos } from '../data/store';
-import { storeSlots } from '../data/store-slots';
-import { onScene } from '../data/onScene';
+import { persos } from '../data/store-persos';
+import { updateSlot } from '../data/update-slot';
+import { onScene } from '../data/on-scene';
 
 import { zoom, getElementOffsetZoomed } from '../zoom';
 import { DEFAULT_NS, DEFAULT_DURATION } from '../data/constantes';
@@ -101,11 +100,4 @@ function updateScene({ changed, update, ...others }) {
 	}
 
 	persos.get(update.id).update({ ...update, transition });
-}
-
-// ============================================================
-function updateSlot(slotId, persosIds) {
-	const content = persosIds.map((id) => storeNodes.get(persos.get(id).uuid));
-	// console.log('updateSlot content', content);
-	storeSlots.get(slotId)(content);
 }

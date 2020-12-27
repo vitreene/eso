@@ -3,12 +3,13 @@ TODO
 - prototype / basedOn / extends
 - when
 */
+import { nanoid } from 'nanoid';
 
 import { EsoActions, EsoEvent, EsoEvents, Perso } from '../../../types/initial';
 import { MAIN } from '../data/constantes';
 import { pipe } from '../shared/utils';
 import { deepmerge } from './merge';
-import { Story, Perso as PersoInput } from './transforms';
+import { Story, PersoInput } from './transforms';
 
 const PROTO = 'proto';
 
@@ -16,6 +17,7 @@ export function transformPersos(s: Story) {
 	const _persos = s.persos;
 	const persos = pipe(
 		natureSetProperty,
+		setId,
 		dispatchPersoProps,
 		deepmerge,
 		filterProtos
@@ -23,7 +25,7 @@ export function transformPersos(s: Story) {
 	return { ...s, persos };
 }
 
-export function natureSetProperty(_persos: Story['persos']) {
+export function natureSetProperty(_persos: PersoInput[]) {
 	const persos = [];
 	for (const _perso of _persos) {
 		const nature = Object.keys(_perso).pop();
@@ -35,11 +37,20 @@ export function natureSetProperty(_persos: Story['persos']) {
 	return persos;
 }
 
+export function setId(_persos: PersoInput[]) {
+	const persos = [];
+	for (const _perso of _persos) {
+		_perso.id = _perso.id || nanoid(8);
+		persos.push(_perso);
+	}
+	return persos;
+}
+
 export function filterProtos(_persos: Perso[]) {
 	return _persos.filter((perso) => perso.nature !== PROTO);
 }
 
-export function dispatchPersoProps(_persos: Story['persos']) {
+export function dispatchPersoProps(_persos: Perso[]) {
 	const persos = _persos.map((_perso: any) => {
 		const _actions = _perso.actions || [];
 		const actions = pipe(actionsToArray, moveExpandProps)(_actions);
