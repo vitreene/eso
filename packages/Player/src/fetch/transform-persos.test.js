@@ -20,24 +20,25 @@ test('perso get nature', () => {
 
 describe('perso.listen', () => {
 	const channel = MAIN;
+	const expandProps = listenExpandProps(channel);
 	test('listen as string', () => {
 		const listen = ['ev011'];
 		// const _result = [{action: "play", event: "play",channel: "telco"}]
 		const _result = [{ event: 'ev011', action: 'ev011', channel }];
-		expect(listenExpandProps(listen)).toStrictEqual(_result);
+		expect(expandProps(listen)).toStrictEqual(_result);
 	});
 
 	test('listen as array', () => {
 		const listen = [['ev011', 'play']];
 		// const _result = [{action: "play", event: "play",channel: "telco"}]
 		const _result = [{ event: 'ev011', action: 'play', channel }];
-		expect(listenExpandProps(listen)).toStrictEqual(_result);
+		expect(expandProps(listen)).toStrictEqual(_result);
 	});
 
 	test('listen default channel', () => {
 		const listen = [{ event: 'ev011', action: 'play' }];
 		const _result = [{ event: 'ev011', action: 'play', channel }];
-		expect(listenExpandProps(listen)).toStrictEqual(_result);
+		expect(expandProps(listen)).toStrictEqual(_result);
 	});
 	test('listen complete', () => {
 		const listen = [
@@ -54,7 +55,7 @@ describe('perso.listen', () => {
 			{ channel: MAIN, event: 'ev014', action: 'ev014' },
 			{ channel: MAIN, event: 'ev015', action: 'ev015' },
 		];
-		expect(listenExpandProps(listen)).toStrictEqual(_result);
+		expect(expandProps(listen)).toStrictEqual(_result);
 	});
 
 	test('listen add actions', () => {
@@ -64,7 +65,7 @@ describe('perso.listen', () => {
 			{ channel: MAIN, event: 'ev011', action: 'enter' },
 			{ channel: MAIN, event: 'leave', action: 'leave' },
 		];
-		expect(listenCollectAll(actions)(listen)).toStrictEqual(_results);
+		expect(listenCollectAll(channel, actions)(listen)).toStrictEqual(_results);
 	});
 });
 

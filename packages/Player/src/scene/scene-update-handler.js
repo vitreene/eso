@@ -4,15 +4,16 @@ import { onScene } from '../data/on-scene';
 
 import { zoom, getElementOffsetZoomed } from '../zoom';
 import { DEFAULT_NS, DEFAULT_DURATION } from '../data/constantes';
+import { updateTaggedTemplate } from 'typescript';
 
 // déclenche les updates
 // ============================================================
 export function sceneUpdateHandler(update) {
 	// TODO factoriser tous les appels à raf dans une meme fonction
-	requestAnimationFrame(() => {
-		const up = onScene.update(update);
-		updateScene(up);
-	});
+	// raf est-il encore utile ici ?
+	// requestAnimationFrame(() => {});
+	const up = onScene.update(update);
+	updateScene(up);
 }
 
 // ============================================================
@@ -86,7 +87,10 @@ function updateScene({ changed, update, ...others }) {
 				duration: DEFAULT_DURATION,
 				oncomplete: [
 					{
-						event: { channel: DEFAULT_NS, name: 'end-rescale-' + update?.id },
+						event: {
+							channel: update.channel,
+							name: 'end-rescale-' + update?.id,
+						},
 						data: {
 							style: {
 								width: '100%',

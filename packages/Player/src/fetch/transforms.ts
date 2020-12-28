@@ -4,6 +4,7 @@ import { transformPersos } from './transform-persos';
 
 export interface Story {
 	defs?: string[];
+	channel: string;
 	eventimes?: unknown;
 	persos?: PersoInput[];
 }
@@ -18,7 +19,7 @@ export interface PersoInput {
 }
 
 export function transforms(yamlStories: Story) {
-	console.log('yaml res:', JSON.stringify(yamlStories, null, 4));
+	// console.log('yaml res:', JSON.stringify(yamlStories, null, 4));
 	const stories = pipe(transformEventimes, transformPersos)(yamlStories);
 	return stories;
 }

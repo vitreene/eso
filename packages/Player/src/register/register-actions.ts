@@ -1,19 +1,18 @@
 import { Perso } from '../../../types/initial';
 
 import { emitter } from '../data/emitter';
-import { DEFAULT_NS } from '../data/constantes';
+// import { DEFAULT_NS } from '../data/constantes';
 import { sceneUpdateHandler } from '../scene/scene-update-handler';
 import { ESO_Channel } from '../../../types/ESO_enum';
 
 // TODO simplifier
-export function registerActions(persos: Perso[]) {
+export function registerActions(_channel: string, persos: Perso[]) {
 	for (const perso of persos) {
 		const { id, listen, actions } = perso;
-
 		if (!listen) continue;
 		// passer cette logique dans la transformation yaml
 		for (const e of listen) {
-			let channel: ESO_Channel = DEFAULT_NS;
+			let channel = _channel;
 			let name: string = null;
 			let action: string = null;
 			// e == string
@@ -53,12 +52,12 @@ export function registerActions(persos: Perso[]) {
 }
 
 type Subscribe = {
-	channel: ESO_Channel;
+	channel: ESO_Channel | string;
 	name: string;
 	data?: any;
 };
 function subscribe({ channel, name, data = null }: Subscribe) {
-	return emitter.on([channel, name], publish(data));
+	return emitter.on([channel, name], publish({ channel, ...data }));
 }
 
 function publish(data: any) {

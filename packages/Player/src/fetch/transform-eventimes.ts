@@ -1,13 +1,25 @@
 import { Eventime } from '../../../types/eventime';
-import { pipe, objectToArray } from '../shared/utils';
 import { Story } from './transforms';
+import { pipe, objectToArray } from '../shared/utils';
 
 export function transformEventimes(s: Story) {
 	const _eventimes = s.eventimes;
-	const eventimes = pipe(eventimesStartAt)(_eventimes);
+	const channel: string = s.channel;
+	const eventimes = pipe(
+		eventimesStartAt,
+		eventimesAddChannel(channel)
+	)(_eventimes);
 	console.log('eventimes', eventimes);
 
 	return { ...s, eventimes };
+}
+
+export function eventimesAddChannel(channel: string) {
+	return function addChannel(eventimes: Eventime) {
+		const events = eventimes.events ? eventimes.events.map(addChannel) : null;
+		//si channel est déjà défini, il a la priorité
+		return { channel, ...eventimes, ...(events && { events }) };
+	};
 }
 
 export function eventimesStartAt(eventimes) {

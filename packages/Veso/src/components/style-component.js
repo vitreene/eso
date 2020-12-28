@@ -17,13 +17,17 @@ Prerender
 
  */
 
-import { css } from 'goober';
+import { css, setup } from 'goober';
+import { prefix } from 'goober-autoprefixer';
 
 import { whiteListCssProps } from '../shared/constantes';
 import { pipe } from '../shared/utils';
 import { mapRelatives } from '../shared/map-relatives';
 import { extractTransform, withTransform } from '../shared/transform';
 import { keyToLowercase, stringToLowercase } from '../shared/js-to-css';
+
+setup(null, prefix);
+
 const whiteListCss = new Set(Array.from(whiteListCssProps, stringToLowercase));
 
 export const doStyle = {

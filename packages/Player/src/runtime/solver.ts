@@ -25,7 +25,7 @@ eventDatas[channel][count][name]
 */
 import { ESO_Channel } from '../../../types/ESO_enum';
 import { Eventime } from '../../../types/eventime';
-import { DEFAULT_NS, MAIN } from '../data/constantes';
+import { DEFAULT_NS } from '../data/constantes';
 
 export type TimeLine = {
 	level: string;
@@ -49,7 +49,7 @@ type MapEvents = {
 };
 
 type Options = {
-	level?: string;
+	level: string;
 	chrono?: number;
 	once?: boolean;
 	unique?: boolean;
@@ -58,22 +58,19 @@ type Options = {
 const DEFAULT_LEVEL = 'static';
 
 export class TimeLiner {
-	public evenTimes: Eventime;
+	// public evenTimes: Eventime;
 	public eventDatas: EventDatas = {};
 	public timeLine: TimeLine[] = [];
+
 	private solved: MapEvents = {};
 	private remains: Eventime[] = [];
 	private held: boolean = false;
 
-	// TODO = level === channel ?
+	// TODO = level === channel uniquement des stories ?
+	// level devient un parametre obligatoire
 
-	public addEventList(evenTimes: Eventime, options: Options = {}) {
-		const {
-			level = DEFAULT_LEVEL,
-			chrono = 0,
-			once = false,
-			unique = false,
-		} = options;
+	public addEventList(evenTimes: Eventime, options: Options) {
+		const { level, chrono = 0, once = false, unique = false } = options;
 		this.eventDatas = this._mapEventDatas(evenTimes);
 		const mapEvents = this._mapEvents(evenTimes, chrono);
 		const timeLine = this._mapTimeEvents(mapEvents);
@@ -95,10 +92,9 @@ export class TimeLiner {
 					timeLine: { ...this.timeLine[index].timeLine, ...timeLine },
 				};
 		}
-		console.log('this.timeLine', this.timeLine);
-		console.log('timeLine---))', timeLine);
-		console.log('this.evenTimes', this.evenTimes);
+		console.log('timeLine)', timeLine);
 		console.log('mapEvents', mapEvents);
+		console.log('this.timeLine', this.timeLine);
 	}
 
 	private _mapEvents(evenTimes: Eventime | Eventime[], chrono: number = 0) {
@@ -116,6 +112,7 @@ export class TimeLiner {
 		return this.solved;
 	}
 
+	// TODO channel est obligatoire
 	private _tree(list: Eventime[], chrono: number) {
 		for (const event of list) {
 			const channel = event.channel || DEFAULT_NS;
@@ -190,8 +187,8 @@ export class TimeLiner {
 		_found && this.remains.splice(_found, 1);
 	}
 
-	private _findEventList(name: string) {
-		const eventList = this.evenTimes.events.find((e) => e.name === name);
-		return eventList;
-	}
+	// private _findEventList(name: string) {
+	// 	const eventList = this.evenTimes.events.find((e) => e.name === name);
+	// 	return eventList;
+	// }
 }

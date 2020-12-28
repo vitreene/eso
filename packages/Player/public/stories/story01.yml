@@ -1,3 +1,5 @@
+channel: ma story
+
 eventimes: 
   name: start
   startAt: 0
@@ -92,7 +94,7 @@ persos:
       initial: 
         dimensions: { width: 421, height: 214 }
         className: totoo
-        classStyle: { color: blue,fontWeight: bold, padding: 8px	}
+        classStyle: { color: blue,font-weight: bold, padding: 8px, '&:hover': { cursor: grab }	}
         attr: {data-letter: alphabet}
         content: dimanche
       emit: 
@@ -103,9 +105,9 @@ persos:
         - { event: 'ev011', action: 'enter' }
         -	{ event: 'ev012', action: 'step01' }
         -	{ event: 'ev014', action: 'step02' }
-        -	{ event: 'move', action: 'move' }
+        -	{ channel: *DEFAULT_NS, event: 'move', action: idle }
       actions: 
-        move: {}
+        idle: {}
         enter: 
             move: { layer: grid-01, slot: grid-01_s01 }
             classStyle: {
@@ -201,7 +203,9 @@ persos:
             fontSize: 12px,
             padding: 1rem,
             textTransform: uppercase,
-            textAlign: center
+            textAlign: center,
+            transition: color 0.3s,
+            '&:hover': { color: cyan }
             }
           content: pause
       listen:
@@ -230,7 +234,7 @@ persos:
         - { event: ev011, action: enter }
         - { event: ev013, action: step01 }
         - { event: ev015, action: exit }
-        - { event: move-sprite, action: idle }
+        - { channel: *DEFAULT_NS, event: move-sprite, action: idle }
         - { event: leave-sprite, action: leave }
       actions:
         enter:

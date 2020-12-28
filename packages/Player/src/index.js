@@ -5,8 +5,7 @@
 import { fetchStories } from './fetch/fetching';
 import './style.css';
 
-import { initRuntime } from './runtime';
-import { initStory } from './scene/init-story';
+import { initStory, start } from './scene/init-story';
 
 //selectionner la scene à jouer
 // ============================================================
@@ -17,16 +16,14 @@ import { initStory } from './scene/init-story';
 
 // console.log('stories', stories);
 
-const Player = async () => {
-	// const story = await Promise.all(['/stories/file04.yml'].map(fetchStories));
-	const story = await Promise.all(['/stories/story01.yml'].map(fetchStories));
-	// console.log('STORY', story[0]);
-	const { persos, eventimes } = story[0];
-	console.log('PERSOS', persos);
-	await initStory(persos, eventimes);
-	initRuntime();
+const Player = async (path) => {
+	const stories = await Promise.all(path.map(fetchStories));
+	await Promise.all(stories.map(initStory));
 };
 
-Player();
+const path = ['/stories/story01.yml'];
+// const path = ['/stories/file04.yml'];
+
+Player(path).then(start);
 
 // ['/stories/file01.yaml', '/stories/file02.yaml'].forEach(fetchStories);

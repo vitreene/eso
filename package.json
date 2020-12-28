@@ -9,11 +9,10 @@
     "babel-plugin-transform-jsx-to-htm": "^2.0.0",
     "core-js": "^3.8.1",
     "csstype": "^3.0.5",
-    "deepmerge": "^4.2.2",
     "disco": "^1.0.2",
     "eventemitter2": "^6.4.3",
     "nanoid": "^3.1.12",
-    "sinuous": "^0.27.9",
+    "sinuous": "^0.27.11",
     "split-type": "^0.2.3",
     "yaml": "^1.10.0"
   },

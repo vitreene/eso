@@ -158,6 +158,7 @@ export function moveStrap(emitter) {
 
 			const z = zoom.box.zoom;
 
+			// faut-il cibler la story à l'origine de l'appel ?
 			emitter.emit([DEFAULT_NS, event], {
 				style: {
 					...(this.isStatic && { position: 'relative' }),

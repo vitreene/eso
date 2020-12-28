@@ -78,7 +78,14 @@ export function clock(timeLiner: TimeLiner) {
 	}
 
 	//  séparer le lancement de la boucle de emit init;
-	setTimeout(loop, 0);
+	// setTimeout(loop, 0);
 
-	return () => Math.round(count / 100) * 100 + 100; // next tick
+	return {
+		start() {
+			loop.bind(this)();
+		},
+		chrono() {
+			return Math.round(count / 100) * 100 + 100;
+		},
+	}; // next tick
 }

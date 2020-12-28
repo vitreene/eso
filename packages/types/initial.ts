@@ -7,11 +7,11 @@ export interface Style
 		CSS.PropertiesHyphen<string | number> {}
 
 // en entrées YAML, resolues après
-export type EsoEvents = Array<EsoEvent | EsoEventCondensed | string>;
+export type InputEsoEvents = Array<string | EsoEventCondensed | EsoEvent>;
 export interface EsoEvent {
 	event: string;
-	action?: string;
-	channel?: ESO_Channel;
+	action: string;
+	channel: ESO_Channel | string;
 	data?: any;
 }
 

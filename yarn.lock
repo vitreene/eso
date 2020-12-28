@@ -4326,11 +4326,6 @@ cssstyle@^2.2.0:
   dependencies:
     cssom "~0.3.6"
 
-csstype@^2.6.2:
-  version "2.6.13"
-  resolved "https://registry.yarnpkg.com/csstype/-/csstype-2.6.13.tgz#a6893015b90e84dd6e85d0e3b442a1e84f2dbe0f"
-  integrity sha512-ul26pfSQTZW8dcOnD2iiJssfXw0gdNVX9IJDH/X3K5DGPfj+fUYe3kB+swUY6BF3oZDxaID3AJt+9/ojSAE05A==
-
 csstype@^3.0.5:
   version "3.0.5"
   resolved "https://registry.yarnpkg.com/csstype/-/csstype-3.0.5.tgz#7fdec6a28a67ae18647c51668a9ff95bb2fa7bb8"
@@ -5683,10 +5678,17 @@ globby@^9.2.0:
     pify "^4.0.1"
     slash "^2.0.0"
 
-goober@^1.8.0:
-  version "1.8.0"
-  resolved "https://registry.yarnpkg.com/goober/-/goober-1.8.0.tgz#ed97e40e87300c6d1c8304a9d4b0f1398ff7669a"
-  integrity sha512-9ZFoOkBccexjqIgcwlhq7C/eCSkgTZX0BdNUkOnBFLedrJgo3R8lp9ckd/qqtngtF/JDyXSxJzwMU98kNjZ4Mw==
+goober-autoprefixer@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/goober-autoprefixer/-/goober-autoprefixer-1.2.1.tgz#6cc4184ae3cd8bee8de0f52817ef41742e2169f8"
+  integrity sha512-KmDblp2q2AkrT1o1p1tQOGqMEMJPZDX6O/ECj+IrsVaAKyGmxMttWp82ila+EuLMGPk8AuMBjt51GXp4zSwNrg==
+  dependencies:
+    tiny-css-prefixer "^1.1.4"
+
+goober@^2.0.19-next.1:
+  version "2.0.19-next.1"
+  resolved "https://registry.yarnpkg.com/goober/-/goober-2.0.19-next.1.tgz#6881ffba6346ed8cabc0872981771de791f855b3"
+  integrity sha512-1HlFxG2rYS6cag21p7stYv5f+sa0CQm8TCegcMIffBKDmfN30tLpCN0op4pDh2Xo34pwLe7PFYF6ZZRqovRX5A==
 
 graceful-fs@^4.1.11, graceful-fs@^4.1.15, graceful-fs@^4.1.2, graceful-fs@^4.1.6, graceful-fs@^4.2.0, graceful-fs@^4.2.2, graceful-fs@^4.2.4:
   version "4.2.4"
@@ -10301,10 +10303,10 @@ simple-swizzle@^0.2.2:
   dependencies:
     is-arrayish "^0.3.1"
 
-sinuous@^0.27.9:
-  version "0.27.9"
-  resolved "https://registry.yarnpkg.com/sinuous/-/sinuous-0.27.9.tgz#ed45c18559d2c462cce5e1789e4860beb64fa23c"
-  integrity sha512-E77UZWbT5XL8QelHbKWkpprmH9NIPOI7JGpK+2znprWRcH3L3s/NoSTPS9hGCKf42ODp+E0FxmxbC6LZvRXroQ==
+sinuous@^0.27.11:
+  version "0.27.11"
+  resolved "https://registry.yarnpkg.com/sinuous/-/sinuous-0.27.11.tgz#85f8f0b18607ca8e2205ccfda61f5dde34806643"
+  integrity sha512-2UzzlJfyhsCcpZOvh7uFzL4e/1EaFFy6d0FTaqJm1zImktl9WixAnNOwUpptnLKMA0jMKXEsD+3/HQpWuxz7mg==
 
 sisteransi@^1.0.5:
   version "1.0.5"
@@ -10993,6 +10995,11 @@ timsort@^0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/timsort/-/timsort-0.3.0.tgz#405411a8e7e6339fe64db9a234de11dc31e02bd4"
   integrity sha1-QFQRqOfmM5/mTbmiNN4R3DHgK9Q=
+
+tiny-css-prefixer@^1.1.4:
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/tiny-css-prefixer/-/tiny-css-prefixer-1.1.4.tgz#b96a0aa6b312227d996e9c303645e3ae2f194086"
+  integrity sha512-QLnDGLUmMkNlSuWogBaSu92uQnvWhcQwUc+MG8L4YgBkjSmBkAz29pTq+8Rh3YWR1TwPrjuZDKWzO7v4PXkipQ==
 
 tmp@^0.0.33:
   version "0.0.33"

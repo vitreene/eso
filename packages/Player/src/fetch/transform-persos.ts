@@ -5,8 +5,12 @@ TODO
 */
 import { nanoid } from 'nanoid';
 
-import { EsoActions, EsoEvent, EsoEvents, Perso } from '../../../types/initial';
-import { MAIN } from '../data/constantes';
+import {
+	EsoActions,
+	EsoEvent,
+	InputEsoEvents,
+	Perso,
+} from '../../../types/initial';
 import { pipe } from '../shared/utils';
 import { deepmerge } from './merge';
 import { Story, PersoInput } from './transforms';
@@ -14,11 +18,12 @@ import { Story, PersoInput } from './transforms';
 const PROTO = 'proto';
 
 export function transformPersos(s: Story) {
+	const channel = s.channel;
 	const _persos = s.persos;
 	const persos = pipe(
 		natureSetProperty,
 		setId,
-		dispatchPersoProps,
+		dispatchPersoProps(channel),
 		deepmerge,
 		filterProtos
 	)(_persos);
@@ -50,31 +55,39 @@ export function filterProtos(_persos: Perso[]) {
 	return _persos.filter((perso) => perso.nature !== PROTO);
 }
 
-export function dispatchPersoProps(_persos: Perso[]) {
-	const persos = _persos.map((_perso: any) => {
-		const _actions = _perso.actions || [];
-		const actions = pipe(actionsToArray, moveExpandProps)(_actions);
-		const _listen = _perso.listen || [];
-		const listen = listenDisptachProps(_listen, actions);
-		return { ..._perso, actions, listen };
-	});
-	return persos;
+export function dispatchPersoProps(channel) {
+	return function (_persos: Perso[]) {
+		const persos = _persos.map((_perso: any) => {
+			const _actions = _perso.actions || [];
+			const actions = pipe(actionsToArray, moveExpandProps)(_actions);
+			const _listen = _perso.listen || [];
+			const listen = listenDisptachProps(channel, _listen, actions);
+			return { ..._perso, actions, listen };
+		});
+		return persos;
+	};
 }
-
-function listenDisptachProps(_listen: EsoEvents, actions: EsoActions) {
-	const listen = pipe(listenExpandProps, listenCollectAll(actions))(_listen);
+function listenDisptachProps(
+	channel,
+	_listen: InputEsoEvents,
+	actions: EsoActions
+) {
+	const listen = pipe(
+		listenExpandProps(channel),
+		listenCollectAll(channel, actions)
+	)(_listen);
 	return listen;
 }
 
-export function listenCollectAll(actions: EsoActions) {
+export function listenCollectAll(channel: string, actions: EsoActions) {
 	return function (_listen: EsoEvent[]) {
-		const addNames = [];
+		const addNames: InputEsoEvents = [];
 		const actionsName = new Set(actions.map((action) => action.name));
 		const listenName = new Set(_listen.map((l) => l.action));
-		actionsName.forEach((name) => {
+		actionsName.forEach((name: string) => {
 			if (!listenName.has(name)) addNames.push(name);
 		});
-		const addListen = listenExpandProps(addNames);
+		const addListen = listenExpandProps(channel)(addNames);
 		return _listen.concat(addListen);
 	};
 }
@@ -87,27 +100,27 @@ _listen peut avoir les formes :
 	- [{ event: go, action: enter }]
 	- [ { channel: *TC, event: *PLAY, action: *PLAY }]
 	*/
-export function listenExpandProps(_listen) {
-	// TODO channel prendra la ref de sa story par defaut
-	const channel = MAIN;
-	// console.log('LISTEN', _listen);
-	const listen = _listen.map((l) => {
-		// ['ev1','ev2',...]
-		if (typeof l === 'string') return { event: l, action: l, channel };
-		// [[ev011, play],...]
-		if (Array.isArray(l)) return { event: l[0], action: l[1], channel };
-		// [ {ev011: 'enter'},...]
-		if (typeof l === 'object' && Object.keys(l).length === 1) {
-			const [event, action] = Object.entries(l)[0];
-			return { event, action, channel };
-		}
-		// [{ event: go, action: enter }]
-		if (!l.channel) return { ...l, channel };
-		return l;
-	});
-	return listen;
+// TODO channel prendra la ref de sa story par defaut
+export function listenExpandProps(channel: string) {
+	return function (_listen: InputEsoEvents) {
+		// console.log('LISTEN', _listen);
+		const listen = _listen.map((l) => {
+			// ['ev1','ev2',...]
+			if (typeof l === 'string') return { event: l, action: l, channel };
+			// [[ev011, play],...]
+			if (Array.isArray(l)) return { event: l[0], action: l[1], channel };
+			// [ {ev011: 'enter'},...]
+			if (typeof l === 'object' && Object.keys(l).length === 1) {
+				const [event, action] = Object.entries(l)[0];
+				return { event, action, channel };
+			}
+			// [{ event: go, action: enter }]
+			if (!l.channel) return { ...l, channel };
+			return l;
+		});
+		return listen;
+	};
 }
-
 export function actionsToArray(_actions: PersoInput['actions']) {
 	const actions = objectKeyToArray(_actions, 'name');
 	return actions;

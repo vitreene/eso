@@ -11,7 +11,7 @@ export interface Eventime {
 	type?: string; // à retirer ?
 	startAt: number;
 	name?: string;
-	channel?: ESO_Channel;
+	channel?: ESO_Channel | string;
 	data?: any;
 	events?: Array<Eventime>;
 }
