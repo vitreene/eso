@@ -3,6 +3,7 @@ import { Story } from './transforms';
 import { pipe, objectToArray } from '../shared/utils';
 
 export function transformEventimes(s: Story) {
+	if (!s.eventimes) return s;
 	const _eventimes = s.eventimes;
 	const channel: string = s.channel;
 	const eventimes = pipe(

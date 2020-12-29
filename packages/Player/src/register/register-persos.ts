@@ -4,8 +4,9 @@ import { emitter } from '../data/emitter';
 import initCreatePerso from './declare-persos';
 import { Perso } from '../../../types/initial';
 
+const createPerso = initCreatePerso();
+
 export function registerPersos(_persos: Perso[]) {
-	const createPerso = initCreatePerso();
 	(Array.isArray(_persos) ? _persos : [_persos]).forEach((perso) => {
 		switch (perso.nature) {
 			case 'sound':

@@ -1,0 +1,111 @@
+stories:
+  - id: story02
+    channel: ma second story
+
+    eventimes:
+      0:
+        name: start
+        events:
+          0: { name: go, data: [un, deux, trois] }
+          500: ev011
+          1000: ev012
+          2000: ev013
+          3000: ev014
+          4000: ev015
+          5000:
+            name: 'leave-root'
+            events: { 1000: { name: 'bye', data: ['quatre', 'cinq', 'six'] } }
+
+    persos:
+      - *PROTO :
+          id: proto_bloc
+          initial:
+            className: bloc-center
+
+      - *LAYER :
+          id: *CONTAINER_ESO
+          initial:
+            className: container grid
+            content: s01
+          actions:
+            ev011: { className: -=layer-top +=test }
+
+      - *BLOC :
+          id: text-sample
+          extends: proto_bloc
+          initial:
+            classStyle:
+              {
+                color: white,
+                font-weight: bold,
+                padding-top: 12,
+                padding-bottom: 12,
+                padding-left: 24,
+                padding-right: 24,
+                border-radius: 16,
+                grid-area: 1/1,
+                margin: auto,
+              }
+            content: dimanche
+          actions:
+            ev011:
+              move: s01
+              transition: { to: fadeIn }
+              classStyle: { font-size: 100, background-color: '#49b6b6cf' }
+              className: new-text
+            ev012:
+              content: { lang: fr, refLang: sous-titre, ref: txt01, effect: fade }
+            ev013:
+              content: { lang: en, refLang: langue, ref: txt01, effect: fade }
+            ev014:
+              content: { text: A bientot pour un prochain essai, effect: fade }
+            ev015:
+              content: { text: c’est fini, effect: letters-top-down }
+
+      - *IMG :
+          id: image
+          initial:
+            content: ./ikono/vignette.jpg
+            fit: cover
+            classStyle: { grid-area: 1/1 }
+          listen: [{ event: go, action: enter }]
+          actions:
+            enter:
+              move: s01
+              dimensions: { width: 100%, height: 100% }
+              transition: { to: fadeIn }
+
+      - button:
+          id: togglePlay
+          initial:
+            classStyle:
+              {
+                color: white,
+                background-color: blue,
+                border-radius: 4px,
+                font-weight: bold,
+                font-size: 12px,
+                padding: 1rem,
+                text-transform: uppercase,
+                text-align: center,
+                grid-area: 1/1,
+              }
+            dimensions: { width: 200, ratio: 1.5 }
+            content: Pause
+          listen:
+            [
+              { event: go, action: enter },
+              { channel: *TC, event: *PLAY, action: *PLAY },
+              { channel: *TC, event: *PAUSE, action: *PAUSE },
+            ]
+          actions:
+            enter:
+              move: s01
+            *PLAY :
+              content: Pause
+            *PAUSE :
+              content: Play
+          emit:
+            click:
+              event: { channel: *STRAP, name: *TOGGLE }
+              data: { id: telco, channel: *TC, valueA: *PAUSE, valueB: *PLAY }

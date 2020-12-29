@@ -24,6 +24,8 @@ type Story = {
 	eventimes: Eventime;
 };
 export const initStory = async ({ channel, persos, eventimes }: Story) => {
+	console.log({ channel, persos, eventimes });
+
 	addEventsToTimeLine(channel, eventimes);
 	await register(channel, persos);
 };

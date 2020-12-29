@@ -138,3 +138,46 @@ transitions prédéfinies
   - par fondus
   - par volet
 
+## structure de Story
+en première intention, Story regroupe eventimes, channel/id et persos
+
+```yaml
+- id?: story01
+  channel: story01
+  lang?: fr
+  eventimes: {}
+  persos: []
+  
+```
+
+Si un élément de persos est une string, elle designe un perso défini ailleurs
+- les id des persos en référence sont renommés pour etre uniques ?
+- un perso défini dans une story est ajouté dans la liste des persos, est-il renommé avant ?
+- fonctionne comme un extend
+
+id et channel distincts ? ils servent à des choses différentes
+- s'il manque l'un, l'autre est créé par copie
+- si les deux manquent, warning ? === désactivé
+
+
+Que faire en cas de conflit d'id ?
+- est-ce intentionnel ?
+  - la propriété extends rend l'intanciation intentionnelle
+  - si conflit, renommer le perso, warning sur le conflit
+  - instancier des listen avec un channel nommé risque de générer des effets incontrollés.
+  - il faut réécrire les events pour les rendre singuliers
+  exemple : deux listes avec glisser-déposer entre les deux ? chaque élément ne doit déplacer que lui-meme
+  Utiliser des modeles dans ce cas. 
+  
+## Définir des modeles
+différent de extend ? ne suffit-il pas de redéfinir les parties surchargées ?
+les valeurs à modifier sont des variables, pas des expressions
+un modele est concu pour etre dupliqué, il peut fonctionner avec extend !
+- créer d'abord le perso étendu
+- passer en revue le perso à la recherche de valeurs à remplacer (clés et valeurs)
+- créer une map avec la valeur à remplacer en clé et un tableau de chemins
+- ou bien, lors du parsage, faire les substitutions au fur et à mesure
+
+Un perso a besoin d'un channel pour localiser ses actions. si channel n'est pas défini, que faire :
+- ne pas ajouter channel : le perso a été défini en dehors d'une story, il ne peut etre utilisé tel quel. channel sera invoqué lorsqu'il sera instancié.
+- inconvénient : un mécanisme plus général des modèles serait plus adapté

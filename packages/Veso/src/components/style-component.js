@@ -27,7 +27,6 @@ import { extractTransform, withTransform } from '../shared/transform';
 import { keyToLowercase, stringToLowercase } from '../shared/js-to-css';
 
 setup(null, prefix);
-
 const whiteListCss = new Set(Array.from(whiteListCssProps, stringToLowercase));
 
 export const doStyle = {

@@ -1,12 +1,14 @@
 # aliases
 aliases:
   - &CONTAINER_ESO main
+  - &MAIN main
   - &DEFAULT_NS anim
   - &STRAP strap
   - &TC telco
   - &TOGGLE toggle
   - &PLAY play
   - &PAUSE pause
+  - &STORY story
   - &PROTO proto
   - &LAYER layer
   - &BLOC bloc

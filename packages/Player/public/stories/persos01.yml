@@ -91,21 +91,22 @@ persos:
             
   - *BLOC :
       # id: text-sample
+      extends: proto_bloc
       initial: 
-        dimensions: { width: 421, height: 214 }
+        # dimensions: { width: 421, height: 214 }
         className: totoo
-        classStyle: { color: blue,font-weight: bold, padding: 8px, '&:hover': { cursor: grab }	}
+        classStyle: { color: blue,font-weight: bold, padding: 8px 24px  , '&:hover': { cursor: grab }	}
         attr: {data-letter: alphabet}
         content: dimanche
       emit: 
         mousedown: 
           event: { channel: *STRAP, name: move }
-          data: { id: text-sample, event: move }
+          data: { event: move-toto }
       listen:
-        - { event: 'ev011', action: 'enter' }
-        -	{ event: 'ev012', action: 'step01' }
-        -	{ event: 'ev014', action: 'step02' }
-        -	{ channel: *DEFAULT_NS, event: 'move', action: idle }
+        - { event: ev011, action: enter }
+        -	{ event: ev012, action: step01 }
+        -	{ event: ev014, action: step02 }
+        -	{ channel: *DEFAULT_NS, event: move-toto, action: idle }
       actions: 
         idle: {}
         enter: 

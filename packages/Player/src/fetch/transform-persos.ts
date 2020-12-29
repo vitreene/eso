@@ -16,9 +16,11 @@ import { deepmerge } from './merge';
 import { Story, PersoInput } from './transforms';
 
 const PROTO = 'proto';
+type Channel = string | null;
 
 export function transformPersos(s: Story) {
-	const channel = s.channel;
+	if (!s.persos) return s;
+	const channel: Channel = s.channel || null;
 	const _persos = s.persos;
 	const persos = pipe(
 		natureSetProperty,
@@ -55,7 +57,7 @@ export function filterProtos(_persos: Perso[]) {
 	return _persos.filter((perso) => perso.nature !== PROTO);
 }
 
-export function dispatchPersoProps(channel) {
+export function dispatchPersoProps(channel: Channel) {
 	return function (_persos: Perso[]) {
 		const persos = _persos.map((_perso: any) => {
 			const _actions = _perso.actions || [];
@@ -68,7 +70,7 @@ export function dispatchPersoProps(channel) {
 	};
 }
 function listenDisptachProps(
-	channel,
+	channel: Channel,
 	_listen: InputEsoEvents,
 	actions: EsoActions
 ) {
@@ -79,7 +81,7 @@ function listenDisptachProps(
 	return listen;
 }
 
-export function listenCollectAll(channel: string, actions: EsoActions) {
+export function listenCollectAll(channel: Channel, actions: EsoActions) {
 	return function (_listen: EsoEvent[]) {
 		const addNames: InputEsoEvents = [];
 		const actionsName = new Set(actions.map((action) => action.name));
@@ -101,21 +103,23 @@ _listen peut avoir les formes :
 	- [ { channel: *TC, event: *PLAY, action: *PLAY }]
 	*/
 // TODO channel prendra la ref de sa story par defaut
-export function listenExpandProps(channel: string) {
+export function listenExpandProps(channel: Channel) {
 	return function (_listen: InputEsoEvents) {
 		// console.log('LISTEN', _listen);
 		const listen = _listen.map((l) => {
 			// ['ev1','ev2',...]
-			if (typeof l === 'string') return { event: l, action: l, channel };
+			if (typeof l === 'string')
+				return { event: l, action: l, ...(channel && { channel }) };
 			// [[ev011, play],...]
-			if (Array.isArray(l)) return { event: l[0], action: l[1], channel };
+			if (Array.isArray(l))
+				return { event: l[0], action: l[1], ...(channel && { channel }) };
 			// [ {ev011: 'enter'},...]
 			if (typeof l === 'object' && Object.keys(l).length === 1) {
 				const [event, action] = Object.entries(l)[0];
 				return { event, action, channel };
 			}
 			// [{ event: go, action: enter }]
-			if (!l.channel) return { ...l, channel };
+			if (!l.channel) return { ...l, ...(channel && { channel }) };
 			return l;
 		});
 		return listen;

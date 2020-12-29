@@ -136,15 +136,17 @@ export class TimeLiner {
 	}
 
 	private _mapEventDatas(evenTimes: Eventime, eventDatas: EventDatas = {}) {
-		for (const event of evenTimes.events) {
-			if (event.data) {
-				const startAt = (evenTimes.startAt || 0) + (event.startAt || 0);
-				const channel = event.channel || DEFAULT_NS;
-				!eventDatas[channel] && (eventDatas[channel] = {});
-				!eventDatas[channel][startAt] && (eventDatas[channel][startAt] = {});
-				eventDatas[channel][startAt][event.name] = event.data;
+		if (evenTimes.events) {
+			for (const event of evenTimes.events) {
+				if (event.data) {
+					const startAt = (evenTimes.startAt || 0) + (event.startAt || 0);
+					const channel = event.channel || DEFAULT_NS;
+					!eventDatas[channel] && (eventDatas[channel] = {});
+					!eventDatas[channel][startAt] && (eventDatas[channel][startAt] = {});
+					eventDatas[channel][startAt][event.name] = event.data;
+				}
+				if (event.events) this._mapEventDatas(event, eventDatas);
 			}
-			if (event.events) this._mapEventDatas(event, eventDatas);
 		}
 		return eventDatas;
 	}
