@@ -16,7 +16,7 @@ la fonction onScene gere le flux des objets.
     * onScene: liste des valets visibles, dans leur slot
     * up, propiétés employées : 
         * layer et slot pour créer slotId
-        * id du Valet
+        * id du Perso
     * fonctions :
         * enter: ajouter un composant à onscene
         * move: deplacement d'un slot à un autre
@@ -36,7 +36,7 @@ la fonction onScene gere le flux des objets.
 
 /* 
 simplifier leave :
-- le Valet recoit le flag "exit"
+- le Perso recoit le flag "exit"
 - en fin de transition, il emet un event "leave" 
 - le composant est retiré de la scène.
 */
@@ -142,6 +142,10 @@ class OnScene {
 	_leaveScene(up) {
 		const { id } = up;
 		const slotId = this.areOnScene.get(id);
+		if (!this._slots.has(slotId)) {
+			console.warn('slot %s introuvable dans %s', slotId, id);
+			return this._getError('_leaveScene', up);
+		}
 		const inslot = this._slots.get(slotId).filter((s) => s !== id);
 		this._slots.set(slotId, inslot);
 		this.areOnScene.delete(id);
@@ -161,6 +165,7 @@ class OnScene {
 }
 
 const errors = {
+	_leaveScene: 'error _leaveScene : slot introuvable',
 	move: 'error move: not a valid slot',
 	slot: 'error: not a valid slot',
 	id: 'error: not a valid id',

@@ -40,8 +40,6 @@ export function clock(timeLiner: TimeLiner) {
 
 	const timeLine = timeLiner.timeLine;
 	const eventDatas = timeLiner.eventDatas;
-	console.log('timeLine', timeLine);
-	console.log('eventDatas', eventDatas);
 
 	const emitEvent = (count: number) => (tm: TimelineKey) => (
 		channel: ESO_Channel
@@ -82,6 +80,8 @@ export function clock(timeLiner: TimeLiner) {
 
 	return {
 		start() {
+			console.log('timeLine', timeLine);
+			console.log('eventDatas', eventDatas);
 			loop.bind(this)();
 		},
 		chrono() {

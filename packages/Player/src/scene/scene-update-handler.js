@@ -3,8 +3,7 @@ import { updateSlot } from '../data/update-slot';
 import { onScene } from '../data/on-scene';
 
 import { zoom, getElementOffsetZoomed } from '../zoom';
-import { DEFAULT_NS, DEFAULT_DURATION } from '../data/constantes';
-import { updateTaggedTemplate } from 'typescript';
+import { DEFAULT_DURATION } from '../data/constantes';
 
 // déclenche les updates
 // ============================================================

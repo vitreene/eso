@@ -37,7 +37,7 @@ export type TimelineKey = {
 };
 
 type EventDatas = {
-	[key in ESO_Channel]?:
+	[key: string]:
 		| {
 				[key: number]: [{ [key: string]: string[] | undefined }];
 		  }
@@ -68,12 +68,22 @@ export class TimeLiner {
 	// level devient un parametre obligatoire
 
 	public addEventList(evenTimes: Eventime, options: Options) {
-		const { level, chrono = 0, once = false, unique = false } = options;
-		this.eventDatas = this._mapEventDatas(evenTimes);
+		this.eventDatas = this._mapEventDatas(evenTimes, this.eventDatas);
 		const mapEvents = this._mapEvents(evenTimes, options);
 		const timeLine = this._mapTimeEvents(mapEvents);
+		this._addToTimeLines(timeLine, options);
 
-		// ajouter aux autres timelines
+		console.log('timeLine)', timeLine);
+		console.log('mapEvents', mapEvents);
+		console.log('this.timeLine', this.timeLine);
+		console.log('remains', this.remains);
+		console.log('solved', this.solved);
+	}
+
+	// ajouter aux autres timelines
+	private _addToTimeLines(timeLine: TimelineKey, options: Options) {
+		const { level, chrono = 0, once = false, unique = false } = options;
+
 		const index = this.timeLine.findIndex((t) => t.level === level);
 		if (index === -1) {
 			this.timeLine.push({ level, timeLine });
@@ -90,16 +100,11 @@ export class TimeLiner {
 					timeLine: { ...this.timeLine[index].timeLine, ...timeLine },
 				};
 		}
-		console.log('timeLine)', timeLine);
-		console.log('mapEvents', mapEvents);
-		console.log('this.timeLine', this.timeLine);
-		console.log('remains', this.remains);
-		console.log('solved', this.solved);
 	}
 
 	private _mapEvents(evenTimes: Eventime | Eventime[], options: Options) {
-		this.remains = [];
-		this.solved = {};
+		// this.remains = [];
+		// this.solved = {};
 		this.held = false;
 		let list: Eventime[] = Array.isArray(evenTimes) ? evenTimes : [evenTimes];
 
@@ -114,7 +119,9 @@ export class TimeLiner {
 
 	// TODO channel est obligatoire
 	private _tree(list: Eventime[], options: Options) {
-		console.log('list', list);
+		console.log('_tree_list', list);
+		console.log(this.solved);
+
 		const { chrono = 0, level } = options;
 		for (const event of list) {
 			const channel = event.channel || DEFAULT_NS;
@@ -127,7 +134,9 @@ export class TimeLiner {
 			// faut-il ensuite chercher partout ?
 			else
 				[channel, level, DEFAULT_NS].some((ch) => {
-					if (this.solved[ch][event.startAt]) {
+					console.log('this.solved[ch]', ch, this.solved[ch]);
+
+					if (this.solved[ch]?.[event.startAt]) {
 						startAt = this.solved[ch][event.startAt][0];
 						return true;
 					}
@@ -152,6 +161,8 @@ export class TimeLiner {
 		if (evenTimes.events) {
 			for (const event of evenTimes.events) {
 				if (event.data) {
+					//FIXME ne fonctionne pas si startAt est un label
+					// lire le name avec sa valeur résolue dans mapEvents
 					const startAt = (evenTimes.startAt || 0) + (event.startAt || 0);
 					const channel = event.channel || DEFAULT_NS;
 					!eventDatas[channel] && (eventDatas[channel] = {});

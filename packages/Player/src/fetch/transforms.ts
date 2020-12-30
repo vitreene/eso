@@ -1,4 +1,5 @@
 import { nanoid } from 'nanoid';
+import { DEFAULT_NS } from '../data/constantes';
 import { pipe } from '../shared/utils';
 import { transformEventimes } from './transform-eventimes';
 import { transformPersos } from './transform-persos';
@@ -16,6 +17,7 @@ export interface Scene {
 	template: string;
 	cast: {
 		[ref: string]: {
+			id?: string;
 			startAt: string;
 			root: string;
 		};
@@ -59,8 +61,8 @@ export function transforms(yamlStories: SceneEntry) {
 	const scene = pipe(
 		// transformEventimes,
 		transformPersos,
-		transformStories
-		// transformScene
+		transformStories,
+		transformScene
 	)(yamlStories);
 
 	console.log('scene', scene);
@@ -71,19 +73,37 @@ export function transforms(yamlStories: SceneEntry) {
 
 */
 function transformScene(s: SceneEntry) {
+	const cast = sceneExpandCast(s);
 	const template = s.stories.find((story) => story.id === s.scene.template);
-	const scenes = s.scene.cast.map((cast) => {
-		const _storyName = typeof cast === 'string' ? cast : Object.keys(cast)[0];
-		return s.stories.find((story) => story.id === _storyName);
+	const stories = cast.map((_cast) => {
+		const story = s.stories.find((_story) => _story.id === _cast.id);
+		return addStartAndEndEvents(story, _cast);
 	});
-	return s;
+	return { ...s, scene: { ...s.scene, cast }, stories: [template, ...stories] };
+}
+
+//TODO typeof _cast === 'string'
+function sceneExpandCast(s: SceneEntry) {
+	if (!s.scene.cast) return [];
+	const cast = [];
+	for (const _story of s.scene.cast) {
+		// const id = typeof _cast === 'string' ? _cast : Object.keys(_cast)[0];
+		const id = Object.keys(_story)[0];
+		cast.push({ id, ..._story[id] });
+	}
+	return cast;
+}
+function addStartAndEndEvents(_story, cast) {
+	_story.eventimes.startAt = cast.startAt;
+	_story.eventimes.channel = DEFAULT_NS;
+	return _story;
 }
 
 function transformStories(s: SceneEntry) {
 	const stories = s.stories.map(
 		pipe(setIdAndChannel, transformEventimes, transformPersos)
 	);
-	return stories;
+	return { ...s, stories };
 }
 
 function setIdAndChannel(s: Story) {

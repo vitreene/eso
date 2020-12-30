@@ -17,11 +17,14 @@ import { initStory, start } from './scene/init-story';
 // console.log('stories', stories);
 
 const Player = async (path) => {
-	const stories = await Promise.all(path.map(fetchStories));
-	await Promise.all(stories[0].map(initStory));
+	const scene = await Promise.all(path.map(fetchStories));
+	const { stories } = scene[0];
+	console.log('PLAYER stories', stories);
+	await Promise.all(stories.map(initStory));
 };
 
-const path = ['/stories/story11.yml'];
+const path = ['/stories/story10.yml'];
+// const path = ['/stories/story11.yml'];
 // const path = ['/stories/persos01.yml'];
 // const path = ['/stories/file04.yml'];
 
