@@ -3,11 +3,25 @@ import { pipe } from '../shared/utils';
 import { transformEventimes } from './transform-eventimes';
 import { transformPersos } from './transform-persos';
 
-export interface Stories {
+export interface SceneEntry {
 	defs?: string[];
+	scene: Scene;
 	stories: Story[];
 	persos?: PersoInput[];
 }
+
+export interface Scene {
+	id: string;
+	name: string;
+	template: string;
+	cast: {
+		[ref: string]: {
+			startAt: string;
+			root: string;
+		};
+	}[];
+}
+
 export interface Story {
 	id?: string;
 	channel?: string;
@@ -24,19 +38,48 @@ export interface PersoInput {
 	emit?: unknown;
 }
 
-export function transforms(yamlStories: Stories) {
+/* 
+const scene: Scene = {
+	id: 'scene 1',
+	name: 'introduction',
+	template: 'scene-w-telco',
+	cast: [
+		{
+			'story01': {
+				startAt: 'start',
+				root: 'main',
+			},
+		},
+	],
+};
+ */
+
+export function transforms(yamlStories: SceneEntry) {
 	// console.log('yaml res:', JSON.stringify(yamlStories, null, 4));
-	const stories = pipe(
+	const scene = pipe(
 		// transformEventimes,
 		transformPersos,
 		transformStories
+		// transformScene
 	)(yamlStories);
 
-	console.log('Stories', stories);
-	return stories;
+	console.log('scene', scene);
+	return scene;
 }
 
-function transformStories(s: Stories) {
+/* TODO
+
+*/
+function transformScene(s: SceneEntry) {
+	const template = s.stories.find((story) => story.id === s.scene.template);
+	const scenes = s.scene.cast.map((cast) => {
+		const _storyName = typeof cast === 'string' ? cast : Object.keys(cast)[0];
+		return s.stories.find((story) => story.id === _storyName);
+	});
+	return s;
+}
+
+function transformStories(s: SceneEntry) {
 	const stories = s.stories.map(
 		pipe(setIdAndChannel, transformEventimes, transformPersos)
 	);

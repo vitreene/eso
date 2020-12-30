@@ -21,7 +21,7 @@ const Player = async (path) => {
 	await Promise.all(stories[0].map(initStory));
 };
 
-const path = ['/stories/story10.yml'];
+const path = ['/stories/story11.yml'];
 // const path = ['/stories/persos01.yml'];
 // const path = ['/stories/file04.yml'];
 

@@ -68,9 +68,16 @@ Ces facilités sont conçues pour la rédaction du yaml, et sont transformées e
 scene: 
   id: scene22
   name: nom de la scène
-  # template: story00
-  # root: story00-main
-  # chain: [story01,story02,story03]
+  // un template selon le support ?
+  template:
+    desktop : scene-w-telco-d
+    tablet :  scene-w-telco-t
+    mobile :  scene-w-telco-m
+  // template est une story ou un composant ?
+  template:
+    scene-w-telco:
+      startAt: go
+      root: *CONTAINER_ESO
   cast: 
     - story00
         startAt: go
@@ -89,7 +96,7 @@ scene:
 scene: 
   id: scene22
   name: nom de la scène
-  chain: [story01,story02,story03]
+  cast: [story01,story02,story03]
 
 ```
 

@@ -48,19 +48,21 @@ function setStartAt(eventime: unknown) {
 		: parseEventime(_events);
 }
 
-function setParseEventime(time: string) {
+function setParseEventime(_time: string) {
+	const time = Number.isNaN(Number(_time)) ? _time : Number(_time);
 	return function (_event) {
 		let event: Eventime | {} = {};
 		// ex	{ 500: 'ev011' }
 		if (typeof _event === 'string') {
 			event = {
-				startAt: Number(time),
+				startAt: time,
 				name: _event,
 			};
 			// ex { 0: { name: 'go', data: ['un', 'deux', 'trois'] } }
 		} else if (typeof _event === 'object') {
 			event = {
-				startAt: _event.startAt || Number(time),
+				...(_event.channel && { channel: _event.channel }),
+				startAt: _event.startAt || time,
 				name: _event.name || time,
 				...(_event.data && { data: _event.data }),
 				...(_event.events && {

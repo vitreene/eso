@@ -147,7 +147,7 @@ en première intention, Story regroupe eventimes, channel/id et persos
   lang?: fr
   eventimes: {}
   persos: []
-  
+
 ```
 
 Si un élément de persos est une string, elle designe un perso défini ailleurs
@@ -181,3 +181,25 @@ un modele est concu pour etre dupliqué, il peut fonctionner avec extend !
 Un perso a besoin d'un channel pour localiser ses actions. si channel n'est pas défini, que faire :
 - ne pas ajouter channel : le perso a été défini en dehors d'une story, il ne peut etre utilisé tel quel. channel sera invoqué lorsqu'il sera instancié.
 - inconvénient : un mécanisme plus général des modèles serait plus adapté
+
+
+### fin de story et passage à la story suivante
+
+- recupérer les stories
+- si le cast est *string* :
+	- ajouter un event *start-story* :
+		- le nom de l'event end précedent devient le start du suivant
+- dans tous les cas
+	- ajouter un event *end-story* s'il n'y en a pas
+
+Les events end :
+channel main : end-*« nom de la story »*
+channel de la story : end-story
+dernière story : end-scene ?
+
+La scene va passer ces events à la story, mais où les placer pour les déclencher ?
+- les placer à la main : 
+  - à la fin des eventtimes:
+  {startAt:'end-story', channel: 'main', name:'end-*« nom de la story »* }
+  il doit exister un event 'end-story' qui délèguera l'event 
+  - par défaut, sur l'event 'complete' d'un media son ou video 

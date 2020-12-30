@@ -1,5 +1,9 @@
 // https://github.com/sindresorhus/pupa/blob/master/index.js
 
+/* 
+créer une version qui traverse un objet à la recherche de variable, consigne les strings trouvées et leur chemin, pour les réappliquer dans une map
+*/
+
 export const pipapo = (template, data) => {
 	if (typeof template !== 'string') {
 		throw new TypeError(

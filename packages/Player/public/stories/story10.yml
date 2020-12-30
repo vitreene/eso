@@ -1,11 +1,14 @@
 scene:
   id: scene 1
   name: introduction
+  template: scene-w-telco
   cast:
-    - template
-    - story01
-    - story02
-
+    - story01:
+        startAt: start
+        root: main
+    - story02:
+        startAt: end-story01
+        root: main
 
 
 stories:
@@ -377,7 +380,7 @@ stories:
   #             event: { channel: *STRAP, name: *TOGGLE }
   #             data: { id: telco, channel: *TC, valueA: *PAUSE, valueB: *PLAY }
 
-  - id: template
+  - id: scene-w-telco
     eventimes:
       0:
         name: go
@@ -403,4 +406,4 @@ stories:
                 classStyle: {gridRow: 2}
 
           actions:
-            leave-root: { leave: true }
+            end-scene: { leave: true }

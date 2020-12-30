@@ -11,7 +11,8 @@ stories:
           1000: ev012
           2000: ev013
           3000: ev014
-          4000: ev015
+          4000: [ev015, {channel: main, name: ev015}]
+          bye: {channel: main, name: end-story}
           5000:
             name: 'leave-root'
             events: { 1000: { name: 'bye', data: ['quatre', 'cinq', 'six'] } }

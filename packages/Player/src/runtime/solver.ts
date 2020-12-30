@@ -55,8 +55,6 @@ type Options = {
 	unique?: boolean;
 };
 
-const DEFAULT_LEVEL = 'static';
-
 export class TimeLiner {
 	// public evenTimes: Eventime;
 	public eventDatas: EventDatas = {};
@@ -66,13 +64,13 @@ export class TimeLiner {
 	private remains: Eventime[] = [];
 	private held: boolean = false;
 
-	// TODO = level === channel uniquement des stories ?
+	// FIXME  level === channel ?
 	// level devient un parametre obligatoire
 
 	public addEventList(evenTimes: Eventime, options: Options) {
 		const { level, chrono = 0, once = false, unique = false } = options;
 		this.eventDatas = this._mapEventDatas(evenTimes);
-		const mapEvents = this._mapEvents(evenTimes, chrono);
+		const mapEvents = this._mapEvents(evenTimes, options);
 		const timeLine = this._mapTimeEvents(mapEvents);
 
 		// ajouter aux autres timelines
@@ -95,9 +93,11 @@ export class TimeLiner {
 		console.log('timeLine)', timeLine);
 		console.log('mapEvents', mapEvents);
 		console.log('this.timeLine', this.timeLine);
+		console.log('remains', this.remains);
+		console.log('solved', this.solved);
 	}
 
-	private _mapEvents(evenTimes: Eventime | Eventime[], chrono: number = 0) {
+	private _mapEvents(evenTimes: Eventime | Eventime[], options: Options) {
 		this.remains = [];
 		this.solved = {};
 		this.held = false;
@@ -105,7 +105,7 @@ export class TimeLiner {
 
 		while (!this.held) {
 			this.held = true;
-			this._tree(list, chrono);
+			this._tree(list, options);
 			list = this.remains;
 			this.remains = [];
 		}
@@ -113,15 +113,27 @@ export class TimeLiner {
 	}
 
 	// TODO channel est obligatoire
-	private _tree(list: Eventime[], chrono: number) {
+	private _tree(list: Eventime[], options: Options) {
+		console.log('list', list);
+		const { chrono = 0, level } = options;
 		for (const event of list) {
 			const channel = event.channel || DEFAULT_NS;
 			!this.solved[channel] && (this.solved[channel] = {});
 
+			// startAt peut etre un nombre ou un label
 			let startAt = null;
 			if (typeof event.startAt === 'number') startAt = event.startAt;
-			else if (this.solved[channel][event.startAt])
-				startAt = this.solved[channel][event.startAt][0];
+			// chercher sur channel, puis sur level et DEFAULT_NS
+			// faut-il ensuite chercher partout ?
+			else
+				[channel, level, DEFAULT_NS].some((ch) => {
+					if (this.solved[ch][event.startAt]) {
+						startAt = this.solved[ch][event.startAt][0];
+						return true;
+					}
+					return false;
+				});
+			// 'action' à developper pour des actions utilisateur
 			// else if (event.type === 'action') startAt = 0;
 
 			if (startAt !== null) {
@@ -130,7 +142,8 @@ export class TimeLiner {
 				this.solved[channel][event.name]
 					? this.solved[channel][event.name].push(absTime)
 					: (this.solved[channel][event.name] = [absTime]);
-				event.events && this._tree(event.events, absTime);
+				event.events &&
+					this._tree(event.events, { ...options, chrono: absTime });
 			} else this._addEvent(event);
 		}
 	}
