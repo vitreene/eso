@@ -1,8 +1,8 @@
 # aliases
 aliases:
-  - &CONTAINER_ESO main
+  - &CONTAINER_ESO eso
   - &MAIN main
-  - &DEFAULT_NS anim
+  - &DEFAULT_NS main
   - &STRAP strap
   - &TC telco
   - &TOGGLE toggle

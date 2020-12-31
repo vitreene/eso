@@ -91,7 +91,7 @@ class OnScene {
 
 	_addToScene(up) {
 		if (!up.move) {
-			console.warn('_addToScene fail');
+			console.warn('_addToScene fail', up);
 			return;
 		}
 		const { move } = up;
@@ -111,9 +111,8 @@ class OnScene {
 	}
 
 	_moveToSlot(up) {
-		// console.log('OnScene _moveToSlot--- up', up);
 		if (!up.move) {
-			console.warn('_moveToSlot fail');
+			console.warn('_moveToSlot fail', up);
 			return;
 		}
 		const { move } = up;

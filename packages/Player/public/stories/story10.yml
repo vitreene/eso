@@ -30,7 +30,9 @@ stories:
             name: leave-root,
             events: [{ startAt: 1000, name: 'bye', data: [quatre, cinq, six]}]
           }
-        - 7000: [end-story, {channel: *DEFAULT_NS, name: end-story01}]
+        - {startAt: 7000, name: end-story}
+        - {startAt: 7000, channel: *DEFAULT_NS, name: end-story01}
+        # - 7000: [end-story, {channel: *DEFAULT_NS, name: end-story01}]
 
     persos:
       - *PROTO :
@@ -75,7 +77,7 @@ stories:
             content: [{ id: s01 }]
           actions:
               go:
-                move: { layer: *CONTAINER_ESO, slot: main_s01 }
+                move: { layer: *CONTAINER_ESO, slot: eso_s01 }
                 transition: { to: fadeIn }
               end-story: {leave: true, transition: {to: fadeOut}}
 
@@ -103,7 +105,7 @@ stories:
               - { id: s06, classStyle: { gridColumn: 2 } }
           actions: 
             go:
-              move: { layer: *CONTAINER_ESO, slot: main_s01 }
+              move: { layer: *CONTAINER_ESO, slot: eso_s01 }
               transition: { to: fadeIn } 
             end-story: {leave: true, transition: {to: fadeOut}}
                 
@@ -300,13 +302,13 @@ stories:
       - *LAYER :
           id: *CONTAINER_ESO
           initial:
-            className: container grid
+            className: story02 container grid
             content: s01
-          actions:
-            ev011: { className: -=layer-top +=test }
+          # actions:
+          #   ev011: { className: -=layer-top +=test }
 
       - *BLOC :
-          id: text-sample
+          id: text-sample2
           extends: proto_bloc
           initial:
             classStyle:

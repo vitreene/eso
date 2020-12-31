@@ -40,22 +40,6 @@ export interface PersoInput {
 	emit?: unknown;
 }
 
-/* 
-const scene: Scene = {
-	id: 'scene 1',
-	name: 'introduction',
-	template: 'scene-w-telco',
-	cast: [
-		{
-			'story01': {
-				startAt: 'start',
-				root: 'main',
-			},
-		},
-	],
-};
- */
-
 export function transforms(yamlStories: SceneEntry) {
 	// console.log('yaml res:', JSON.stringify(yamlStories, null, 4));
 	const scene = pipe(
@@ -69,9 +53,6 @@ export function transforms(yamlStories: SceneEntry) {
 	return scene;
 }
 
-/* TODO
-
-*/
 function transformScene(s: SceneEntry) {
 	const cast = sceneExpandCast(s);
 	const template = s.stories.find((story) => story.id === s.scene.template);

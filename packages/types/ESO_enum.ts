@@ -10,12 +10,12 @@ export enum ESO_EventName {
 	TOGGLE = 'toggle',
 }
 export enum ESO_Channel {
-	MAIN = 'anim',
+	MAIN = 'main',
 	TELCO = 'telco',
 	PLAY = 'play',
 	STRAP = 'strap',
 	DEFAULT_NS = MAIN,
-	CONTAINER_ESO = 'main', // n'est pas un channel !
+	CONTAINER_ESO = 'eso', // n'est pas un channel !
 }
 
 export enum ESO_Lang {

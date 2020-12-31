@@ -18,6 +18,9 @@ class Slots extends Map {
 	unsubscribe(fn) {
 		if (!this.signals.has(fn)) this.signals.delete(fn);
 	}
+	toString() {
+		return Array.from(this.signals);
+	}
 }
 
 export const storeSlots = new Slots();

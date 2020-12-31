@@ -11,6 +11,7 @@ import { initRuntime } from '../runtime';
 import { TimeLiner } from '../runtime/solver';
 import { clock } from '../runtime/clock';
 import { addEventList } from '../runtime/add-event-list';
+import { DEFAULT_NS } from '../data/constantes';
 
 const timeLiner = new TimeLiner();
 const c = clock(timeLiner);
@@ -31,7 +32,7 @@ export const initStory = async ({ channel, persos, eventimes }: Story) => {
 };
 
 function addEventsToTimeLine(channel: string, eventimes: Eventime) {
-	timeLiner.addEventList(eventimes, { level: channel });
+	timeLiner.addEventList(eventimes, { level: DEFAULT_NS });
 }
 
 async function register(channel: string, persos: Perso[]) {

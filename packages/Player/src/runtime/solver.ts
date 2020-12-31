@@ -73,11 +73,11 @@ export class TimeLiner {
 		const timeLine = this._mapTimeEvents(mapEvents);
 		this._addToTimeLines(timeLine, options);
 
-		console.log('timeLine)', timeLine);
-		console.log('mapEvents', mapEvents);
-		console.log('this.timeLine', this.timeLine);
-		console.log('remains', this.remains);
-		console.log('solved', this.solved);
+		// console.log('timeLine)', timeLine);
+		// console.log('mapEvents', mapEvents);
+		// console.log('this.timeLine', this.timeLine);
+		// console.log('remains', this.remains);
+		// console.log('solved', this.solved);
 	}
 
 	// ajouter aux autres timelines
@@ -119,9 +119,6 @@ export class TimeLiner {
 
 	// TODO channel est obligatoire
 	private _tree(list: Eventime[], options: Options) {
-		console.log('_tree_list', list);
-		console.log(this.solved);
-
 		const { chrono = 0, level } = options;
 		for (const event of list) {
 			const channel = event.channel || DEFAULT_NS;
