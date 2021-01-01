@@ -4,11 +4,12 @@ scene:
   template: scene-w-telco
   cast:
     - story01:
-        startAt: start
-        root: *CONTAINER_ESO
+        startAt: go1
+        root: *MAIN
     - story02:
-        startAt: end-story01
-        root: *CONTAINER_ESO
+        # startAt: end-story01
+        startAt: go1
+        root: *MAIN
 
 
 stories:
@@ -35,31 +36,6 @@ stories:
         # - 7000: [end-story, {channel: *DEFAULT_NS, name: end-story01}]
 
     persos:
-      - *PROTO :
-          id: proto_bloc
-          initial:
-            className: bloc-center
-
-      - *LAYER :
-          id: *CONTAINER_ESO
-          initial:
-            className: container
-            content:
-              - id: s01
-                classStyle: {
-                  position: absolute,
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  display: grid,
-                  gridColumn: 1,
-                  gridRow: 1,
-                  pointerEvents: none
-                }
-          actions:
-            leave-root: { leave: true }
-
       - *LAYER :
           id: fond
           initial: 
@@ -77,10 +53,11 @@ stories:
             content: [{ id: s01 }]
           actions:
               go:
-                move: { layer: *CONTAINER_ESO, slot: eso_s01 }
+                # move: *ESOMAIN
+                move: eso_telco
                 transition: { to: fadeIn }
-              end-story: {leave: true, transition: {to: fadeOut}}
-
+              end-story: {exit: true, transition: {to: fadeOut}}
+              leave-fond: {leave: true}
 
       - *LAYER :
           id: grid-01
@@ -89,12 +66,13 @@ stories:
               position: absolute,
               top: 0,
               left: 0,
+              right: 0,
+              bottom: 0,
               display: grid,
               margin: 2rem,
               gridTemplateColumns: 6fr 4fr,
               gridTemplateRows: '4fr 3fr repeat(3, 1fr)',
-              width: calc(100% - 4rem),
-              height: calc(100vmin - 8rem)
+              
             }
             content: 
               - { id: s01, classStyle: { gridColumn: '1 / 3', gridRow: 1}}
@@ -105,7 +83,8 @@ stories:
               - { id: s06, classStyle: { gridColumn: 2 } }
           actions: 
             go:
-              move: { layer: *CONTAINER_ESO, slot: eso_s01 }
+              move: eso_telco
+              # move: *ESOMAIN
               transition: { to: fadeIn } 
             end-story: {leave: true, transition: {to: fadeOut}}
                 
@@ -294,19 +273,6 @@ stories:
             events: { 1000: { name: 'bye', data: ['quatre', 'cinq', 'six'] } }
 
     persos:
-      - *PROTO :
-          id: proto_bloc
-          initial:
-            className: bloc-center
-
-      - *LAYER :
-          id: *CONTAINER_ESO
-          initial:
-            className: story02 container grid
-            content: s01
-          # actions:
-          #   ev011: { className: -=layer-top +=test }
-
       - *BLOC :
           id: text-sample2
           extends: proto_bloc
@@ -326,7 +292,7 @@ stories:
             content: dimanche
           actions:
             ev011:
-              move: s01
+              move: *ESOMAIN
               transition: { to: fadeIn }
               classStyle: { font-size: 100, background-color: '#49b6b6cf' }
               className: new-text
@@ -348,7 +314,7 @@ stories:
           listen: [{ event: go, action: enter }]
           actions:
             enter:
-              move: s01
+              move: *ESOMAIN
               dimensions: { width: 100%, height: 100% }
               transition: { to: fadeIn }
 
@@ -377,7 +343,7 @@ stories:
             ]
           actions:
             enter:
-              move: s01
+              move: *ESOMAIN
             *PLAY :
               content: Pause
             *PAUSE :
@@ -390,8 +356,9 @@ stories:
   - id: scene-w-telco
     channel: *DEFAULT_NS
     eventimes:
-      0:
-        name: start
+      0: go1
+        # events: [{startAt: 0, name: go1},{startAt: 0, name: go2}]
+        # name: start
 
     persos:
       - *PROTO :
@@ -405,13 +372,18 @@ stories:
             className: container
             classStyle: {
               display: grid,
-              gridTemplateRows: '9fr 1fr'
+              gridTemplateRows: '5fr 5fr'
             }
             content:
               - id: *MAIN
-                classStyle: {gridRow: 1}
+                classStyle: {display: grid, gridRow: 1}
               - id: *TC
-                classStyle: {gridRow: 2}
-
+                classStyle: {display: grid, gridRow: 2}
           actions:
             end-scene: { leave: true }
+
+persos:
+  - *PROTO :
+      id: proto_bloc
+      initial:
+        className: bloc-center

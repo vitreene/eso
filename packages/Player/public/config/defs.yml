@@ -1,5 +1,6 @@
 # aliases
 aliases:
+  - &ESOMAIN eso_main
   - &CONTAINER_ESO eso
   - &MAIN main
   - &DEFAULT_NS main

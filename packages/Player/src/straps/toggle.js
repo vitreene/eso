@@ -1,10 +1,9 @@
 import { DEFAULT_NS } from '../data/constantes';
-// TODO register toggle
-// exemple button
 
-export default function addEventList(emitter) {
+// TODO raz toggles
+export default function toggleStrap(emitter) {
 	const toggles = {};
-	return function (data) {
+	return function toggle(data) {
 		const { id, channel = DEFAULT_NS, valueA, valueB, ...others } = data;
 
 		const channels = Array.isArray(channel) ? channel : [channel];

@@ -5,7 +5,7 @@ import { onScene } from '../data/on-scene';
 import { zoom, getElementOffsetZoomed } from '../zoom';
 import { DEFAULT_DURATION } from '../data/constantes';
 
-// déclenche les updates
+// déclenche les updates ; appelé par chaque action
 // ============================================================
 export function sceneUpdateHandler(update) {
 	// TODO factoriser tous les appels à raf dans une meme fonction

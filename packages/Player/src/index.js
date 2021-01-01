@@ -5,7 +5,7 @@
 import { fetchStories } from './fetch/fetching';
 import './style.css';
 
-import { initStory, start } from './scene/init-story';
+import { initStory, start } from './init/init-story';
 
 //selectionner la scene à jouer
 // ============================================================
@@ -18,6 +18,8 @@ import { initStory, start } from './scene/init-story';
 
 const Player = async (path) => {
 	const scene = await Promise.all(path.map(fetchStories));
+	console.log('PLAYER scene', scene[0]);
+
 	const { stories } = scene[0];
 	console.log('PLAYER stories', stories);
 	await Promise.all(stories.map(initStory));

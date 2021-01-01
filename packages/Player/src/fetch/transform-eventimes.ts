@@ -1,5 +1,5 @@
 import { Eventime } from '../../../types/eventime';
-import { Story } from './transforms';
+import { Story } from '../../../types/Entries-types';
 import { pipe, objectToArray } from '../shared/utils';
 
 export function transformEventimes(s: Story) {

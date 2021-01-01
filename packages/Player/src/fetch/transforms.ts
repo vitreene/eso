@@ -1,44 +1,9 @@
 import { nanoid } from 'nanoid';
-import { DEFAULT_NS } from '../data/constantes';
+import { CONTAINER_ESO, DEFAULT_NS, MAIN } from '../data/constantes';
 import { pipe } from '../shared/utils';
+import { SceneEntry, StoryEntry } from '../../../types/Entries-types';
 import { transformEventimes } from './transform-eventimes';
 import { transformPersos } from './transform-persos';
-
-export interface SceneEntry {
-	defs?: string[];
-	scene: Scene;
-	stories: Story[];
-	persos?: PersoInput[];
-}
-
-export interface Scene {
-	id: string;
-	name: string;
-	template: string;
-	cast: {
-		[ref: string]: {
-			id?: string;
-			startAt: string;
-			root: string;
-		};
-	}[];
-}
-
-export interface Story {
-	id?: string;
-	channel?: string;
-	eventimes?: unknown;
-	persos?: PersoInput[];
-}
-
-export interface PersoInput {
-	id: string;
-	nature: string;
-	initial: unknown;
-	listen?: unknown;
-	actions: unknown;
-	emit?: unknown;
-}
 
 export function transforms(yamlStories: SceneEntry) {
 	// console.log('yaml res:', JSON.stringify(yamlStories, null, 4));
@@ -56,6 +21,7 @@ export function transforms(yamlStories: SceneEntry) {
 function transformScene(s: SceneEntry) {
 	const cast = sceneExpandCast(s);
 	const template = s.stories.find((story) => story.id === s.scene.template);
+	template.isTemplate = true;
 	const stories = cast.map((_cast) => {
 		const story = s.stories.find((_story) => _story.id === _cast.id);
 		return addStartAndEndEvents(story, _cast);
@@ -87,8 +53,9 @@ function transformStories(s: SceneEntry) {
 	return { ...s, stories };
 }
 
-function setIdAndChannel(s: Story) {
+function setIdAndChannel(s: StoryEntry) {
 	const story = s;
+	story.root = CONTAINER_ESO;
 	if (!story.id && !story.channel) {
 		const id = nanoid(8);
 		story.id = id;

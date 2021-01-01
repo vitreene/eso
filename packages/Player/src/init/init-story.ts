@@ -1,16 +1,17 @@
 // register actions, images, action, events
-import { Perso } from '../../../types/initial';
 import { Eventime } from '../../../types/eventime';
+import { Story, StoryWoEventimes } from '../../../types/Entries-types';
 
 import { registerImages } from '../register/register-images';
 import { registerPersos } from '../register/register-persos';
 import { registerActions } from '../register/register-actions';
 import { registerStraps } from '../register/register-straps';
-import { initRuntime } from '../runtime';
 
+import { initRuntime } from '../runtime';
 import { TimeLiner } from '../runtime/solver';
 import { clock } from '../runtime/clock';
 import { addEventList } from '../runtime/add-event-list';
+
 import { DEFAULT_NS } from '../data/constantes';
 
 const timeLiner = new TimeLiner();
@@ -19,26 +20,21 @@ addEventList(c.chrono, timeLiner);
 
 export const start = c.start;
 
-type Story = {
-	channel: string;
-	persos: Perso[];
-	eventimes: Eventime;
-};
-export const initStory = async ({ channel, persos, eventimes }: Story) => {
-	console.log({ channel, persos, eventimes });
-
-	addEventsToTimeLine(channel, eventimes);
-	await register(channel, persos);
+export const initStory = async (story: Story) => {
+	const { eventimes, ...others } = story;
+	addEventsToTimeLine(eventimes);
+	await register(others);
 };
 
-function addEventsToTimeLine(channel: string, eventimes: Eventime) {
+function addEventsToTimeLine(eventimes: Eventime) {
 	timeLiner.addEventList(eventimes, { level: DEFAULT_NS });
 }
 
-async function register(channel: string, persos: Perso[]) {
+async function register(story: StoryWoEventimes) {
+	const { isTemplate, root, channel, persos } = story;
 	await registerImages(persos);
 	registerPersos(persos);
 	registerActions(channel, persos);
 	registerStraps();
-	initRuntime();
+	initRuntime(root, isTemplate);
 }

@@ -13,7 +13,7 @@ import {
 } from '../../../types/initial';
 import { pipe } from '../shared/utils';
 import { deepmerge } from './merge';
-import { Story, PersoInput } from './transforms';
+import { Story, PersoEntry } from '../../../types/Entries-types';
 
 const PROTO = 'proto';
 type Channel = string | null;
@@ -32,7 +32,7 @@ export function transformPersos(s: Story) {
 	return { ...s, persos };
 }
 
-export function natureSetProperty(_persos: PersoInput[]) {
+export function natureSetProperty(_persos: PersoEntry[]) {
 	const persos = [];
 	for (const _perso of _persos) {
 		const nature = Object.keys(_perso).pop();
@@ -44,7 +44,7 @@ export function natureSetProperty(_persos: PersoInput[]) {
 	return persos;
 }
 
-export function setId(_persos: PersoInput[]) {
+export function setId(_persos: PersoEntry[]) {
 	const persos = [];
 	for (const _perso of _persos) {
 		_perso.id = _perso.id || nanoid(8);
@@ -125,12 +125,12 @@ export function listenExpandProps(channel: Channel) {
 		return listen;
 	};
 }
-export function actionsToArray(_actions: PersoInput['actions']) {
+export function actionsToArray(_actions: PersoEntry['actions']) {
 	const actions = objectKeyToArray(_actions, 'name');
 	return actions;
 }
 
-export function moveExpandProps(_actions: PersoInput['actions']) {
+export function moveExpandProps(_actions: PersoEntry['actions']) {
 	if (!Array.isArray(_actions)) return _actions;
 	const actions = _actions.map((action) => {
 		if (typeof action.move === 'string')
@@ -140,7 +140,7 @@ export function moveExpandProps(_actions: PersoInput['actions']) {
 	return actions;
 }
 
-function objectKeyToArray(obj: PersoInput['actions'], key: string) {
+function objectKeyToArray(obj: PersoEntry['actions'], key: string) {
 	if (typeof obj !== 'object') {
 		console.warn("ce n'est pas un object : %s", obj);
 		return obj;

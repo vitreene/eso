@@ -2,8 +2,9 @@ import { Perso } from '../../../types/initial';
 
 import { emitter } from '../data/emitter';
 // import { DEFAULT_NS } from '../data/constantes';
-import { sceneUpdateHandler } from '../scene/scene-update-handler';
+import { sceneUpdateHandler } from '../init/scene-update-handler';
 import { ESO_Channel } from '../../../types/ESO_enum';
+import { STRAP } from '../data/constantes';
 
 // TODO simplifier
 export function registerActions(_channel: string, persos: Perso[]) {
@@ -33,6 +34,10 @@ export function registerActions(_channel: string, persos: Perso[]) {
 			// const actionFound = Array.isArray(actions)
 			// 	? actions.find((a) => a.name === action)
 			// 	: actions[action];
+			// console.log('emitter', emitter.eventNames());
+			// _channel === 'strap.toggle' &&
+
+			// console.log('emitter', _channel, emitter.listeners('strap.toggle'));
 
 			const actionFound = actions.find((a) => a.name === action);
 			if (actionFound) {

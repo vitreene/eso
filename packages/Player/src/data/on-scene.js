@@ -90,9 +90,11 @@ class OnScene {
 	}
 
 	_addToScene(up) {
+		console.log('this.areOnScene', this.areOnScene);
+
 		if (!up.move) {
 			console.warn('_addToScene fail', up);
-			return;
+			return { update: null };
 		}
 		const { move } = up;
 		const slotId = move.slot;
