@@ -2,15 +2,15 @@
 import { Eventime } from '../../../types/eventime';
 import { Story, StoryWoEventimes } from '../../../types/Entries-types';
 
-import { registerImages } from '../register/register-images';
-import { registerPersos } from '../register/register-persos';
-import { registerActions } from '../register/register-actions';
-import { registerStraps } from '../register/register-straps';
+import { registerImages } from '../Scene/register/register-images';
+import { registerPersos } from '../Scene/register/register-persos';
+import { registerActions } from '../Scene/register/register-actions';
+import { registerStraps } from '../Scene/register/register-straps';
 
-import { initRuntime } from '../runtime';
-import { TimeLiner } from '../runtime/solver';
-import { clock } from '../runtime/clock';
-import { addEventList } from '../runtime/add-event-list';
+import { initRuntime } from '../Scene/runtime';
+import { TimeLiner } from '../Scene/runtime/solver';
+import { clock } from '../Scene/runtime/clock';
+import { addEventList } from '../Scene/runtime/add-event-list';
 
 import { DEFAULT_NS } from '../data/constantes';
 
@@ -19,6 +19,8 @@ const c = clock(timeLiner);
 addEventList(c.chrono, timeLiner);
 
 export const start = c.start;
+
+registerStraps();
 
 export const initStory = async (story: Story) => {
 	const { eventimes, ...others } = story;
@@ -33,8 +35,8 @@ function addEventsToTimeLine(eventimes: Eventime) {
 async function register(story: StoryWoEventimes) {
 	const { isTemplate, root, channel, persos } = story;
 	await registerImages(persos);
+
 	registerPersos(persos);
 	registerActions(channel, persos);
-	registerStraps();
 	initRuntime(root, isTemplate);
 }

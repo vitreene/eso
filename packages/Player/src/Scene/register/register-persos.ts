@@ -1,8 +1,10 @@
-import { persos } from '../data/store-persos';
-import { emitter } from '../data/emitter';
+import { emitter } from '../../data/emitter';
 
-import initCreatePerso from './declare-persos';
-import { Perso } from '../../../types/initial';
+import initCreatePerso from '../../composants';
+import { Perso } from '../../../../types/initial';
+
+import { scene } from '../../Scene';
+const persos = scene.persos;
 
 const createPerso = initCreatePerso();
 

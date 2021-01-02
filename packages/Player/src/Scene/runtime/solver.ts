@@ -23,9 +23,9 @@ id: string
 timeline: { time: [name]} : number:string[]
 eventDatas[channel][count][name]
 */
-import { ESO_Channel } from '../../../types/ESO_enum';
-import { Eventime } from '../../../types/eventime';
-import { DEFAULT_NS } from '../data/constantes';
+import { ESO_Channel } from '../../../../types/ESO_enum';
+import { Eventime } from '../../../../types/eventime';
+import { DEFAULT_NS } from '../../data/constantes';
 
 export type TimeLine = {
 	level: string;

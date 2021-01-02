@@ -1,7 +1,9 @@
 import { storeNodes } from 'veso';
-import { persos } from './store-persos';
-import { storeSlots } from './store-slots';
 
+import { scene } from './index';
+console.log('scene', scene);
+const storeSlots = scene.slots;
+const persos = scene.persos;
 // ============================================================
 
 export function updateSlot(slotId, persosIds) {

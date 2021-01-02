@@ -1,7 +1,10 @@
 import { html } from 'sinuous';
 import { Eso } from 'veso';
 
-import { imagesCollection } from '../data/images-collection';
+// import { imagesCollection } from '../Scene/images-collection';
+
+import { scene } from '../Scene';
+const imagesCollection = scene.imagesCollection;
 
 export class Sprite extends Eso {
 	static nature = 'sprite';

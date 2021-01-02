@@ -1,5 +1,8 @@
 import { o } from 'sinuous';
-import { storeSlots } from '../data/store-slots';
+// import { storeSlots } from '../Scene/store-slots';
+
+import { scene } from '../Scene';
+const storeSlots = scene.slots;
 
 export function Slot(uuid) {
 	// console.log('SLOT', uuid);

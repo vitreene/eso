@@ -197,7 +197,7 @@ stories:
           initial:
               classStyle: {
                 color: white,
-                backgroundColor: blue,
+                backgroundColor: green,
                 borderRadius: 4px,
                 fontWeight: bold,
                 fontSize: 12px,
@@ -222,7 +222,8 @@ stories:
           emit: 
             click: 
               event: { channel: *STRAP, name: *TOGGLE }
-              data: { id: telco, channel: *TC,  valueA: pause, valueB: play }
+              # data: { id: telco, channel: *TC,  valueA: pause, valueB: play }
+              data: { id: telco,  event: {channel: *TC, name: [pause, play]} }
 
       - *SPRITE :
           id: sprite
@@ -351,7 +352,8 @@ stories:
           emit:
             click:
               event: { channel: *STRAP, name: *TOGGLE }
-              data: { id: telco, channel: *TC, valueA: *PAUSE, valueB: *PLAY }
+              # data: { id: telco, channel: *TC, valueA: *PAUSE, valueB: *PLAY }
+              data: { id: telco,  event: {channel: *TC, name: [pause, play]} }
 
   - id: scene-w-telco
     channel: *DEFAULT_NS

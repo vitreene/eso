@@ -1,22 +1,26 @@
-import { persos } from '../data/store-persos';
-import { updateSlot } from '../data/update-slot';
-import { onScene } from '../data/on-scene';
+// import { persos } from '../Scene/store-persos';
+import { onScene } from '../Scene/on-scene';
 
+import { updateSlot } from '../Scene/update-slot';
 import { zoom, getElementOffsetZoomed } from '../zoom';
 import { DEFAULT_DURATION } from '../data/constantes';
 
+import { scene } from '../Scene';
+const persos = scene.persos;
 // déclenche les updates ; appelé par chaque action
 // ============================================================
-export function sceneUpdateHandler(update) {
-	// TODO factoriser tous les appels à raf dans une meme fonction
-	// raf est-il encore utile ici ?
-	// requestAnimationFrame(() => {});
+export function onSceneUpdateComponent(update) {
+	if (!persos.has(update.id)) {
+		console.warn('pas de perso ayant l’id %s', update.id);
+		return;
+	}
+	const perso = persos.get(update.id);
 	const up = onScene.update(update);
-	updateScene(up);
+	updateComponent(perso, up);
 }
 
 // ============================================================
-function updateScene({ changed, update, ...others }) {
+function updateComponent(perso, { changed, update, ...others }) {
 	// console.log('update', update);
 	if (!update || Object.keys(update).length === 0) return;
 	if (typeof changed === 'string') {
@@ -24,7 +28,6 @@ function updateScene({ changed, update, ...others }) {
 		return;
 	}
 	const rescale = update.move?.rescale;
-	const perso = persos.get(update?.id);
 
 	// zoom enter
 	if (update.enter) perso.prerender(zoom.value);
@@ -102,5 +105,5 @@ function updateScene({ changed, update, ...others }) {
 		}
 	}
 
-	persos.get(update.id).update({ ...update, transition });
+	perso.update({ ...update, transition });
 }

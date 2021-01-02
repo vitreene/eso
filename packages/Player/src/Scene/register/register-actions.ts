@@ -1,10 +1,5 @@
-import { Perso } from '../../../types/initial';
-
-import { emitter } from '../data/emitter';
-// import { DEFAULT_NS } from '../data/constantes';
-import { sceneUpdateHandler } from '../init/scene-update-handler';
-import { ESO_Channel } from '../../../types/ESO_enum';
-import { STRAP } from '../data/constantes';
+import { Perso } from '../../../../types/initial';
+import { subscribe } from './subscribe';
 
 // TODO simplifier
 export function registerActions(_channel: string, persos: Perso[]) {
@@ -34,10 +29,7 @@ export function registerActions(_channel: string, persos: Perso[]) {
 			// const actionFound = Array.isArray(actions)
 			// 	? actions.find((a) => a.name === action)
 			// 	: actions[action];
-			// console.log('emitter', emitter.eventNames());
 			// _channel === 'strap.toggle' &&
-
-			// console.log('emitter', _channel, emitter.listeners('strap.toggle'));
 
 			const actionFound = actions.find((a) => a.name === action);
 			if (actionFound) {
@@ -54,17 +46,4 @@ export function registerActions(_channel: string, persos: Perso[]) {
 				);
 		}
 	}
-}
-
-type Subscribe = {
-	channel: ESO_Channel | string;
-	name: string;
-	data?: any;
-};
-function subscribe({ channel, name, data = null }: Subscribe) {
-	return emitter.on([channel, name], publish({ channel, ...data }));
-}
-
-function publish(data: any) {
-	return (other: any) => sceneUpdateHandler({ ...data, ...other });
 }

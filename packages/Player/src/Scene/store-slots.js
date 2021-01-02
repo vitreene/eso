@@ -1,6 +1,6 @@
 // subscribe permet de synchoniser this_slots dans onScene
 
-class Slots extends Map {
+export class Slots extends Map {
 	signals = new Set();
 	get(key) {
 		return super.get(key);
@@ -22,5 +22,3 @@ class Slots extends Map {
 		return Array.from(this.signals);
 	}
 }
-
-export const storeSlots = new Slots();

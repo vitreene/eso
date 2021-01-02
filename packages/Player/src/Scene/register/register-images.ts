@@ -1,8 +1,11 @@
-import { Nature } from '../../../types/ESO_enum';
-import { Perso } from '../../../types/initial';
+import { Nature } from '../../../../types/ESO_enum';
+import { Perso } from '../../../../types/initial';
 
-import { imagesCollection } from '../data/images-collection';
-import { toArray } from '../shared/utils';
+import { toArray } from '../../shared/utils';
+
+import { scene } from '../index';
+const imagesCollection = scene.imagesCollection;
+
 const composantTypeImage = [Nature.IMG, Nature.SPRITE];
 
 type Srcs = string[];

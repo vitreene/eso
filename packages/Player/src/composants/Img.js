@@ -1,12 +1,15 @@
 import { o, svg, api } from 'sinuous';
 import { computed } from 'sinuous/observable';
 
-import { imagesCollection } from '../data/images-collection';
+// import { imagesCollection } from '../Scene/images-collection';
 import { Eso } from 'veso';
 
 // HACK en attendant une mise à jour
 import { property } from '../../../Veso/src/shared/property';
 api.property = property;
+
+import { scene } from '../Scene';
+const imagesCollection = scene.imagesCollection;
 
 // cache l'implémentation
 const constrainImage = {

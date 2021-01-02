@@ -49,19 +49,21 @@ simplifier leave :
     // le tout avant réaffichage
 */
 
-import { storeSlots } from './store-slots';
-class OnScene {
+import { scene } from './index';
+const storeSlots = scene.slots;
+
+export class OnScene {
 	areOnScene = new Map();
-	constructor() {
+	constructor(_storeSlots = storeSlots) {
 		this.update = this.update.bind(this);
 		this._addToScene = this._addToScene.bind(this);
 		this._moveToSlot = this._moveToSlot.bind(this);
 		this._leaveScene = this._leaveScene.bind(this);
 		this.add_slots = this.add_slots.bind(this);
 
-		this._slots = new Map(Array.from(storeSlots.keys(), (id) => [id, []]));
+		this._slots = new Map(Array.from(_storeSlots.keys(), (id) => [id, []]));
 		// en fin de scene
-		this.clear = storeSlots.subscribe(this.add_slots);
+		this.clear = _storeSlots.subscribe(this.add_slots);
 	}
 	/* 
   TODO un élément qui a quitté la scene ne peut revenir que par un autre "enter"
@@ -90,8 +92,6 @@ class OnScene {
 	}
 
 	_addToScene(up) {
-		console.log('this.areOnScene', this.areOnScene);
-
 		if (!up.move) {
 			console.warn('_addToScene fail', up);
 			return { update: null };

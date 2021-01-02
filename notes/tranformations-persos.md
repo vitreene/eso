@@ -48,6 +48,7 @@ TODO : différence entre id, channel et level
 En créant des objets, cela facilite l'instanciation 
 créer toutes les scenes d'un chapitre (elles doivent etre toutes accessibles directement)
 
+La story va utiliser les ressources de Scene, qui va servir de store
 ### Story
   - id
   - name?
@@ -55,12 +56,12 @@ créer toutes les scenes d'un chapitre (elles doivent etre toutes accessibles di
   - cadre: l x h
   - zoom
   - root: id
-  - composants: liste id, nodes, veso[] ?
-  - strap: instances internes à la story 
   - path : id / channel story
   - onEnter, onExit : func
   - kill-story: func
-  - nodes et persos : ici ou dans scene ?
+  - composants: liste id
+  - strap: instances internes à la story ajoutés à la scene (idem eventimes)
+  
   
 
 ### Scene
@@ -72,10 +73,13 @@ créer toutes les scenes d'un chapitre (elles doivent etre toutes accessibles di
     - story : startAt, root
   - timeline
   - clock
-  - nodes et persos : ici ou dans story ?
+  - nodes et persos 
+  - onScene
+  - slots
   - imagesCollection
   - telco : (play, pause, rewind, seek)
   - onStart, onEnd : func
+  - straps
 
 
 ### chapter
@@ -94,4 +98,23 @@ créer toutes les scenes d'un chapitre (elles doivent etre toutes accessibles di
 - config
 un projet pourrait etre compilé, en ne gardant que les fichiers json, les images calculées pour un rendu zoom 1:1
 
+## fonction Log
+Au passage : une fonction de log permettrait de rationaliser les avertissements selon le mode choisi (prod, verbose, dev...)
+
+## Duplication / encapsulation
+en permettant l'utilisation simultanée de stories dans la meme scene, des collisions d'ids sont inevitables
+- chaque story doit avoir un nom unique
+- les slots, les composants, les layers utiliseront comme id un path :
+path : id_story.id_composant, id_story.id_layer.id_slot
+
+Utiliser e système que propose event emitter : 
+creer une path qui sert d'identifiant, qui peut s'ecrire en entrée :
+\[ story,layer,slot \] ou story.layer.slot via la fonction joindId
+
+La propriété move pourra etre utilisée ainsi:
+move: slot01 -> le path sera reconstitué avec current_story, layer ? , slot01
+si layer n'est pas identfié, rechercher slot01 dans tous les layers de la story, prendre le premier trouvé (avertir de l'ambiguité)
+
+a trancher : les straps appartiennet-ils à la story ou à la scene ?
+-> a priori, à la story. 
 

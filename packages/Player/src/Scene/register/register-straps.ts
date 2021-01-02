@@ -1,13 +1,13 @@
-import { emitter } from '../data/emitter';
+import { emitter } from '../../data/emitter';
 
-import { moveStrap } from '../straps/move-strap';
-import Drag from '../straps/drag-strap';
-import toggle from '../straps/toggle';
+import { moveStrap } from '../../straps/move-strap';
+import Drag from '../../straps/drag-strap';
+import toggle from '../../straps/toggle';
 
-import GameStrap from '../straps/game-logic-strap';
-import Minuteur from '../straps/minuteur';
+import GameStrap from '../../straps/game-logic-strap';
+import Minuteur from '../../straps/minuteur';
 
-import { STRAP, TOGGLE, DRAG, MOVE } from '../data/constantes';
+import { STRAP, TOGGLE, DRAG, MOVE } from '../../data/constantes';
 
 /* 
 Par composition, ajouter aux straps :

@@ -1,8 +1,8 @@
-import { Eventime } from '../../../types/eventime';
+import { Eventime } from '../../../../types/eventime';
 import { TimeLiner } from './solver';
 
-import { emitter } from '../data/emitter';
-import { STRAP } from '../data/constantes';
+import { emitter } from '../../data/emitter';
+import { STRAP } from '../../data/constantes';
 
 export function addEventList(chrono, timeLiner): void {
 	emitter.on([STRAP, 'add-event-list'], (data: Eventime) =>

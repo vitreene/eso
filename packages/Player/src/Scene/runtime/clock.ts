@@ -1,9 +1,9 @@
 import { TimeLiner, TimeLine, TimelineKey } from './solver';
 
 import { controlAnimations } from 'veso';
-import { emitter } from '../data/emitter';
-import { TC, PLAY, PAUSE, REWIND } from '../data/constantes';
-import { ESO_Channel } from '../../../types/ESO_enum';
+import { emitter } from '../../data/emitter';
+import { TC, PLAY, PAUSE, REWIND } from '../../data/constantes';
+import { ESO_Channel } from '../../../../types/ESO_enum';
 
 //////// CLOCK /////////////////////////
 // TODO use performance.now()
