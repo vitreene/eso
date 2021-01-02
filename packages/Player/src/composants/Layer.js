@@ -1,15 +1,16 @@
 import { html } from 'sinuous';
 
 import { Eso } from 'veso';
-import { Slot } from './slot';
 import { DEFAULT_STYLES } from '../data/constantes';
+
+import { scene } from '../Scene';
 
 // surcharger content
 const contentRevision = (id) => {
 	return {
 		update(content) {
 			return typeof content === 'string'
-				? Slot(content)
+				? scene.slot(content)
 				: innerLayer(content, id);
 		},
 	};
@@ -44,8 +45,8 @@ function innerLayer(content, layerId) {
 }
 
 function LayerItem({ id, ...attrs }) {
-	const slot = Slot(id);
-	return html`<article id=${id} ...${attrs}>${slot}</article>`;
+	const _slot = scene.slot(id);
+	return html`<article id=${id} ...${attrs}>${_slot}</article>`;
 }
 
 // viennent de Eso/helpers

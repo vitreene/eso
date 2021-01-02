@@ -49,9 +49,6 @@ simplifier leave :
     // le tout avant réaffichage
 */
 
-// import { scene } from './index';
-// const storeSlots = scene.slots;
-
 export class OnScene {
 	areOnScene = new Map();
 	constructor(_storeSlots) {

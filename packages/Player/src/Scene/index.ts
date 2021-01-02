@@ -1,5 +1,6 @@
-// à transférer vers Scene
-import { storeNodes } from 'veso';
+// storeNodes à transférer vers Scene ?
+import { Eso, storeNodes } from 'veso';
+import { o } from 'sinuous';
 
 import { Story, StoryWoEventimes } from '../../../types/Entries-types';
 import { CollectionImages, Perso } from '../../../types/initial';
@@ -8,7 +9,7 @@ import { Eventime } from '../../../types/eventime';
 import { DEFAULT_NS } from '../data/constantes';
 import { Slots } from './store-slots';
 import { OnScene } from './on-scene.js';
-import { updateComponent } from './scene-update-handler';
+import { updateComponent } from './update-component';
 
 import { registerImages } from './register/register-images';
 import { registerPersos } from './register/register-persos';
@@ -32,7 +33,7 @@ export class Scene {
 	description?: string;
 
 	cast: Story[];
-	persos: Map<string, Perso> = new Map(); //
+	persos: Map<string, Eso> = new Map(); //
 	slots: Slots = new Slots(); //
 	imagesCollection: Map<string, CollectionImages> = new Map(); //
 	straps: any;
@@ -46,33 +47,19 @@ export class Scene {
 	// onEnd: () => {};
 
 	constructor() {
+		this.slot = this.slot.bind(this);
+		this.addStory = this.addStory.bind(this);
+		this.onSceneUpdateComponent = this.onSceneUpdateComponent.bind(this);
+		this._updateSlot = this._updateSlot.bind(this);
+
 		this.start = this._initClock();
 		registerStraps();
 	}
 
 	async addStory(story: Story) {
-		console.log('addStory', story);
-
 		const { eventimes, ...others } = story;
 		this._addEventsToTimeLine(eventimes);
 		await this._register(others);
-	}
-
-	_initClock() {
-		this.clock = clock(this.timeLine);
-		addEventList(this.clock.chrono, this.timeLine);
-		return this.clock.start;
-	}
-	_addEventsToTimeLine(eventimes: Eventime) {
-		this.timeLine.addEventList(eventimes, { level: DEFAULT_NS });
-	}
-
-	async _register(story: StoryWoEventimes) {
-		const { isTemplate, root, channel, persos } = story;
-		await registerImages(persos, this.imagesCollection);
-		registerPersos(persos, this.persos);
-		registerActions(channel, persos);
-		initRuntime(root, isTemplate, this.persos, this.onScene);
 	}
 
 	onSceneUpdateComponent(update) {
@@ -82,11 +69,33 @@ export class Scene {
 		}
 		const perso = this.persos.get(update.id);
 		const up = this.onScene.update(update);
-		updateComponent(perso, up);
+		updateComponent(perso, up, this._updateSlot);
 	}
 
-	updateSlot(slotId, persosIds) {
-		const content = persosIds.map((id) =>
+	slot(uuid) {
+		!this.slots.has(uuid) && this.slots.set(uuid, o(null));
+		return this.slots.get(uuid);
+	}
+
+	_initClock() {
+		this.clock = clock(this.timeLine);
+		addEventList(this.clock.chrono, this.timeLine);
+		return this.clock.start;
+	}
+
+	_addEventsToTimeLine(eventimes: Eventime) {
+		this.timeLine.addEventList(eventimes, { level: DEFAULT_NS });
+	}
+
+	async _register(story: StoryWoEventimes) {
+		const { isTemplate, root, channel, persos } = story;
+		await registerImages(persos, this.imagesCollection);
+		registerPersos(persos, this.persos, this.imagesCollection);
+		registerActions(channel, persos);
+		initRuntime(root, isTemplate, this.persos, this.onScene);
+	}
+	_updateSlot(slotId: string, persosIds: string[]) {
+		const content = persosIds.map((id: string) =>
 			this.nodes.get(this.persos.get(id).uuid)
 		);
 		this.slots.get(slotId)(content);

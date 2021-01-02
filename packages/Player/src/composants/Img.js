@@ -1,15 +1,10 @@
 import { o, svg, api } from 'sinuous';
 import { computed } from 'sinuous/observable';
-
-// import { imagesCollection } from '../Scene/images-collection';
 import { Eso } from 'veso';
 
 // HACK en attendant une mise à jour
 import { property } from '../../../Veso/src/shared/property';
 api.property = property;
-
-import { scene } from '../Scene';
-const imagesCollection = scene.imagesCollection;
 
 // cache l'implémentation
 const constrainImage = {
@@ -19,14 +14,17 @@ const constrainImage = {
 	slice: 'cover',
 	undefined: 'slice',
 };
+
 // TODO passer des parametres pour l'image via content
 
 export class Img extends Eso {
 	static nature = 'img';
-	constructor(story, emitter) {
+	constructor(story, emitter, collection) {
 		super(story, emitter);
-		imagesCollection.has(story.initial.content) &&
-			this.img(imagesCollection.get(story.initial.content));
+
+		this.imagesCollection = collection;
+		this.imagesCollection.has(story.initial.content) &&
+			this.img(this.imagesCollection.get(story.initial.content));
 		this.fit(story.initial.fit);
 	}
 
@@ -34,8 +32,9 @@ export class Img extends Eso {
 	// voir content dans Layers
 	update(props) {
 		super.update(props);
-		const hasContent = props.content && imagesCollection.has(props.content);
-		hasContent && this.img(imagesCollection.get(props.content));
+		const hasContent =
+			props.content && this.imagesCollection.has(props.content);
+		hasContent && this.img(this.imagesCollection.get(props.content));
 		props.fit && this.fit(props.fit);
 	}
 

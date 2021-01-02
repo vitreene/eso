@@ -1,4 +1,4 @@
-import ComposantLib from './composant-lib';
+import StoreComponents from './store-components';
 import { Layer } from './Layer';
 import { Bloc } from './Bloc';
 import { Button } from './Button';
@@ -6,7 +6,7 @@ import { Img } from './Img';
 import { Sprite } from './Sprite';
 
 function initCreatePerso() {
-	const createPerso = new ComposantLib();
+	const createPerso = new StoreComponents();
 	createPerso.register(Layer);
 	createPerso.register(Bloc);
 	createPerso.register(Button);

@@ -1,6 +1,6 @@
 import { storeNodes } from 'veso';
 
-import { scene } from './index';
+import { scene } from '../src/Scene/index';
 console.log('scene', scene);
 const storeSlots = scene.slots;
 const persos = scene.persos;

@@ -1,14 +1,7 @@
-// import { persos } from '../store-persos';
-// import { onScene } from '../on-scene';
-
 import { activateZoom } from '../../zoom';
 import { Root } from '../../composants/Root';
 
 import { CONTAINER_ESO } from '../../data/constantes';
-
-// import { scene } from '../../Scene';
-// const persos = scene.persos;
-// const onScene = scene.onScene;
 
 export function initRuntime(
 	rootId = CONTAINER_ESO,

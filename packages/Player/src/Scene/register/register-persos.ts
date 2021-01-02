@@ -3,7 +3,7 @@ import { createPerso } from '../../composants';
 
 import { Perso } from '../../../../types/initial';
 
-export function registerPersos(_persos: Perso[], persos) {
+export function registerPersos(_persos: Perso[], persos, ...args: any) {
 	(Array.isArray(_persos) ? _persos : [_persos]).forEach((perso) => {
 		switch (perso.nature) {
 			case 'sound':
@@ -13,9 +13,12 @@ export function registerPersos(_persos: Perso[], persos) {
 			case 'layer':
 			case 'bloc':
 			case 'button':
+				persos.set(perso.id, createPerso.create(perso, emitter));
+				break;
 			case 'img':
 			case 'sprite':
-				persos.set(perso.id, createPerso.create(perso, emitter));
+				persos.set(perso.id, createPerso.create(perso, emitter, ...args));
+
 				break;
 			default:
 				break;

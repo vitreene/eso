@@ -5,6 +5,8 @@ import { toArray } from '../../shared/utils';
 
 const composantTypeImage = [Nature.IMG, Nature.SPRITE];
 
+//TODO passer vers fetch !
+
 type Srcs = string[];
 export async function registerImages(
 	persos: Perso[],

@@ -1,28 +1,24 @@
-// import { persos } from '../Scene/store-persos';
-// import { onScene } from '../Scene/on-scene';
-
-import { updateSlot } from '../Scene/update-slot';
 import { zoom, getElementOffsetZoomed } from '../zoom';
 import { DEFAULT_DURATION } from '../data/constantes';
 
-import { scene } from '../Scene';
-const persos = scene.persos;
-const onScene = scene.onScene;
-
-// déclenche les updates ; appelé par chaque action
-// ============================================================
-export function onSceneUpdateComponent(update) {
-	if (!persos.has(update.id)) {
-		console.warn('pas de perso ayant l’id %s', update.id);
-		return;
-	}
-	const perso = persos.get(update.id);
-	const up = onScene.update(update);
-	updateComponent(perso, up);
-}
+// // déclenche les updates ; appelé par chaque action
+// // ============================================================
+// export function onSceneUpdateComponent(update) {
+// 	if (!persos.has(update.id)) {
+// 		console.warn('pas de perso ayant l’id %s', update.id);
+// 		return;
+// 	}
+// 	const perso = persos.get(update.id);
+// 	const up = onScene.update(update);
+// 	updateComponent(perso, up);
+// }
 
 // ============================================================
-export function updateComponent(perso, { changed, update, ...others }) {
+export function updateComponent(
+	perso,
+	{ changed, update, ...others },
+	updateSlot
+) {
 	// console.log('update', update);
 	if (!update || Object.keys(update).length === 0) return;
 	if (typeof changed === 'string') {
