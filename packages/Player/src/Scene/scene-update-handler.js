@@ -1,5 +1,5 @@
 // import { persos } from '../Scene/store-persos';
-import { onScene } from '../Scene/on-scene';
+// import { onScene } from '../Scene/on-scene';
 
 import { updateSlot } from '../Scene/update-slot';
 import { zoom, getElementOffsetZoomed } from '../zoom';
@@ -7,6 +7,8 @@ import { DEFAULT_DURATION } from '../data/constantes';
 
 import { scene } from '../Scene';
 const persos = scene.persos;
+const onScene = scene.onScene;
+
 // déclenche les updates ; appelé par chaque action
 // ============================================================
 export function onSceneUpdateComponent(update) {
@@ -20,7 +22,7 @@ export function onSceneUpdateComponent(update) {
 }
 
 // ============================================================
-function updateComponent(perso, { changed, update, ...others }) {
+export function updateComponent(perso, { changed, update, ...others }) {
 	// console.log('update', update);
 	if (!update || Object.keys(update).length === 0) return;
 	if (typeof changed === 'string') {

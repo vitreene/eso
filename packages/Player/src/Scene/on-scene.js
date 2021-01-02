@@ -12,8 +12,8 @@ la fonction onScene gere le flux des objets.
 */
 
 /**
-    * Slots : collection des ids des slots: pour chaque slot, liste des valets
-    * onScene: liste des valets visibles, dans leur slot
+    * Slots : collection des ids des slots: pour chaque slot, liste des persos
+    * onScene: liste des persos visibles, dans leur slot
     * up, propiétés employées : 
         * layer et slot pour créer slotId
         * id du Perso
@@ -49,12 +49,13 @@ simplifier leave :
     // le tout avant réaffichage
 */
 
-import { scene } from './index';
-const storeSlots = scene.slots;
+// import { scene } from './index';
+// const storeSlots = scene.slots;
 
 export class OnScene {
 	areOnScene = new Map();
-	constructor(_storeSlots = storeSlots) {
+	constructor(_storeSlots) {
+		console.log('_storeSlots', _storeSlots);
 		this.update = this.update.bind(this);
 		this._addToScene = this._addToScene.bind(this);
 		this._moveToSlot = this._moveToSlot.bind(this);
@@ -172,4 +173,4 @@ const errors = {
 	id: 'error: not a valid id',
 };
 
-export const onScene = new OnScene();
+// export const onScene = new OnScene();

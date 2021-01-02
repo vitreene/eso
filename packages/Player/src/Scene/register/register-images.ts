@@ -3,18 +3,18 @@ import { Perso } from '../../../../types/initial';
 
 import { toArray } from '../../shared/utils';
 
-import { scene } from '../index';
-const imagesCollection = scene.imagesCollection;
-
 const composantTypeImage = [Nature.IMG, Nature.SPRITE];
 
 type Srcs = string[];
-export async function registerImages(persos: Perso[]): Promise<void> {
+export async function registerImages(
+	persos: Perso[],
+	imagesCollection
+): Promise<void> {
 	const srcs: Srcs = findSrcs(
 		persos.filter((perso) => composantTypeImage.includes(perso.nature))
 	);
 	console.log('src', srcs);
-	await loadImages(srcs);
+	await loadImages(srcs, imagesCollection);
 }
 
 function findSrcs(imgs: Perso[]) {
@@ -28,7 +28,7 @@ function findSrcs(imgs: Perso[]) {
 	return srcs as Srcs;
 }
 
-export async function loadImages(srcs: string[]) {
+export async function loadImages(srcs: string[], imagesCollection) {
 	return await Promise.all(
 		srcs.map(
 			(src) =>

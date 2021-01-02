@@ -1,15 +1,21 @@
 // import { persos } from '../store-persos';
-import { onScene } from '../on-scene';
+// import { onScene } from '../on-scene';
 
 import { activateZoom } from '../../zoom';
 import { Root } from '../../composants/Root';
 
 import { CONTAINER_ESO } from '../../data/constantes';
 
-import { scene } from '../../Scene';
-const persos = scene.persos;
+// import { scene } from '../../Scene';
+// const persos = scene.persos;
+// const onScene = scene.onScene;
 
-export function initRuntime(rootId = CONTAINER_ESO, isTemplate) {
+export function initRuntime(
+	rootId = CONTAINER_ESO,
+	isTemplate,
+	persos,
+	onScene
+) {
 	const removeZoom = () => activateZoom(renderOnResize);
 
 	// créer le container de l'app/ uniquement pour template
@@ -17,13 +23,6 @@ export function initRuntime(rootId = CONTAINER_ESO, isTemplate) {
 		Root(persos.get(rootId), removeZoom);
 		onScene.areOnScene.set(rootId, rootId);
 	}
-
-	console.log(
-		'onScene.areOnScene',
-		isTemplate,
-		rootId,
-		Array.from(onScene.areOnScene)
-	);
 
 	// relancer le rendu des Persos si resize
 	/* 

@@ -1,14 +1,9 @@
 import { emitter } from '../../data/emitter';
+import { createPerso } from '../../composants';
 
-import initCreatePerso from '../../composants';
 import { Perso } from '../../../../types/initial';
 
-import { scene } from '../../Scene';
-const persos = scene.persos;
-
-const createPerso = initCreatePerso();
-
-export function registerPersos(_persos: Perso[]) {
+export function registerPersos(_persos: Perso[], persos) {
 	(Array.isArray(_persos) ? _persos : [_persos]).forEach((perso) => {
 		switch (perso.nature) {
 			case 'sound':

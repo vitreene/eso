@@ -1,11 +1,11 @@
-import ComposantLib from '../Scene/register/composant-lib';
+import ComposantLib from './composant-lib';
 import { Layer } from './Layer';
 import { Bloc } from './Bloc';
 import { Button } from './Button';
 import { Img } from './Img';
 import { Sprite } from './Sprite';
 
-export default function initCreatePerso() {
+function initCreatePerso() {
 	const createPerso = new ComposantLib();
 	createPerso.register(Layer);
 	createPerso.register(Bloc);
@@ -14,3 +14,5 @@ export default function initCreatePerso() {
 	createPerso.register(Sprite);
 	return createPerso;
 }
+
+export const createPerso = initCreatePerso();
