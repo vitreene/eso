@@ -94,3 +94,5 @@ export interface CollectionImages {
 	ratio: number;
 	src: string;
 }
+
+export type ImagesCollection = Map<string, CollectionImages>;

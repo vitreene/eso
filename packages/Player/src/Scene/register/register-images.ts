@@ -1,5 +1,5 @@
 import { Nature } from '../../../../types/ESO_enum';
-import { Perso } from '../../../../types/initial';
+import { ImagesCollection, Perso } from '../../../../types/initial';
 
 import { toArray } from '../../shared/utils';
 
@@ -10,7 +10,7 @@ const composantTypeImage = [Nature.IMG, Nature.SPRITE];
 type Srcs = string[];
 export async function registerImages(
 	persos: Perso[],
-	imagesCollection
+	imagesCollection: ImagesCollection
 ): Promise<void> {
 	const srcs: Srcs = findSrcs(
 		persos.filter((perso) => composantTypeImage.includes(perso.nature))

@@ -162,3 +162,10 @@ Que désigne le package Player ?
 - scene
 - app
 App sera différent selon qu l'on sera sur veso ou vitreene ; en commun : scene
+
+
+## notes : packagges utiles
+detecte un resize
+https://www.npmjs.com/package/element-resize-detector
+etendre yaml : 
+https://www.npmjs.com/package/geneva

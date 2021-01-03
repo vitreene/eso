@@ -5,17 +5,17 @@
 import { fetchStories } from './fetch/fetching';
 import './style.css';
 
-// import { initStory, start } from './init/init-story';
-import { scene } from './Scene';
+import { Scene } from './Scene';
 
 const Player = async (path) => {
 	const casting = await Promise.all(path.map(fetchStories));
 	console.log('PLAYER casting', casting[0]);
 
+	const scene = new Scene(casting[0].scene);
+
 	const { stories } = casting[0];
 	console.log('PLAYER stories', stories);
-	// await Promise.all(stories.map(initStory));
-	await Promise.all(stories.map(scene.addStory));
+	await Promise.all(stories.map(scene.addStory)).then(scene.start);
 };
 
 const path = ['/stories/story10.yml'];
@@ -23,7 +23,7 @@ const path = ['/stories/story10.yml'];
 // const path = ['/stories/persos01.yml'];
 // const path = ['/stories/file04.yml'];
 
-Player(path).then(scene.start);
+Player(path);
 
 // ['/stories/file01.yaml', '/stories/file02.yaml'].forEach(fetchStories);
 

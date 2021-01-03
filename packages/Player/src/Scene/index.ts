@@ -3,7 +3,7 @@ import { Eso, storeNodes } from 'veso';
 import { o } from 'sinuous';
 
 import { Story, StoryWoEventimes } from '../../../types/Entries-types';
-import { CollectionImages, Perso } from '../../../types/initial';
+import { ImagesCollection } from '../../../types/initial';
 import { Eventime } from '../../../types/eventime';
 
 import { DEFAULT_NS } from '../data/constantes';
@@ -17,14 +17,9 @@ import { registerActions } from './register/register-actions';
 import { registerStraps } from './register/register-straps';
 
 import { initRuntime } from './runtime';
-import { clock } from './runtime/clock';
+import { clock, Clock } from './runtime/clock';
 import { TimeLiner } from './runtime/solver';
 import { addEventList } from './runtime/add-event-list';
-
-type Clock = {
-	start(): void;
-	chrono(): number;
-};
 
 export class Scene {
 	id: string;
@@ -35,7 +30,7 @@ export class Scene {
 	cast: Story[];
 	persos: Map<string, Eso> = new Map(); //
 	slots: Slots = new Slots(); //
-	imagesCollection: Map<string, CollectionImages> = new Map(); //
+	imagesCollection: ImagesCollection = new Map(); //
 	straps: any;
 	timeLine: TimeLiner = new TimeLiner();
 	clock: Clock;
@@ -46,10 +41,14 @@ export class Scene {
 	// onStart: () => {};
 	// onEnd: () => {};
 
-	constructor() {
+	constructor(options) {
+		this.id = options.id;
+		this.name = options.name;
+		this.description = options.description;
+
 		this.slot = this.slot.bind(this);
 		this.addStory = this.addStory.bind(this);
-		this.onSceneUpdateComponent = this.onSceneUpdateComponent.bind(this);
+		this.publish = this.publish.bind(this);
 		this._updateSlot = this._updateSlot.bind(this);
 
 		this.start = this._initClock();
@@ -62,17 +61,20 @@ export class Scene {
 		await this._register(others);
 	}
 
-	onSceneUpdateComponent(update) {
-		if (!this.persos.has(update.id)) {
-			console.warn('pas de perso ayant l’id %s', update.id);
-			return;
-		}
-		const perso = this.persos.get(update.id);
-		const up = this.onScene.update(update);
-		updateComponent(perso, up, this._updateSlot);
+	publish(data: any) {
+		const onSceneUpdateComponent = (update: any) => {
+			if (!this.persos.has(update.id)) {
+				console.warn('pas de perso ayant l’id %s', update.id);
+				return;
+			}
+			const perso = this.persos.get(update.id);
+			const up = this.onScene.update(update);
+			updateComponent(perso, up, this._updateSlot);
+		};
+		return (other: any) => onSceneUpdateComponent({ ...data, ...other });
 	}
 
-	slot(uuid) {
+	slot(uuid: string) {
 		!this.slots.has(uuid) && this.slots.set(uuid, o(null));
 		return this.slots.get(uuid);
 	}
@@ -90,8 +92,11 @@ export class Scene {
 	async _register(story: StoryWoEventimes) {
 		const { isTemplate, root, channel, persos } = story;
 		await registerImages(persos, this.imagesCollection);
-		registerPersos(persos, this.persos, this.imagesCollection);
-		registerActions(channel, persos);
+		registerPersos(persos, this.persos, {
+			imagesCollection: this.imagesCollection,
+			slot: this.slot,
+		});
+		registerActions(channel, persos, this.publish);
 		initRuntime(root, isTemplate, this.persos, this.onScene);
 	}
 	_updateSlot(slotId: string, persosIds: string[]) {
@@ -101,5 +106,3 @@ export class Scene {
 		this.slots.get(slotId)(content);
 	}
 }
-
-export const scene = new Scene();

@@ -203,3 +203,5 @@ La scene va passer ces events à la story, mais où les placer pour les déclenc
   {startAt:'end-story', channel: 'main', name:'end-*« nom de la story »* }
   il doit exister un event 'end-story' qui délèguera l'event 
   - par défaut, sur l'event 'complete' d'un media son ou video 
+
+  

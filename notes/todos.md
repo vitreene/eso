@@ -1,5 +1,8 @@
-# les chantiers :
-## un système d'écriture des fichiers en yaml
+# Les chantiers
+
+## Fait
+
+### un système d'écriture des fichiers en yaml
     - definition de la syntaxe 
         - definition des persos
         - definitions des events
@@ -7,9 +10,9 @@
         - ressources langues
     - parser
 
-## un éditeur visuel
+## En cours
 
-## structure d'une page, et de l'application
+### structure d'une page, et de l'application
 Organisation du monorepo
 un workspace *Project* destiné à y placer les contenus 
 - medias
@@ -21,25 +24,19 @@ un workspace *Project* destiné à y placer les contenus
     - config
 - css
 
-
-## parametres d'application :
-    - langue, sous-titres,
-    - zoom ?
-    - lecture auto / plein ecran / contraintes globales de lecture
-
-## micro-animation sur les textes
+### micro-animation sur les textes
     - effets nommés 
-    
-## refs et langues pour les textes
+
+### refs et langues pour les textes
 ref et langues pourraient etre résolues lors du parsage, et autoriser une écriture simplifiée en intégrant des réglages par défaut.
 Cependant, si je garde la possibilité de modifier un contenu au runtime (compteurs, inputs...), il faut garder de la logique dans le composant
 
-## Scene 
+### Scene 
 Une scene est une compostion d'une ou plusieurs stories. 
 Une story ne peut apparaitre qu'une seule fois dans une scene -> sauf si isolation des events et mecanisme d'events partagés
 Une story peut-elle en contenir une autre, ou bien une scene peut en contenir une autre ?
 
-### instanciation d'une story
+#### instanciation d'une story
 -> Dans le contexte du shell, peu utile. Mais pour vitreene ?
 une story pourrait-elle néanmoins apparaitre une fois dans deux scenes imbriquées dans une troisième ?
 
@@ -70,3 +67,45 @@ Par défaut, les évents définis à l'intérieur d'une story n'agissent que sur
 si un perso doit répondre à un event, il utilise le canal "main" 
 les stories pourraient aussi capter des events "main" et les transmettre en interne
 eventemitter2 permet de chainer les channels, cela pourrait servir à mieux préciser une cible 
+
+
+## A faire 
+
+### un éditeur visuel
+
+### parametres d'application :
+    - langue, sous-titres,
+    - zoom ?
+    - lecture auto / plein ecran / contraintes globales de lecture
+
+### import images dans fetching
+-> la création de scene devient synchrone
+
+### play/pause controle les animations par un update régulier
+
+### timeline
+- enregistrer les animations
+- garder l'état des  straps
+
+
+## TODO janvier 2021
+
+### Story
+
+### Composant Audio
+- events on Complete
+- pilotage par telco
+
+### questionnaire
+- composant
+- etat
+- validation
+
+### Composant Video
+
+### jeu en yaml
+- modeles
+- strap lié à une story
+- relancer / reinitialiser le jeu
+
+    

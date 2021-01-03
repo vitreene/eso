@@ -1,4 +1,4 @@
-import { emitter } from '../../data/emitter';
+import { emitter } from '../../App/emitter';
 
 import { moveStrap } from '../../straps/move-strap';
 import Drag from '../../straps/drag-strap';

@@ -1,7 +1,7 @@
 import { Eventime } from '../../../../types/eventime';
 import { TimeLiner } from './solver';
 
-import { emitter } from '../../data/emitter';
+import { emitter } from '../../App/emitter';
 import { STRAP, TEMP } from '../../data/constantes';
 
 export function addEventList(chrono: () => number, timeLiner: TimeLiner): void {

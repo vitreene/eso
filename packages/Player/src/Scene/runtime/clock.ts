@@ -1,13 +1,18 @@
 import { TimeLiner, TimelineKey } from './solver';
 
 import { controlAnimations } from 'veso';
-import { emitter } from '../../data/emitter';
+import { emitter } from '../../App/emitter';
 import { TC, PLAY, PAUSE, REWIND } from '../../data/constantes';
 import { ESO_Channel } from '../../../../types/ESO_enum';
 
+export type Clock = {
+	start(): void;
+	chrono(): number;
+};
+
 //////// CLOCK /////////////////////////
 // TODO use performance.now()
-export function clock(timeLiner: TimeLiner) {
+export function clock(timeLiner: TimeLiner): Clock {
 	const beat: number = 10; // tout les 1/100e de seconde
 	const startTime: number = Date.now();
 	const maxCount: number = 100000 + 1;

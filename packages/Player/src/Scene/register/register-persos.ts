@@ -1,9 +1,9 @@
-import { emitter } from '../../data/emitter';
+import { emitter } from '../../App/emitter';
 import { createPerso } from '../../composants';
 
 import { Perso } from '../../../../types/initial';
 
-export function registerPersos(_persos: Perso[], persos, ...args: any) {
+export function registerPersos(_persos: Perso[], persos, options) {
 	(Array.isArray(_persos) ? _persos : [_persos]).forEach((perso) => {
 		switch (perso.nature) {
 			case 'sound':
@@ -12,12 +12,23 @@ export function registerPersos(_persos: Perso[], persos, ...args: any) {
 				break;
 			case 'layer':
 			case 'bloc':
+				{
+					const { slot } = options;
+					persos.set(perso.id, createPerso.create(perso, emitter, slot));
+				}
+				break;
 			case 'button':
 				persos.set(perso.id, createPerso.create(perso, emitter));
 				break;
 			case 'img':
 			case 'sprite':
-				persos.set(perso.id, createPerso.create(perso, emitter, ...args));
+				{
+					const { imagesCollection } = options;
+					persos.set(
+						perso.id,
+						createPerso.create(perso, emitter, imagesCollection)
+					);
+				}
 
 				break;
 			default:
