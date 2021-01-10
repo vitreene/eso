@@ -1,7 +1,7 @@
 scene:
   id: scene 1
   name: introduction
-  template: scene-w-telco
+  entry: scene-w-telco
   cast:
     - story01:
         startAt: go1
@@ -9,13 +9,14 @@ scene:
     - story02:
         # startAt: end-story01
         startAt: go1
-        root: *MAIN
+        root: *TC
 
 
 stories:
   - id: story01
     # channel: ma first story
     channel: story01
+    entry: [fond, grid-01]
 
     eventimes: 
       name: start
@@ -258,6 +259,8 @@ stories:
   - id: story02
     # channel: ma second story
     channel: story02
+    # ici pas d'entrée, tous les élements montent sur une story parente. Bonne pratique ?
+    entry: '?'
 
     eventimes:
       0:
@@ -357,6 +360,7 @@ stories:
 
   - id: scene-w-telco
     channel: *DEFAULT_NS
+    entry: *CONTAINER_ESO
     eventimes:
       0: go1
         # events: [{startAt: 0, name: go1},{startAt: 0, name: go2}]

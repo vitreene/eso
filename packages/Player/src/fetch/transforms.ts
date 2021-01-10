@@ -20,13 +20,13 @@ export function transforms(yamlStories: SceneEntry) {
 
 function transformScene(s: SceneEntry) {
 	const cast = sceneExpandCast(s);
-	const template = s.stories.find((story) => story.id === s.scene.template);
-	template.isTemplate = true;
+	const entry = s.stories.find((story) => story.id === s.scene.entry);
+	entry.isTemplate = true;
 	const stories = cast.map((_cast) => {
 		const story = s.stories.find((_story) => _story.id === _cast.id);
 		return addStartAndEndEvents(story, _cast);
 	});
-	return { ...s, scene: { ...s.scene, cast }, stories: [template, ...stories] };
+	return { ...s, scene: { ...s.scene, cast }, stories: [entry, ...stories] };
 }
 
 //TODO typeof _cast === 'string'
@@ -40,6 +40,8 @@ function sceneExpandCast(s: SceneEntry) {
 	}
 	return cast;
 }
+
+// lire cast -> créer un event sur les entry de la story
 function addStartAndEndEvents(_story, cast) {
 	_story.eventimes.startAt = cast.startAt;
 	_story.eventimes.channel = DEFAULT_NS;

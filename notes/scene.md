@@ -131,22 +131,23 @@ dans story : name = id = channel
 ### App
 - fetch
 - constantes
+- emitter
 
 ### Chapter
 
 ### Scene
-- emitter
   quelle partie peut le remettre à zéro ? les events liés à la télécommande peuvent-ils etre rénitialisés à chaque changement de scène ?
-- zoom
 - runtime
 - images-collection
 - slots
   slots et persos sont liés, c'est contradictoire de les affecter à un niveau différent
 - straps/
   straps liés aux scenes, si necessaires
+- Stories
 
 
 ### Story
+- zoom
 - composants/
 - register/
 - straps/
@@ -157,6 +158,14 @@ dans story : name = id = channel
   les persos de différentes stories ne communiquent pas entre eux directement
 - 
 
+### répartir les charges entre Scene et Story
+- Story dépend de Scene, ils peuvent partager des ressources
+faut-il un découpage logique, ou avantageux :  
+une story instanciée se peut se dérouler que dans une scene, elle ne sera pas détachée.
+Les propriétes de Story comme le zoom, pourraient etre rajoutées à chaque perso ? 
+Story délimite la portée des events , des straps ; un préfixage suffirait ?
+storeNodes, nodes dans Scene, pourrait etre injecté dans Veso, plutot que le contraire actuellement.
+
 
 Que désigne le package Player ?
 - scene
@@ -164,8 +173,49 @@ Que désigne le package Player ?
 App sera différent selon qu l'on sera sur veso ou vitreene ; en commun : scene
 
 
-## notes : packagges utiles
+## notes : packages utiles
 detecte un resize
 https://www.npmjs.com/package/element-resize-detector
 etendre yaml : 
 https://www.npmjs.com/package/geneva
+
+
+Et si appContainer devenait un composant veso ?
+
+
+## Hypotheses
+- scene: template devient entry. 
+La story désignée par entry est incorporée en premier
+idem pour story : entry désigne le premier composant affiché. entry va etre placé dans root et recevoir un event start-story-xx. Il suffirait de lier une action move: root pour lancer la story 
+
+- slots
+slots pourrait disparaitre ; son id est remplacé par une path qui désigne le *content* d'un Perso. Par défaut, content est déjà un élément réactif. 
+un slot permet de cumuler plusieurs élements, alors que content n'en admet qu'un 
+donc slot est un tableau de contents
+un content defini comme slot devrait le rester, ne pas permetttre un autre type de contenu.
+globalement, il vaudrait mieux garder le meme type de conteu le long de la vie d'un element.
+(mais : remplacer un tete brut par un texte enrichi html par exemple ? )
+
+Un transform permet de développer les ids des slots en paths
+
+- List : composant virtuel
+Le composant virtuel List va remplacer Layer. 
+Un composant virtuel n'existe que dans les fichiers yaml. Un transform le convertit en objet régulier.
+List sera un Bloc, conteneur d'une série de Blocs. Comme pour Layer, le slot sera cerné par un élément HTML. 
+
+On pourrait constituer un catalogue de Lists qui seraient activées par un extends
+
+- paths / key
+La hiérarchie d'un scene est : Scene > Story > slot | event
+l'App ne peut afficher qu'une seule scène à la fois. Les Stories ont un id unique, ainsi que les Persos. 
+En cas d'instanciation, la combinaison storyId.persosId est unique.
+En cas de liste générée, les slots suivront une numérotation selon l'index 
+le terme "key", ou serait plus approprié : 
+- uuid suggère un id généré au hasard
+- path suggère un chein complet dans la hiérarchie des éléments, il n'en est rien : un persos peut passer d'un slot à un autre sans changer de "key"
+- id est le terme proposé par l'utilisateur à l'écriture, un id est généré si absent
+
+Lorsque des éléments sont générés dans une list, quels keys prennent-ils par défaut ?
+- storyId.persoListId.slot_01 
+- storyId.persoListId_slot_01 
+il faut eventuellement pouvoir acceder a la numerotation, mais garder une autre convention que le point comme separateur

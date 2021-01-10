@@ -8,14 +8,10 @@ import './style.css';
 import { Scene } from './Scene';
 
 const Player = async (path) => {
-	const casting = await Promise.all(path.map(fetchStories));
-	console.log('PLAYER casting', casting[0]);
-
-	const scene = new Scene(casting[0].scene);
-
-	const { stories } = casting[0];
-	console.log('PLAYER stories', stories);
-	await Promise.all(stories.map(scene.addStory)).then(scene.start);
+	// const casting = await Promise.all(path.map(fetchStories));
+	const casting = await fetchStories(path);
+	console.log('PLAYER casting', casting);
+	new Scene(casting);
 };
 
 const path = ['/stories/story10.yml'];

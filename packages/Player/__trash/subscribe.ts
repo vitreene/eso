@@ -1,4 +1,4 @@
-import { emitter } from '../../App/emitter';
+import { emitter } from '../src/App/emitter';
 // import { scene } from '../index';
 
 type Subscribe = {

@@ -1,7 +1,9 @@
 import { activateZoom } from '../../zoom';
 import { Root } from '../../composants/Root';
 
-import { CONTAINER_ESO } from '../../data/constantes';
+import { CONTAINER_ESO, APP_ID } from '../../data/constantes';
+
+const appContainer = document.getElementById(APP_ID);
 
 export function initRuntime(
 	rootId = CONTAINER_ESO,
@@ -9,11 +11,10 @@ export function initRuntime(
 	persos,
 	onScene
 ) {
-	const removeZoom = () => activateZoom(renderOnResize);
-
 	// créer le container de l'app/ uniquement pour template
 	if (isTemplate) {
-		Root(persos.get(rootId), removeZoom);
+		const removeZoom = () => activateZoom(renderOnResize);
+		Root(persos.get(rootId).node(), appContainer, removeZoom);
 		onScene.areOnScene.set(rootId, rootId);
 	}
 

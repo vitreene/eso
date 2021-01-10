@@ -8,17 +8,17 @@ export interface SceneEntry {
 	persos?: PersoEntry[];
 }
 
+export type CastEntry = {
+	id?: string;
+	startAt: string;
+	root: string;
+};
+
 export interface Scene {
 	id: string;
 	name: string;
-	template: string;
-	cast: {
-		[ref: string]: {
-			id?: string;
-			startAt: string;
-			root: string;
-		};
-	}[];
+	entry: string;
+	cast: { [ref: string]: CastEntry }[];
 }
 
 export interface Story {

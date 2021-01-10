@@ -2,7 +2,7 @@ const scene = {
 	scene: {
 		id: 'scene 1',
 		name: 'introduction',
-		template: 'scene-w-telco',
+		entry: 'scene-w-telco',
 		cast: [
 			{
 				id: 'story01',

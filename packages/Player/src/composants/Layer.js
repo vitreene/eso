@@ -46,6 +46,7 @@ function innerLayer(content, layerId, slot) {
 	return layer;
 }
 
+// TODO pourquoi pas un Bloc à la place ?
 function LayerItem({ id, ...attrs }, slot) {
 	const _slot = slot(id);
 	return html`<article id=${id} ...${attrs}>${_slot}</article>`;
