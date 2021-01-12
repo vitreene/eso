@@ -1,5 +1,10 @@
 import { nanoid } from 'nanoid';
-import { CONTAINER_ESO, DEFAULT_NS, MAIN } from '../data/constantes';
+import {
+	CONTAINER_ESO,
+	DEFAULT_NS,
+	DEFAULT_TRANSITION_IN,
+	MAIN,
+} from '../data/constantes';
 import { pipe } from '../shared/utils';
 import { SceneEntry, StoryEntry } from '../../../types/Entries-types';
 import { transformEventimes } from './transform-eventimes';
@@ -24,7 +29,11 @@ function transformScene(s: SceneEntry) {
 	entry.isTemplate = true;
 	const stories = cast.map((_cast) => {
 		const story = s.stories.find((_story) => _story.id === _cast.id);
-		return addStartAndEndEvents(story, _cast);
+		const res = addStartAndEndEvents(story, _cast);
+
+		console.log(_cast, story.persos, res.persos);
+
+		return res;
 	});
 	return { ...s, scene: { ...s.scene, cast }, stories: [entry, ...stories] };
 }
@@ -42,10 +51,41 @@ function sceneExpandCast(s: SceneEntry) {
 }
 
 // lire cast -> créer un event sur les entry de la story
-function addStartAndEndEvents(_story, cast) {
-	_story.eventimes.startAt = cast.startAt;
-	_story.eventimes.channel = DEFAULT_NS;
-	return _story;
+function addStartAndEndEvents(_story, _cast) {
+	const eventimes = _story.eventimes;
+	eventimes.startAt = _cast.startAt;
+	eventimes.channel = DEFAULT_NS;
+	const entry = _story.entry;
+	if (!entry) return { ..._story, eventimes };
+
+	// TODO entry peut etre un tableau
+	if (Array.isArray(entry)) return { ..._story, eventimes };
+
+	console.log(_story);
+
+	const _perso = _story.persos.find((p) => p.id === entry);
+	if (_perso) return { ..._story, eventimes };
+
+	const defaultEnter = {
+		move: _cast.root,
+		transition: DEFAULT_TRANSITION_IN,
+	};
+	const hasEnter = _perso.actions.findIndex((a) => a.name === entry);
+	if (hasEnter) {
+		const enter = { ...defaultEnter, ..._perso.actions[hasEnter] };
+		const actions = [..._perso.actions].splice(hasEnter, 1).concat(enter);
+		const perso = { ..._perso, actions };
+		const persos = _story.persos
+			.filter((p) => p.id === _perso.id)
+			.concat(perso);
+		return { ..._story, eventimes, persos };
+	} else {
+		const enter = defaultEnter;
+		const actions = _perso.actions.concat(enter);
+		const perso = { ..._perso, actions };
+		const persos = _story.persos.concat(perso);
+		return { ..._story, eventimes, persos };
+	}
 }
 
 function transformStories(s: SceneEntry) {
