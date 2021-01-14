@@ -76,7 +76,7 @@ export class Scene {
 	*/
 	async addStory(story: Story) {
 		const { eventimes, ...others } = story;
-		console.log(others);
+		// console.log(others);
 
 		this._addEventsToTimeLine(eventimes);
 		await this._register(others);

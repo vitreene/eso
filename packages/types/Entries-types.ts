@@ -22,6 +22,7 @@ export interface Scene {
 }
 
 export interface Story {
+	entry: any;
 	id: string;
 	channel: string;
 	root: string;

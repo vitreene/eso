@@ -10,7 +10,7 @@ export function transformEventimes(s: Story) {
 		eventimesStartAt,
 		eventimesAddChannel(channel)
 	)(_eventimes);
-	console.log('eventimes', eventimes);
+	// console.log('eventimes', eventimes);
 
 	return { ...s, eventimes };
 }

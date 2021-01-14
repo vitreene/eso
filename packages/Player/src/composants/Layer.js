@@ -5,7 +5,6 @@ import { DEFAULT_STYLES } from '../data/constantes';
 
 // surcharger content
 const contentRevision = (id, slot) => {
-	console.log('slot', slot);
 	return {
 		update(content) {
 			return typeof content === 'string'

@@ -19,7 +19,7 @@ export function transforms(yamlStories: SceneEntry) {
 		transformScene
 	)(yamlStories);
 
-	console.log('scene', scene);
+	// console.log('scene', scene);
 	return scene;
 }
 
@@ -31,7 +31,9 @@ function transformScene(s: SceneEntry) {
 		const story = s.stories.find((_story) => _story.id === _cast.id);
 		const res = addStartAndEndEvents(story, _cast);
 
-		console.log(_cast, story.persos, res.persos);
+		console.log(story.persos[0].id, story.entry, _cast);
+		console.log('story->', story);
+		console.log('res--->', res);
 
 		return res;
 	});
@@ -61,31 +63,48 @@ function addStartAndEndEvents(_story, _cast) {
 	// TODO entry peut etre un tableau
 	if (Array.isArray(entry)) return { ..._story, eventimes };
 
-	console.log(_story);
+	// const persos = (Array.isArray(entry) ? entry : [entry])
+	// .reduce(
+	// 	(persosAcc, entry,index,  _story.persos)=>{
 
-	const _perso = _story.persos.find((p) => p.id === entry);
-	if (_perso) return { ..._story, eventimes };
+	// 	}
+	// )
 
-	const defaultEnter = {
-		move: _cast.root,
-		transition: DEFAULT_TRANSITION_IN,
-	};
-	const hasEnter = _perso.actions.findIndex((a) => a.name === entry);
-	if (hasEnter) {
-		const enter = { ...defaultEnter, ..._perso.actions[hasEnter] };
-		const actions = [..._perso.actions].splice(hasEnter, 1).concat(enter);
-		const perso = { ..._perso, actions };
-		const persos = _story.persos
-			.filter((p) => p.id === _perso.id)
-			.concat(perso);
-		return { ..._story, eventimes, persos };
-	} else {
-		const enter = defaultEnter;
-		const actions = _perso.actions.concat(enter);
-		const perso = { ..._perso, actions };
-		const persos = _story.persos.concat(perso);
-		return { ..._story, eventimes, persos };
+	// TODO entry est un tableau
+	function addActionToPerso() {
+		const _perso = _story.persos.find((p) => p.id === entry);
+
+		if (!_perso) return _story.persos;
+		console.log('_perso->', _perso.actions);
+
+		const defaultEnter = {
+			name: 'enter',
+			move: _cast.root,
+			transition: DEFAULT_TRANSITION_IN,
+		};
+		const hasEnter = _perso.actions.findIndex((a) => a.name === 'enter');
+
+		if (hasEnter > -1) {
+			const enter = { ...defaultEnter, ..._perso.actions[hasEnter] };
+			const actions = [..._perso.actions].splice(hasEnter, 1).concat(enter);
+			const perso = { ..._perso, actions };
+			const persos = _story.persos
+				.filter((p) => p.id !== _perso.id)
+				.concat(perso);
+			return persos;
+		} else {
+			const enter = defaultEnter;
+			const actions = _perso.actions.concat(enter);
+			const perso = { ..._perso, actions };
+			const persos = _story.persos
+				.filter((p) => p.id !== _perso.id)
+				.concat(perso);
+			return persos;
+		}
 	}
+
+	const persos = addActionToPerso();
+	return { ..._story, eventimes, persos };
 }
 
 function transformStories(s: SceneEntry) {
