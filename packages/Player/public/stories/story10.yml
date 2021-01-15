@@ -16,8 +16,8 @@ stories:
   - id: story01
     # channel: ma first story
     channel: story01
-    # entry: [fond, grid-01]
-    entry: fond
+    entry: [fond, grid-01]
+    # entry: fond
 
     eventimes: 
       name: start

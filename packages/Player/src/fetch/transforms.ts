@@ -30,11 +30,6 @@ function transformScene(s: SceneEntry) {
 	const stories = cast.map((_cast) => {
 		const story = s.stories.find((_story) => _story.id === _cast.id);
 		const res = addStartAndEndEvents(story, _cast);
-
-		console.log(story.persos[0].id, story.entry, _cast);
-		console.log('story->', story);
-		console.log('res--->', res);
-
 		return res;
 	});
 	return { ...s, scene: { ...s.scene, cast }, stories: [entry, ...stories] };
@@ -45,7 +40,6 @@ function sceneExpandCast(s: SceneEntry) {
 	if (!s.scene.cast) return [];
 	const cast = [];
 	for (const _story of s.scene.cast) {
-		// const id = typeof _cast === 'string' ? _cast : Object.keys(_cast)[0];
 		const id = Object.keys(_story)[0];
 		cast.push({ id, ..._story[id] });
 	}
@@ -60,50 +54,10 @@ function addStartAndEndEvents(_story, _cast) {
 	const entry = _story.entry;
 	if (!entry) return { ..._story, eventimes };
 
-	// TODO entry peut etre un tableau
-	if (Array.isArray(entry)) return { ..._story, eventimes };
-
-	// const persos = (Array.isArray(entry) ? entry : [entry])
-	// .reduce(
-	// 	(persosAcc, entry,index,  _story.persos)=>{
-
-	// 	}
-	// )
-
-	// TODO entry est un tableau
-	function addActionToPerso() {
-		const _perso = _story.persos.find((p) => p.id === entry);
-
-		if (!_perso) return _story.persos;
-		console.log('_perso->', _perso.actions);
-
-		const defaultEnter = {
-			name: 'enter',
-			move: _cast.root,
-			transition: DEFAULT_TRANSITION_IN,
-		};
-		const hasEnter = _perso.actions.findIndex((a) => a.name === 'enter');
-
-		if (hasEnter > -1) {
-			const enter = { ...defaultEnter, ..._perso.actions[hasEnter] };
-			const actions = [..._perso.actions].splice(hasEnter, 1).concat(enter);
-			const perso = { ..._perso, actions };
-			const persos = _story.persos
-				.filter((p) => p.id !== _perso.id)
-				.concat(perso);
-			return persos;
-		} else {
-			const enter = defaultEnter;
-			const actions = _perso.actions.concat(enter);
-			const perso = { ..._perso, actions };
-			const persos = _story.persos
-				.filter((p) => p.id !== _perso.id)
-				.concat(perso);
-			return persos;
-		}
-	}
-
-	const persos = addActionToPerso();
+	const persos = (Array.isArray(entry) ? entry : [entry]).reduce(
+		addActionToPerso(_cast.root),
+		_story.persos
+	);
 	return { ..._story, eventimes, persos };
 }
 
@@ -127,4 +81,70 @@ function setIdAndChannel(s: StoryEntry) {
 	if (!story.id) story.id = story.channel;
 	if (!story.channel) story.channel = story.id;
 	return story;
+}
+
+/* 
+TODO revoir cette fonction
+addEventToPerso doit ajouter une action et un listen au perso
+- si l'action "enter" existe, la modifier pour modifier la prop "move"
+- sinon l'ajouter
+- si 'enter' existe comme action dans listen :
+	- remplacer le listen ? -> plutot ceci
+	- ajouter le listen ?
+- sinon l'ajouter
+
+Remplacer le listen, dans la mesure ou l'action enter rajoutée est prioritaire car demandée par la scene. Par contre, plusieurs actions pourraient provoquer la sortie de la scène.
+
+*/
+function addEventToPerso(event) {
+	return function (_storyPersos, entry) {
+		const persos = pipe(
+			addListenToPerso(entry),
+			addActionToPerso(entry)
+		)(_storyPersos);
+		return persos;
+	};
+}
+
+function addListenToPerso(entry) {
+	return function (persos) {
+		return persos;
+	};
+}
+
+function addActionToPerso(root) {
+	const defaultEnter = {
+		listen: { event: 'ev011', action: 'enter', channel: 'story01' },
+		actions: {
+			name: 'enter',
+			move: root,
+			transition: DEFAULT_TRANSITION_IN,
+		},
+	};
+
+	return function (_storyPersos, entry) {
+		const _perso = _storyPersos.find((p) => p.id === entry);
+
+		if (!_perso) return _storyPersos;
+
+		const hasEnter = _perso.actions.findIndex((a) => a.name === 'enter');
+
+		if (hasEnter > -1) {
+			const enter = { ...defaultEnter, ..._perso.actions[hasEnter] };
+			const actions = [..._perso.actions].splice(hasEnter, 1).concat(enter);
+			const perso = { ..._perso, actions };
+			const persos = _storyPersos
+				.filter((p) => p.id !== _perso.id)
+				.concat(perso);
+			return persos;
+		} else {
+			const enter = defaultEnter;
+			const actions = _perso.actions.concat(enter);
+			const perso = { ..._perso, actions };
+			const persos = _storyPersos
+				.filter((p) => p.id !== _perso.id)
+				.concat(perso);
+			return persos;
+		}
+	};
 }
