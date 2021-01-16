@@ -31,7 +31,8 @@ function innerLayer(content, layerId, slot) {
 	if (!content || Object.keys(content).length === 0) return null;
 	const layer = [];
 	for (const config of content) {
-		const id = joinId(layerId, config.id);
+		// const id = joinId(layerId, config.id);
+		const id = config.id;
 		const item = new LayerItem(
 			{
 				style: keyToLowercase(config.classStyle),

@@ -96,7 +96,6 @@ export class OnScene {
 		}
 		const { move } = up;
 		const slotId = move.slot;
-
 		if (!slotId || !this._slots.has(slotId)) return this._getError('slot', up);
 
 		// TODO trier selon l'ordre
@@ -119,7 +118,6 @@ export class OnScene {
 
 		const oldSlotId = this.areOnScene.get(up.id);
 		const slotId = move.slot;
-
 		const oldInslot = this._slots.get(oldSlotId).filter((s) => s !== up.id);
 		if (!this._slots.get(slotId)) return this._getError('move', up);
 
