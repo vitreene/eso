@@ -4,10 +4,11 @@ scene:
   entry: scene-w-telco
   cast:
     - story01:
-        startAt: go1
+        startAt: go2
         root: *TC
     - story02:
-        startAt: end-story01
+        # startAt: end-story01
+        startAt: go1
         root: *MAIN
 
 
@@ -15,6 +16,7 @@ stories:
   - id: story01
     channel: story01
     entry: [fond, grid-01]
+    stage: '4/3'
  
     eventimes: 
       name: start
@@ -67,7 +69,6 @@ stories:
               margin: 2rem,
               gridTemplateColumns: 6fr 4fr,
               gridTemplateRows: '4fr 3fr repeat(3, 1fr)',
-              
             }
             content: 
               - { id: grid-01_s01, classStyle: { gridColumn: '1 / 3', gridRow: 1}}
@@ -248,6 +249,8 @@ stories:
   - id: story02
     # channel: ma second story
     channel: story02
+    stage: '4/3'
+ 
     # ici pas d'entrée, tous les élements montent sur une story parente. 
     # Bonne pratique ?
 
@@ -258,6 +261,7 @@ stories:
           0: { name: go, data: [un, deux, trois] }
           500: ev011
           1000: ev012
+          # 1500: { channel: *DEFAULT_NS, name: go2 }
           2000: ev013
           3000: ev014
           4000: ev015
@@ -294,7 +298,8 @@ stories:
             ev013:
               content: { lang: en, refLang: langue, ref: txt01, effect: fade }
             ev014:
-              content: { text: A bientot pour un prochain essai, effect: fade }
+              # content: { text: "A bientot pour un prochain essai", effect: fade }
+              content: { text: "A bientot", effect: fade }
             ev015:
               content: { text: c’est fini, effect: letters-top-down }
 
@@ -349,8 +354,16 @@ stories:
   - id: scene-w-telco
     channel: *DEFAULT_NS
     entry: *CONTAINER_ESO
+    stage: '4/3'
+
     eventimes:
-      0: go1
+      name: go1
+      startAt: 0
+      events:
+        # - { startAt: 2000, name: *PAUSE, channel: *TC  }
+          1500: { channel: *DEFAULT_NS, name: go2 }
+
+
 
     persos:
       - *PROTO :
@@ -364,13 +377,13 @@ stories:
             className: container
             classStyle: {
               display: grid,
-              gridTemplateRows: '5fr 5fr'
+              grid-template-columns: '5fr 5fr'
             }
             content:
               - id: *MAIN
-                classStyle: {display: grid, gridRow: 1}
+                classStyle: {display: grid, grid-column: 1, overflow: hidden}
               - id: *TC
-                classStyle: {display: grid, gridRow: 2}
+                classStyle: {display: grid, grid-column: 2}
           actions:
             end-scene: { leave: true }
 

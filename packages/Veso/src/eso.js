@@ -31,11 +31,18 @@ export class Eso {
 	attributes = {}; // attributs du node
 	propsInit = {};
 
+	_node = null;
+	set node(_n) {
+		this._node = _n;
+	}
+	get node() {
+		return this._node();
+	}
+
 	constructor(perso, emitter, init = true) {
 		const { id, initial, tag } = perso;
 		this.id = id;
 		this.tag = tag;
-		this.node;
 		this.uuid = { uuid: nanoid(8), id };
 		this.prep = {
 			dimensions: doDimensions,
@@ -62,7 +69,7 @@ export class Eso {
 	init() {
 		this.propsInit && pipe(this._pre, this._revise)(this.propsInit);
 		this.prerender();
-		//  this.node() call storeNodes
+		//  this.node call storeNodes
 		this.node = createPerso.call(this);
 	}
 

@@ -3,6 +3,8 @@ import {
 	CONTAINER_ESO,
 	DEFAULT_NS,
 	DEFAULT_TRANSITION_IN,
+	SCENE_STAGE,
+	DEFAULT_SCENE_STAGE,
 } from '../data/constantes';
 import { pipe } from '../shared/utils';
 import { SceneEntry, StoryEntry } from '../../../types/Entries-types';
@@ -26,6 +28,8 @@ function transformScene(s: SceneEntry) {
 	const cast = sceneExpandCast(s);
 	const entry = s.stories.find((story) => story.id === s.scene.entry);
 	entry.isTemplate = true;
+	entry.root = CONTAINER_ESO;
+
 	const stories = cast.map((_cast) => {
 		const story = s.stories.find((_story) => _story.id === _cast.id);
 		const res = addStartAndEndEvents(story, _cast);
@@ -61,19 +65,21 @@ function addStartAndEndEvents(story, cast) {
 	eventimes.channel = DEFAULT_NS;
 	if (!story.entry) return { ...story, eventimes };
 	const persos = addEventsToEntry(story, cast);
-	return { ...story, eventimes, persos };
+	console.log('addStartAndEndEvents', cast);
+
+	return { ...story, root: cast.root, eventimes, persos };
 }
 
 function transformStories(s: SceneEntry) {
 	const stories = s.stories.map(
-		pipe(setIdAndChannel, transformEventimes, transformPersos)
+		pipe(setIdAndChannel, setStage, transformEventimes, transformPersos)
 	);
 	return { ...s, stories };
 }
 
 function setIdAndChannel(s: StoryEntry) {
 	const story = s;
-	story.root = CONTAINER_ESO;
+	// story.root = CONTAINER_ESO;
 	if (!story.id && !story.channel) {
 		const id = nanoid(8);
 		story.id = id;
@@ -86,6 +92,14 @@ function setIdAndChannel(s: StoryEntry) {
 	return story;
 }
 
+function setStage(s: StoryEntry) {
+	const stage =
+		typeof s.stage === 'string'
+			? SCENE_STAGE[s.stage] || DEFAULT_SCENE_STAGE['4/3']
+			: s.stage;
+
+	return { ...s, stage };
+}
 /* 
 addEventToEntry doit ajouter une action et un listen au perso
 - si l'action "enter" existe, la modifier pour modifier la prop "move"

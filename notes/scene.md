@@ -219,3 +219,25 @@ Lorsque des éléments sont générés dans une list, quels keys prennent-ils pa
 - storyId.persoListId.slot_01 
 - storyId.persoListId_slot_01 
 il faut eventuellement pouvoir acceder a la numerotation, mais garder une autre convention que le point comme separateur
+
+
+## zoom : opérations
+
+Lorsque la window est resize, la valeur de zoom de chaque story est recalculée. Les persos sont re-rendus.
+En fin de scene, l'eventListener est retiré.
+Améliorations :
+- le zoom est recalculé sur l'élément root d'une story est modifié
+- la fonction est intégrée au perso ?
+
+### Faire evoluer zoom et son integration
+zoom est concu pour etre une valeur unique pour la scene, comment l'adapter pour representer une story ?
+
+zoom (root, stage, handler)
+- root : id ou node
+- stage: dimensions de la scène virtuelle
+- handler(zoom) : callback appelé quand le zoom change: provoque le rendu des persos
+Zoom n'est plus un singleton
+el accepte un node en entrée
+
+dans Scene, comment distinguer les persos d'une story ? 
+ajouter prop : story dans les persos 

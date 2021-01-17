@@ -1,9 +1,10 @@
-import { zoom, getElementOffsetZoomed } from '../zoom';
+import { getElementOffsetZoomed } from '../zoom';
 import { DEFAULT_DURATION } from '../data/constantes';
 
 // // déclenche les updates ; appelé par chaque action
 
 export function updateComponent(
+	zoom,
 	perso,
 	{ changed, update, ...others },
 	updateSlot
@@ -32,7 +33,7 @@ export function updateComponent(
 
 	if (changed?.remove) {
 		if (perso) {
-			const node = rescale ? perso.node().parentNode : perso.node();
+			const node = rescale ? perso.node.parentNode : perso.node;
 			old = getElementOffsetZoomed(node, zoom.box.zoom);
 		}
 		updateSlot(...changed.remove);
@@ -41,7 +42,7 @@ export function updateComponent(
 	if (changed?.add) {
 		updateSlot(...changed.add);
 		if (perso) {
-			const node = rescale ? perso.node().parentNode : perso.node();
+			const node = rescale ? perso.node.parentNode : perso.node;
 			current = getElementOffsetZoomed(node, zoom.box.zoom);
 		}
 	}

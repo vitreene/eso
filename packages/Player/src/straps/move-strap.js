@@ -1,4 +1,4 @@
-import { zoom } from '../zoom';
+import { zoom } from '../../__trash';
 import { joinId } from '../shared/utils';
 
 import { DEFAULT_NS, STRAP } from '../data/constantes';

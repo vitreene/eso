@@ -26,6 +26,7 @@ export interface Story {
 	id: string;
 	channel: string;
 	root: string;
+	stage: StageEntry;
 	isTemplate?: boolean;
 	eventimes?: Eventime;
 	persos: Perso[];
@@ -37,6 +38,7 @@ export interface StoryEntry {
 	id?: string;
 	channel?: string;
 	root: string;
+	stage?: string | StageEntry;
 	isTemplate?: boolean;
 	eventimes?: unknown;
 	persos?: PersoEntry[];
@@ -49,4 +51,10 @@ export interface PersoEntry {
 	listen?: unknown;
 	actions: unknown;
 	emit?: unknown;
+}
+
+export interface StageEntry {
+	w: number;
+	h: number;
+	r: number;
 }

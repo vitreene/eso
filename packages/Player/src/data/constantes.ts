@@ -37,7 +37,7 @@ export const DEFAULT_DURATION = 500;
 export const FR = ESO_Lang.FR;
 export const EN = ESO_Lang.EN;
 
-export const DEFAULT_SIZE_SCENE = {
+export const SCENE_STAGE = {
 	'16/9': {
 		w: 1600,
 		h: 900,
@@ -49,6 +49,8 @@ export const DEFAULT_SIZE_SCENE = {
 		r: 4 / 3,
 	},
 };
+
+export const DEFAULT_SCENE_STAGE = SCENE_STAGE['4/3'];
 
 export const DEFAULT_STYLES = {
 	x: 0,

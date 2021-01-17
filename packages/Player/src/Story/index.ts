@@ -1,4 +1,4 @@
-import { DEFAULT_SIZE_SCENE } from '../data/constantes';
+import { SCENE_STAGE } from '../data/constantes';
 
 type SizeScene = {
 	w: number;
@@ -10,7 +10,7 @@ export class Story {
 	id: string = '';
 	name: string = '';
 	description: string = '';
-	cadre: SizeScene = DEFAULT_SIZE_SCENE['16/9'];
+	cadre: SizeScene = SCENE_STAGE['16/9'];
 	zoom: number = 1;
 	root: string = '';
 	nodes: any[] = [];

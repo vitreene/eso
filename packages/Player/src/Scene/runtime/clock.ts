@@ -52,7 +52,7 @@ export function clock(timeLiner: TimeLiner): Clock {
 		if (tm[channel][count]) {
 			const _emitEvent = (name: string) => {
 				const data: any = ((eventDatas[channel] || {})[count] || {})[name];
-				console.log('name', name, data ? data : '');
+				console.log('|-->', channel, name, data ? data : '');
 				emitter.emit([channel, name], { ...data, chrono: count });
 			};
 			tm[channel][count].forEach(_emitEvent);

@@ -24,7 +24,7 @@ export function transformPersos(s: Story) {
 	const _persos = s.persos;
 	const persos = pipe(
 		natureSetProperty,
-		setId,
+		idSetProperty,
 		dispatchPersoProps(channel),
 		deepmerge,
 		filterProtos
@@ -44,7 +44,7 @@ export function natureSetProperty(_persos: PersoEntry[]) {
 	return persos;
 }
 
-export function setId(_persos: PersoEntry[]) {
+export function idSetProperty(_persos: PersoEntry[]) {
 	const persos = [];
 	for (const _perso of _persos) {
 		_perso.id = _perso.id || nanoid(8);
