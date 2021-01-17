@@ -2,7 +2,6 @@ import { Eso } from 'veso';
 
 import { StageEntry } from '../../../types/Entries-types';
 
-// TODO renommer Zoom par Stage
 export class Stage {
 	static deZoom = (obj, zoom) => {
 		if (obj.constructor !== Object) return obj;
@@ -50,7 +49,7 @@ export class Stage {
 		const zoom = this.setZoom();
 		if (!idem(this.box, zoom)) {
 			this.box = zoom;
-			console.log('resize', this.el, this.box);
+			console.log('resize', this.box.zoom);
 			this.renderOnResize && this.renderOnResize(zoom);
 		}
 	}

@@ -109,7 +109,7 @@ export class Scene {
 		return () => {
 			for (const id of this.onScene.areOnScene.keys()) {
 				this.cast[storyId].persos.has(id) &&
-					this.persos.get(id).prerender(this.cast[storyId].zoom);
+					this.persos.get(id).prerender(this.cast[storyId].zoom.box);
 			}
 		};
 	}
