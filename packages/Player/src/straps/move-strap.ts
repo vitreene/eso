@@ -1,7 +1,9 @@
-import { zoom } from '../../__trash';
+import { defaultBox } from '../zoom';
 import { joinId } from '../shared/utils';
 
 import { DEFAULT_NS, STRAP } from '../data/constantes';
+import { SceneCast } from '../../../types/Entries-types';
+import { EventEmitter2 } from 'eventemitter2';
 /* 
 - pointeur lit la position de la souris / touch
 -> emet : 
@@ -22,24 +24,21 @@ FIXME : au mousedown, la position verticale du pointer est mal calculée, ce qui
 cependant, en modifiant la css de #app, puis en la rétablissant, le déplacmeent est ensuite correct...
 */
 
-export function moveStrap(emitter) {
+interface MoveData {
+	id: string;
+	event: string;
+	reactions?: any;
+	e: MouseEvent;
+}
+
+export function moveStrap(emitter: EventEmitter2, cast: () => SceneCast) {
 	return class Move {
-		constructor(data) {
-			console.log('DATA', data);
-
-			this.data = data;
-			this.below = null;
-			// passe un nom plutot que la fonction complete ?
-			this.reactions = data?.reactions;
-
-			const cssprops = window.getComputedStyle(data.e.target);
-			this.pointerEvents = cssprops.getPropertyValue('pointer-events');
-
-			this.isStatic = cssprops.getPropertyValue('position') === 'static';
-
-			emitter.once([STRAP, 'move-cancel'], this.cancel);
-			this.down();
-		}
+		zoom: number;
+		data: MoveData;
+		below: string;
+		reactions: any;
+		pointerEvents: string;
+		isStatic: boolean;
 
 		initialElPosition = {
 			x: 0,
@@ -53,11 +52,29 @@ export function moveStrap(emitter) {
 			x: 0,
 			y: 0,
 		};
+
+		constructor(data: MoveData) {
+			console.log('DATA', data);
+			const box = findBoxInCast(data.id, cast());
+			this.zoom = box.zoom;
+			this.data = data;
+			this.below = null;
+
+			// passe un nom plutot que la fonction complete ?
+			this.reactions = data?.reactions;
+			const cssprops = window.getComputedStyle(data.e.target as Element);
+			this.pointerEvents = cssprops.getPropertyValue('pointer-events');
+			this.isStatic = cssprops.getPropertyValue('position') === 'static';
+
+			emitter.once([STRAP, 'move-cancel'], this.cancel);
+			this.down();
+		}
+
 		cancel() {
 			console.log('cancel move');
 			document.dispatchEvent(new PointerEvent('pointerup'));
 		}
-		move = (e) => {
+		move = (e: MouseEvent) => {
 			const { id, event } = this.data;
 
 			// sous le pointer
@@ -72,7 +89,7 @@ export function moveStrap(emitter) {
 				x: absPointer.x - this.initialMousePosition.x,
 				y: absPointer.y - this.initialMousePosition.y,
 			};
-			const z = zoom.box.zoom;
+			const z = this.zoom;
 			const relativePointer = {
 				x: newPointer.x / z,
 				y: newPointer.y / z,
@@ -108,7 +125,7 @@ export function moveStrap(emitter) {
 			this.pointer = newPointer;
 		};
 
-		up = (e) => {
+		up = (e: MouseEvent) => {
 			e.preventDefault();
 
 			const { id, event } = this.data;
@@ -121,7 +138,7 @@ export function moveStrap(emitter) {
 				x: this.pointer.x < 0 ? '-' : '+',
 				y: this.pointer.y < 0 ? '-' : '+',
 			};
-			const z = zoom.box.zoom;
+			const z = this.zoom;
 			const style = {
 				pointerEvents: this.pointerEvents,
 				left: `${sign.x}=${Math.abs(this.pointer.x / z)}`,
@@ -156,7 +173,7 @@ export function moveStrap(emitter) {
 			document.addEventListener('pointermove', this.move);
 			document.addEventListener('pointerup', this.up);
 
-			const z = zoom.box.zoom;
+			const z = this.zoom;
 
 			// faut-il cibler la story à l'origine de l'appel ?
 			emitter.emit([DEFAULT_NS, event], {
@@ -177,4 +194,16 @@ export function moveStrap(emitter) {
 			};
 		};
 	};
+}
+
+function findBoxInCast(id: string, cast: SceneCast) {
+	let result = defaultBox;
+	for (const story in cast) {
+		const found = cast[story].persos.has(id);
+		if (found) {
+			result = cast[story].zoom.box;
+			break;
+		}
+	}
+	return result;
 }

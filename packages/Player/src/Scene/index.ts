@@ -2,7 +2,11 @@
 import { Eso } from 'veso';
 import { o } from 'sinuous';
 
-import { Story, StoryWoEventimes } from '../../../types/Entries-types';
+import {
+	SceneCast,
+	Story,
+	StoryWoEventimes,
+} from '../../../types/Entries-types';
 import { ImagesCollection } from '../../../types/initial';
 import { Eventime } from '../../../types/eventime';
 
@@ -29,7 +33,7 @@ export class Scene {
 	name?: string;
 	description?: string;
 
-	cast: { [key: string]: { zoom: Stage; persos: Set<string> } } = {};
+	cast: SceneCast = {};
 	persos: Map<string, Eso> = new Map(); //
 	slots: Slots = new Slots(); //
 	imagesCollection: ImagesCollection = new Map(); //
@@ -55,7 +59,7 @@ export class Scene {
 		this._updateSlot = this._updateSlot.bind(this);
 		this.renderOnResize = this.renderOnResize.bind(this);
 
-		registerStraps();
+		registerStraps({ cast: () => this.cast });
 		Promise.all(stories.map(this.addStory)).then(this.start());
 	}
 

@@ -81,7 +81,7 @@ stories:
             end-story: {leave: true, transition: {to: fadeOut}}
                 
       - *BLOC :
-          # id: text-sample
+          id: text-sample
           extends: proto_bloc
           initial: 
             # dimensions: { width: 421, height: 214 }
@@ -358,9 +358,9 @@ stories:
     eventimes:
       name: go1
       startAt: 0
-      # events:
+      events:
       #     1500: { channel: *DEFAULT_NS, name: go2 }
-        # - { startAt: 2000, name: *PAUSE, channel: *TC  }
+        - { startAt: 2000, name: *PAUSE, channel: *TC  }
 
 
 

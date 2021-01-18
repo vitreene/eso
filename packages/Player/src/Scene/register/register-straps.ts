@@ -25,14 +25,14 @@ key est donc soit par appel, soit à la création d'instance.
 créer un cas réel.
 */
 
-export function registerStraps(): void {
+export function registerStraps({ cast }: { cast: Function }): void {
 	/* 
 	trouver une meilleure façon d'initialiser les strap 
 	ne pourrait-on  pas importer directement emitter dans chaque strap ?
 	*/
 	const DragStrap = Drag(emitter);
 	emitter.on([STRAP, DRAG], (data) => new DragStrap(data));
-	const Move = moveStrap(emitter);
+	const Move = moveStrap(emitter, cast);
 	emitter.on([STRAP, MOVE], (data) => new Move(data));
 	const toggleStrap = toggle(emitter);
 	emitter.on([STRAP, TOGGLE], (data) => toggleStrap(data));

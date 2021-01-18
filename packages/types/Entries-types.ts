@@ -1,5 +1,6 @@
 import { Eventime } from './eventime';
 import { Perso } from './initial';
+import { Stage } from '../Player/src/zoom';
 
 export interface SceneEntry {
 	defs?: string[];
@@ -58,3 +59,15 @@ export interface StageEntry {
 	h: number;
 	r: number;
 }
+
+export type SceneCast = {
+	[key: string]: { zoom: Stage; persos: Set<string> };
+};
+export type Box = {
+	left: number;
+	top: number;
+	width: number;
+	height: number;
+	ratio: number;
+	zoom: number;
+};

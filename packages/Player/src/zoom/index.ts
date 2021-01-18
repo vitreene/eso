@@ -1,6 +1,6 @@
 import { Eso } from 'veso';
 
-import { StageEntry } from '../../../types/Entries-types';
+import { Box, StageEntry } from '../../../types/Entries-types';
 
 export class Stage {
 	static deZoom = (obj, zoom) => {
@@ -97,15 +97,7 @@ export function round(obj: Object): any {
 	return r;
 }
 
-type Box = {
-	left: number;
-	top: number;
-	width: number;
-	height: number;
-	ratio: number;
-	zoom: number;
-};
-const defaultBox: Box = {
+export const defaultBox: Box = {
 	left: 0,
 	top: 0,
 	width: 0,
