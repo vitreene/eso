@@ -103,8 +103,6 @@ export class TimeLiner {
 	}
 
 	private _mapEvents(evenTimes: Eventime | Eventime[], options: Options) {
-		// this.remains = [];
-		// this.solved = {};
 		this.held = false;
 		let list: Eventime[] = Array.isArray(evenTimes) ? evenTimes : [evenTimes];
 
@@ -114,6 +112,7 @@ export class TimeLiner {
 			list = this.remains;
 			this.remains = [];
 		}
+		this.remains = list;
 		return this.solved;
 	}
 
@@ -131,8 +130,6 @@ export class TimeLiner {
 			// faut-il ensuite chercher partout ?
 			else
 				[channel, level, DEFAULT_NS].some((ch) => {
-					console.log('this.solved[ch]', ch, this.solved[ch]);
-
 					if (this.solved[ch]?.[event.startAt]) {
 						startAt = this.solved[ch][event.startAt][0];
 						return true;

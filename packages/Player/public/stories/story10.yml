@@ -260,8 +260,7 @@ stories:
         events:
           0: { name: go, data: [un, deux, trois] }
           500: ev011
-          1000: ev012
-          # 1500: { channel: *DEFAULT_NS, name: go2 }
+          1000: [ev012, { channel: *DEFAULT_NS, name: go2 }]
           2000: ev013
           3000: ev014
           4000: ev015
@@ -359,9 +358,9 @@ stories:
     eventimes:
       name: go1
       startAt: 0
-      events:
+      # events:
+      #     1500: { channel: *DEFAULT_NS, name: go2 }
         # - { startAt: 2000, name: *PAUSE, channel: *TC  }
-          1500: { channel: *DEFAULT_NS, name: go2 }
 
 
 
