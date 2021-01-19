@@ -1,6 +1,8 @@
 /* 
 TODO
-- prototype / basedOn / extends
+- * prototype / basedOn / extends
+extends ne touche que les persos hors story ; 
+il faut qu'il touche aussi ceux dans chaque story !
 - when
 */
 import { nanoid } from 'nanoid';

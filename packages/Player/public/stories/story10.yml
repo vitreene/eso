@@ -37,6 +37,11 @@ stories:
         # - 7000: [end-story, {channel: *DEFAULT_NS, name: end-story01}]
 
     persos:
+      - *PROTO :
+          id: proto_bloc
+          initial:
+            className: bloc-center
+            
       - *LAYER :
           id: fond
           initial: 
@@ -109,7 +114,9 @@ stories:
                 }
             step01: 
                 content: lundi
-                move: grid-01_s02
+                # move: grid-01_s02
+                move: { slot:  grid-01_s02, rescale: true }
+
                 transition: 
                   to: {
                     x: 100, y: 100,
@@ -119,7 +126,9 @@ stories:
                   }
                   duration: 2000
             step02:
-                move: grid-01_s03
+                # move: grid-01_s03
+                move: { slot:  grid-01_s03, rescale: true }
+
                 transition:
                   to: {
                     scale: 1.5,	rotate: 40,
@@ -365,11 +374,6 @@ stories:
 
 
     persos:
-      - *PROTO :
-          id: proto_bloc
-          initial:
-            className: bloc-center
-
       - *LAYER :
           id: *CONTAINER_ESO
           initial:
