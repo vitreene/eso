@@ -61,34 +61,21 @@ export function updateComponent(
 		});
 
 		// rescale
+		// expression en % = responsive au resize
 		if (rescale) {
 			const oldDimensions = {
-				width: old.width,
-				height: old.height,
+				width: (old.width / current.width) * 100 + '%',
+				height: (old.height / current.height) * 100 + '%',
 			};
 			const currentDimensions = {
-				width: current.width,
-				height: current.height,
+				width: '100%',
+				height: '100%',
 			};
 
 			transition.push({
 				from: oldDimensions,
 				to: currentDimensions,
 				duration: DEFAULT_DURATION,
-				oncomplete: [
-					{
-						event: {
-							channel: update.channel,
-							name: 'end-rescale-' + update?.id,
-						},
-						data: {
-							style: {
-								width: '100%',
-								height: '100%',
-							},
-						},
-					},
-				],
 			});
 		}
 	}

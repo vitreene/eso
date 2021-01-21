@@ -12,29 +12,12 @@
 
 ## En cours
 
-### structure d'une page, et de l'application
-Organisation du monorepo
-un workspace *Project* destiné à y placer les contenus 
-- medias
-- yaml
-    - summaries
-    - chapters
-    - scenes
-    - stories
-    - config
-- css
-
-### micro-animation sur les textes
-    - effets nommés 
-
-### refs et langues pour les textes
-ref et langues pourraient etre résolues lors du parsage, et autoriser une écriture simplifiée en intégrant des réglages par défaut.
-Cependant, si je garde la possibilité de modifier un contenu au runtime (compteurs, inputs...), il faut garder de la logique dans le composant
-
 ### Scene 
 Une scene est une compostion d'une ou plusieurs stories. 
-Une story ne peut apparaitre qu'une seule fois dans une scene -> sauf si isolation des events et mecanisme d'events partagés
-Une story peut-elle en contenir une autre, ou bien une scene peut en contenir une autre ?
+? Une story ne peut apparaitre qu'une seule fois dans une scene -> sauf si isolation des events et mecanisme d'events partagés
+? Une story peut-elle en contenir une autre, ou bien une scene peut en contenir une autre ?
+
+**-> Une story peut etre instanciée dans plusieurs scene, ou dans la meme scene ; il lui faut un id unique.**
 
 #### instanciation d'une story
 -> Dans le contexte du shell, peu utile. Mais pour vitreene ?
@@ -68,6 +51,25 @@ si un perso doit répondre à un event, il utilise le canal "main"
 les stories pourraient aussi capter des events "main" et les transmettre en interne
 eventemitter2 permet de chainer les channels, cela pourrait servir à mieux préciser une cible 
 
+
+### structure d'une page, et de l'application
+Organisation du monorepo
+un workspace *Project* destiné à y placer les contenus 
+- medias
+- yaml
+    - summaries
+    - chapters
+    - scenes
+    - stories
+    - config
+- css
+
+### micro-animation sur les textes
+    - effets nommés 
+
+### refs et langues pour les textes
+ref et langues pourraient etre résolues lors du parsage, et autoriser une écriture simplifiée en intégrant des réglages par défaut.
+Cependant, si je garde la possibilité de modifier un contenu au runtime (compteurs, inputs...), il faut garder de la logique dans le composant
 
 ## A faire 
 
@@ -109,3 +111,72 @@ eventemitter2 permet de chainer les channels, cela pourrait servir à mieux pré
 - relancer / reinitialiser le jeu
 
     
+## bugs/améliorations
+
+- **Transform yaml** : dans les stories, extends ne fonctionne pas avec les persos externes. 
+	Revoir le système de passes :
+		- objet 'proto', du meme niveau que scene, dans lesquels seront placés tous les prototypes ET éléments partagés. Les éléments non utilisés sont effacés.
+		- un proto peut etre défini à l'intérieur d'une story, sa portée est la story, en cas de conflit de nom, il est prioritaire.
+		- un élément défini dans 'proto' n'a pas besoin d'etre défini comme proto.
+		- proto contient des persos, et des stories. 
+		- d'autres éléments pourraient etre ajoutés : eventimes, medias ?
+		- les éléments de proto comportant des extends sont résolus avant d'etre employés dans les stories. 
+		- un extend dans proto ne peut pas se référer à à un proto dans une story.
+		
+		chaine d'héritage :
+		- proto du type de perso
+		- persos dans proto
+		- persos dans proto/story
+		- proto dans scene/story
+		- persos dans scene/story
+
+- **resize** : passer par update ?
+lors d'un resize, les éléments sont re-rendus, mais certaines opérations doivent etre recalculées
+
+	- move : les références des blocs de départ et d'arrivée changent :
+		- invalider l'animation en cours
+		- recalculer départ et arrivée 
+		- envoyer la transition
+
+Ce calcul passe par updateComponent ; il faudrait :
+	- séparer updateComponent et move dans une fonction distincte
+	- rediriger le callback du resize sur updateComponent 
+	- move fait-il partie de veso : les fonctions du perso, ou bien de Scene ? 
+
+**plus simple ?** 
+definir les valeurs d'interpolation en % directement , elles seront réactives au resize 
+-> le positionnement x/y ne semble pas fonctionner avec les w/h en %. savoir pourquoi ?
+
+- veso
+**preparation des modifications**
+concerne : dimensions, move, transitions
+séparer ce module du reste de veso ; en fait-il partie ?
+lié à veso : besoin d'accéder à l'état du perso : node, css...
+distinct : précède le calcul d'un rendu.
+
+quelles infos sont ajoutées l'historique : les données en entrée ou en sortie de 'pre'
+
+**etats du composant**
+l'état du composant est incrémental, ses évolutions s'ajoutent au fur et à mesure du récit. 
+il faudrait pouvoir nommer des états et faire en sorte que l'on puisse passer de l'un à l'autre.
+Pour faire des transitions correctes, il faut connaitre toutes les propriétés que l'on va modifier sur la vie du perso.
+Il faut traverser toutes les actions et definir pour chaque état/action le groupe à eventuellement animer.
+Definir un groupe de propriétés par défaut parmi les plus courantes (notamment sur les transformations et positions)
+On peut surcharger un état pour définir un nouvel état.
+Exemple :
+- un bloc texte est bleu, devient jaune quand il se déplace vars un nouveau slot, redevient bleu lorsqu'il est déplacé une seconde fois.
+le terme "redevient" est difficile aujourd'hui a déterminer.
+
+**Controle des animations**
+les animations sont lancées par veso et sont controlées globalement par telco.
+il faudrait que l'on puisse controler l'etat play/pause par une action sur le perso
+par exemple, certains composants doivent etre joués lorsque le bouton pause est activé.
+La pause pourrait etre passée à la story qui dispatche ensuite l'action sur ses composants.
+La story peut transformer l'action en local et l'inverser
+il faut donc définir des actions/listen pour une story
+
+**La story est un super-perso** 
+Ajouter à story actions/listen 
+Sur l'exemple play/pause, cela permet d'inverser le role de play et pause, 
+Les persos reagissent à story.play / story.pause, la story transforme scene.play en story.pause par exemple
+
