@@ -13,12 +13,10 @@ import { transformPersos } from './transform-persos';
 
 export function transforms(yamlStories: SceneEntry) {
 	// console.log('yaml res:', JSON.stringify(yamlStories, null, 4));
-	const scene = pipe(
-		// transformEventimes,
-		transformPersos,
-		transformStories,
-		transformScene
-	)(yamlStories);
+	// const { scene: sceneEntry, prototypes: protoEntry } = yamlStories;
+	// const protos = pipe(transformStories, transformScene)(protoEntry);
+	// const scene = pipe(transformStories, transformScene)(sceneEntry);
+	const scene = pipe(transformStories, transformScene)(yamlStories);
 
 	// console.log('scene', scene);
 	return scene;
@@ -71,6 +69,7 @@ function addStartAndEndEvents(story, cast) {
 }
 
 function transformStories(s: SceneEntry) {
+	if (!s.stories) return s;
 	const stories = s.stories.map(
 		pipe(setIdAndChannel, setStage, transformEventimes, transformPersos)
 	);

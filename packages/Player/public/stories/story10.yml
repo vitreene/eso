@@ -390,8 +390,9 @@ stories:
           actions:
             end-scene: { leave: true }
 
-persos:
-  - *PROTO :
-      id: proto_bloc
-      initial:
-        className: bloc-center
+prototypes:
+  persos:
+    - *PROTO :
+        id: proto_bloc
+        initial:
+          className: bloc-center

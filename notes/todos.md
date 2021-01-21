@@ -130,24 +130,8 @@ Cependant, si je garde la possibilité de modifier un contenu au runtime (compte
 		- proto dans scene/story
 		- persos dans scene/story
 
-- **resize** : passer par update ?
-lors d'un resize, les éléments sont re-rendus, mais certaines opérations doivent etre recalculées
 
-	- move : les références des blocs de départ et d'arrivée changent :
-		- invalider l'animation en cours
-		- recalculer départ et arrivée 
-		- envoyer la transition
-
-Ce calcul passe par updateComponent ; il faudrait :
-	- séparer updateComponent et move dans une fonction distincte
-	- rediriger le callback du resize sur updateComponent 
-	- move fait-il partie de veso : les fonctions du perso, ou bien de Scene ? 
-
-**plus simple ?** 
-definir les valeurs d'interpolation en % directement , elles seront réactives au resize 
--> le positionnement x/y ne semble pas fonctionner avec les w/h en %. savoir pourquoi ?
-
-- veso
+- veso/ "pre"
 **preparation des modifications**
 concerne : dimensions, move, transitions
 séparer ce module du reste de veso ; en fait-il partie ?
@@ -155,6 +139,14 @@ lié à veso : besoin d'accéder à l'état du perso : node, css...
 distinct : précède le calcul d'un rendu.
 
 quelles infos sont ajoutées l'historique : les données en entrée ou en sortie de 'pre'
+
+'pre' calcule les propriétés qui ont besoin d'accéder à node avant l'update
+'pre' lance les interpolations 
+'pre' pourrait :
+- gérer et controler les interpolations, pour invalider une transition lorsqu'une autre est ajoutée, par exemple,
+- recalculer une nouvelle interpolation au cas ou une nouvelle vient s'ajouter à celle en cours (animation additive)
+- transmettre les play/pause via l'update
+
 
 **etats du composant**
 l'état du composant est incrémental, ses évolutions s'ajoutent au fur et à mesure du récit. 

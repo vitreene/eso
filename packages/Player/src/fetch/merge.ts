@@ -20,18 +20,16 @@ Persos : passer en revue
 	- ref = merge (proto, ref)
 */
 
-export function deepmerge(_persos: Perso[]) {
-	const persos = new Map(
-		Array.from(_persos, (perso) => {
-			return [perso.id, perso];
-		})
-	);
+export function deepmerge(_persos: Perso[], _protos: Perso[] = []) {
+	const persos = new Map(Array.from(_persos, (perso) => [perso.id, perso]));
+	const protos = new Map(Array.from(_protos, (proto) => [proto.id, proto]));
 
 	for (let [id, _perso] of persos) recMerge(id, _perso);
 
 	function recMerge(id: string, _perso: Perso) {
-		if (!_perso.extends || !persos.has(_perso.extends)) return _perso;
-		const _proto = recMerge(_perso.extends, persos.get(_perso.extends));
+		const perso = persos.get(_perso.extends) || protos.get(_perso.extends);
+		if (!perso) return _perso;
+		const _proto = recMerge(_perso.extends, perso);
 		if (_proto) {
 			const { extends: string, ...others } = merge.persos(_proto, _perso);
 			persos.set(id, others);

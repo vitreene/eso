@@ -5,8 +5,11 @@ import { Stage } from '../Player/src/zoom';
 export interface SceneEntry {
 	defs?: string[];
 	scene: Scene;
-	stories: Story[];
-	persos?: PersoEntry[];
+	stories?: Story[];
+	prototypes: {
+		stories?: Story[];
+		persos?: PersoEntry[];
+	};
 }
 
 export type CastEntry = {

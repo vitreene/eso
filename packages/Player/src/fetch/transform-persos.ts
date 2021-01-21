@@ -15,7 +15,7 @@ import {
 } from '../../../types/initial';
 import { pipe } from '../shared/utils';
 import { deepmerge } from './merge';
-import { Story, PersoEntry } from '../../../types/Entries-types';
+import { SceneEntry, Story, PersoEntry } from '../../../types/Entries-types';
 
 const PROTO = 'proto';
 type Channel = string | null;
