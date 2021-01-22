@@ -22,14 +22,14 @@ export class Eso {
 	id;
 	uuid;
 	tag;
-	zoom = 1;
+	zoom = 1; // supprimer
 	box;
 	classStyle;
 	revision;
 	history = {}; // TODO faire une Map
 	current = {}; // etat actuel avant prerender
 	attributes = {}; // attributs du node
-	propsInit = {};
+	propsInit = {}; // props initiales
 
 	_node = null;
 	set node(_n) {

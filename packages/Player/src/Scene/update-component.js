@@ -1,12 +1,12 @@
-import { getElementOffsetZoomed } from '../zoom';
-import { DEFAULT_DURATION } from '../data/constantes';
+import { reslot } from './pre/reslot';
+import { dimensions as doDim } from './pre/dimensions';
 
 // // déclenche les updates ; appelé par chaque action
 
 export function updateComponent(
-	box,
 	perso,
 	{ changed, update, ...others },
+	box,
 	updateSlot
 ) {
 	// console.log('update', update);
@@ -15,70 +15,34 @@ export function updateComponent(
 		console.error(changed, update, others);
 		return;
 	}
-	const rescale = update.move?.rescale;
 
 	// zoom enter
 	if (update.enter) perso.prerender(box.zoom);
 
 	// RESLOT et RESCALE
-	let old,
-		current,
-		transition = [];
+	const transition = reslot(perso, update, changed, box, updateSlot);
 
-	if (update.transition) {
-		Array.isArray(update.transition)
-			? transition.push(...update.transition)
-			: transition.push(update.transition);
-	}
+	// FIXME doit etre appelé à l'init !
+	/* 
+	Ne concerne que dimensions
+	- soit passer 'pre' sur persos.initial avant leur création ?
+	- X soit dimensions pourrait etre résolu dans transforms
 
-	if (changed?.remove) {
-		if (perso) {
-			const node = rescale ? perso.node.parentNode : perso.node;
-			old = getElementOffsetZoomed(node, box.zoom);
-		}
-		updateSlot(...changed.remove);
-	}
+	le reste ne concerne que les transitions : 'pre' peut se renommer 'transition'
 
-	if (changed?.add) {
-		updateSlot(...changed.add);
-		if (perso) {
-			const node = rescale ? perso.node.parentNode : perso.node;
-			current = getElementOffsetZoomed(node, box.zoom);
-		}
-	}
-
-	if (old && current) {
-		// en cas de resize, il faudrait recalculer la position des blocs, en gardant la valeur progress de l'interpolation
-		const position = {
-			dX: old.x - current.x,
-			dY: old.y - current.y,
-		};
-
-		transition.push({
-			from: position,
-			to: { dX: 0, dY: 0 },
-			duration: DEFAULT_DURATION,
-		});
-
-		// rescale
-		// expression en % = responsive au resize
-		if (rescale) {
-			const oldDimensions = {
-				width: (old.width / current.width) * 100 + '%',
-				height: (old.height / current.height) * 100 + '%',
-			};
-			const currentDimensions = {
-				width: '100%',
-				height: '100%',
-			};
-
-			transition.push({
-				from: oldDimensions,
-				to: currentDimensions,
-				duration: DEFAULT_DURATION,
-			});
-		}
-	}
+	transition pourrait etre une fonction statique de Eso
+	Eso serait initialisé avec emitter
+	createEso(emiter) {return class Eso ...}
+	*/
 
 	perso.update({ ...update, transition });
 }
+/*  const dimensions = doDim(update.dimensions);
+	const classStyle = {
+		...(update && update.classStyle),
+		...(dimensions && dimensions.classStyle),
+	};
+	update.dimensions && console.log(perso.id, update.dimensions, dimensions);
+	perso.update({ ...update, transition, classStyle });
+}
+ */
