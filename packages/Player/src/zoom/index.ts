@@ -1,4 +1,4 @@
-import { Eso } from 'veso';
+import { Eso } from '../App/init';
 
 import { Box, StageEntry } from '../../../types/Entries-types';
 
@@ -11,7 +11,6 @@ export class Stage {
 		}
 		return o;
 	};
-	// static singleton = false;
 
 	box: Box = defaultBox;
 	el: Element;
@@ -29,8 +28,6 @@ export class Stage {
 	 */
 
 	constructor(node: string | Element, stage: StageEntry, handler: Function) {
-		// if (Zoom.singleton) return this;
-		// Zoom.singleton = true;
 		this.resize = this.resize.bind(this);
 		this.setZoom = this.setZoom.bind(this);
 

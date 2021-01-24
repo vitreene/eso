@@ -1,9 +1,9 @@
 // storeNodes à transférer vers Scene ?
-import { Eso } from 'veso';
 import { o } from 'sinuous';
 
 import {
 	SceneCast,
+	ScenePersos,
 	Story,
 	StoryWoEventimes,
 } from '../../../types/Entries-types';
@@ -34,7 +34,7 @@ export class Scene {
 	description?: string;
 
 	cast: SceneCast = {};
-	persos: Map<string, Eso> = new Map(); //
+	persos: ScenePersos = new Map(); //
 	slots: Slots = new Slots(); //
 	imagesCollection: ImagesCollection = new Map(); //
 	straps: any;

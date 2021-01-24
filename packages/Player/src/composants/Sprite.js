@@ -1,10 +1,10 @@
 import { html } from 'sinuous';
-import { Eso } from 'veso';
+import { Eso } from '../App/init';
 
 export class Sprite extends Eso {
 	static nature = 'sprite';
-	constructor(story, emitter, imagesCollection) {
-		super(story, emitter);
+	constructor(story, imagesCollection) {
+		super(story);
 		this.sprite = imagesCollection.get(story?.initial?.content);
 		this.update({
 			classStyle: { position: 'absolute' },

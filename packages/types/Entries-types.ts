@@ -1,6 +1,7 @@
 import { Eventime } from './eventime';
 import { Perso } from './initial';
 import { Stage } from '../Player/src/zoom';
+import { Eso } from '../Player/src/App/init';
 
 export interface SceneEntry {
 	defs?: string[];
@@ -74,3 +75,5 @@ export type Box = {
 	ratio: number;
 	zoom: number;
 };
+
+export type ScenePersos = Map<string, Eso>;

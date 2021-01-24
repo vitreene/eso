@@ -1,6 +1,6 @@
 import { o, svg, api } from 'sinuous';
 import { computed } from 'sinuous/observable';
-import { Eso } from 'veso';
+import { Eso } from '../App/init';
 
 // HACK en attendant une mise à jour
 import { property } from '../../../Veso/src/shared/property';
@@ -19,8 +19,8 @@ const constrainImage = {
 
 export class Img extends Eso {
 	static nature = 'img';
-	constructor(story, emitter, collection) {
-		super(story, emitter);
+	constructor(story, collection) {
+		super(story);
 
 		this.imagesCollection = collection;
 		this.imagesCollection.has(story.initial.content) &&
@@ -50,6 +50,7 @@ export class Img extends Eso {
 		const preserveAspectRatio = computed(
 			() => `xMidYMid ${constrainImage[this.fit()]}` || 'slice'
 		);
+
 		return svg`<svg
         id=${id}
         viewBox=${viewBox}

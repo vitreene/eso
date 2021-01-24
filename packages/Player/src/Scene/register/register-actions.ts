@@ -1,5 +1,5 @@
 import { Perso } from '../../../../types/initial';
-import { emitter } from '../../App/emitter';
+import { emitter } from '../../App/init';
 
 type Subscribe = {
 	channel: string;

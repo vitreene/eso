@@ -1,7 +1,7 @@
 import { TimeLiner, TimelineKey } from './solver';
 
 import { controlAnimations } from 'veso';
-import { emitter } from '../../App/emitter';
+import { emitter } from '../../App/init';
 import { TC, PLAY, PAUSE, REWIND } from '../../data/constantes';
 import { ESO_Channel } from '../../../../types/ESO_enum';
 
