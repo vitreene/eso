@@ -26,6 +26,7 @@ const defaults = {
 	refLang: 'langue',
 };
 
+// content pourra accepter des nodes
 export const content = {
 	update(content, current) {
 		if (isRawContent(content)) return content;

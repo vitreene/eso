@@ -142,7 +142,7 @@ export class Scene {
 				const up = this.onScene.update(update);
 				const zoom = this.cast[id].zoom.box;
 
-				updateComponent(zoom, perso, up, this._updateSlot);
+				updateComponent(perso, up, zoom, this._updateSlot);
 			};
 			return (other: any) => onSceneUpdateComponent({ ...data, ...other });
 		}

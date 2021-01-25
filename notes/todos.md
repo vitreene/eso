@@ -131,8 +131,7 @@ Cependant, si je garde la possibilité de modifier un contenu au runtime (compte
 		- persos dans scene/story
 
 
-- veso/ "pre"
-**preparation des modifications**
+- **veso/ "pre" : preparation des modifications**
 concerne : dimensions, move, transitions
 séparer ce module du reste de veso ; en fait-il partie ?
 lié à veso : besoin d'accéder à l'état du perso : node, css...
@@ -146,6 +145,11 @@ quelles infos sont ajoutées l'historique : les données en entrée ou en sortie
 - gérer et controler les interpolations, pour invalider une transition lorsqu'une autre est ajoutée, par exemple,
 - recalculer une nouvelle interpolation au cas ou une nouvelle vient s'ajouter à celle en cours (animation additive)
 - transmettre les play/pause via l'update
+
+**Plus tard**
+Poussant la logique jusqu'au bout, veso pourrait se delester de toute function de transformation, qui seraient déléguées dans un module externe.
+veso ne garderait que le state et son historique, la méthode de rendu, la methode d'application des transformation. 
+Les fonctions de transformation seraient pures, et n'auraient pas besoin d'etre instanciées.
 
 
 **etats du composant**
@@ -171,4 +175,20 @@ il faut donc définir des actions/listen pour une story
 Ajouter à story actions/listen 
 Sur l'exemple play/pause, cela permet d'inverser le role de play et pause, 
 Les persos reagissent à story.play / story.pause, la story transforme scene.play en story.pause par exemple
+
+
+**transitions comme fonction statique de Eso**
+Eso serait initialisé avec emitter
+ex: createEso(emiter) {return class Eso ...}
+
+Garder transitions du coté d'eso, car pas spécifique à app mais plutot à ce module
+transitions est géré par l'app
+
+Transitions intégre reslot qui est un type de transition 
+
+transitions gagnera au passage un controle des transitions 
+-> supprimer 'pre' du corps d'Eso
+-> emitter n'est plus necessaire à l'init du perso
+emitter est identique pour toutes les instances d'Eso
+
 

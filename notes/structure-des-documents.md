@@ -54,7 +54,7 @@ when:
 
 # approche par perso
 perso: 
-  - subtitles:
+  - subtitles: # id du perso
       content:
         when:
         - go:  'ref-text-01'
@@ -182,6 +182,8 @@ Un perso a besoin d'un channel pour localiser ses actions. si channel n'est pas 
 - ne pas ajouter channel : le perso a été défini en dehors d'une story, il ne peut etre utilisé tel quel. channel sera invoqué lorsqu'il sera instancié.
 - inconvénient : un mécanisme plus général des modèles serait plus adapté
 
+**différence extends/variable**
+extends est une étape préalable à la construction de perso, les variables sont appliquées en fin de définition
 
 ### fin de story et passage à la story suivante
 
@@ -204,4 +206,66 @@ La scene va passer ces events à la story, mais où les placer pour les déclenc
   il doit exister un event 'end-story' qui délèguera l'event 
   - par défaut, sur l'event 'complete' d'un media son ou video 
 
-  
+
+
+## structure de fichier 
+
+- scene
+  - metas
+  - story
+    - metas
+    - persos
+
+
+- prototype
+  - stories
+  - persos
+
+- prototype des composants
+
+
+chaine de protos :
+
+- niveau app:
+  - défaut des composants
+- niveau Projet:
+- niveau chapitre:
+- niveau scene:
+- niveau story:
+  - definitions
+  - stories
+  - persos
+
+
+Chaque niveau peut en fait abriter les memes ressources, le fonctionnement reste le meme :
+Les protos de niveau supérieur sont traités en premier, et sont surchargés par les niveaux suivants.
+Exception des définitions de composants qui sont traités seulement au niveau de l'app.
+Il doit exister la possibilité d'une définition "nue" d'un perso qui ignore tout héritage ( extends: none)
+Laisser peu de contraintes sur ce qui doit etre hérité, utiliser plutot des conventions pour recommander / dissuader un usage.
+
+prototype va s'enrichir, niveau par niveau, de nouveaux composants proposés  en ressources
+chaque element en proto doit 
+- posséder un id unique
+- pas d'instance
+- résolution des chaines d'héritage : pas d'extends 
+
+configuration par défaut d'un composant 
+désigner dans une variable le nom d'un perso, qui sera automatiquement appliqué si extends: none n'est pas employé
+Les configurations par défaut doivent etre les plus faibles possibles
+
+Les ajouts de type play/pause pourraient etre définies dans les composants par défaut ? 
+-> ces actions ont vocation à s'exécuter dans le contexte de leur story. Un post-traitement serait plus adapté pour bénéficier du contexte.
+
+Pour les niveaux app, Projet, chapitre
+
+(niveau, heritage)
+definitions = heritage.definitions +  niveau.definitions
+persos = merge-extends(heritage.persos + niveau.persos)
+stories = merge-extends(heritage.stories + niveau.stories)
+scenes = merge-extends(heritage.scenes + niveau.scenes)
+
+heritage = definitions, persos, stories, scenes
+
+mettre en cache heritage au niveau du chapitre / session storage
+
+pour le niveau scene, Perso[] en sortie

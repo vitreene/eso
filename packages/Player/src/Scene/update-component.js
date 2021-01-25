@@ -3,9 +3,9 @@ import { Eso } from '../App/init';
 // // déclenche les updates ; appelé par chaque action
 
 export function updateComponent(
-	box,
 	perso,
 	{ changed, update, ...others },
+	box,
 	updateSlot
 ) {
 	// console.log('update', update);
@@ -22,3 +22,12 @@ export function updateComponent(
 
 	perso.update(update);
 }
+/*  const dimensions = doDim(update.dimensions);
+	const classStyle = {
+		...(update && update.classStyle),
+		...(dimensions && dimensions.classStyle),
+	};
+	update.dimensions && console.log(perso.id, update.dimensions, dimensions);
+	perso.update({ ...update, transition, classStyle });
+}
+ */
