@@ -112,6 +112,8 @@ stories:
                   backgroundColor: '#ffff00',
                   position: absolute
                 }
+                style: {scale: 0.5}
+
             step01: 
                 content: lundi
                 # move: grid-01_s02
@@ -139,11 +141,12 @@ stories:
                 content: fini
 
       - *IMG : 
-          # id: image
+          id: image
           initial: 
             content: ./ikono/vignette.jpg
             fit: cover
             classStyle: { position: absolute } 
+            dimensions: { width: 100%, height: 100%}
           emit:
             click:
               - {event: { channel: TC, name: pause }}
@@ -157,23 +160,23 @@ stories:
               style: { outline: 20px solid red	}
             enter: 
               move: grid-01_s03
-              dimensions: { width: 100%, height: 100%}
               transition: { to: fadeIn }
             step01:
-              move: { slot: fond_s01, rescale: true }
+              move: { slot: fond_s01 , rescale: true}
               transition:
                 to: { opacity: 0.5 }
             step02:
-              move: { slot: grid-01_s02, rescale: true }
+              move: { slot: grid-01_s02, rescale: true}
               transition:
                 to: { opacity: 1 }
 
       - *IMG : 
-          # id: image2
+          id: image2
           initial: 
             content: ./ikono/perfume_002.jpg
             fit: cover
             classStyle: {position: absolute}
+            # dimensions: { width: 100%, height: 100%}
           listen:
             - { event: go, action: enter }
             - { event: ev011, action: step01 }
@@ -184,8 +187,7 @@ stories:
               style: {	outline: 20px solid blue}
             enter:
               move: grid-01_s02 
-              dimensions: { width: 100%, height: 100%}
-              transition: { to: fadeIn }
+              # transition: { to: fadeIn }
             step01:
               move: { slot: grid-01_s01, rescale: true }
               transition: { to: { opacity: 0.5 } }
@@ -194,7 +196,7 @@ stories:
               transition: { to: { opacity: 1 } }
                 
       - *BUTTON :
-          # id: togglePlay
+          id: togglePlay
           initial:
               classStyle: {
                 color: white,
@@ -312,7 +314,7 @@ stories:
               content: { text: c’est fini, effect: letters-top-down }
 
       - *IMG :
-          id: image
+          id: image3
           initial:
             content: ./ikono/vignette.jpg
             fit: cover
@@ -325,7 +327,7 @@ stories:
               transition: { to: fadeIn }
 
       - button:
-          id: togglePlay
+          id: togglePlay2
           initial:
             classStyle:
               {

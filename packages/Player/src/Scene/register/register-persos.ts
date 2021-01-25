@@ -1,9 +1,18 @@
-import { emitter } from '../../App/emitter';
 import { createPerso } from '../../composants';
+import { ImagesCollection, Perso } from '../../../../types/initial';
+import { ScenePersos } from '../../../../types/Entries-types';
+import { Slots } from '../store-slots';
 
-import { Perso } from '../../../../types/initial';
+interface Options {
+	imagesCollection?: ImagesCollection;
+	slot?: Slots;
+}
 
-export function registerPersos(_persos: Perso[], persos, options) {
+export function registerPersos(
+	_persos: Perso[],
+	persos: ScenePersos,
+	options: Options
+) {
 	(Array.isArray(_persos) ? _persos : [_persos]).forEach((perso) => {
 		switch (perso.nature) {
 			case 'sound':
@@ -14,20 +23,17 @@ export function registerPersos(_persos: Perso[], persos, options) {
 			case 'bloc':
 				{
 					const { slot } = options;
-					persos.set(perso.id, createPerso.create(perso, emitter, slot));
+					persos.set(perso.id, createPerso.create(perso, slot));
 				}
 				break;
 			case 'button':
-				persos.set(perso.id, createPerso.create(perso, emitter));
+				persos.set(perso.id, createPerso.create(perso));
 				break;
 			case 'img':
 			case 'sprite':
 				{
 					const { imagesCollection } = options;
-					persos.set(
-						perso.id,
-						createPerso.create(perso, emitter, imagesCollection)
-					);
+					persos.set(perso.id, createPerso.create(perso, imagesCollection));
 				}
 
 				break;

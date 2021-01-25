@@ -1,4 +1,4 @@
-import { emitter } from '../App/emitter';
+import { emitter } from '../App/init';
 import { DEFAULT_NS, STRAP } from '../data/constantes';
 
 export default class Minuteur {

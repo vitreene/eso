@@ -1,5 +1,5 @@
 import { api } from 'sinuous';
-import { Eso } from 'veso';
+import { Eso } from '../App/init';
 
 const { h } = api;
 // Composant minimal

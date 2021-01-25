@@ -1,6 +1,7 @@
 import { html } from 'sinuous';
 
-import { Eso } from 'veso';
+import { Eso } from '../App/init';
+
 import { DEFAULT_STYLES } from '../data/constantes';
 
 // surcharger content
@@ -16,9 +17,9 @@ const contentRevision = (id, slot) => {
 
 export class Layer extends Eso {
 	static nature = 'layer';
-	constructor(story, emitter, slot) {
+	constructor(story, slot) {
 		story.initial.className = story.initial.className + ' layer-top ';
-		super(story, emitter, false);
+		super(story, false);
 		this.revision.content = contentRevision(story.id, slot);
 		this.init();
 	}

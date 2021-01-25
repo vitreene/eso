@@ -1,5 +1,5 @@
 import { html } from 'sinuous';
-import { Eso } from 'veso';
+import { Eso } from '../App/init';
 
 export class Button extends Eso {
 	static nature = 'button';
