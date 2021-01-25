@@ -58,8 +58,6 @@ export function createEso(emitter) {
 			this._revise = this._revise.bind(this);
 			this._pre = this._pre.bind(this);
 			this.commit = commit.bind(this);
-			this._onEnter = this._onEnter.bind(this);
-			this._onLeave = this._onLeave.bind(this);
 
 			// TODO ajouter des events liés à l'app (ex: langues)
 			const events = Eso.registerKeyEvents(perso.emit);
@@ -83,58 +81,14 @@ export function createEso(emitter) {
 			// séparer : calculer les diffs, puis assembler
 			// les diffs seront stockés pour la timeline (il faut le time)
 
-			props &&
-				pipe(
-					props?.enter && this._onEnter,
-					props?.exit && this._onLeave,
-					this._pre,
-					this._revise
-				)(props);
+			props && pipe(this._pre, this._revise)(props);
 
 			this.prerender();
 			this.commit(this.current);
 		}
 
-		_onEnter(props) {
-			this.inDom = true;
-			return props;
-		}
-		// FIXME cette transition est ignorée !
-		_onLeave(props) {
-			this.inDom = false;
-			//ajouter ce  oncomplete dans la prop oncomplete de la dernière transition
-			const oncomplete = {
-				event: {
-					channel: props.channel || DEFAULT_NS,
-					name: 'leave-' + props?.id,
-				},
-				// pas de data si l'event est partagé par plusieurs elements
-				// data: { leave: true }
-			};
-			const transition = props.transition?.length
-				? props.transition
-				: [{ to: DEFAULT_TRANSITION_OUT }];
-			const lastTransition = transition.pop();
-			console.log(
-				'lastTransition , transition.',
-				props,
-				lastTransition,
-				transition
-			);
-			lastTransition.oncomplete
-				? lastTransition.oncomplete.push(oncomplete)
-				: (lastTransition.oncomplete = [oncomplete]);
-			transition.push(lastTransition);
-
-			return { ...props, transition };
-		}
-		//  *  TODO conformer les autres evenements : transition, (et between ?)
-		/**
-		 * transforme les données qui ne sont pas directement des attributs :
-		 *  dimensions, transitions, etc.
-		 *  les éléments transformés doivent etre contenus dans la propriété cible :
-		 *  ex : dimensions -> classStyle(width, height)
-		 */
+		//  TODO retirer cette fonction
+		// dimensions sera traité au chargement des fichiers
 		_pre(props) {
 			const modiffs = [];
 			for (const prep in this.prep) {

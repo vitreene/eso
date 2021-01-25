@@ -5,17 +5,12 @@ FIXME
 - rescale Bloc, doit prendre en compte la taille du bloc, pas du parent
 - quend reslot et transition, la mise à l'echelle est perdue
 */
-export function reslot({ perso, update, changed, box, updateSlot }) {
-	let old,
-		current,
-		transition = [];
-	const rescale = update.move?.rescale;
+export function reslot({ transition, ...props }) {
+	const { perso, update, changed, box, updateSlot } = props;
 
-	if (update.transition) {
-		Array.isArray(update.transition)
-			? transition.push(...update.transition)
-			: transition.push(update.transition);
-	}
+	let old;
+	let current;
+	const rescale = update.move?.rescale;
 
 	if (changed?.remove) {
 		old = getElementOffsetZoomed(perso.node, box.zoom);
@@ -59,7 +54,7 @@ export function reslot({ perso, update, changed, box, updateSlot }) {
 			});
 		}
 	}
-	return transition.length === 0 ? null : transition.reverse();
+	return { ...props, transition };
 }
 
 function getElementOffsetZoomed(el, z) {

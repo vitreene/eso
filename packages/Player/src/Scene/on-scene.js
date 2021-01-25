@@ -75,7 +75,7 @@ export class OnScene {
 		this._slots.set(id, []);
 	}
 	update(up) {
-		let action = (update) => ({ changed: null, update });
+		let action = (update) => ({ changed: { status: 'update' }, update });
 		if (!up.id) return this._getError('id', up);
 		if (this.areOnScene.has(up.id)) {
 			const isLeaving = up.leave;
@@ -102,9 +102,8 @@ export class OnScene {
 		const inslot = this._slots.get(slotId).concat(up.id);
 		this._slots.set(slotId, inslot);
 		this.areOnScene.set(up.id, slotId);
-		const changed = { add: [slotId, inslot] };
 		return {
-			changed,
+			changed: { status: 'enter', add: [slotId, inslot] },
 			update: { ...up, enter: true },
 		};
 	}
@@ -126,12 +125,12 @@ export class OnScene {
 		this._slots.set(slotId, inslot);
 		this.areOnScene.set(up.id, slotId);
 
-		const changed = {
-			remove: [oldSlotId, oldInslot],
-			add: [slotId, inslot],
-		};
 		return {
-			changed,
+			changed: {
+				status: 'move',
+				remove: [oldSlotId, oldInslot],
+				add: [slotId, inslot],
+			},
 			update: { ...up, reslot: true },
 		};
 	}
@@ -146,9 +145,8 @@ export class OnScene {
 		const inslot = this._slots.get(slotId).filter((s) => s !== id);
 		this._slots.set(slotId, inslot);
 		this.areOnScene.delete(id);
-		const changed = { remove: [slotId, inslot] };
 		return {
-			changed,
+			changed: { status: 'leave', remove: [slotId, inslot] },
 			update: up,
 		};
 	}
@@ -167,5 +165,3 @@ const errors = {
 	slot: 'error: not a valid slot',
 	id: 'error: not a valid id',
 };
-
-// export const onScene = new OnScene();

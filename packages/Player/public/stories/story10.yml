@@ -116,7 +116,6 @@ stories:
 
             step01: 
                 content: lundi
-                # move: grid-01_s02
                 move: { slot:  grid-01_s02, rescale: true }
 
                 transition: 
@@ -128,7 +127,6 @@ stories:
                   }
                   duration: 2000
             step02:
-                # move: grid-01_s03
                 move: { slot:  grid-01_s03, rescale: true }
 
                 transition:
@@ -176,7 +174,6 @@ stories:
             content: ./ikono/perfume_002.jpg
             fit: cover
             classStyle: {position: absolute}
-            # dimensions: { width: 100%, height: 100%}
           listen:
             - { event: go, action: enter }
             - { event: ev011, action: step01 }
@@ -187,7 +184,6 @@ stories:
               style: {	outline: 20px solid blue}
             enter:
               move: grid-01_s02 
-              # transition: { to: fadeIn }
             step01:
               move: { slot: grid-01_s01, rescale: true }
               transition: { to: { opacity: 0.5 } }
@@ -369,9 +365,9 @@ stories:
     eventimes:
       name: go1
       startAt: 0
-      events:
+      # events:
+        # - { startAt: 2000, name: *PAUSE, channel: *TC  }
       #     1500: { channel: *DEFAULT_NS, name: go2 }
-        - { startAt: 2000, name: *PAUSE, channel: *TC  }
 
 
 

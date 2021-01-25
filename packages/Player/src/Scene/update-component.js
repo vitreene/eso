@@ -14,7 +14,6 @@ export function updateComponent(
 		console.error(changed, update, others);
 		return;
 	}
-
 	// zoom enter
 	if (update.enter) perso.prerender(box.zoom);
 

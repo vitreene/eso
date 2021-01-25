@@ -1,20 +1,18 @@
+import { pipe } from '../shared/utils';
 import { reslot } from './reslot';
 import { doTransition } from './transitions-component';
 
+import { onLeaveTransitions } from './on-leave-transitions';
+import { setTransitions } from './set-transitions';
+
 export function createTransition(emitter) {
 	return function transitions(props) {
-		/* 
-		const move = reslot(props);
-		const t = props.update.transition;
-		if (!move && !t) return;
-    
-		const transition = [
-      ...(Array.isArray(t) ? t : [t]),
-			...(move && [...move]),
-		].filter(Boolean);
-    */
-		const transition = reslot(props);
-		props.perso.id === 'text-sample' && console.log('transition', transition);
-		transition && doTransition(props.perso, transition, emitter);
+		const { transition } = pipe(
+			setTransitions,
+			reslot,
+			onLeaveTransitions
+		)({ ...props, transition: [] });
+
+		transition.length && doTransition(props.perso, transition, emitter);
 	};
 }
