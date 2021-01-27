@@ -209,32 +209,31 @@ La scene va passer ces events à la story, mais où les placer pour les déclenc
 
 
 ## structure de fichier 
-
-- scene
+- App
+- Project
+- Chapter
+- Scene
   - metas
   - story
     - metas
     - persos
-
+  - prototype
+    - stories
+    - persos  
 
 - prototype
   - stories
   - persos
-
 - prototype des composants
 
+Chaque fichier peut contenir un objet  prototype. Ces objets sont fusionnés à chaque fois.
+Les objets App, Project, Chapter ne contiennent pas de prototypes.
+Techniquement, scene peut avoir aussi un objet prototype distinct, mais ce ne serait pas logique.
+Il 
+peut exister un fichier ne contenant que les protos. 
+Il peut exisiter un objet protoype dans une scene. Il herite de l'objet prototype général, mais n'est pas ajouté à celui-ci.
 
-chaine de protos :
 
-- niveau app:
-  - défaut des composants
-- niveau Projet:
-- niveau chapitre:
-- niveau scene:
-- niveau story:
-  - definitions
-  - stories
-  - persos
 
 
 Chaque niveau peut en fait abriter les memes ressources, le fonctionnement reste le meme :

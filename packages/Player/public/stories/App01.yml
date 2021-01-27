@@ -1,0 +1,67 @@
+project:
+  id: 1
+  name: projet01
+
+  # langues par defaut
+  # parametres libres 
+  languages: 
+    lang: fr
+    subtitles: fr
+
+  # liste de chapitres
+  # liés à une condition de visibilité
+  # si absent, utiliser tous les chapitres existants
+  summaries: [ ] 
+
+
+  # comment representer la possibilité que des chapitres contiennent des sous chapitres
+  # sans utiliser d'imbrication pour favoriser la composition
+
+  # liste de chapitres 
+  - chapter: 
+      id: 1
+      name: chapter01
+      description: présentation
+      
+      # liste de scenes
+      progression: [
+        - {scene: '1'}
+        - {chapter: '2-1'}
+      ]
+
+
+  - scene:
+    id: scene1
+    name: introduction
+    entry: scene-w-telco
+    cast: []
+
+    stories: 
+      - id: story01
+        channel: story01
+        entry: [fond, grid-01]
+        stage: '4/3'
+        eventimes:
+          name: start
+          startAt: 0
+          events: []
+        persos: []
+
+    prototypes:
+      stories: []
+      persos : []
+
+
+
+  language:
+    fr:
+      lang: {}
+      subtitles: {}
+
+  prototypes:
+    stories: []
+    persos : []
+
+
+  # alias pour yaml 
+  defs: []
