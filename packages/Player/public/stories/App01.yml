@@ -60,6 +60,7 @@ project:
             move: slot1
             content:
               when:
+              # key: number | label | expression
                 - 5: texte 1
                 - label_event : texte 2
                 - +=2: texte 3
@@ -92,6 +93,6 @@ project:
     persos : []
 
 
-  # alias pour yaml 
+  # alias dans les  yaml 
   defs: []
 

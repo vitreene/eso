@@ -15,7 +15,7 @@ import {
 } from '../../../types/initial';
 import { pipe } from '../shared/utils';
 import { deepmerge } from './merge';
-import { SceneEntry, Story, PersoEntry } from '../../../types/Entries-types';
+import { Story, PersoEntry } from '../../../types/Entries-types';
 
 const PROTO = 'proto';
 type Channel = string | null;
@@ -23,15 +23,21 @@ type Channel = string | null;
 export function transformPersos(s: Story) {
 	if (!s.persos) return s;
 	const channel: Channel = s.channel || null;
-	const _persos = s.persos;
-	const persos = pipe(
-		natureSetProperty,
-		idSetProperty,
-		dispatchPersoProps(channel),
-		deepmerge,
-		filterProtos
-	)(_persos);
+
+	const prep = prePersos(s.persos);
+	const operation = dispatchPersoProps(channel)(prep);
+	const persos = postPersos(operation);
 	return { ...s, persos };
+}
+
+// pre : conformation
+function prePersos(persos) {
+	return pipe(natureSetProperty, idSetProperty)(persos);
+}
+
+//post : compilation optimisation
+function postPersos(persos) {
+	return pipe(deepmerge, filterProtos)(persos);
 }
 
 export function natureSetProperty(_persos: PersoEntry[]) {

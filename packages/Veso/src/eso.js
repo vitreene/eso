@@ -10,7 +10,6 @@ import { doStyle } from './components/style-component';
 import { doClasses } from './components/classNames-component';
 import { content } from './components/content-component';
 
-import { DEFAULT_NS, DEFAULT_TRANSITION_OUT } from './shared/constantes';
 import { createTransition } from './transitions';
 
 const { css, ...style } = doStyle;

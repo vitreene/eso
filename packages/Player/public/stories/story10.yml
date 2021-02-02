@@ -11,13 +11,12 @@ scene:
         startAt: go1
         root: *MAIN
 
-
 stories:
   - id: story01
     channel: story01
     entry: [fond, grid-01]
     stage: '4/3'
- 
+
     eventimes: 
       name: start
       startAt: 0
@@ -257,7 +256,7 @@ stories:
     # channel: ma second story
     channel: story02
     stage: '4/3'
- 
+
     # ici pas d'entrée, tous les élements montent sur une story parente. 
     # Bonne pratique ?
 

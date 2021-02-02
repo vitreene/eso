@@ -7,44 +7,67 @@ import {
 	DEFAULT_SCENE_STAGE,
 } from '../data/constantes';
 import { pipe } from '../shared/utils';
-import { SceneEntry, StoryEntry } from '../../../types/Entries-types';
+import {
+	Cast,
+	Scene,
+	SceneEntry,
+	Story,
+	StoryEntry,
+} from '../../../types/Entries-types';
 import { transformEventimes } from './transform-eventimes';
 import { transformPersos } from './transform-persos';
 
-export function transforms(yamlStories: SceneEntry) {
-	// console.log('yaml res:', JSON.stringify(yamlStories, null, 4));
-	// const { scene: sceneEntry, prototypes: protoEntry } = yamlStories;
-	// const protos = pipe(transformStories, transformScene)(protoEntry);
-	// const scene = pipe(transformStories, transformScene)(sceneEntry);
-	const scene = pipe(transformStories, transformScene)(yamlStories);
+type CastEntry = Scene['cast'];
 
-	// console.log('scene', scene);
+export function transforms(yamlStories: SceneEntry) {
+	/* 
+	scenes = Array.isArray(file) ? file : [file]
+  stories = compile({file.stories, file.persos}, shared)
+	
+	*/
+	const scene = transformScene(yamlStories);
 	return scene;
 }
 
 function transformScene(s: SceneEntry) {
-	const cast = sceneExpandCast(s);
-	const entry = s.stories.find((story) => story.id === s.scene.entry);
-	entry.isTemplate = true;
-	entry.root = CONTAINER_ESO;
+	const cast: Cast[] = sceneExpandCast(s.scene.cast);
+	const stories: Story[] = transformStories(s.stories);
+	const entry = getEntry(s.scene.entry)(stories);
+	const casting = getStories(cast)(stories);
 
-	const stories = cast.map((_cast) => {
-		const story = s.stories.find((_story) => _story.id === _cast.id);
-		const res = addStartAndEndEvents(story, _cast);
-		return res;
-	});
-	return { ...s, scene: { ...s.scene, cast }, stories: [entry, ...stories] };
+	return { ...s, scene: { ...s.scene, cast }, stories: [entry, ...casting] };
 }
 
 //TODO typeof _cast === 'string'
-function sceneExpandCast(s: SceneEntry) {
-	if (!s.scene.cast) return [];
+function sceneExpandCast(_cast: CastEntry): Cast[] {
+	if (!_cast) return [];
 	const cast = [];
-	for (const _story of s.scene.cast) {
+	for (const _story of _cast) {
 		const id = Object.keys(_story)[0];
 		cast.push({ id, ..._story[id] });
 	}
 	return cast;
+}
+
+function getEntry(_entry) {
+	return function getStoryFromEntry(stories: StoryEntry[]) {
+		// +protos
+		const entry = stories.find((story) => story.id === _entry);
+		entry.isTemplate = true;
+		entry.root = CONTAINER_ESO;
+		return entry;
+	};
+}
+
+function getStories(cast: Cast[]) {
+	return function getStoriesFromCast(stories: StoryEntry[]): Story[] {
+		return cast.map((_cast) => {
+			// +protos
+			const _story = stories.find((s) => s.id === _cast.id);
+			const story = addStartAndEndEvents(_story, _cast);
+			return story;
+		});
+	};
 }
 
 // ajouter l'event d'entrée et de sortie de la story
@@ -63,42 +86,9 @@ function addStartAndEndEvents(story, cast) {
 	eventimes.channel = DEFAULT_NS;
 	if (!story.entry) return { ...story, eventimes };
 	const persos = addEventsToEntry(story, cast);
-	console.log('addStartAndEndEvents', cast);
-
 	return { ...story, root: cast.root, eventimes, persos };
 }
 
-function transformStories(s: SceneEntry) {
-	if (!s.stories) return s;
-	const stories = s.stories.map(
-		pipe(setIdAndChannel, setStage, transformEventimes, transformPersos)
-	);
-	return { ...s, stories };
-}
-
-function setIdAndChannel(s: StoryEntry) {
-	const story = s;
-	// story.root = CONTAINER_ESO;
-	if (!story.id && !story.channel) {
-		const id = nanoid(8);
-		story.id = id;
-		story.channel = id;
-		console.warn('La story n’est pas identifiée ; création d’un id : %s', id);
-		return story;
-	}
-	if (!story.id) story.id = story.channel;
-	if (!story.channel) story.channel = story.id;
-	return story;
-}
-
-function setStage(s: StoryEntry) {
-	const stage =
-		typeof s.stage === 'string'
-			? SCENE_STAGE[s.stage] || DEFAULT_SCENE_STAGE['4/3']
-			: s.stage;
-
-	return { ...s, stage };
-}
 /* 
 addEventToEntry doit ajouter une action et un listen au perso
 - si l'action "enter" existe, la modifier pour modifier la prop "move"
@@ -134,7 +124,6 @@ export function addEventsToEntry(story, cast) {
 		},
 		story.persos
 	);
-
 	return persos;
 }
 
@@ -169,4 +158,36 @@ function addAction(_event, _actions) {
 		res.splice(hasName, 1, action);
 		return res;
 	} else return _actions.concat(_event);
+}
+
+/// ============================================================
+function transformStories(_stories: StoryEntry[]): Story[] {
+	if (!_stories) return;
+	const stories: Story[] = _stories.map(
+		pipe(setIdAndChannel, setStage, transformEventimes, transformPersos)
+	);
+	return stories;
+}
+
+function setIdAndChannel(_story: StoryEntry) {
+	const story = _story;
+	// story.root = CONTAINER_ESO;
+	if (!story.id && !story.channel) {
+		const id = nanoid(8);
+		story.id = id;
+		story.channel = id;
+		console.warn('La story n’est pas identifiée ; création d’un id : %s', id);
+		return story;
+	}
+	if (!story.id) story.id = story.channel;
+	if (!story.channel) story.channel = story.id;
+	return story;
+}
+
+function setStage(_story: StoryEntry) {
+	const stage =
+		typeof _story.stage === 'string'
+			? SCENE_STAGE[_story.stage] || DEFAULT_SCENE_STAGE['4/3']
+			: _story.stage;
+	return { ..._story, stage };
 }
