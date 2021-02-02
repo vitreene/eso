@@ -229,8 +229,7 @@ La scene va passer ces events à la story, mais où les placer pour les déclenc
 Chaque fichier peut contenir un objet  prototype. Ces objets sont fusionnés à chaque fois.
 Les objets App, Project, Chapter ne contiennent pas de prototypes.
 Techniquement, scene peut avoir aussi un objet prototype distinct, mais ce ne serait pas logique.
-Il 
-peut exister un fichier ne contenant que les protos. 
+Il peut exister un fichier ne contenant que les protos. 
 Il peut exisiter un objet protoype dans une scene. Il herite de l'objet prototype général, mais n'est pas ajouté à celui-ci.
 
 
@@ -268,3 +267,166 @@ heritage = definitions, persos, stories, scenes
 mettre en cache heritage au niveau du chapitre / session storage
 
 pour le niveau scene, Perso[] en sortie
+
+## un autre modele ?
+Objectif : garder une structure flat, limiter le niveau d'imbrication
+Dans un fichier, permettre dans ce cas des entrées **persos**, **stories** et **scenes**
+Leur portée est limitée au fichier traité
+Pour une portée générale, placer dans un objet **prototype**
+
+Maintien de la stucture imbriquée  dans l'écriture du fichier yml:
+permet des définitions implicites du casting : si l'objet cast est omit, les stories se succedent l'une après l'autre
+dans la phase "pre", générer le cast, puis reverser les stories imbriquées dans l'objet stories ?
+
+
+## Convention de découpage des fichiers
+Les objets **project** et **chapters** peuvent avoir leur propre fichier
+Hiérarchie pour les scenes :
+- scene > stories > persos 
+- scene > cast, stories > persos | extends, protos
+
+Créer un objet project lorsque les chemins de chargement sont résolus.
+
+```js
+const projet: {
+  id,
+  metas: {
+    name,
+    languages
+  },
+  summaries: [],
+  chapter:{
+    id,
+    name,
+    description,
+    cast:[],
+    prev,
+    current,
+    next,
+    time: {
+      progress,
+      abs
+    },
+    isPlaying
+  },
+  scenes: []
+}
+```
+
+## Résoudre les chemins de chargement. 
+Laisser des facilités au niveau des structures de fichiers implique d'avoir à les définir quelque part.
+Hypothèses : 
+- chemin implicites et explicites. Si aucun chemin n'est défini, par défaut, le fichier prendra le nom de l'id du chapitre, idem pour les scenes et les protos. 
+Les persos et stories ne sont pas définis dans un chemin par défaut.
+
+projet
+  |- chapters
+      |- shared.yml
+      |- chap01.yml
+      |- chap02.yml
+      |- chap03
+          |- shared.yml
+          |- scene01.yml
+          |- scene02.yml
+          |- scene03.yml
+          |- scenes04-10.yml
+      ...
+  |- languages
+      |- fr
+      |- de
+  |- medias
+      |- chap01
+          |- ikono
+          |- sounds
+            |- fr
+            |- de
+          |- videos
+  
+Cette organisation reflete un scénario linéaire, mais rend complexe des scénarios composés avec de multiples branches selon un profil.
+
+projet
+  |- chapters
+      |- concept01.yml
+          - [scene01, scene04, ...]
+      |- pratique02.yml
+          - [scene02, scene04, ...]
+      |- evaluation.yml
+          - [scenes10-11 ...]
+  |- scenes
+      |- shared.yml
+      |- scene01.yml
+      |- scene04.yml
+      |- scenes05-08.yml
+      |- scenes10-11.yml
+      ...
+
+Les chapitres contiennent les liens vers les fichiers de scene. 
+Implicite : si le fichier chapter ne contient pas de scenes, alors les chercher dans le dossier scenes
+
+Une facilité permettrait de suffixer un fichier en .scene.yml pour signaler qu'il contient une scene, ou un tableau de scenes
+dans ce cas, il ne comporte pas de prop stories ou autres
+
+Un chapter peut incorporer un autre chapter, qui devient un sous chapitre.
+Un chapter peut etre mergé avec un autre ? 
+ - Préférer ici de la composition avec des regles de fusion  (in, not, ..) voir MongodB
+
+un fichier scene peut contenir une ou plusieurs scenes contenant:
+- [7] scene 
+  - [6] stories
+    - [5] persos
+  - [4] persos*protos
+
+- [3] stories*protos
+  - [2] persos*stories*protos
+- [1] persos*protos
+
+- ~~shared~~ 
+
+1. persosShared = heritage de persos résolu avec shared
+2. heritage de persos avec persosShared et shared.persos
+3. storiesShared = heritage de stories, construction avec [2], persosShared et shared
+4. heritage de persos avec persosShared et shared.persos
+5. heritage de persos avec [4], persosShared et shared.persos
+6. heritage de stories, construction avec [5], storiesShared, persosShared et shared
+
+stories et persos sont communs aux scenes du fichier. 
+Il n'est pas évident de définir la portée de shared ici, sinon, la meme que stories et persos.
+shared est défini au niveau supérieur, App, project ou chapter, dans un fichier shared.yml
+
+le contenu de shared sera: 
+- des définitions de styles pour des élements : blocs, lists...
+- des layers 
+- des jeux de pictos
+- ...
+
+stories = compile({file.stories, file.persos}, shared)
+
+scenes.map(
+  scene => {
+    get cast (scene.stories, stories, shared) : story[]
+    get entry (scene.stories, stories, shared) : story
+    casting = [entry, cast].map(compile)
+    return casting
+  }
+)
+ 
+il manque ici clairement l'étape ou je récupère tous les persos d'une scene.
+? La fonction compile ne devrait pas aller chercher les persos, mais opérer sur des scenes completes.
+-> l'étape merge nécessite toute la chaine d'heritage ; elle se trouve dans transform-persos.
+-> ou bien, rechercher tous les persos impliqués dans l'héritage, les passer à la scene, qui les fusionne ensuite ?
+
+Comment opérer ?
+Il faut remanier la suite des opérations :
+
+L'entrée est la scene;
+- conformation du cast
+- regrouper tous les élements necessaires à la scène :
+  - les stories,
+  - les persos necessaires à chaque story,
+  - les chaines d'héritage de chaque story ou perso.
+- conformation des persos
+- conformation des stories
+- post-traitements
+  - ajout d'actions
+  - resoudre les valeurs dynamiques
+

@@ -118,5 +118,8 @@ si layer n'est pas identfié, rechercher slot01 dans tous les layers de la story
 a trancher : les straps appartiennet-ils à la story ou à la scene ?
 -> a priori, à la story. 
 
+Utiliser une convention telle que $id pour signifier une auto-référence : ici $id désigne l'id du perso
+on pourrait aussi réserver $story.id, $scene.id...
+
 
  

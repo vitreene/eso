@@ -6,14 +6,24 @@ import { Eso } from '../Player/src/App/init';
 export interface SceneEntry {
 	defs?: string[];
 	scene: Scene;
-	stories?: Story[];
+	stories?: StoryEntry[];
 	prototypes: {
 		stories?: Story[];
 		persos?: PersoEntry[];
 	};
 }
+export interface SceneFileEntry {
+	defs?: string[];
+	scenes: Scene[];
+	stories?: StoryEntry[];
+}
+export interface SharedFileEntry {
+	defs?: string[];
+	stories?: StoryEntry[];
+	persos?: PersoEntry[];
+}
 
-export type CastEntry = {
+export type Cast = {
 	id?: string;
 	startAt: string;
 	root: string;
@@ -23,7 +33,7 @@ export interface Scene {
 	id: string;
 	name: string;
 	entry: string;
-	cast: { [ref: string]: CastEntry }[];
+	cast: { [ref: string]: Cast }[];
 }
 
 export interface Story {
