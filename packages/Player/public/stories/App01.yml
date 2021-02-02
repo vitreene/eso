@@ -19,15 +19,19 @@ project:
 
   # liste de chapitres 
   - chapter: 
-      id: 1
-      name: chapter01
-      description: présentation
-      
-      # liste de scenes
-      progression: [
-        - {scene: '1'}
-        - {chapter: '2-1'}
-      ]
+    id: 1
+    name: chapter01
+    description: présentation
+    
+    # liste de scenes
+    summary: [
+      - {scene: '1'}
+      - {chapter: '2-1'}
+    ]
+    
+    shared:
+      stories: []
+      persos : []
 
 
   - scene:
@@ -71,15 +75,11 @@ project:
                 - 6: texte 4
                 - label_event+1 : texte 5
                 - +=4: texte 6
-          
     
-    
-    
-    prototypes:
+    shared:
       stories: []
       persos : []
-
-
+      
 
 
   language:
@@ -87,7 +87,7 @@ project:
       lang: {}
       subtitles: {}
 
-  prototypes:
+  shared:
     stories: []
     persos : []
 

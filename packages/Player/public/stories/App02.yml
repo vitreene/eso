@@ -1,0 +1,32 @@
+# heritage au niveau d'un chapter
+- scene:
+  id: scene01
+  entry: scene-w-telco
+  cast : 
+    - story-in-01
+    - story-out-02
+  
+  stories:
+    - id: story-in-01
+      channel: story-in-01
+      entry: fond
+      stage: '4/3'
+      eventimes: 
+        name: start
+        startAt: 0
+      persos:
+      - *LAYER
+        id: fond
+        initial:
+          className: fond-layer
+      - *BLOC :
+        id: text-sample
+        extends: proto_bloc
+        initial: 
+          className: totoo
+          content: Hello
+          
+      
+
+
+
