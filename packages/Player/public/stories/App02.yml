@@ -1,31 +1,110 @@
 # heritage au niveau d'un chapter
 - scene:
-  id: scene01
-  entry: scene-w-telco
-  cast : 
-    - story-in-01
-    - story-out-02
-  
-  stories:
-    - id: story-in-01
-      channel: story-in-01
-      entry: fond
-      stage: '4/3'
-      eventimes: 
-        name: start
-        startAt: 0
+    id: scene01
+    entry: scene-w-telco
+    cast : 
+      - story-scene-01
+      - story-scene-02
+    
+    stories:
+      # - id: story-scene-01
+      #   extends: story-shared-01
+
+      - id: story-scene-02
+        channel: story-scene-01
+        entry: fond
+        stage: '4/3'
+        eventimes: 
+          name: start
+          startAt: 0
+          events:
+            - { startAt: 500, name: 'ev01' }
+
+        persos:
+          - *LAYER :
+              id: fond
+              initial:
+                className: fond-layer
+                content: [{ id: fond-s01 }]
+            
+          - *BLOC :
+              id: text-sample
+              extends: proto_bloc
+              initial: 
+                className: tididi
+                content: Hello
+              actions:
+                start: { move: fond}
+
+          - *BLOC :
+              id: text-sample-2
+              extends: text-sample-scene-shared
+              initial: 
+                className: tadaa
+                content: Hello again
+              actions:
+                ev01: { move: fond}
+
+
+    # partagé par la scene 
+    shared:
       persos:
-      - *LAYER
-        id: fond
-        initial:
-          className: fond-layer
+        - *LAYER :
+            id: fond-scene-shared
+            initial:
+              className: layer-fond-scene-shared
+              content: [{ id: fond-scene-shared-s01 }]
+
+        - *BLOC :
+            id: text-sample-scene-shared
+            extends: proto_bloc
+            initial: 
+              className: bloc-text-scene-shared
+              content: Hello in story
+
+
+# général
+- shared:
+    stories:
+      - id: story-shared-01
+        channel: story-shared-01
+        entry: fond
+        stage: '4/3'
+        eventimes: 
+          name: start
+          startAt: 0
+        persos:
+          - *LAYER :
+              id: fond-story-shared-01
+              extends: fond-shared
+          - *BLOC :
+              id: text-sample-story-shared-01
+              extends: text-sample-shared
+              initial: 
+                className: shared-text
+                content: Hello in story shared
+              actions:
+                start: {move: fond-shared}
+
+    persos:
+      - *LAYER :
+          id: fond-shared
+          initial:
+            className: fond-layer
+            content: [{ id: fond_shared-01 }]
+
       - *BLOC :
-        id: text-sample
-        extends: proto_bloc
-        initial: 
-          className: totoo
-          content: Hello
-          
+          id: text-sample-shared
+          extends: proto_bloc
+          initial: 
+            className: totoo
+            content: Hello shared
+
+
+      - *PROTO :
+          id: proto_bloc
+          initial:
+            className: bloc-center
       
 
 

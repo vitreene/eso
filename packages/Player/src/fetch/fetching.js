@@ -1,6 +1,9 @@
 import YAML from 'yaml';
 
 import { transforms } from './transforms';
+import { fetchChapter } from './explore-file';
+
+fetchChapter();
 
 export async function fetchStories(path) {
 	const pre = await fetch('/config/defs.yml')
@@ -13,7 +16,7 @@ export async function fetchStories(path) {
 		.then((blob) => blob.text())
 		.then((text) => pre + text)
 		.then((yamlAsString) => YAML.parse(yamlAsString, { prettyErrors: true }))
-		.then((json) => transforms(json))
+		.then((json) => transforms(json[1].chapter))
 		.catch((err) => console.log('erreur sur la story:', err));
 }
 

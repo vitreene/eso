@@ -8,30 +8,23 @@ import {
 } from '../../../types/initial';
 import { setClassNames } from 'veso';
 
-/* 
-TODO chaine d'héritage
-faire une fonction récursive
-faire référence à une copie de Persos qui sera modifié au fur et à mesure
-
-Persos : passer en revue
-- si le perso fait appel à un prototype (a)
-	- atteindre le proto
-	- ce proto a-t'il lui meme un proto -> (a)
-	- ref = merge (proto, ref)
-*/
-
-export function deepmerge(_persos: Perso[], _protos: Perso[] = []) {
+/**
+ *
+ * @param _persos liste de persos sur lesquels appliquer les héritages
+ * @param _shared reserve de persos partagés dont les héritages sont résolus
+ */
+export function deepmerge(_persos: Perso[], _shared: Perso[] = []) {
 	const persos = new Map(Array.from(_persos, (perso) => [perso.id, perso]));
-	const protos = new Map(Array.from(_protos, (proto) => [proto.id, proto]));
+	const protos = new Map(Array.from(_shared, (proto) => [proto.id, proto]));
 
-	for (let [id, _perso] of persos) recMerge(id, _perso);
+	for (const [id, _perso] of persos) recMerge(id, _perso);
 
 	function recMerge(id: string, _perso: Perso) {
 		const perso = persos.get(_perso.extends) || protos.get(_perso.extends);
 		if (!perso) return _perso;
 		const _proto = recMerge(_perso.extends, perso);
 		if (_proto) {
-			const { extends: string, ...others } = merge.persos(_proto, _perso);
+			const { extends: _, ...others } = merge.persos(_proto, _perso);
 			persos.set(id, others);
 		}
 		return _perso;
@@ -143,13 +136,3 @@ export const merge = {
 		};
 	},
 };
-
-/* export function deepmerge(proto: Perso, ref: Perso) {
-	if (Object.keys(proto).length === 0) return ref;
-	if (Object.keys(ref).length === 0) return proto;
-	const initial = merge.initial(proto.initial, ref.initial);
-	const actions = merge.actions(proto.actions, ref.actions);
-	const listen = merge.listen(proto.listen, ref.listen);
-	const emit = merge.emit(proto.emit, ref.emit);
-	return { ...ref, initial, listen, actions, emit };
-} */

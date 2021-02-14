@@ -23,20 +23,18 @@ type Channel = string | null;
 export function transformPersos(s: Story) {
 	if (!s.persos) return s;
 	const channel: Channel = s.channel || null;
-
 	const prep = prePersos(s.persos);
-	const operation = dispatchPersoProps(channel)(prep);
-	const persos = postPersos(operation);
+	const persos = dispatchPersoProps(channel)(prep);
 	return { ...s, persos };
 }
 
 // pre : conformation
-function prePersos(persos) {
+export function prePersos(persos) {
 	return pipe(natureSetProperty, idSetProperty)(persos);
 }
 
-//post : compilation optimisation
-function postPersos(persos) {
+//post : 	// deepmerge inherit optimisation
+export function postPersos(persos) {
 	return pipe(deepmerge, filterProtos)(persos);
 }
 

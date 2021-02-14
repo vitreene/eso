@@ -63,7 +63,7 @@ perso:
   - list:
     content: [ref1,ref2,ref3]
       when: go
-      stagger: 0,25
+      stagger: 0.25
 
 
 strap:
@@ -72,7 +72,7 @@ strap:
 ```
 
 ## rejoindre le Shell
-avec seulement quelques composants dédiés, on peu rapidement reproduire l'essentiel des présentations. Il faut
+avec seulement quelques composants dédiés, on peut rapidement reproduire l'essentiel des présentations. Il faut
 
 - le composant Listes : 
   - accepte une liste de textes affichée par event. 
@@ -153,7 +153,7 @@ en première intention, Story regroupe eventimes, channel/id et persos
 Si un élément de persos est une string, elle designe un perso défini ailleurs
 - les id des persos en référence sont renommés pour etre uniques ?
 - un perso défini dans une story est ajouté dans la liste des persos, est-il renommé avant ?
-- fonctionne comme un extend
+- **fonctionne comme un extend**
 
 id et channel distincts ? ils servent à des choses différentes
 - s'il manque l'un, l'autre est créé par copie
@@ -217,11 +217,11 @@ La scene va passer ces events à la story, mais où les placer pour les déclenc
   - story
     - metas
     - persos
-  - prototype
+  - shared
     - stories
     - persos  
 
-- prototype
+- shared
   - stories
   - persos
 - prototype des composants
@@ -374,11 +374,13 @@ un fichier scene peut contenir une ou plusieurs scenes contenant:
 - [7] scene 
   - [6] stories
     - [5] persos
-  - [4] persos*protos
+  - shared
+    - [4] persos
 
-- [3] stories*protos
-  - [2] persos*stories*protos
-- [1] persos*protos
+- shared
+  - [3] stories
+    - [2] persos
+  - [1] persos
 
 - ~~shared~~ 
 
@@ -429,4 +431,37 @@ L'entrée est la scene;
 - post-traitements
   - ajout d'actions
   - resoudre les valeurs dynamiques
+
+
+## todo list tests.
+quelle marche à suivre ?
+
+1. tester dans shared les persos, dans et hors des stories 
+2. variante avec un historique : prendre proto_bloc comme contenu de l'historique
+3. tester dans scene persos dans/hors stories; historique += shared
+
+note : récursivité. Une story pourra en référencer une autre, mais ne la contient pas ; la structure de la scene est flat : tous les persos sont déclarés au meme niveau dans le player. Pas besoin d'imbriquer des stories dans les autres, il suffit de les citer comme perso
+Expliciter la descrption de l'incorporation d'une story dans une autre en extrapolant sur ce qui se fait dans une scene.
+
+note : portée des ids
+résoudre les noms lors d'instances multiples, particulièrement les slots. 
+Nommer $.id  ? nommage implicite ? ici l'implicite pourrait etre ambigu si on veut se réferer plus tard à ce slot ailleurs. 
+
+## Merge Stories
+Scene.cast peut-il ajouter des stories shared directement, ou bien doit-il déclarer une stroy puis l'étendre ? -> revient au meme, donc facultatif. ajouter à la fin. 
+
+Plus tard : une list peut-elle etre mergée ? quel intéret ? 
+
+Regles de merge : 
+- Les persos de la story sont prioritaires en cas de conflit de nom
+- les props sont prioritaires
+- les eventimes sont mergées :
+  - si pas d'eventimes, utiliser l'héritage
+  - name et startAt son proritaires
+  - events est mergé. 
+    - les events sont ajoutés par défaut, en cas de propriétés identiques :
+    - pas de fusion sur les noms, un event de meme nom peut etre appelé plusieurs fois.
+    - si un event à le meme nom et le meme départ, il est fusionné. les data sont concaténées.
+    les datas ne sont pas typées, elles peuvent etre de toute nature. La fusion ne fonctionnera pas tout le temps. S'appuyer sur des cas concrets pour faire évoluer le traitement
+  si possible, traitement récursif des events imbriqués
 

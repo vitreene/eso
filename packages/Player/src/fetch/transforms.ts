@@ -15,17 +15,13 @@ import {
 	StoryEntry,
 } from '../../../types/Entries-types';
 import { transformEventimes } from './transform-eventimes';
-import { transformPersos } from './transform-persos';
+import { transformPersos, postPersos } from './transform-persos';
 
 type CastEntry = Scene['cast'];
 
-export function transforms(yamlStories: SceneEntry) {
-	/* 
-	scenes = Array.isArray(file) ? file : [file]
-  stories = compile({file.stories, file.persos}, shared)
-	
-	*/
-	const scene = transformScene(yamlStories);
+//TODO adapter pour que la fonction accepte plusieurs scenes
+export function transforms(s: SceneEntry) {
+	const scene = transformScene(s);
 	return scene;
 }
 
@@ -166,7 +162,16 @@ function transformStories(_stories: StoryEntry[]): Story[] {
 	const stories: Story[] = _stories.map(
 		pipe(setIdAndChannel, setStage, transformEventimes, transformPersos)
 	);
+
+	// deepmerge inherit
+	stories.forEach((story) => story.persos && postPersos(story.persos));
+	stories.forEach(mergeStories);
+
 	return stories;
+}
+
+function mergeStories(_story: Story) {
+	return _story;
 }
 
 function setIdAndChannel(_story: StoryEntry) {

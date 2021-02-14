@@ -97,6 +97,12 @@ Cependant, si je garde la possibilité de modifier un contenu au runtime (compte
 ### Composant Audio
 - events on Complete
 - pilotage par telco
+Le composant audio pourrait etre un Strap, dans la mesure ou il n'a pas necessairement besoin de rendre un tag html
+- il est apporteur d'eventimes
+- les eventimes peuvent varier selon la langue, ils doivent etre neutralisés ou effacés au besoin
+- tenter d'implementer un changement de langue à la volée
+- un canal audio doit etre ouvert à la première intéraction, et ne pas disparaitre au changement de page. 
+Le strap Audio doit manager l'ajout et le retrait de canaux ainsi que l'activation des eventimes liés. 
 
 ### questionnaire
 - composant

@@ -1,395 +1,396 @@
-scene:
-  id: scene1
-  name: introduction
-  entry: scene-w-telco
-  cast:
-    - story01:
-        startAt: go2
-        root: *TC
-    - story02:
-        # startAt: end-story01
-        startAt: go1
-        root: *MAIN
+- chapter:
+    scene:
+      id: scene1
+      name: introduction
+      entry: scene-w-telco
+      cast:
+        - story01:
+            startAt: go2
+            root: *TC
+        - story02:
+            # startAt: end-story01
+            startAt: go1
+            root: *MAIN
 
-stories:
-  - id: story01
-    channel: story01
-    entry: [fond, grid-01]
-    stage: '4/3'
+    stories:
+      - id: story01
+        channel: story01
+        entry: [fond, grid-01]
+        stage: '4/3'
 
-    eventimes: 
-      name: start
-      startAt: 0
-      events:
-        - { startAt: 0, name: 'go', data: [un, deux, trois] }
-        - { startAt: 500, name: 'ev011' }
-        - { startAt: 1000, name: 'ev012' }
-        - { startAt: 2000, name: 'ev013' }
-        - { startAt: 3000, name: 'ev014' }
-        - { startAt: 4000, name: 'ev015' }
-        - { startAt: 5000,
-            name: leave-root,
-            events: [{ startAt: 1000, name: 'bye', data: [quatre, cinq, six]}]
-          }
-        - {startAt: 7000, name: end-story}
-        - {startAt: 7000, channel: *DEFAULT_NS, name: end-story01}
-        # - 7000: [end-story, {channel: *DEFAULT_NS, name: end-story01}]
+        eventimes: 
+          name: start
+          startAt: 0
+          events:
+            - { startAt: 0, name: 'go', data: [un, deux, trois] }
+            - { startAt: 500, name: 'ev011' }
+            - { startAt: 1000, name: 'ev012' }
+            - { startAt: 2000, name: 'ev013' }
+            - { startAt: 3000, name: 'ev014' }
+            - { startAt: 4000, name: 'ev015' }
+            - { startAt: 5000,
+                name: leave-root,
+                events: [{ startAt: 1000, name: 'bye', data: [quatre, cinq, six]}]
+              }
+            - {startAt: 7000, name: end-story}
+            - {startAt: 7000, channel: *DEFAULT_NS, name: end-story01}
+            # - 7000: [end-story, {channel: *DEFAULT_NS, name: end-story01}]
 
-    persos:
-      - *PROTO :
-          id: proto_bloc
-          initial:
-            className: bloc-center
-            
-      - *LAYER :
-          id: fond
-          initial: 
-            classStyle: {
-              position: absolute,
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              display: grid,
-              gridColumn: 1,
-              gridRow: 1,
-              backgroundColor: cyan
-            }
-            content: [{ id: fond_s01 }]
-          actions:
-              end-story: {exit: true, transition: {to: fadeOut}}
-              leave-fond: {leave: true}
-
-      - *LAYER :
-          id: grid-01
-          initial:
-            classStyle: {
-              position: absolute,
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              display: grid,
-              margin: 2rem,
-              gridTemplateColumns: 6fr 4fr,
-              gridTemplateRows: '4fr 3fr repeat(3, 1fr)',
-            }
-            content: 
-              - { id: grid-01_s01, classStyle: { gridColumn: '1 / 3', gridRow: 1}}
-              - { id: grid-01_s02, classStyle: { gridColumn: 1, gridRow: '2 / 6'}}
-              - { id: grid-01_s03, classStyle: { gridRow: 2 } }
-              - { id: grid-01_s04, classStyle: { gridColumn: 2 } }
-              - { id: grid-01_s05, classStyle: { gridColumn: 2 } }
-              - { id: grid-01_s06, classStyle: { gridColumn: 2 } }
-          actions: 
-            end-story: {leave: true, transition: {to: fadeOut}}
+        persos:
+          - *PROTO :
+              id: proto_bloc
+              initial:
+                className: bloc-center
                 
-      - *BLOC :
-          id: text-sample
-          extends: proto_bloc
-          initial: 
-            # dimensions: { width: 421, height: 214 }
-            className: totoo
-            classStyle: { color: blue,font-weight: bold, padding: 8px 24px  , '&:hover': { cursor: grab }	}
-            attr: {data-letter: alphabet}
-            content: dimanche
-          emit: 
-            mousedown: 
-              event: { channel: *STRAP, name: move }
-              data: { id: text-sample, event: move-toto }
-          listen:
-            - { event: ev011, action: enter }
-            -	{ event: ev012, action: step01 }
-            -	{ event: ev014, action: step02 }
-            -	{ channel: *DEFAULT_NS, event: move-toto, action: idle }
-          actions: 
-            idle: {}
-            enter: 
-                move: grid-01_s01 
+          - *LAYER :
+              id: fond
+              initial: 
                 classStyle: {
-                  fontSize: 64,
-                  backgroundColor: '#ffff00',
-                  position: absolute
+                  position: absolute,
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  display: grid,
+                  gridColumn: 1,
+                  gridRow: 1,
+                  backgroundColor: cyan
                 }
-                style: {scale: 0.5}
+                content: [{ id: fond_s01 }]
+              actions:
+                  end-story: {exit: true, transition: {to: fadeOut}}
+                  leave-fond: {leave: true}
 
-            step01: 
-                content: lundi
-                move: { slot:  grid-01_s02, rescale: true }
-
-                transition: 
-                  to: {
-                    x: 100, y: 100,
-                    rotate: 200, scale: 0.4,
-                    fontSize: 100,
-                    backgroundColor: '#00ffff', color: '#0033FF'
-                  }
-                  duration: 2000
-            step02:
-                move: { slot:  grid-01_s03, rescale: true }
-
-                transition:
-                  to: {
-                    scale: 1.5,	rotate: 40,
-                    fontSize: 150,
-                    backgroundColor: '#00ff00',	color: '#3300FF'
-                  }
-                  duration: 1000
-                content: fini
-
-      - *IMG : 
-          id: image
-          initial: 
-            content: ./ikono/vignette.jpg
-            fit: cover
-            classStyle: { position: absolute } 
-            dimensions: { width: 100%, height: 100%}
-          emit:
-            click:
-              - {event: { channel: TC, name: pause }}
-          listen:
-            - { event: go, action: enter }
-            - { event: ev012, action: step01 }
-            - { event: ev014, action: step02 }
-            - { event: end-rescale-image, action: end-rescale-image }
-          actions:
-            end-rescale-image :
-              style: { outline: 20px solid red	}
-            enter: 
-              move: grid-01_s03
-              transition: { to: fadeIn }
-            step01:
-              move: { slot: fond_s01 , rescale: true}
-              transition:
-                to: { opacity: 0.5 }
-            step02:
-              move: { slot: grid-01_s02, rescale: true}
-              transition:
-                to: { opacity: 1 }
-
-      - *IMG : 
-          id: image2
-          initial: 
-            content: ./ikono/perfume_002.jpg
-            fit: cover
-            classStyle: {position: absolute}
-          listen:
-            - { event: go, action: enter }
-            - { event: ev011, action: step01 }
-            - { event: ev013, action: step02 }
-            - { event: end-rescale-image2, action: end-rescale-image2 }
-          actions: 
-            end-rescale-image2 :
-              style: {	outline: 20px solid blue}
-            enter:
-              move: grid-01_s02 
-            step01:
-              move: { slot: grid-01_s01, rescale: true }
-              transition: { to: { opacity: 0.5 } }
-            step02:
-              move: { slot: fond_s01, rescale: true }
-              transition: { to: { opacity: 1 } }
-                
-      - *BUTTON :
-          id: togglePlay
-          initial:
-              classStyle: {
-                color: white,
-                backgroundColor: green,
-                borderRadius: 4px,
-                fontWeight: bold,
-                fontSize: 12px,
-                padding: 1rem,
-                textTransform: uppercase,
-                textAlign: center,
-                transition: color 0.3s,
-                '&:hover': { color: cyan }
+          - *LAYER :
+              id: grid-01
+              initial:
+                classStyle: {
+                  position: absolute,
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  display: grid,
+                  margin: 2rem,
+                  gridTemplateColumns: 6fr 4fr,
+                  gridTemplateRows: '4fr 3fr repeat(3, 1fr)',
                 }
-              content: pause
-          listen:
-            - { event: 'go', action: 'enter' }
-            - { channel: *TC, event: 'play', action: 'play' }
-            - { channel: *TC, event: 'pause', action: 'pause' }
-          actions:
-            enter: 
-              move: grid-01_s05
-            play:
-              content: pause
-            pause: 
-              content: play
-          emit: 
-            click: 
-              event: { channel: *STRAP, name: *TOGGLE }
-              data: { id: telco,  event: {channel: *TC, name: [pause, play]} }
+                content: 
+                  - { id: grid-01_s01, classStyle: { gridColumn: '1 / 3', gridRow: 1}}
+                  - { id: grid-01_s02, classStyle: { gridColumn: 1, gridRow: '2 / 6'}}
+                  - { id: grid-01_s03, classStyle: { gridRow: 2 } }
+                  - { id: grid-01_s04, classStyle: { gridColumn: 2 } }
+                  - { id: grid-01_s05, classStyle: { gridColumn: 2 } }
+                  - { id: grid-01_s06, classStyle: { gridColumn: 2 } }
+              actions: 
+                end-story: {leave: true, transition: {to: fadeOut}}
+                    
+          - *BLOC :
+              id: text-sample
+              extends: proto_bloc
+              initial: 
+                # dimensions: { width: 421, height: 214 }
+                className: totoo
+                classStyle: { color: blue,font-weight: bold, padding: 8px 24px  , '&:hover': { cursor: grab }	}
+                attr: {data-letter: alphabet}
+                content: dimanche
+              emit: 
+                mousedown: 
+                  event: { channel: *STRAP, name: move }
+                  data: { id: text-sample, event: move-toto }
+              listen:
+                - { event: ev011, action: enter }
+                -	{ event: ev012, action: step01 }
+                -	{ event: ev014, action: step02 }
+                -	{ channel: *DEFAULT_NS, event: move-toto, action: idle }
+              actions: 
+                idle: {}
+                enter: 
+                    move: grid-01_s01 
+                    classStyle: {
+                      fontSize: 64,
+                      backgroundColor: '#ffff00',
+                      position: absolute
+                    }
+                    style: {scale: 0.5}
 
-      - *SPRITE :
-          id: sprite
-          initial:
-            content: ./ikono/Mystery-80.png
-            dimensions: { height: 300 }
-            classStyle: { opacity: 0 }
-          listen:
-            - { event: ev011, action: enter }
-            - { event: ev013, action: step01 }
-            - { event: ev015, action: exit }
-            - { channel: *DEFAULT_NS, event: move-sprite, action: idle }
-            - { event: leave-sprite, action: leave }
-          actions:
-            enter:
-              move: grid-01_s03
-              transition: { to: { opacity: 1, x: -100, y: 10 } }
-            step01:
-              move: grid-01_s01
-              transition: { to: { x: 100, y: 50, rotate: 15 } }
-            exit:
-              exit: true
-              transition: { to: fadeOut }
-            leave: {leave: true}
-            idle: { }
-          emit:
-            mousedown:
-              event: { channel: *STRAP, name: move }
-              data: { id: sprite, event: move-sprite }
+                step01: 
+                    content: lundi
+                    move: { slot:  grid-01_s02, rescale: true }
 
-  
-  - id: story02
-    # channel: ma second story
-    channel: story02
-    stage: '4/3'
+                    transition: 
+                      to: {
+                        x: 100, y: 100,
+                        rotate: 200, scale: 0.4,
+                        fontSize: 100,
+                        backgroundColor: '#00ffff', color: '#0033FF'
+                      }
+                      duration: 2000
+                step02:
+                    move: { slot:  grid-01_s03, rescale: true }
 
-    # ici pas d'entrée, tous les élements montent sur une story parente. 
-    # Bonne pratique ?
+                    transition:
+                      to: {
+                        scale: 1.5,	rotate: 40,
+                        fontSize: 150,
+                        backgroundColor: '#00ff00',	color: '#3300FF'
+                      }
+                      duration: 1000
+                    content: fini
 
-    eventimes:
-      0:
-        name: start
-        events:
-          0: { name: go, data: [un, deux, trois] }
-          500: ev011
-          1000: [ev012, { channel: *DEFAULT_NS, name: go2 }]
-          2000: ev013
-          3000: ev014
-          4000: ev015
-          5000:
-            name: 'leave-root'
-            events: { 1000: { name: 'bye', data: ['quatre', 'cinq', 'six'] } }
+          - *IMG : 
+              id: image
+              initial: 
+                content: ./ikono/vignette.jpg
+                fit: cover
+                classStyle: { position: absolute } 
+                dimensions: { width: 100%, height: 100%}
+              emit:
+                click:
+                  - {event: { channel: TC, name: pause }}
+              listen:
+                - { event: go, action: enter }
+                - { event: ev012, action: step01 }
+                - { event: ev014, action: step02 }
+                - { event: end-rescale-image, action: end-rescale-image }
+              actions:
+                end-rescale-image :
+                  style: { outline: 20px solid red	}
+                enter: 
+                  move: grid-01_s03
+                  transition: { to: fadeIn }
+                step01:
+                  move: { slot: fond_s01 , rescale: true}
+                  transition:
+                    to: { opacity: 0.5 }
+                step02:
+                  move: { slot: grid-01_s02, rescale: true}
+                  transition:
+                    to: { opacity: 1 }
 
-    persos:
-      - *BLOC :
-          id: text-sample2
-          extends: proto_bloc
-          initial:
-            classStyle:
-              {
-                color: white,
-                font-weight: bold,
-                padding-top: 12,
-                padding-bottom: 12,
-                padding-left: 24,
-                padding-right: 24,
-                border-radius: 16,
-                grid-area: 1/1,
-                margin: auto,
-              }
-            content: dimanche
-          actions:
-            ev011:
-              move: *MAIN
-              transition: { to: fadeIn }
-              classStyle: { font-size: 100, background-color: '#49b6b6cf' }
-              className: new-text
-            ev012:
-              content: { lang: fr, refLang: sous-titre, ref: txt01, effect: fade }
-            ev013:
-              content: { lang: en, refLang: langue, ref: txt01, effect: fade }
-            ev014:
-              # content: { text: "A bientot pour un prochain essai", effect: fade }
-              content: { text: "A bientot", effect: fade }
-            ev015:
-              content: { text: c’est fini, effect: letters-top-down }
+          - *IMG : 
+              id: image2
+              initial: 
+                content: ./ikono/perfume_002.jpg
+                fit: cover
+                classStyle: {position: absolute}
+              listen:
+                - { event: go, action: enter }
+                - { event: ev011, action: step01 }
+                - { event: ev013, action: step02 }
+                - { event: end-rescale-image2, action: end-rescale-image2 }
+              actions: 
+                end-rescale-image2 :
+                  style: {	outline: 20px solid blue}
+                enter:
+                  move: grid-01_s02 
+                step01:
+                  move: { slot: grid-01_s01, rescale: true }
+                  transition: { to: { opacity: 0.5 } }
+                step02:
+                  move: { slot: fond_s01, rescale: true }
+                  transition: { to: { opacity: 1 } }
+                    
+          - *BUTTON :
+              id: togglePlay
+              initial:
+                  classStyle: {
+                    color: white,
+                    backgroundColor: green,
+                    borderRadius: 4px,
+                    fontWeight: bold,
+                    fontSize: 12px,
+                    padding: 1rem,
+                    textTransform: uppercase,
+                    textAlign: center,
+                    transition: color 0.3s,
+                    '&:hover': { color: cyan }
+                    }
+                  content: pause
+              listen:
+                - { event: 'go', action: 'enter' }
+                - { channel: *TC, event: 'play', action: 'play' }
+                - { channel: *TC, event: 'pause', action: 'pause' }
+              actions:
+                enter: 
+                  move: grid-01_s05
+                play:
+                  content: pause
+                pause: 
+                  content: play
+              emit: 
+                click: 
+                  event: { channel: *STRAP, name: *TOGGLE }
+                  data: { id: telco,  event: {channel: *TC, name: [pause, play]} }
 
-      - *IMG :
-          id: image3
-          initial:
-            content: ./ikono/vignette.jpg
-            fit: cover
-            classStyle: { grid-area: 1/1 }
-          listen: [{ event: go, action: enter }]
-          actions:
-            enter:
-              move: *MAIN
-              dimensions: { width: 100%, height: 100% }
-              transition: { to: fadeIn }
+          - *SPRITE :
+              id: sprite
+              initial:
+                content: ./ikono/Mystery-80.png
+                dimensions: { height: 300 }
+                classStyle: { opacity: 0 }
+              listen:
+                - { event: ev011, action: enter }
+                - { event: ev013, action: step01 }
+                - { event: ev015, action: exit }
+                - { channel: *DEFAULT_NS, event: move-sprite, action: idle }
+                - { event: leave-sprite, action: leave }
+              actions:
+                enter:
+                  move: grid-01_s03
+                  transition: { to: { opacity: 1, x: -100, y: 10 } }
+                step01:
+                  move: grid-01_s01
+                  transition: { to: { x: 100, y: 50, rotate: 15 } }
+                exit:
+                  exit: true
+                  transition: { to: fadeOut }
+                leave: {leave: true}
+                idle: { }
+              emit:
+                mousedown:
+                  event: { channel: *STRAP, name: move }
+                  data: { id: sprite, event: move-sprite }
 
-      - button:
-          id: togglePlay2
-          initial:
-            classStyle:
-              {
-                color: white,
-                background-color: blue,
-                border-radius: 4px,
-                font-weight: bold,
-                font-size: 12px,
-                padding: 1rem,
-                text-transform: uppercase,
-                text-align: center,
-                grid-area: 1/1,
-              }
-            dimensions: { width: 200, ratio: 1.5 }
-            content: Pause
-          listen:
-            [
-              { event: go, action: enter },
-              { channel: *TC, event: *PLAY, action: *PLAY },
-              { channel: *TC, event: *PAUSE, action: *PAUSE },
-            ]
-          actions:
-            enter:
-              move: *MAIN
-            *PLAY :
-              content: Pause
-            *PAUSE :
-              content: Play
-          emit:
-            click:
-              event: { channel: *STRAP, name: *TOGGLE }
-              data: { id: telco,  event: {channel: *TC, name: [pause, play]} }
+      
+      - id: story02
+        # channel: ma second story
+        channel: story02
+        stage: '4/3'
 
-  - id: scene-w-telco
-    channel: *DEFAULT_NS
-    entry: *CONTAINER_ESO
-    stage: '4/3'
+        # ici pas d'entrée, tous les élements montent sur une story parente. 
+        # Bonne pratique ?
 
-    eventimes:
-      name: go1
-      startAt: 0
-      # events:
-        # - { startAt: 2000, name: *PAUSE, channel: *TC  }
-      #     1500: { channel: *DEFAULT_NS, name: go2 }
+        eventimes:
+          0:
+            name: start
+            events:
+              0: { name: go, data: [un, deux, trois] }
+              500: ev011
+              1000: [ev012, { channel: *DEFAULT_NS, name: go2 }]
+              2000: ev013
+              3000: ev014
+              4000: ev015
+              5000:
+                name: 'leave-root'
+                events: { 1000: { name: 'bye', data: ['quatre', 'cinq', 'six'] } }
+
+        persos:
+          - *BLOC :
+              id: text-sample2
+              extends: proto_bloc
+              initial:
+                classStyle:
+                  {
+                    color: white,
+                    font-weight: bold,
+                    padding-top: 12,
+                    padding-bottom: 12,
+                    padding-left: 24,
+                    padding-right: 24,
+                    border-radius: 16,
+                    grid-area: 1/1,
+                    margin: auto,
+                  }
+                content: dimanche
+              actions:
+                ev011:
+                  move: *MAIN
+                  transition: { to: fadeIn }
+                  classStyle: { font-size: 100, background-color: '#49b6b6cf' }
+                  className: new-text
+                ev012:
+                  content: { lang: fr, refLang: sous-titre, ref: txt01, effect: fade }
+                ev013:
+                  content: { lang: en, refLang: langue, ref: txt01, effect: fade }
+                ev014:
+                  # content: { text: "A bientot pour un prochain essai", effect: fade }
+                  content: { text: "A bientot", effect: fade }
+                ev015:
+                  content: { text: c’est fini, effect: letters-top-down }
+
+          - *IMG :
+              id: image3
+              initial:
+                content: ./ikono/vignette.jpg
+                fit: cover
+                classStyle: { grid-area: 1/1 }
+              listen: [{ event: go, action: enter }]
+              actions:
+                enter:
+                  move: *MAIN
+                  dimensions: { width: 100%, height: 100% }
+                  transition: { to: fadeIn }
+
+          - button:
+              id: togglePlay2
+              initial:
+                classStyle:
+                  {
+                    color: white,
+                    background-color: blue,
+                    border-radius: 4px,
+                    font-weight: bold,
+                    font-size: 12px,
+                    padding: 1rem,
+                    text-transform: uppercase,
+                    text-align: center,
+                    grid-area: 1/1,
+                  }
+                dimensions: { width: 200, ratio: 1.5 }
+                content: Pause
+              listen:
+                [
+                  { event: go, action: enter },
+                  { channel: *TC, event: *PLAY, action: *PLAY },
+                  { channel: *TC, event: *PAUSE, action: *PAUSE },
+                ]
+              actions:
+                enter:
+                  move: *MAIN
+                *PLAY :
+                  content: Pause
+                *PAUSE :
+                  content: Play
+              emit:
+                click:
+                  event: { channel: *STRAP, name: *TOGGLE }
+                  data: { id: telco,  event: {channel: *TC, name: [pause, play]} }
+
+      - id: scene-w-telco
+        channel: *DEFAULT_NS
+        entry: *CONTAINER_ESO
+        stage: '4/3'
+
+        eventimes:
+          name: go1
+          startAt: 0
+          # events:
+            # - { startAt: 2000, name: *PAUSE, channel: *TC  }
+          #     1500: { channel: *DEFAULT_NS, name: go2 }
 
 
 
-    persos:
-      - *LAYER :
-          id: *CONTAINER_ESO
-          initial:
-            className: container
-            classStyle: {
-              display: grid,
-              grid-template-columns: '5fr 5fr'
-            }
-            content:
-              - id: *MAIN
-                classStyle: {display: grid, grid-column: 1, overflow: hidden}
-              - id: *TC
-                classStyle: {display: grid, grid-column: 2}
-          actions:
-            end-scene: { leave: true }
+        persos:
+          - *LAYER :
+              id: *CONTAINER_ESO
+              initial:
+                className: container
+                classStyle: {
+                  display: grid,
+                  grid-template-columns: '5fr 5fr'
+                }
+                content:
+                  - id: *MAIN
+                    classStyle: {display: grid, grid-column: 1, overflow: hidden}
+                  - id: *TC
+                    classStyle: {display: grid, grid-column: 2}
+              actions:
+                end-scene: { leave: true }
 
-prototypes:
-  persos:
-    - *PROTO :
-        id: proto_bloc
-        initial:
-          className: bloc-center
+    prototypes:
+      persos:
+        - *PROTO :
+            id: proto_bloc
+            initial:
+              className: bloc-center
