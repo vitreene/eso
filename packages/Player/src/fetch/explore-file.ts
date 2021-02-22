@@ -14,11 +14,31 @@ post-traitement des variables ${}
 
 // @ts-ignore
 import YAML from 'yaml';
+import {
+	PersoEntry,
+	Scene,
+	SharedFileEntry,
+	Story,
+	StoryEntry,
+} from '../../../types/Entries-types';
+import { Perso } from '../../../types/initial';
 
-import { deepmerge } from './merge';
+import { mergePersos } from './merge-persos';
+import { mergeStories } from './merge-stories';
 import { postPersos, prePersos, transformPersos } from './transform-persos';
 
-const inherit = { stories: [], persos: [] };
+interface Inherit {
+	persos?: Perso[];
+	stories?: Story[];
+}
+
+interface SceneEntry {
+	defs?: string[];
+	scene: Scene;
+	stories?: StoryEntry[];
+	shared?: Inherit;
+}
+const inherit: Inherit = { stories: [], persos: [] };
 
 const path = '/stories/App02.yml';
 export async function fetchChapter() {
@@ -32,26 +52,47 @@ export async function fetchChapter() {
 		.then((blob) => blob.text())
 		.then((text) => pre + text)
 		.then((yamlAsString) => YAML.parse(yamlAsString, { prettyErrors: true }))
-		.then(({ aliases, ...json }) => exploreFile(json, inherit))
+		.then((json) => exploreFile(fileToScenes(json), inherit))
 		.catch((err) => console.log('erreur sur la story:', err));
 }
 
-function exploreFile(file, inherit) {
+/* 
+file : [ Scene, Scene, ... Inherit ]
+obj: { scenes [Scene, Scene,], shared : Inherit}
+
+*/
+
+function fileToScenes(file: any) {
+	if (!Array.isArray(file)) return file;
+	const obj = { scene: [], shared: undefined };
+	for (const el of file) {
+		for (const property in el) {
+			if (!obj[property]) obj[property] = el[property];
+			else if (obj[property] && !Array.isArray(obj[property]))
+				obj[property] = [obj[property], el[property]];
+			else {
+				obj[property].push(el[property]);
+			}
+		}
+	}
+	return obj;
+}
+
+function exploreFile(file: SceneEntry, inherit: Inherit) {
 	// si plusieurs scenes dans le fichier
 	// si file est une scene {}
-	let scenes;
-	let shareds;
+	console.log('exploreFile', file);
 
-	if (Array.isArray(file)) {
-		scenes = file.filter((el) => el.scene).map((el) => el.scene);
-		shareds = file.filter((el) => el.shared).map((el) => el.shared);
-	} else if (typeof file === 'object') {
-		scenes = [file];
-		shareds = [];
-	}
+	const scenes: Scene[] = Array.isArray(file.scene) ? file.scene : [file.scene];
+	const shareds: Inherit[] = Array.isArray(file.shared)
+		? file.shared
+		: [file.shared];
 
 	const _inherit = shareds.reduce((complete, shared) => {
-		const _shared = explore(shared, complete);
+		// FIXME ne renvoie pas les données attendues
+		const _shared = exploreShared(shared, complete);
+		console.log('REDUCE', _shared);
+
 		return mergeProps(_shared, complete, ['stories', 'persos']);
 	}, inherit);
 
@@ -65,37 +106,35 @@ function exploreScene(scene, inherit) {
 	console.log('SCENE :', scene);
 	console.log(inherit);
 
-	const sceneShared = explore(scene.shared, inherit);
+	const sceneShared = exploreShared(scene.shared, inherit);
 	const _inherit = mergeProps(sceneShared, inherit, ['stories', 'persos']);
-	const stories = scene.stories.map((story) => explore(story, _inherit));
+
+	const stories = exploreShared(scene.stories, _inherit);
 
 	const { shared, ..._scene } = scene;
 	return { ..._scene, stories };
 }
 
-function explore(_element, inherit) {
-	let sharedPersos;
+function exploreShared(_scene: SharedFileEntry, inherit: Inherit) {
+	let persos;
 	let stories;
 
-	if (_element.persos) {
-		const _sharedPersos = prePersos(_element.persos);
-		sharedPersos = deepmerge(_sharedPersos, inherit?.persos);
+	if (_scene.persos) {
+		const _sharedPersos = prePersos(_scene.persos);
+		persos = mergePersos(_sharedPersos, inherit?.persos);
 	}
 
-	if (_element.stories) {
-		stories = _element.stories.map((story) => {
+	if (_scene.stories) {
+		stories = _scene.stories.map((story) => {
 			const _persos = prePersos(story.persos);
-			const persos = deepmerge(_persos, [...inherit?.persos, ...sharedPersos]);
-			return { ...story, persos };
+			const __persos = mergePersos(_persos, [...inherit?.persos, ...persos]);
+
+			return { ...story, persos: __persos };
 		});
+		stories = mergeStories(stories, inherit.stories);
 	}
 
-	return Object.assign(
-		{},
-		_element,
-		stories,
-		sharedPersos && { persos: sharedPersos }
-	);
+	return Object.assign({}, _scene, stories, persos);
 }
 
 // merge deux objets dont les props sont un tableau ou undefined

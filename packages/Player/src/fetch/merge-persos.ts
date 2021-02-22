@@ -13,7 +13,9 @@ import { setClassNames } from 'veso';
  * @param _persos liste de persos sur lesquels appliquer les héritages
  * @param _shared reserve de persos partagés dont les héritages sont résolus
  */
-export function deepmerge(_persos: Perso[], _shared: Perso[] = []) {
+export function mergePersos(_persos: Perso[], _shared: Perso[] = []) {
+	console.log(_persos, _shared);
+
 	const persos = new Map(Array.from(_persos, (perso) => [perso.id, perso]));
 	const protos = new Map(Array.from(_shared, (proto) => [proto.id, proto]));
 
@@ -127,12 +129,13 @@ export const merge = {
 		const actions = this.actions(proto.actions, ref.actions);
 		const listen = this.listen(proto.listen, ref.listen);
 		const emit = this.emit(proto.emit, ref.emit);
-		return {
-			...ref,
-			...(initial && { initial }),
-			...(listen && { listen }),
-			...(actions && { actions }),
-			...(emit && { emit }),
-		};
+		return Object.assign({}, { ...ref }, initial, listen, actions, emit);
+		// return {
+		// 	...ref,
+		// 	...(initial && { initial }),
+		// 	...(listen && { listen }),
+		// 	...(actions && { actions }),
+		// 	...(emit && { emit }),
+		// };
 	},
 };

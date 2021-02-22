@@ -14,7 +14,7 @@ import {
 	Perso,
 } from '../../../types/initial';
 import { pipe } from '../shared/utils';
-import { deepmerge } from './merge';
+import { mergePersos } from './merge-persos';
 import { Story, PersoEntry } from '../../../types/Entries-types';
 
 const PROTO = 'proto';
@@ -35,7 +35,7 @@ export function prePersos(persos) {
 
 //post : 	// deepmerge inherit optimisation
 export function postPersos(persos) {
-	return pipe(deepmerge, filterProtos)(persos);
+	return pipe(mergePersos, filterProtos)(persos);
 }
 
 export function natureSetProperty(_persos: PersoEntry[]) {

@@ -34,6 +34,8 @@ export interface Scene {
 	name: string;
 	entry: string;
 	cast: { [ref: string]: Cast }[];
+	stories?: Story[];
+	shared?: SharedFileEntry;
 }
 
 export interface Story {
@@ -50,6 +52,7 @@ export interface Story {
 export type StoryWoEventimes = Omit<Story, 'eventimes'>;
 
 export interface StoryEntry {
+	extends?: string;
 	id?: string;
 	channel?: string;
 	root: string;
