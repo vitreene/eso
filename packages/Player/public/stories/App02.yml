@@ -7,8 +7,8 @@
       - story-scene-02
     
     stories:
-      # - id: story-scene-01
-      #   extends: story-shared-01
+      - id: story-scene-01
+        extends: story-shared-01
 
       - id: story-scene-02
         channel: story-scene-01

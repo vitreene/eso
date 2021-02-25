@@ -14,7 +14,7 @@ import { setClassNames } from 'veso';
  * @param _shared reserve de persos partagés dont les héritages sont résolus
  */
 export function mergePersos(_persos: Perso[], _shared: Perso[] = []) {
-	console.log(_persos, _shared);
+	// console.log(_persos, _shared);
 
 	const persos = new Map(Array.from(_persos, (perso) => [perso.id, perso]));
 	const protos = new Map(Array.from(_shared, (proto) => [proto.id, proto]));

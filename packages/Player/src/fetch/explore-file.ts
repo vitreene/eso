@@ -89,10 +89,7 @@ function exploreFile(file: SceneEntry, inherit: Inherit) {
 		: [file.shared];
 
 	const _inherit = shareds.reduce((complete, shared) => {
-		// FIXME ne renvoie pas les données attendues
 		const _shared = exploreShared(shared, complete);
-		console.log('REDUCE', _shared);
-
 		return mergeProps(_shared, complete, ['stories', 'persos']);
 	}, inherit);
 
@@ -109,15 +106,26 @@ function exploreScene(scene, inherit) {
 	const sceneShared = exploreShared(scene.shared, inherit);
 	const _inherit = mergeProps(sceneShared, inherit, ['stories', 'persos']);
 
-	const stories = exploreShared(scene.stories, _inherit);
+	const stories = exploreStory(scene.stories, _inherit);
 
 	const { shared, ..._scene } = scene;
 	return { ..._scene, stories };
 }
 
+function exploreStory(_stories: Story[], inherit: Inherit) {
+	const stories = _stories.map((_story) => {
+		let persos: Perso[];
+		if (_story.persos) {
+			const _sharedPersos = prePersos(_story.persos);
+			persos = mergePersos(_sharedPersos, inherit?.persos);
+		}
+		return { ..._story, persos };
+	});
+	return stories;
+}
 function exploreShared(_scene: SharedFileEntry, inherit: Inherit) {
-	let persos;
-	let stories;
+	let persos: Perso[];
+	let stories: StoryEntry[];
 
 	if (_scene.persos) {
 		const _sharedPersos = prePersos(_scene.persos);
@@ -134,7 +142,14 @@ function exploreShared(_scene: SharedFileEntry, inherit: Inherit) {
 		stories = mergeStories(stories, inherit.stories);
 	}
 
-	return Object.assign({}, _scene, stories, persos);
+	console.log('exploreShared', stories);
+
+	return Object.assign(
+		{},
+		_scene,
+		stories && stories.length && { stories },
+		persos && persos.length && { persos }
+	);
 }
 
 // merge deux objets dont les props sont un tableau ou undefined

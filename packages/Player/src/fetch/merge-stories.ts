@@ -1,11 +1,6 @@
 import { Story, StoryEntry } from '../../../types/Entries-types';
 
-export function mergeStories(
-	_stories: StoryEntry[],
-
-	_inherit: Story[]
-) {
-	console.log('mergeStories', _stories, _inherit);
+export function mergeStories(_stories: StoryEntry[], _inherit: Story[]) {
 	if (!_stories.length || !_inherit.length) return _stories;
 
 	const shared = new Map(Array.from(_inherit, (story) => [story.id, story]));
@@ -13,6 +8,7 @@ export function mergeStories(
 
 	for (const [id, _story] of stories) recMerge(id, _story);
 
+	// FIXME ne merge pas
 	function recMerge(id, _story) {
 		const story = stories.get(_story.extends) || shared.get(_story.extends);
 		if (!story) return _story;
@@ -24,7 +20,7 @@ export function mergeStories(
 		return _story;
 	}
 
-	return _stories;
+	return Array.from(stories.values());
 }
 
 const merge = {
