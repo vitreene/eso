@@ -5,27 +5,30 @@ import {
 	DEFAULT_TRANSITION_IN,
 	SCENE_STAGE,
 	DEFAULT_SCENE_STAGE,
+	MAIN,
 } from '../data/constantes';
 import { pipe } from '../shared/utils';
 import {
 	Cast,
 	Scene,
-	SceneEntry,
+	ChapEntry,
 	Story,
 	StoryEntry,
+	StageEntry,
 } from '../../../types/Entries-types';
 import { transformEventimes } from './transform-eventimes';
 import { transformPersos, postPersos } from './transform-persos';
+import { Stage } from '../zoom';
 
-type CastEntry = Scene['cast'];
+type CastEntry = Cast | string;
 
 //TODO adapter pour que la fonction accepte plusieurs scenes
-export function transforms(s: SceneEntry) {
+export function transforms(s: ChapEntry) {
 	const scene = transformScene(s);
 	return scene;
 }
 
-function transformScene(s: SceneEntry) {
+function transformScene(s: ChapEntry) {
 	const cast: Cast[] = sceneExpandCast(s.scene.cast);
 	const stories: Story[] = transformStories(s.stories);
 	const entry = getEntry(s.scene.entry)(stories);
@@ -34,29 +37,45 @@ function transformScene(s: SceneEntry) {
 	return { ...s, scene: { ...s.scene, cast }, stories: [entry, ...casting] };
 }
 
-//TODO typeof _cast === 'string'
-function sceneExpandCast(_cast: CastEntry): Cast[] {
+export function sceneExpandCast(_cast: CastEntry[]): Cast[] {
 	if (!_cast) return [];
-	const cast = [];
-	for (const _story of _cast) {
-		const id = Object.keys(_story)[0];
-		cast.push({ id, ..._story[id] });
-	}
+	const _stories = _cast.map((_story: CastEntry) =>
+		typeof _story === 'string' ? _story : Object.keys(_story)[0]
+	);
+	const cast = _cast.map((_story: CastEntry, i: number, _c: CastEntry[]) => {
+		const id = _stories[i];
+		const c =
+			typeof _story === 'string'
+				? {
+						startAt: i === 0 ? 0 : `end-${_stories[i - 1]}`,
+						root: MAIN,
+				  }
+				: _story[id];
+		return { id, ...c };
+	});
 	return cast;
 }
+export function sceneCreateCast(stories: Story[]) {
+	const _cast = stories.map((_story) => _story.id);
+	return sceneExpandCast(_cast);
+}
 
-function getEntry(_entry) {
-	return function getStoryFromEntry(stories: StoryEntry[]) {
+export function getEntry(_entry: string) {
+	return function getStoryFromEntry(stories: Story[]): Story {
 		// +protos
 		const entry = stories.find((story) => story.id === _entry);
-		entry.isTemplate = true;
+		if (!entry) {
+			console.warn('Il n’y a pas de point d’entrée pour cette scène');
+			return null;
+		}
+		entry.isEntry = true;
 		entry.root = CONTAINER_ESO;
 		return entry;
 	};
 }
 
-function getStories(cast: Cast[]) {
-	return function getStoriesFromCast(stories: StoryEntry[]): Story[] {
+export function getStories(cast: Cast[]) {
+	return function getStoriesFromCast(stories: Story[]): Story[] {
 		return cast.map((_cast) => {
 			// +protos
 			const _story = stories.find((s) => s.id === _cast.id);
@@ -137,6 +156,7 @@ function addEventToPerso(event, perso) {
 }
 
 function addListen(event, _listen) {
+	if (!_listen) return event;
 	const hasAction = _listen.findIndex((l) => l.action === event.action);
 	if (hasAction > -1) {
 		const res = [..._listen];
@@ -146,6 +166,7 @@ function addListen(event, _listen) {
 }
 
 function addAction(_event, _actions) {
+	if (!_actions) return _event;
 	const { name, ...event } = _event;
 	const hasName = _actions.findIndex((a) => a.name === name);
 	if (hasName > -1) {
@@ -170,13 +191,16 @@ function transformStories(_stories: StoryEntry[]): Story[] {
 	return stories;
 }
 
+export function preStory(stories) {
+	return stories.map(pipe(setIdAndChannel, setStage, transformEventimes));
+}
+
 function mergeStories(_story: Story) {
 	return _story;
 }
 
 function setIdAndChannel(_story: StoryEntry) {
 	const story = _story;
-	// story.root = CONTAINER_ESO;
 	if (!story.id && !story.channel) {
 		const id = nanoid(8);
 		story.id = id;
@@ -190,9 +214,19 @@ function setIdAndChannel(_story: StoryEntry) {
 }
 
 function setStage(_story: StoryEntry) {
-	const stage =
-		typeof _story.stage === 'string'
-			? SCENE_STAGE[_story.stage] || DEFAULT_SCENE_STAGE['4/3']
-			: _story.stage;
+	let stage: StageEntry;
+	switch (typeof _story.stage) {
+		case undefined:
+			stage = DEFAULT_SCENE_STAGE['4/3'];
+			break;
+		case 'string':
+			const name = _story.stage as string;
+			stage = SCENE_STAGE[name] || DEFAULT_SCENE_STAGE['4/3'];
+			break;
+
+		case 'object':
+			stage = _story.stage as StageEntry;
+			break;
+	}
 	return { ..._story, stage };
 }

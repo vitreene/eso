@@ -2,8 +2,9 @@ import { Eventime } from './eventime';
 import { Perso } from './initial';
 import { Stage } from '../Player/src/zoom';
 import { Eso } from '../Player/src/App/init';
+import { Nature } from './ESO_enum';
 
-export interface SceneEntry {
+export interface ChapEntry {
 	defs?: string[];
 	scene: Scene;
 	stories?: StoryEntry[];
@@ -19,56 +20,66 @@ export interface SceneFileEntry {
 }
 export interface SharedFileEntry {
 	defs?: string[];
-	stories?: StoryEntry[];
+	stories?: Story[];
 	persos?: PersoEntry[];
 }
-
+export interface SceneEntry {
+	defs?: string[];
+	scene: Scene;
+	shared?: {
+		stories?: Story[];
+		persos?: PersoEntry[];
+	};
+}
 export type Cast = {
 	id?: string;
 	startAt: string;
 	root: string;
 };
-
 export interface Scene {
 	id: string;
 	name: string;
 	entry: string;
-	cast: { [ref: string]: Cast }[];
+	// cast: { [ref: string]: Cast }[];
+	cast: Cast[];
 	stories?: Story[];
 	shared?: SharedFileEntry;
 }
 
 export interface Story {
-	entry: any;
+	extends?: string;
+	entry?: any;
 	id: string;
 	channel: string;
 	root: string;
 	stage: StageEntry;
-	isTemplate?: boolean;
+	isEntry?: boolean;
 	eventimes?: Eventime;
 	persos: Perso[];
 }
 
 export type StoryWoEventimes = Omit<Story, 'eventimes'>;
 
+// cette interface amene de la confusion ; a reprendre en fin de dev ?
 export interface StoryEntry {
 	extends?: string;
+	entry: any;
 	id?: string;
 	channel?: string;
 	root: string;
 	stage?: string | StageEntry;
 	isTemplate?: boolean;
 	eventimes?: unknown;
-	persos?: PersoEntry[];
+	persos?: PersoEntry[] | Perso[];
 }
 
 export interface PersoEntry {
 	id: string;
-	nature: string;
-	initial: unknown;
-	listen?: unknown;
-	actions: unknown;
-	emit?: unknown;
+	nature: Nature;
+	initial: any;
+	listen?: any;
+	actions: any;
+	emit?: any;
 }
 
 export interface StageEntry {

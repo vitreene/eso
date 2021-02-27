@@ -2,22 +2,23 @@
 // import 'core-js/stable';
 // import 'regenerator-runtime/runtime';
 
-import { fetchStories } from './fetch/fetching';
+// import { fetchStories } from './fetch/fetching';
+import { fetchChapter } from './fetch/explore-file';
+
 import './style.css';
 
 import { Scene } from './Scene';
 
 const Player = async (path) => {
 	// const casting = await Promise.all(path.map(fetchStories));
-	const casting = await fetchStories(path);
+	// const casting = await fetchStories(path);
+	const casting = await fetchChapter(path);
 	console.log('PLAYER casting', casting);
-	new Scene(casting);
+	new Scene(casting[0]);
 };
+const path = '/stories/App20.yml';
 
-const path = ['/stories/story10.yml'];
-// const path = ['/stories/story11.yml'];
-// const path = ['/stories/persos01.yml'];
-// const path = ['/stories/file04.yml'];
+// const path = ['/stories/story10.yml'];
 
 Player(path);
 

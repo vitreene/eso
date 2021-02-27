@@ -48,7 +48,8 @@ export class Scene {
 	// onEnd: () => {};
 	onEndQueue = [];
 
-	constructor({ scene, stories }) {
+	// constructor({ scene, stories }) {
+	constructor({ stories, ...scene }) {
 		this.id = scene.id;
 		this.name = scene.name;
 		this.description = scene.description;
@@ -82,7 +83,7 @@ export class Scene {
 	private async _register(story: StoryWoEventimes) {
 		console.log('_register', story);
 
-		const { isTemplate, root, channel, persos } = story;
+		const { isEntry, root, channel, persos } = story;
 		await registerImages(persos, this.imagesCollection);
 		registerPersos(persos, this.persos, {
 			imagesCollection: this.imagesCollection,
@@ -90,7 +91,7 @@ export class Scene {
 		});
 		registerActions(channel, persos, this._publish(story.id));
 
-		initRuntime(root, isTemplate, this.persos, this.onScene);
+		initRuntime(root, isEntry, this.persos, this.onScene);
 
 		this._setStoryCast(story);
 		this.activateZoom(story.id);
