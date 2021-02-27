@@ -1,3 +1,5 @@
+import { setClassNames } from 'veso';
+
 import {
 	EsoActions,
 	EsoEmit,
@@ -6,7 +8,8 @@ import {
 	Perso,
 	Style,
 } from '../../../types/initial';
-import { setClassNames } from 'veso';
+
+type ClassName = undefined | string | [string] | [];
 
 /**
  *
@@ -14,8 +17,6 @@ import { setClassNames } from 'veso';
  * @param _shared reserve de persos partagés dont les héritages sont résolus
  */
 export function mergePersos(_persos: Perso[], _shared: Perso[] = []): Perso[] {
-	// console.log(_persos, _shared);
-
 	const persos = new Map(Array.from(_persos, (perso) => [perso.id, perso]));
 	const protos = new Map(Array.from(_shared, (proto) => [proto.id, proto]));
 
@@ -23,23 +24,16 @@ export function mergePersos(_persos: Perso[], _shared: Perso[] = []): Perso[] {
 
 	function recMerge(id: string, _perso: Perso) {
 		const perso = persos.get(_perso.extends) || protos.get(_perso.extends);
-
 		if (!perso) return _perso;
 		const _proto = recMerge(_perso.extends, perso);
 		if (_proto) {
 			const { extends: _, ...others } = merge.persos(_proto, _perso);
-			console.log(id, _proto, _perso);
-			console.log(others);
-
 			persos.set(id, others);
 		}
 		return _perso;
 	}
-
 	return Array.from(persos.values());
 }
-
-type ClassName = undefined | string | [string] | [];
 
 export const merge = {
 	style(proto: Style, ref: Style) {

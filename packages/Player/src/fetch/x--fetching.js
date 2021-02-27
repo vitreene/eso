@@ -1,9 +1,6 @@
 import YAML from 'yaml';
 
-import { transforms } from './transforms';
-import { fetchChapter } from './explore-file';
-
-fetchChapter();
+import { transforms } from './x--transforms';
 
 export async function fetchStories(path) {
 	const pre = await fetch('/config/defs.yml')

@@ -1,6 +1,6 @@
-import { Story, StoryEntry } from '../../../types/Entries-types';
-import { Eventime } from '../../../types/eventime';
 import { Perso } from '../../../types/initial';
+import { Eventime } from '../../../types/eventime';
+import { Story, StoryEntry } from '../../../types/Entries-types';
 
 export function mergeStories(_stories: Story[], _inherit: Story[]) {
 	if (!_stories.length || !_inherit.length) return _stories;
@@ -13,7 +13,7 @@ export function mergeStories(_stories: Story[], _inherit: Story[]) {
 		if (!story) return _story;
 		const _proto = recMerge(_story.extends, story);
 		if (_proto) {
-			const { extends: _, ...others } = merge.exe(_proto, _story);
+			const { extends: _, ...others } = merge.story(_proto, _story);
 			stories.set(id, others);
 		}
 		return _story;
@@ -22,7 +22,7 @@ export function mergeStories(_stories: Story[], _inherit: Story[]) {
 }
 
 const merge = {
-	exe(_proto: Story | StoryEntry, _story: Story | StoryEntry) {
+	story(_proto: Story | StoryEntry, _story: Story | StoryEntry) {
 		if (!_proto || Object.keys(_proto).length === 0) return _story;
 		if (!_story || Object.keys(_story).length === 0) return _proto;
 		const persos = this.persos(_proto.persos, _story.persos);

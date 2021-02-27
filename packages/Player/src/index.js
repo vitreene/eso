@@ -3,7 +3,7 @@
 // import 'regenerator-runtime/runtime';
 
 // import { fetchStories } from './fetch/fetching';
-import { fetchChapter } from './fetch/explore-file';
+import { fetchChapter } from './fetch/fetch-chapter';
 
 import './style.css';
 

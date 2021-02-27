@@ -1,11 +1,9 @@
 import { nanoid } from 'nanoid';
 import {
-	CONTAINER_ESO,
 	DEFAULT_NS,
 	DEFAULT_TRANSITION_IN,
 	SCENE_STAGE,
 	DEFAULT_SCENE_STAGE,
-	MAIN,
 } from '../data/constantes';
 import { pipe } from '../shared/utils';
 import {
@@ -19,8 +17,9 @@ import {
 import { transformEventimes } from './transform-eventimes';
 import { transformPersos, postPersos } from './transform-persos';
 import { Stage } from '../zoom';
+import { sceneExpandCast, getEntry, getStories } from './transform-scene';
 
-type CastEntry = Cast | string;
+export type CastEntry = Cast | string;
 
 //TODO adapter pour que la fonction accepte plusieurs scenes
 export function transforms(s: ChapEntry) {
@@ -37,54 +36,6 @@ function transformScene(s: ChapEntry) {
 	return { ...s, scene: { ...s.scene, cast }, stories: [entry, ...casting] };
 }
 
-export function sceneExpandCast(_cast: CastEntry[]): Cast[] {
-	if (!_cast) return [];
-	const _stories = _cast.map((_story: CastEntry) =>
-		typeof _story === 'string' ? _story : Object.keys(_story)[0]
-	);
-	const cast = _cast.map((_story: CastEntry, i: number, _c: CastEntry[]) => {
-		const id = _stories[i];
-		const c =
-			typeof _story === 'string'
-				? {
-						startAt: i === 0 ? 0 : `end-${_stories[i - 1]}`,
-						root: MAIN,
-				  }
-				: _story[id];
-		return { id, ...c };
-	});
-	return cast;
-}
-export function sceneCreateCast(stories: Story[]) {
-	const _cast = stories.map((_story) => _story.id);
-	return sceneExpandCast(_cast);
-}
-
-export function getEntry(_entry: string) {
-	return function getStoryFromEntry(stories: Story[]): Story {
-		// +protos
-		const entry = stories.find((story) => story.id === _entry);
-		if (!entry) {
-			console.warn('Il n’y a pas de point d’entrée pour cette scène');
-			return null;
-		}
-		entry.isEntry = true;
-		entry.root = CONTAINER_ESO;
-		return entry;
-	};
-}
-
-export function getStories(cast: Cast[]) {
-	return function getStoriesFromCast(stories: Story[]): Story[] {
-		return cast.map((_cast) => {
-			// +protos
-			const _story = stories.find((s) => s.id === _cast.id);
-			const story = addStartAndEndEvents(_story, _cast);
-			return story;
-		});
-	};
-}
-
 // ajouter l'event d'entrée et de sortie de la story
 /**
  * entry : string | string[] // entry de la story
@@ -95,7 +46,7 @@ export function getStories(cast: Cast[]) {
 // ajouter un event de sortie de scene (kill)
 // ajouter play/pause
 
-function addStartAndEndEvents(story, cast) {
+export function addStartAndEndEvents(story, cast) {
 	const eventimes = story.eventimes;
 	eventimes.startAt = cast.startAt;
 	eventimes.channel = DEFAULT_NS;
@@ -191,15 +142,11 @@ function transformStories(_stories: StoryEntry[]): Story[] {
 	return stories;
 }
 
-export function preStory(stories) {
-	return stories.map(pipe(setIdAndChannel, setStage, transformEventimes));
-}
-
 function mergeStories(_story: Story) {
 	return _story;
 }
 
-function setIdAndChannel(_story: StoryEntry) {
+export function setIdAndChannel(_story: StoryEntry) {
 	const story = _story;
 	if (!story.id && !story.channel) {
 		const id = nanoid(8);
@@ -213,7 +160,7 @@ function setIdAndChannel(_story: StoryEntry) {
 	return story;
 }
 
-function setStage(_story: StoryEntry) {
+export function setStage(_story: StoryEntry) {
 	let stage: StageEntry;
 	switch (typeof _story.stage) {
 		case undefined:

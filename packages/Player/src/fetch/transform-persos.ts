@@ -1,11 +1,11 @@
 /* 
 TODO
-- * prototype / basedOn / extends
-extends ne touche que les persos hors story ; 
-il faut qu'il touche aussi ceux dans chaque story !
 - when
 */
 import { nanoid } from 'nanoid';
+
+import { pipe } from '../shared/utils';
+import { mergePersos } from './merge-persos';
 
 import {
 	EsoActions,
@@ -13,8 +13,6 @@ import {
 	InputEsoEvents,
 	Perso,
 } from '../../../types/initial';
-import { pipe } from '../shared/utils';
-import { mergePersos } from './merge-persos';
 import { Story, PersoEntry } from '../../../types/Entries-types';
 
 const PROTO = 'proto';
@@ -31,11 +29,6 @@ export function transformPersos(s: Story) {
 // pre : conformation
 export function prePersos(persos) {
 	return pipe(natureSetProperty, idSetProperty)(persos);
-}
-
-//post : 	// deepmerge inherit optimisation
-export function postPersos(persos) {
-	return pipe(mergePersos, filterProtos)(persos);
 }
 
 export function natureSetProperty(_persos: PersoEntry[]) {
@@ -75,6 +68,7 @@ export function dispatchPersoProps(channel: Channel) {
 		return persos;
 	};
 }
+
 function listenDisptachProps(
 	channel: Channel,
 	_listen: InputEsoEvents,
