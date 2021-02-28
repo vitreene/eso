@@ -465,3 +465,39 @@ Regles de merge :
     les datas ne sont pas typées, elles peuvent etre de toute nature. La fusion ne fonctionnera pas tout le temps. S'appuyer sur des cas concrets pour faire évoluer le traitement
   si possible, traitement récursif des events imbriqués
 
+
+## Explorer un objet
+explore : 
+- si prop === string : pipapo
+- si prop === object : 
+	array ? map.explore
+	object ? in.explore
+
+### quelles données fournir ? 
+metas de scene (id, entry)
+metas de story (id, entry)
+perso lui-meme : attention aux ref circulaires ! limiter à l'id ?
+les slots ? -> slot est le content d'un perso
+le perso pourrait aussi contenir des données qui serve à construire les instances , mais ne sont pas traitées ensuite
+perso.data ?
+
+scene : {id, entry, channel}
+story : {id, entry}
+perso : {id, content?}
+data: any
+### comment traiter une expression ?  
+exemple, je recois un index, j'ai besoin de renvoyer 'index + 1' 
+les datas recues par la fonction peuvent comporter des méthodes à la place d'un tableau de données 
+cela suppose que l'on ait identifié la structure de données à traiter
+
+exemple pour le jeu : 
+
+un tag : 'game' ou 'model: game' par exemple, envoie les données à un module de traitement. 
+attention : il faut charger les modeles dans le jeu, mais le jeu peut etre relancé sans avoir à reconstruire la page ! 
+
+Les persos qui servent de modeles sont chargés, puis générés à la demande au moment de l'exécution de la scene 
+Le contexte est différent d'un mappage en finalisation du chargement de la scene. il partage l'application d'un template, mais ne le fait pas au meme moment.
+
+Un modèle destiné à un module jeu ne doit pas etre taggé au chargement, il n'y à pas de sens à faire une application partielle. 
+-> uniquement la partie template, le reste des traitements communs peut etre effectué ?
+ou bien le modele, vu son emploi, n'estpas du tout traité au chargement. il pourra eventuellement bénéficier des fonctions de pré-traitement, à l'int"rieur du jeu.

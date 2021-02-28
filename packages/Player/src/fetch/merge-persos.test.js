@@ -1,5 +1,5 @@
 import { MAIN } from '../data/constantes';
-import { deepmerge, merge } from './merge';
+import { mergePersos, merge } from './merge-persos';
 
 describe('merge deux persos', () => {
 	test('merge style', () => {
@@ -76,7 +76,7 @@ describe('chain deep merge', () => {
 		const _p1 = { id: 'p1', nature: 'proto', initial };
 		const _p2 = { id: 'p2', nature: 'proto', extends: 'p1', actions };
 		const _ref = { extends: 'p2', ...text };
-		const res = deepmerge([_p1, _p2, _ref]);
+		const res = mergePersos([_p1, _p2, _ref]);
 		expect(res[2]).toStrictEqual(result);
 	});
 });

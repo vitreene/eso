@@ -87,7 +87,7 @@
                 className: totoo
                 classStyle: { color: blue,font-weight: bold, padding: 8px 24px  , '&:hover': { cursor: grab }	}
                 attr: {data-letter: alphabet}
-                content: Ça recommence !
+                content: ${scene.id}
               emit: 
                 mousedown: 
                   event: { channel: *STRAP, name: move }
@@ -109,7 +109,7 @@
                     style: {scale: 0.5}
 
                 step01: 
-                    content: lundi
+                    content: ${story.id}
                     move: { slot:  grid-01_s02, rescale: true }
 
                     transition: 
@@ -130,7 +130,7 @@
                         backgroundColor: '#00ff00',	color: '#3300FF'
                       }
                       duration: 1000
-                    content: fini
+                    content: ${perso.id}
 
           - *IMG : 
               id: image

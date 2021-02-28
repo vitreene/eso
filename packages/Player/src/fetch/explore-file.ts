@@ -13,6 +13,8 @@ import {
 	sceneCreateCast,
 	sceneExpandCast,
 } from './transform-scene';
+import { parseVariables } from './variables-template';
+
 import {
 	Cast,
 	Scene,
@@ -44,7 +46,7 @@ export function exploreFile(file: SceneEntry, inherit: Inherit) {
 function exploreScene(scene: Scene, inherit: Inherit) {
 	const sceneShared = exploreShared(scene.shared, inherit);
 	const _inherit = mergeProps(sceneShared, inherit, ['stories', 'persos']);
-	const _stories = exploreStories(scene.stories, _inherit);
+	const _stories = exploreStories(scene.stories, _inherit, scene);
 	const cast: Cast[] = sceneExpandCast(scene.cast) || sceneCreateCast(_stories);
 	const entry = getEntry(scene.entry)(_stories);
 	const casting = getStories(cast)(_stories);
@@ -53,29 +55,46 @@ function exploreScene(scene: Scene, inherit: Inherit) {
 	return { ..._scene, cast, stories };
 }
 
-function exploreStories(_stories: Story[], inherit: Inherit): Story[] {
+function exploreStories(
+	_stories: Story[],
+	inherit: Inherit,
+	scene: Scene
+): Story[] {
 	if (!_stories) return;
 	let stories: Story[];
 	stories = preStory(_stories);
-	stories = stories.map(explorePersos(inherit?.persos));
+	stories = stories.map(explorePersos(inherit?.persos, scene));
 	stories = mergeStories(stories, inherit.stories);
 	return stories;
 }
 
-function explorePersos(inherit: Perso[]) {
-	return function explorePersosInherit(_story: Story) {
-		if (!_story.persos) return _story;
-		const channel: Channel = _story.channel || null;
-		const persos = pipe(
+function explorePersos(inherit: Perso[], scene: Scene = null) {
+	return function explorePersosInherit(story: Story) {
+		if (!story.persos) return story;
+		const channel: Channel = story.channel || null;
+		const persos: Perso[] = pipe(
 			prePersos,
 			dispatchPersoProps(channel),
 			mergePersosInherit(inherit),
-			filterProtos
-		)(_story.persos);
-		return { ..._story, persos };
+			filterProtos,
+			resolveTemplate({ scene, story })
+		)(story.persos);
+		return { ...story, persos };
 	};
 }
 
+interface Context {
+	scene?: Scene;
+	story?: Story;
+}
+function resolveTemplate(context: Context) {
+	return function templatePerso(persos: Perso[]) {
+		if (!context.scene) return persos;
+		return persos.map(
+			(perso: Perso): Perso => parseVariables(perso, { perso, ...context })
+		);
+	};
+}
 function exploreShared(_scene: SharedFileEntry, inherit: Inherit) {
 	if (!_scene) return null;
 	let stories: Story[];
