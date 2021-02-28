@@ -6,6 +6,7 @@ export function mergeStories(_stories: Story[], _inherit: Story[]) {
 	if (!_stories.length || !_inherit.length) return _stories;
 	const shared = new Map(Array.from(_inherit, (story) => [story.id, story]));
 	const stories = new Map(Array.from(_stories, (story) => [story.id, story]));
+
 	for (const [id, _story] of stories) recMerge(id, _story);
 
 	function recMerge(id: string, _story: Story) {
@@ -14,6 +15,7 @@ export function mergeStories(_stories: Story[], _inherit: Story[]) {
 		const _proto = recMerge(_story.extends, story);
 		if (_proto) {
 			const { extends: _, ...others } = merge.story(_proto, _story);
+
 			stories.set(id, others);
 		}
 		return _story;
@@ -25,7 +27,8 @@ const merge = {
 	story(_proto: Story | StoryEntry, _story: Story | StoryEntry) {
 		if (!_proto || Object.keys(_proto).length === 0) return _story;
 		if (!_story || Object.keys(_story).length === 0) return _proto;
-		const persos = this.persos(_proto.persos, _story.persos);
+		let persos = this.persos(_proto.persos, _story.persos);
+		persos = this._updateId(persos, _story.id);
 		const eventimes = this.eventimes(_proto.eventimes, _story.eventimes);
 		return Object.assign(
 			{},
@@ -35,7 +38,7 @@ const merge = {
 			persos && persos.length && { persos }
 		);
 	},
-	persos(_protos, _persos: Perso[]) {
+	persos(_protos, _persos: Perso[] = []) {
 		const persos = new Map(Array.from(_persos, (perso) => [perso.id, perso]));
 		for (const p of _protos) !persos.has(p.id) && persos.set(p.id, p);
 		return Array.from(persos.values());
@@ -60,5 +63,11 @@ const merge = {
 	},
 	_setKeyEvent(event: Eventime) {
 		return `${event.name}.${event.startAt}`;
+	},
+	_updateId(persos: Perso[], _id: string) {
+		return persos.map((perso) => {
+			const id = _id + '_' + perso.id;
+			return { ...perso, id };
+		});
 	},
 };

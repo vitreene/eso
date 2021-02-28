@@ -16,7 +16,7 @@ const Player = async (path) => {
 	console.log('PLAYER casting', casting);
 	new Scene(casting[0]);
 };
-const path = '/stories/App20.yml';
+const path = '/stories/App21.yml';
 
 // const path = ['/stories/story10.yml'];
 

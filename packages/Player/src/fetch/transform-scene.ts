@@ -1,7 +1,6 @@
 import { nanoid } from 'nanoid';
 
 import { pipe } from '../shared/utils';
-import { transformEventimes } from './transform-eventimes';
 
 import {
 	CONTAINER_ESO,
@@ -70,7 +69,7 @@ export function getStories(cast: Cast[]) {
 }
 
 export function preStory(stories) {
-	return stories.map(pipe(setIdAndChannel, setStage, transformEventimes));
+	return stories.map(pipe(setIdAndChannel, setStage));
 }
 
 function addStartAndEndEvents(story, cast) {
@@ -159,14 +158,14 @@ function setIdAndChannel(_story: StoryEntry) {
 	return story;
 }
 
-function setStage(_story: StoryEntry) {
+export function setStage(_story: Story) {
 	let stage: StageEntry;
 	switch (typeof _story.stage) {
 		case undefined:
 			stage = DEFAULT_SCENE_STAGE['4/3'];
 			break;
 		case 'string':
-			const name = _story.stage as string;
+			const name = (_story.stage as unknown) as string;
 			stage = SCENE_STAGE[name] || DEFAULT_SCENE_STAGE['4/3'];
 			break;
 
@@ -174,5 +173,5 @@ function setStage(_story: StoryEntry) {
 			stage = _story.stage as StageEntry;
 			break;
 	}
-	return { ..._story, stage };
+	return { ..._story, ...(stage && { stage }) };
 }

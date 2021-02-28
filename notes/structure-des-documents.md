@@ -485,6 +485,12 @@ scene : {id, entry, channel}
 story : {id, entry}
 perso : {id, content?}
 data: any
+
+### comment cibler un autre perso ? 
+y-a-t'il une raison d'employer une variable lorsqu'on cible un slot ? 
+La complexité actuelle, c'est le layer qui contient n slots, qu'il faut cibler = layer.id + slot.id 
+peut-on faire plus simple ?
+
 ### comment traiter une expression ?  
 exemple, je recois un index, j'ai besoin de renvoyer 'index + 1' 
 les datas recues par la fonction peuvent comporter des méthodes à la place d'un tableau de données 

@@ -1,15 +1,18 @@
 import { pipe } from '../shared/utils';
 import { mergePersos } from './merge-persos';
 import { mergeStories } from './merge-stories';
+import { transformEventimes } from './transform-eventimes';
+
 import {
 	dispatchPersoProps,
 	filterProtos,
 	prePersos,
 } from './transform-persos';
 import {
+	setStage,
+	preStory,
 	getEntry,
 	getStories,
-	preStory,
 	sceneCreateCast,
 	sceneExpandCast,
 } from './transform-scene';
@@ -65,7 +68,21 @@ function exploreStories(
 	stories = preStory(_stories);
 	stories = stories.map(explorePersos(inherit?.persos, scene));
 	stories = mergeStories(stories, inherit.stories);
+	console.log(stories[1]);
+
+	stories = stories.map(transformEventimes);
+	stories = stories.map(setStage);
+	stories = stories.map(resolveTemplateStory(scene));
 	return stories;
+}
+
+function resolveTemplateStory(scene: Scene) {
+	return ({ persos, ...story }): Story => {
+		const _persos = resolveTemplate({ scene, story })(persos);
+
+		const _story = parseVariables(story, { scene, story });
+		return { ...(_story as Story), persos: _persos };
+	};
 }
 
 function explorePersos(inherit: Perso[], scene: Scene = null) {
@@ -85,8 +102,10 @@ function explorePersos(inherit: Perso[], scene: Scene = null) {
 
 interface Context {
 	scene?: Scene;
-	story?: Story;
+	// story?: Story | Omit<Story, 'persos' >;
+	story?: any;
 }
+
 function resolveTemplate(context: Context) {
 	return function templatePerso(persos: Perso[]) {
 		if (!context.scene) return persos;
@@ -95,21 +114,25 @@ function resolveTemplate(context: Context) {
 		);
 	};
 }
-function exploreShared(_scene: SharedFileEntry, inherit: Inherit) {
-	if (!_scene) return null;
-	let stories: Story[];
-	let persos: Perso[];
-	if (_scene.persos)
-		persos = pipe(prePersos, mergePersosInherit(inherit.persos))(_scene.persos);
-	if (_scene.stories) {
-		stories = _scene.stories.map(
+function exploreShared(_shared: SharedFileEntry, inherit: Inherit) {
+	if (!_shared) return null;
+	let stories: Story[] = [];
+	let persos: Perso[] = [];
+	if (_shared.persos)
+		persos = pipe(
+			prePersos,
+			mergePersosInherit(inherit.persos)
+		)(_shared.persos);
+	if (_shared.stories) {
+		stories = _shared.stories.map(
 			explorePersos([...inherit?.persos, ...persos])
 		);
+		// FIXME stories.shared est muté ; ne pas appliquer de template ici !
 		stories = mergeStories(stories, inherit.stories);
 	}
 	return Object.assign(
 		{},
-		_scene,
+		_shared,
 		stories && stories.length && { stories },
 		persos && persos.length && { persos }
 	);

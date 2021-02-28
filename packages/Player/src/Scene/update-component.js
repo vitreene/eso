@@ -17,6 +17,7 @@ export function updateComponent(
 	// zoom enter
 	if (update.enter) perso.prerender(box.zoom);
 
+	// console.log('updateComponent', { perso, update, changed, box, updateSlot });
 	// RESLOT , RESCALE, TRANSITIONS
 	Eso.transition({ perso, update, changed, box, updateSlot });
 
