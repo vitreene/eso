@@ -4,11 +4,11 @@
     entry: scene-w-telco
     cast:
       - story01:
-          startAt: go2
+          startAt: go1
           root: *TC
       - story02:
           # startAt: end-story01
-          startAt: go1
+          startAt: go2
           root: *MAIN
 
     stories:
@@ -18,60 +18,19 @@
         persos: 
           - *IMG : 
               id: image
-              initial: 
-                content: ./ikono/perfume_002.jpg
-                fit: cover
-                classStyle: { position: absolute } 
-                dimensions: { width: 100%, height: 100%}
-              emit:
-                click:
-                  - {event: { channel: TC, name: pause }}
-              listen:
-                - { event: go, action: enter }
-                - { event: ev012, action: step01 }
-                - { event: ev014, action: step02 }
-                - { event: end-rescale-image, action: end-rescale-image }
-              actions:
-                end-rescale-image :
-                  style: { outline: 20px solid red	}
-                enter: 
-                  move: '${story.id}_grid-01_s03'
-                  transition: { to: fadeIn }
-                step01:
-                  move: { slot: '${story.id}_fond_s01' , rescale: true}
-                  transition:
-                    to: { opacity: 0.5 }
-                step02:
-                  move: { slot: '${story.id}_grid-01_s02', rescale: true}
-                  transition:
-                    to: { opacity: 1 }
-          - *IMG : 
-              id: image2
-              initial: 
-                content: ./ikono/vignette.jpg
-                fit: cover
-                classStyle: {position: absolute}
-              listen:
-                - { event: go, action: enter }
-                - { event: ev011, action: step01 }
-                - { event: ev013, action: step02 }
-                - { event: end-rescale-image2, action: end-rescale-image2 }
-              actions: 
-                end-rescale-image2 :
-                  style: {outline: 20px solid blue}
-                enter:
-                  move: '${story.id}_grid-01_s02' 
-                step01:
-                  move: { slot: '${story.id}_grid-01_s01', rescale: true }
-                  transition: { to: { opacity: 0.5 } }
-                step02:
-                  move: { slot: '${story.id}_fond_s01', rescale: true }
-                  transition: { to: { opacity: 1 } }
-
+              extends: image-shared
+              initial:
+                content: ./ikono/9.jpg
         
       - id: story02
         channel: story02
         extends: anim01
+        persos:
+          - *IMG : 
+              id: image2
+              extends: image2-shared
+              initial:
+                content: ./ikono/Aesthedes.jpg
 
       
       - id: story03
@@ -445,6 +404,58 @@
                   mousedown:
                     event: { channel: *STRAP, name: move }
                     data: { id: sprite, event: move-sprite }
+      persos: 
+        - *IMG : 
+            id: image-shared
+            initial: 
+              content: ./ikono/perfume_002.jpg
+              fit: cover
+              classStyle: { position: absolute } 
+              dimensions: { width: 100%, height: 100%}
+            emit:
+              click:
+                - {event: { channel: TC, name: pause }}
+            listen:
+              - { event: go, action: enter }
+              - { event: ev012, action: step01 }
+              - { event: ev014, action: step02 }
+              - { event: end-rescale-image, action: end-rescale-image }
+            actions:
+              end-rescale-image :
+                style: { outline: 20px solid red	}
+              enter: 
+                move: '${story.id}_grid-01_s03'
+                transition: { to: fadeIn }
+              step01:
+                move: { slot: '${story.id}_fond_s01' , rescale: true}
+                transition:
+                  to: { opacity: 0.5 }
+              step02:
+                move: { slot: '${story.id}_grid-01_s02', rescale: true}
+                transition:
+                  to: { opacity: 1 }
+        - *IMG : 
+            id: image2-shared
+            initial: 
+              content: ./ikono/vignette.jpg
+              fit: cover
+              classStyle: {position: absolute}
+            listen:
+              - { event: go, action: enter }
+              - { event: ev011, action: step01 }
+              - { event: ev013, action: step02 }
+              - { event: end-rescale-image2, action: end-rescale-image2 }
+            actions: 
+              end-rescale-image2 :
+                style: {outline: 20px solid blue}
+              enter:
+                move: '${story.id}_grid-01_s02' 
+              step01:
+                move: { slot: '${story.id}_grid-01_s01', rescale: true }
+                transition: { to: { opacity: 0.5 } }
+              step02:
+                move: { slot: '${story.id}_fond_s01', rescale: true }
+                transition: { to: { opacity: 1 } }
 
 - shared:
     persos:

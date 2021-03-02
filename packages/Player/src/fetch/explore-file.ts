@@ -49,6 +49,7 @@ export function exploreFile(file: SceneEntry, inherit: Inherit) {
 function exploreScene(scene: Scene, inherit: Inherit) {
 	const sceneShared = exploreShared(scene.shared, inherit);
 	const _inherit = mergeProps(sceneShared, inherit, ['stories', 'persos']);
+
 	const _stories = exploreStories(scene.stories, _inherit, scene);
 	const cast: Cast[] = sceneExpandCast(scene.cast) || sceneCreateCast(_stories);
 	const entry = getEntry(scene.entry)(_stories);
@@ -91,8 +92,8 @@ function explorePersos(inherit: Perso[], scene: Scene = null) {
 		const channel: Channel = story.channel || null;
 		const persos: Perso[] = pipe(
 			prePersos,
-			dispatchPersoProps(channel),
 			mergePersosInherit(inherit),
+			dispatchPersoProps(channel),
 			filterProtos,
 			resolveTemplate({ scene, story })
 		)(story.persos);
