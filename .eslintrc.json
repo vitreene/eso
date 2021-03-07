@@ -14,7 +14,9 @@
 		"@typescript-eslint/explicit-function-return-type": "off",
 		"@typescript-eslint/explicit-module-boundary-types": "off",
 		"@typescript-eslint/ban-types": "off",
-		"ts-ignore": "warning"
+		"ts-ignore": "off",
+		"no-empty-function": "off",
+		"@typescript-eslint/no-empty-function": ["warn"]
 	},
 	"ignorePatterns": ["*.config.js"]
 }

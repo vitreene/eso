@@ -1,16 +1,7 @@
 // storeNodes à transférer vers Scene ?
 import { o } from 'sinuous';
+import { emitter } from '../App/init';
 
-import {
-	SceneCast,
-	ScenePersos,
-	Story,
-	StoryWoEventimes,
-} from '../../../types/Entries-types';
-import { ImagesCollection } from '../../../types/initial';
-import { Eventime } from '../../../types/eventime';
-
-import { CONTAINER_ESO, DEFAULT_NS } from '../data/constantes';
 import { Slots } from './store-slots';
 import { OnScene } from './on-scene.js';
 import { updateComponent } from './update-component';
@@ -27,6 +18,24 @@ import { addEventList } from './runtime/add-event-list';
 
 import { Stage } from '../zoom';
 
+import { CONTAINER_ESO, DEFAULT_NS, MAIN } from '../data/constantes';
+import {
+	SceneCast,
+	ScenePersos,
+	Scene as SceneType,
+	Story,
+	StoryWoEventimes,
+	Cast,
+} from '../../../types/Entries-types';
+import { ImagesCollection } from '../../../types/initial';
+import { Eventime } from '../../../types/eventime';
+
+// emitter.onAny(function (event, value) {
+// 	console.log('EVENT->', event, value);
+// 	console.log(emitter.listeners(event));
+// 	console.log(emitter.eventNames());
+// });
+
 export class Scene {
 	id: string;
 	channel: string;
@@ -41,7 +50,6 @@ export class Scene {
 	timeLine: TimeLiner = new TimeLiner();
 	clock: Clock;
 	onScene: OnScene = new OnScene(this.slots);
-	// start: () => void;
 	// nodes: any = storeNodes;
 	// telco: () => {};
 	// onStart: () => {};
@@ -49,24 +57,48 @@ export class Scene {
 	onEndQueue = [];
 
 	// constructor({ scene, stories }) {
-	constructor({ stories, ...scene }) {
+	constructor({ stories, ...scene }: SceneType) {
 		this.id = scene.id;
 		this.name = scene.name;
 		this.description = scene.description;
 
 		this.slot = this.slot.bind(this);
+		// this.onMount = this.onMount.bind(this);
+		// this._setStoryCast = this._setStoryCast.bind(this);
 		this.addStory = this.addStory.bind(this);
 		this._publish = this._publish.bind(this);
 		this._updateSlot = this._updateSlot.bind(this);
 		this.renderOnResize = this.renderOnResize.bind(this);
 
 		registerStraps({ cast: () => this.cast });
-		Promise.all(stories.map(this.addStory)).then(this.start());
+
+		Promise.all(stories.map(this.addStory))
+			.then(() => this.initOnMount(scene.cast, stories))
+			.then(this.start());
+	}
+
+	initOnMount(_cast: Cast[], stories: Story[]) {
+		for (const cast of _cast) {
+			const story = stories.find((s) => s.id === cast.id);
+			emitter.prependListener([MAIN, cast.startAt], this.onMount(story));
+		}
+	}
+
+	onMount(story: Story) {
+		return () => {
+			console.log('onMount-->', story.id);
+			this._setStoryCast(story);
+			this.activateZoom(story.id);
+			console.log(this.cast);
+		};
 	}
 
 	start() {
 		const _clock = clock(this.timeLine);
 		addEventList(_clock.chrono, this.timeLine);
+
+		console.log(emitter.listeners('main.go1'));
+
 		return _clock.start;
 	}
 
@@ -82,7 +114,6 @@ export class Scene {
 
 	private async _register(story: StoryWoEventimes) {
 		console.log('_register', story);
-
 		const { isEntry, root, channel, persos } = story;
 		await registerImages(persos, this.imagesCollection);
 		registerPersos(persos, this.persos, {
@@ -92,22 +123,30 @@ export class Scene {
 		registerActions(channel, persos, this._publish(story.id));
 
 		initRuntime(root, isEntry, this.persos, this.onScene);
-
-		this._setStoryCast(story);
-		this.activateZoom(story.id);
 	}
 
+	/* 
+	Cette fonction ne devrait-elle pas etre activée seulement lorsque un élément entre en scene ? cela permattrait de trouver un slot 
+	ou : un slot sera forcément un perso, donc disponible ici
+	
+	*/
 	private _setStoryCast({ id, root = CONTAINER_ESO, stage, persos }: Story) {
 		// TODO a terme, les slots sont des persos
+
+		//FIXME si root est un slot, il n'est pas accesible ici et maintenant
 		const node = this.persos.has(root)
 			? this.persos.get(root).node
 			: document.getElementById(root);
+
+		console.log(node);
+
 		if (!node) return;
 
 		this.cast[id] = {
 			zoom: new Stage(node, stage, this.renderOnResize(id)),
 			persos: new Set(persos.map((p) => p.id)),
 		};
+		console.log(this.cast[id]);
 	}
 
 	renderOnResize(storyId: string) {
@@ -142,11 +181,12 @@ export class Scene {
 				const perso = this.persos.get(update.id);
 				const up = this.onScene.update(update);
 				const zoom = this.cast[id].zoom.box;
-
 				updateComponent(perso, up, zoom, this._updateSlot);
 			};
+
 			return (other: any) => onSceneUpdateComponent({ ...data, ...other });
 		}
+
 		return publish.bind(this);
 	}
 

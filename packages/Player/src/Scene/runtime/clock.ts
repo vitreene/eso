@@ -13,17 +13,17 @@ export type Clock = {
 //////// CLOCK /////////////////////////
 // TODO use performance.now()
 export function clock(timeLiner: TimeLiner): Clock {
-	const beat: number = 10; // tout les 1/100e de seconde
+	const beat = 10; // tout les 1/100e de seconde
 	const startTime: number = Date.now();
 	const maxCount: number = 100000 + 1;
 
 	let tick: number = beat;
-	let count: number = 0;
-	let elapsed: number = 0;
-	let secondes: number = 0;
+	let count = 0;
+	let elapsed = 0;
+	let secondes = 0;
 	let timeout: any;
 
-	let isPlaying: boolean = true;
+	let isPlaying = true;
 
 	emitter.on([TC, PLAY], () => {
 		isPlaying = true;
@@ -41,7 +41,7 @@ export function clock(timeLiner: TimeLiner): Clock {
 		loop();
 	});
 
-	emitter.emit('*.init', { chrono: 0 });
+	// emitter.emit('*.init', { chrono: 0 });
 
 	const timeLine = timeLiner.timeLine;
 	const eventDatas = timeLiner.eventDatas;

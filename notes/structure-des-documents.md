@@ -507,3 +507,12 @@ Le contexte est différent d'un mappage en finalisation du chargement de la scen
 Un modèle destiné à un module jeu ne doit pas etre taggé au chargement, il n'y à pas de sens à faire une application partielle. 
 -> uniquement la partie template, le reste des traitements communs peut etre effectué ?
 ou bien le modele, vu son emploi, n'estpas du tout traité au chargement. il pourra eventuellement bénéficier des fonctions de pré-traitement, à l'int"rieur du jeu.
+
+
+## story : onmount
+lancer une fonction lorsqu'une story est lancée.
+permet d'identifier son root et de calculer son zoom
+les stories n'ont pas de listen ou actions, aussi il faut créer un event en dehors de ce dispositif
+- quand l'event décrit dans cast se produit, lancer la function onmount qui contient
+		Scene.setStoryCast(story);
+		Scene.activateZoom(story.id);

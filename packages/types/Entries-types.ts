@@ -38,9 +38,9 @@ export type Cast = {
 };
 export interface Scene {
 	id: string;
-	name: string;
+	name?: string;
+	description?: string;
 	entry: string;
-	// cast: { [ref: string]: Cast }[];
 	cast: Cast[];
 	stories?: Story[];
 	shared?: SharedFileEntry;
