@@ -14,13 +14,13 @@
 
 ### Scene 
 Une scene est une compostion d'une ou plusieurs stories. 
-? Une story ne peut apparaitre qu'une seule fois dans une scene -> sauf si isolation des events et mecanisme d'events partagés
-? Une story peut-elle en contenir une autre, ou bien une scene peut en contenir une autre ?
+[x] ? Une story ne peut apparaitre qu'une seule fois dans une scene -> sauf si isolation des events et mecanisme d'events partagés
+[x] ? Une story peut-elle en contenir une autre, ou bien une scene peut en contenir une autre ?
 
 **-> Une story peut etre instanciée dans plusieurs scene, ou dans la meme scene ; il lui faut un id unique.**
 
 #### instanciation d'une story
--> Dans le contexte du shell, peu utile. Mais pour vitreene ?
+[x[ -> Dans le contexte du shell, peu utile. Mais pour vitreene ?
 une story pourrait-elle néanmoins apparaitre une fois dans deux scenes imbriquées dans une troisième ?
 
 Comment isoler une story pour pouvoir l'instancier ?
@@ -39,7 +39,7 @@ amélioration possible, un listener sur le parent ; attention à des boucles inf
 Les persos ne doivent pas pouvoir s’« appeler » par leurs id. Seuls les messages des events permettent de les modifier. 
 Les ids doivent etre générés aléatoirement.
 
-Á refléchir : une propriété "label" qui a le role d'un id, défini par l'utilisateur, pour addresser quelque chose au perso nommé (cela contredit l'affirmation précédente ). 
+[x] Á refléchir : une propriété "label" qui a le role d'un id, défini par l'utilisateur, pour addresser quelque chose au perso nommé (cela contredit l'affirmation précédente ). 
 Cela pourrait servir pour utiliser des composants tierce-parties qui cherchent un node à partir de leur id
 
 Les id peuvent etre préfixés par le nom de la story
@@ -65,7 +65,7 @@ un workspace *Project* destiné à y placer les contenus
 - css
 
 ### micro-animation sur les textes
-    - effets nommés 
+[/]   - effets nommés 
 
 ### refs et langues pour les textes
 ref et langues pourraient etre résolues lors du parsage, et autoriser une écriture simplifiée en intégrant des réglages par défaut.
@@ -81,7 +81,10 @@ Cependant, si je garde la possibilité de modifier un contenu au runtime (compte
     - lecture auto / plein ecran / contraintes globales de lecture
 
 ### import images dans fetching
--> la création de scene devient synchrone
+la création de scene devient synchrone. 
+->  **non** : les fichiers yaml pourraient ne servir qu'en phase de développement, un fichier json serait généré pour l'exé. Celui-ci reste accessible et modifiable.
+le pré-chargment des images peut avoi lieu après chargement et analyse des json, et avant le début de la scene. 
+Après chargement des images de la première scene, la scene est lancée, le reste se fait en background. Idéalement, chaque scene ne peut démarrer que si les medias ont été chargés. 
 
 ### play/pause controle les animations par un update régulier
 
@@ -101,6 +104,8 @@ Le composant audio pourrait etre un Strap, dans la mesure ou il n'a pas necessai
 - il est apporteur d'eventimes
 - les eventimes peuvent varier selon la langue, ils doivent etre neutralisés ou effacés au besoin
 - tenter d'implementer un changement de langue à la volée
+-> trop complexe, un changement dans l'ordre des events peut perturber l'animation en cours
+
 - un canal audio doit etre ouvert à la première intéraction, et ne pas disparaitre au changement de page. 
 Le strap Audio doit manager l'ajout et le retrait de canaux ainsi que l'activation des eventimes liés. 
 
@@ -119,7 +124,7 @@ Le strap Audio doit manager l'ajout et le retrait de canaux ainsi que l'activati
     
 ## bugs/améliorations
 
-- **Transform yaml** : dans les stories, extends ne fonctionne pas avec les persos externes. 
+[x] **Transform yaml** : dans les stories, extends ne fonctionne pas avec les persos externes. 
 	Revoir le système de passes :
 		- objet 'proto', du meme niveau que scene, dans lesquels seront placés tous les prototypes ET éléments partagés. Les éléments non utilisés sont effacés.
 		- un proto peut etre défini à l'intérieur d'une story, sa portée est la story, en cas de conflit de nom, il est prioritaire.
@@ -138,7 +143,7 @@ Le strap Audio doit manager l'ajout et le retrait de canaux ainsi que l'activati
 
 
 - ~~**veso/ "pre" : preparation des modifications**~~
-- **Transition**
+[x] **Transition**
 concerne : dimensions, move, transitions
 séparer ce module du reste de veso ; en fait-il partie ?
 lié à veso : besoin d'accéder à l'état du perso : node, css...
@@ -200,3 +205,117 @@ transitions est géré par l'app.
 Emitter est identique pour toutes les instances d'Eso 
 
 
+# To do 07/03/21
+au choix :
+1. terminer une scene :
+  - retirer les events
+  - detruire les nodes / persos,
+  - events vers telco : 
+    - scene precedente / suivante / rejouer / sommaire
+  - event end-scene en fin de lecture dans un eventime, ou interrompu
+  - enregistrer le statut de la scene :
+    - durée de lecture
+    - interrompu / partiel
+    - autres : resultat d'un questionnaire, score...
+  - animation de retrait, d'attente du chargement, d'entrée 
+
+2. composant sound
+  - sans element audio ?
+  - recoit les events :
+    - play, pause, seek, tick
+    - start-sound
+  - émet : end-sound
+  L'element audio est disponible au chargement de la page, ne disparait pas en terminant une scene, se lance à la première intéraction
+  - utilise des canaux, permettant de jouer plusieurs sons en meme temps
+  - est conçu comme un strap
+
+3. revoir slots et layers
+  revoir ces concepts : 
+  - Slot est une possibilité de content, comme text ou image
+  - l'id du Slot est celui du perso : un Slot par perso.
+  - Layer n'est plus un composant à part
+  - Layer devient List : un Bloc conteneur et une liste de Bloc slots. 
+  La List est générée par une boucle qui lit les descriptions de chaque slot
+  Chaque Slot etant un Perso, il accepte des actions
+
+```yaml
+  *LIST
+    id: list
+    initial: {className: grid-list}
+    slots:
+      - id: *MAIN
+          initial: { classStyle: {display: grid, grid-column: 1, overflow: hidden} }
+      - id: *TC
+          initial: { classStyle: {display: grid, grid-column: 2} }
+      - for:
+          count: 5
+          offset: 2
+          id: ${perso.id}_slot_${count}
+          nature: *BLOC
+          initial: { classStyle: {display: grid, grid-column: '${count}' } }
+```
+la propriété slot  est un tableau qui accepte deux types d'objets : 
+- une description de Perso 
+- for, qui permet de créer une série de Persos :
+  - count: nombre de Persos à créer
+  - offset: nombre de départ pour count. si offset est une lettre, suivre l'ordre alphabetique
+  - nature : type de Perso généré
+  - initial, actions, listen, emit sont disponibles
+
+  List doit etre exécuté tot dans le parsage du fichier
+
+note : d'autres structures que  for sont-elles pertinentes dans le fichier de construction, notamment les conditions if/else ou switch ?
+
+Par exemple, construire des persos en fonction d'une variable de personnalisation 
+ou bien choisir un contenu en fonction d'une valeur. 
+Ceci pourrait etre obtenu simplement par une action, 
+- en associant un event à la variable,
+- en utilisant les datas d'un eventime
+ou bien en utilisant les substitutions ${data.xx}
+
+4. Apps : shell ou vitreene, des spécificités
+vitreene presente des sequences composées d'au maximum 12 diapos, chaque diapo peut contenir à son tour une séquence. 
+Une diapo contient une animation d'entrée, une d'attente, une de sortie ; 
+Une diapo prend fin au bout d'un certain délai, ou lorsque chaque partie à émis une event de fin. 
+une séquence peut boucler sur elle-meme un certain nombre de fois ;
+une série de séquences peut se succéder en alternance.
+
+La logique est distincte du shell ; cependant, Scene devrait pouvoir jouer ces deux types sans modifications exclusives
+
+5. créer une nouvelle démo
+La version "App22-inception" est une performance d'un stress-test illisible, qui ne montre seulement que l'on peut animer une vingtaine d'éléments à la fois. La réaction sera : à quoi bon ?
+Pour présenter le potentiel du projet, je dois aussi montrer ce qu'il n'est pas, ou pas encore : une alternative au shell.
+Le shell est une app complete, il y aura toujours des fonctions manquantes sur veso, que je ne compte pas développer dans mon coin.
+Il est judicieux dans ce cas de proposer une démo qui colle plutot à vitreene, par exemple une affiche dynamique du menu d'un restaurant.
+La scene doit mettre en valeur les qualités du projet :
+- multi-stories, 
+- héritage,
+- zooms différenciés
+- animations : interpolations de couleur, size image...
+- scene en boucle :  presente indéfiniment plusieurs carousels faits de suites de stories. un bouton permet de terminer la scene.
+- carousel de stories. Dans le contexte de vitreene, la timeline n'a pas la meme importance que le shell. 
+Une story est jouée par une suite d'eventimes. ces eventimes doivent pouvoir etre soit réinitialisés, soit rajoutés à la timeline pour une nouvelle exécution. Un event déclencherait un nouveau départ de la story
+
+6.  ordre des composants 
+Lorsque un élément se trouve dans un slot occupé, il prend spontanément la place haute ; il faudrait convenir d'un ordre fixe :
+  - par un nombre,
+  - par un mot-clé : front, back... 
+  "front" voudrait dire : "reste devant quel que soit les autres éléments qui viendraient après". si deux éléments partagent le meme mot-clé, c'est l'ordre d'apparition qui est retenu ( le dernier est le plus important) ou bien, la dernière action (cas actuel)
+Distinguer "front-permanent" de "front" qui dirait : "reste toujours devant" vs "passe devant cette fois-ci" 
+
+Est-ce que l'ordre d'écriture prime ? 
+- oui, mais en mode maitrisé : attribution d'un numéro d'ordre qui sert tout le long de la vie du composant
+- surchargé par l'attribution d'un numéro d'ordre, dans une action (dans initial, il n'y a pas de placement)
+un changement d'ordre, à l'intérieur d'un meme slot, entraine une transition avec les autres éléments ! en option, désactiver les autres mouvements 
+exemple : dans le jeu "devinez le mot", les cartes posées dans le sabot ne devraient pas bouger lorsque l'une d'entre elles est manipulée.
+-> une fonction permet de passer d'une position statique à une absolute, en laissant les éléments en place. 
+
+le calcul de l'ordre doit se faire dans updateComponent
+
+7. résoudre les id des instances
+
+8.  signifier que l'on ne veut pas d'un élément lorsqu'on instancie une story
+Le cas se présente où je ne veux pas d'une image dans une variante d'animation. Il suffit actuellement de la redéfinir, en lui retirant ses actions. Une méthode plus explicite serait bienvenue :
+persos: - ignore : ['id1', 'id2', ...] 
+
+est-ce que cette propriété ignore pourrait etre employée dans un perso pour retirer des listen, emit ou actions ?

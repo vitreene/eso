@@ -516,3 +516,15 @@ les stories n'ont pas de listen ou actions, aussi il faut créer un event en deh
 - quand l'event décrit dans cast se produit, lancer la function onmount qui contient
 		Scene.setStoryCast(story);
 		Scene.activateZoom(story.id);
+
+## inceptions : améliorations
+le principe fonctionne, mais des clarifications seraient les bienvenues :
+
+
+
+
+
+ 
+
+
+
