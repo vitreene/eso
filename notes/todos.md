@@ -3,28 +3,29 @@
 ## Fait
 
 ### un système d'écriture des fichiers en yaml
-    - definition de la syntaxe 
-        - definition des persos
-        - definitions des events
-        - défintion des pages, chapitres...
-        - ressources langues
-    - parser
+- definition de la syntaxe 
+    - definition des persos
+    - definitions des events
+    - défintion des pages, chapitres...
+    - ressources langues
+- parser
 
 ## En cours
 
 ### Scene 
 Une scene est une compostion d'une ou plusieurs stories. 
-[x] ? Une story ne peut apparaitre qu'une seule fois dans une scene -> sauf si isolation des events et mecanisme d'events partagés
-[x] ? Une story peut-elle en contenir une autre, ou bien une scene peut en contenir une autre ?
+- [x] ? Une story ne peut apparaitre qu'une seule fois dans une scene -> sauf si isolation des events et mecanisme d'events partagés
+- [x] ? Une story peut-elle en contenir une autre, ou bien une scene peut en contenir une autre ?
 
-**-> Une story peut etre instanciée dans plusieurs scene, ou dans la meme scene ; il lui faut un id unique.**
+>**Une story peut etre instanciée dans plusieurs scene, ou dans la meme scene ; il lui faut un id unique.**
 
 #### instanciation d'une story
-[x[ -> Dans le contexte du shell, peu utile. Mais pour vitreene ?
-une story pourrait-elle néanmoins apparaitre une fois dans deux scenes imbriquées dans une troisième ?
+- [x] Dans le contexte du shell, peu utile. Mais pour vitreene ?
 
-Comment isoler une story pour pouvoir l'instancier ?
-Distinguer les composants qui appartiennent à Story et à Scene
+    Une story pourrait-elle néanmoins apparaitre une fois dans deux scenes imbriquées dans une troisième ?
+
+    Comment isoler une story pour pouvoir l'instancier ?
+    Distinguer les composants qui appartiennent à Story et à Scene
 
 il faut :
 #### root
@@ -32,23 +33,29 @@ Le point d'entrée est unique et distinct. Il dépend du parent.
 
 #### zoom et cadre
 La story se joue dans un cadre virtuel, centré dans le slot où il est monté.
+
 Le zoom est calculé par rapport au parent, mais il n'est recalculé qu'en cas de resize global de la fenetre
-amélioration possible, un listener sur le parent ; attention à des boucles infinies si l'enfant modifie la taille du parent 
+amélioration possible, un listener sur le parent ; attention à des boucles infinies si l'enfant modifie la taille du parent.
 
 #### id's
 Les persos ne doivent pas pouvoir s’« appeler » par leurs id. Seuls les messages des events permettent de les modifier. 
 Les ids doivent etre générés aléatoirement.
 
-[x] Á refléchir : une propriété "label" qui a le role d'un id, défini par l'utilisateur, pour addresser quelque chose au perso nommé (cela contredit l'affirmation précédente ). 
+- [x] Á refléchir : une propriété "label" qui a le role d'un id, défini par l'utilisateur, pour addresser quelque chose au perso nommé (cela contredit l'affirmation précédente ). 
+
 Cela pourrait servir pour utiliser des composants tierce-parties qui cherchent un node à partir de leur id
 
 Les id peuvent etre préfixés par le nom de la story
 
 #### events
 Les events agissent dans un contexte, par défaut celui de la story 
+
 Par défaut, les évents définis à l'intérieur d'une story n'agissent que sur elle.
-si un perso doit répondre à un event, il utilise le canal "main" 
+
+si un perso doit répondre à un event, il utilise le canal "main"
+
 les stories pourraient aussi capter des events "main" et les transmettre en interne
+
 eventemitter2 permet de chainer les channels, cela pourrait servir à mieux préciser une cible 
 
 
@@ -65,10 +72,14 @@ un workspace *Project* destiné à y placer les contenus
 - css
 
 ### micro-animation sur les textes
-[/]   - effets nommés 
+- [ ]  effets nommés 
+
+todo : passer les refs dans un fichier secondaire
+
 
 ### refs et langues pour les textes
 ref et langues pourraient etre résolues lors du parsage, et autoriser une écriture simplifiée en intégrant des réglages par défaut.
+
 Cependant, si je garde la possibilité de modifier un contenu au runtime (compteurs, inputs...), il faut garder de la logique dans le composant
 
 ## A faire 
@@ -76,14 +87,17 @@ Cependant, si je garde la possibilité de modifier un contenu au runtime (compte
 ### un éditeur visuel
 
 ### parametres d'application :
-    - langue, sous-titres,
-    - zoom ?
-    - lecture auto / plein ecran / contraintes globales de lecture
+- langue, sous-titres,
+- zoom ?
+- lecture auto / plein ecran / contraintes globales de lecture
 
 ### import images dans fetching
 la création de scene devient synchrone. 
-->  **non** : les fichiers yaml pourraient ne servir qu'en phase de développement, un fichier json serait généré pour l'exé. Celui-ci reste accessible et modifiable.
-le pré-chargment des images peut avoi lieu après chargement et analyse des json, et avant le début de la scene. 
+
+>  **NON** : les fichiers yaml pourraient ne servir qu'en phase de développement, un fichier json serait généré pour l'exé. Celui-ci reste accessible et modifiable.
+
+Le pré-chargment des images peut avoi lieu après chargement et analyse des json, et avant le début de la scene. 
+
 Après chargement des images de la première scene, la scene est lancée, le reste se fait en background. Idéalement, chaque scene ne peut démarrer que si les medias ont été chargés. 
 
 ### play/pause controle les animations par un update régulier
@@ -104,7 +118,7 @@ Le composant audio pourrait etre un Strap, dans la mesure ou il n'a pas necessai
 - il est apporteur d'eventimes
 - les eventimes peuvent varier selon la langue, ils doivent etre neutralisés ou effacés au besoin
 - tenter d'implementer un changement de langue à la volée
--> trop complexe, un changement dans l'ordre des events peut perturber l'animation en cours
+    > trop complexe, un changement dans l'ordre des events peut perturber l'animation en cours
 
 - un canal audio doit etre ouvert à la première intéraction, et ne pas disparaitre au changement de page. 
 Le strap Audio doit manager l'ajout et le retrait de canaux ainsi que l'activation des eventimes liés. 
@@ -124,52 +138,64 @@ Le strap Audio doit manager l'ajout et le retrait de canaux ainsi que l'activati
     
 ## bugs/améliorations
 
-[x] **Transform yaml** : dans les stories, extends ne fonctionne pas avec les persos externes. 
-	Revoir le système de passes :
-		- objet 'proto', du meme niveau que scene, dans lesquels seront placés tous les prototypes ET éléments partagés. Les éléments non utilisés sont effacés.
-		- un proto peut etre défini à l'intérieur d'une story, sa portée est la story, en cas de conflit de nom, il est prioritaire.
-		- un élément défini dans 'proto' n'a pas besoin d'etre défini comme proto.
-		- proto contient des persos, et des stories. 
-		- d'autres éléments pourraient etre ajoutés : eventimes, medias ?
-		- les éléments de proto comportant des extends sont résolus avant d'etre employés dans les stories. 
-		- un extend dans proto ne peut pas se référer à à un proto dans une story.
-		
-		chaine d'héritage :
-		- proto du type de perso
-		- persos dans proto
-		- persos dans proto/story
-		- proto dans scene/story
-		- persos dans scene/story
+- [x] **Transform yaml** : dans les stories, extends ne fonctionne pas avec les persos externes. 
+Revoir le système de passes :
+- objet 'proto', du meme niveau que scene, dans lesquels seront placés tous les prototypes ET éléments partagés. Les éléments non utilisés sont effacés.
+- un proto peut etre défini à l'intérieur d'une story, sa portée est la story, en cas de conflit de nom, il est prioritaire.
+- un élément défini dans 'proto' n'a pas besoin d'etre défini comme proto.
+- proto contient des persos, et des stories. 
+- d'autres éléments pourraient etre ajoutés : eventimes, medias ?
+- les éléments de proto comportant des extends sont résolus avant d'etre employés dans les stories. 
+- un extend dans proto ne peut pas se référer à à un proto dans une story.
+
+- chaine d'héritage :
+    - proto du type de perso
+    - persos dans proto
+    - persos dans proto/story
+    - proto dans scene/story
+    - persos dans scene/story
 
 
 - ~~**veso/ "pre" : preparation des modifications**~~
-[x] **Transition**
+- [x] **Transition**
 concerne : dimensions, move, transitions
+
 séparer ce module du reste de veso ; en fait-il partie ?
 lié à veso : besoin d'accéder à l'état du perso : node, css...
+
 distinct : précède le calcul d'un rendu.
 
 quelles infos sont ajoutées l'historique : les données en entrée ou en sortie de 'pre'
 
 'pre' calcule les propriétés qui ont besoin d'accéder à node avant l'update
+
 'pre' lance les interpolations 
+
 'pre' pourrait :
 - gérer et controler les interpolations, pour invalider une transition lorsqu'une autre est ajoutée, par exemple,
 - recalculer une nouvelle interpolation au cas ou une nouvelle vient s'ajouter à celle en cours (animation additive)
 - transmettre les play/pause via l'update
 
 **Plus tard**
+
 Poussant la logique jusqu'au bout, veso pourrait se delester de toute function de transformation, qui seraient déléguées dans un module externe.
+
 veso ne garderait que le state et son historique, la méthode de rendu, la methode d'application des transformation. 
+
 Les fonctions de transformation seraient pures, et n'auraient pas besoin d'etre instanciées.
 
 
 **etats du composant**
+
 l'état du composant est incrémental, ses évolutions s'ajoutent au fur et à mesure du récit. 
+
 il faudrait pouvoir nommer des états et faire en sorte que l'on puisse passer de l'un à l'autre.
+
 Pour faire des transitions correctes, il faut connaitre toutes les propriétés que l'on va modifier sur la vie du perso.
+
 Il faut traverser toutes les actions et definir pour chaque état/action le groupe à eventuellement animer.
 Definir un groupe de propriétés par défaut parmi les plus courantes (notamment sur les transformations et positions)
+
 On peut surcharger un état pour définir un nouvel état.
 Exemple :
 - un bloc texte est bleu, devient jaune quand il se déplace vars un nouveau slot, redevient bleu lorsqu'il est déplacé une seconde fois.
@@ -177,16 +203,20 @@ le terme "redevient" est difficile aujourd'hui a déterminer.
 
 **Controle des animations**
 les animations sont lancées par veso et sont controlées globalement par telco.
+
 il faudrait que l'on puisse controler l'etat play/pause par une action sur le perso
+
 par exemple, certains composants doivent etre joués lorsque le bouton pause est activé.
+
 La pause pourrait etre passée à la story qui dispatche ensuite l'action sur ses composants.
+
 La story peut transformer l'action en local et l'inverser
 il faut donc définir des actions/listen pour une story
 
 **La story est un super-perso** 
 Ajouter à story actions/listen 
-Sur l'exemple play/pause, cela permet d'inverser le role de play et pause, 
-Les persos reagissent à story.play / story.pause, la story transforme scene.play en story.pause par exemple
+
+Sur l'exemple play/pause, cela permet d'inverser le role de play et pause, les persos reagissent à story.play / story.pause, la story transforme scene.play en story.pause par exemple
 
 
 
@@ -206,8 +236,8 @@ Emitter est identique pour toutes les instances d'Eso
 
 
 # To do 07/03/21
-au choix :
-1. terminer une scene :
+
+1. **terminer une scene :**
   - retirer les events
   - detruire les nodes / persos,
   - events vers telco : 
@@ -219,7 +249,7 @@ au choix :
     - autres : resultat d'un questionnaire, score...
   - animation de retrait, d'attente du chargement, d'entrée 
 
-2. composant sound
+2. **composant sound**
   - sans element audio ?
   - recoit les events :
     - play, pause, seek, tick
@@ -229,7 +259,8 @@ au choix :
   - utilise des canaux, permettant de jouer plusieurs sons en meme temps
   - est conçu comme un strap
 
-3. revoir slots et layers
+3. **revoir slots et layers**
+
   revoir ces concepts : 
   - Slot est une possibilité de content, comme text ou image
   - l'id du Slot est celui du perso : un Slot par perso.
@@ -264,7 +295,7 @@ la propriété slot  est un tableau qui accepte deux types d'objets :
 
   List doit etre exécuté tot dans le parsage du fichier
 
-note : d'autres structures que  for sont-elles pertinentes dans le fichier de construction, notamment les conditions if/else ou switch ?
+    > note : d'autres structures que  for sont-elles pertinentes dans le fichier de construction, notamment les conditions if/else ou switch ?
 
 Par exemple, construire des persos en fonction d'une variable de personnalisation 
 ou bien choisir un contenu en fonction d'une valeur. 
@@ -273,7 +304,8 @@ Ceci pourrait etre obtenu simplement par une action,
 - en utilisant les datas d'un eventime
 ou bien en utilisant les substitutions ${data.xx}
 
-4. Apps : shell ou vitreene, des spécificités
+4. **Apps : shell ou vitreene, des spécificités**
+
 vitreene presente des sequences composées d'au maximum 12 diapos, chaque diapo peut contenir à son tour une séquence. 
 Une diapo contient une animation d'entrée, une d'attente, une de sortie ; 
 Une diapo prend fin au bout d'un certain délai, ou lorsque chaque partie à émis une event de fin. 
@@ -282,21 +314,28 @@ une série de séquences peut se succéder en alternance.
 
 La logique est distincte du shell ; cependant, Scene devrait pouvoir jouer ces deux types sans modifications exclusives
 
-5. créer une nouvelle démo
+5. **créer une nouvelle démo**
+
 La version "App22-inception" est une performance d'un stress-test illisible, qui ne montre seulement que l'on peut animer une vingtaine d'éléments à la fois. La réaction sera : à quoi bon ?
+
 Pour présenter le potentiel du projet, je dois aussi montrer ce qu'il n'est pas, ou pas encore : une alternative au shell.
+
 Le shell est une app complete, il y aura toujours des fonctions manquantes sur veso, que je ne compte pas développer dans mon coin.
+
 Il est judicieux dans ce cas de proposer une démo qui colle plutot à vitreene, par exemple une affiche dynamique du menu d'un restaurant.
+
 La scene doit mettre en valeur les qualités du projet :
 - multi-stories, 
 - héritage,
 - zooms différenciés
 - animations : interpolations de couleur, size image...
 - scene en boucle :  presente indéfiniment plusieurs carousels faits de suites de stories. un bouton permet de terminer la scene.
+
 - carousel de stories. Dans le contexte de vitreene, la timeline n'a pas la meme importance que le shell. 
 Une story est jouée par une suite d'eventimes. ces eventimes doivent pouvoir etre soit réinitialisés, soit rajoutés à la timeline pour une nouvelle exécution. Un event déclencherait un nouveau départ de la story
 
-6.  ordre des composants 
+6.  **ordre des composants**
+
 Lorsque un élément se trouve dans un slot occupé, il prend spontanément la place haute ; il faudrait convenir d'un ordre fixe :
   - par un nombre,
   - par un mot-clé : front, back... 
@@ -312,20 +351,24 @@ exemple : dans le jeu "devinez le mot", les cartes posées dans le sabot ne devr
 
 le calcul de l'ordre doit se faire dans updateComponent
 
-7. résoudre les id des instances
+7. **résoudre les id des instances**
 
-8.  signifier que l'on ne veut pas d'un élément lorsqu'on instancie une story
+- [x] 8. **ignore :** signifier que l'on ne veut pas d'un élément lorsqu'on instancie une story
+
 Le cas se présente où je ne veux pas d'une image dans une variante d'animation. Il suffit actuellement de la redéfinir, en lui retirant ses actions. Une méthode plus explicite serait bienvenue :
 persos: - ignore : ['id1', 'id2', ...] 
 
 est-ce que cette propriété ignore pourrait etre employée dans un perso pour retirer des listen, emit ou actions ?
 
-[x] 9. revoir les transitions
+- [x] 9. revoir les transitions
 les 'actions' deviennent des 'états' : on peut passer d'un état à l'autre par interpolation, mais sans cumul des états successifs. Cela correspond mieux au résultat que l'on peut attendre d'un changement d'état. 
+
 permettre l'héritage lorsque l'on crée une action ? 
 (garder le nom d'actions pour le moment)
+
 a quoi cela servirait : plusieurs actions donnent le meme rendu à un perso, mais à des positions différentes. 
 On pourrait imaginer deux actions successives ou simultanées, mais c'est assez lourd ? 
+
 Il serait difficile de déclarer ne pas vouloir d'interpolation sur certains résultats et pas d'autres. 
 Peut-on dupliquer une action venant d'un autre perso ? pas pour le moment, voir si cela a un intéret ? 
 
@@ -352,7 +395,8 @@ pour chaque état, identifier les bonnes valeurs
 - commencer par to dans l'état initial, puis duplquer l'objet en modifiant les valeurs interpolées
 - comment chercher des valeurs qui n'ont pas été définies dans initial ?
 
-10. compléter les transitions
-a. traiter dimensions en dehors de Eso, supprimer _pre
-b. accepter des durations distinctes par propriété -> tableau de transitions
-c. tween : repeat, yoyo : faut-il les traiter au niveau du tween, ou bien au niveau des eventimes ?
+
+10. **compléter les transitions**
+- a. traiter dimensions en dehors de Eso, supprimer _pre
+- b. accepter des durations distinctes par propriété -> tableau de transitions
+- c. tween : repeat, yoyo : faut-il les traiter au niveau du tween, ou bien au niveau des eventimes ?
