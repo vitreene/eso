@@ -1,4 +1,4 @@
-import { DEFAULT_DURATION } from './constantes';
+import { DEFAULT_DURATION } from '../shared/constantes';
 import { effect } from '../presets/transition-effects-presets';
 
 /* 
@@ -14,11 +14,12 @@ export function selectTransition({
 	to: propTo,
 	duration = DEFAULT_DURATION,
 }) {
-	// console.log("selectTransition", propFrom, propTo);
 	let actualTo;
+	let direct = false;
 	switch (true) {
 		case typeof propTo === 'string':
 			actualTo = { to: effect[propTo].to, duration };
+			direct = true;
 			break;
 		case !!propTo && !!propTo.effect:
 			actualTo = {
@@ -38,6 +39,8 @@ export function selectTransition({
 		switch (true) {
 			case typeof propTo === 'string':
 				from = effect[propTo].from;
+				direct = true;
+
 				break;
 			case !!propTo.effect:
 				from = effect[propTo.effect].from;
@@ -52,6 +55,7 @@ export function selectTransition({
 	const transition = {
 		from,
 		...actualTo,
+		direct,
 	};
 
 	return transition;
@@ -62,5 +66,6 @@ export function directTransition(props) {
 		from: props.from,
 		to: props.to,
 		duration: props.duration || DEFAULT_DURATION,
+		direct: true,
 	};
 }

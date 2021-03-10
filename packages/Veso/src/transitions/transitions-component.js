@@ -1,25 +1,21 @@
 import { controlAnimations } from '../shared/control-animation';
-import {
-	selectTransition,
-	directTransition,
-} from '../shared/select-transition';
-import { fromTo } from '../shared/from-to';
+import { selectTransition, directTransition } from './select-transition';
+import { fromTo } from './from-to';
 
 export function doTransition(perso, update, emitter) {
-	if (!update) return null;
-	const callback = (between) => perso.update({ between });
-	const accumulate = syncRafUpdate(callback);
-	(Array.isArray(update) ? update : [update]).forEach(exeTransition);
+	if (!update || !update.length) return null;
+	const accumulate = setCumulateCallback(perso);
+
+	Array.isArray(update) ? update.forEach(exeTransition) : exeTransition(update);
 	return update;
 
-	// FIXME from et to peuvent etre nuls ?
 	function exeTransition(props) {
 		const options = props.direct
 			? directTransition(props)
 			: selectTransition(props);
 
 		// from-to
-		const interpolation = fromTo(options, perso.history, perso.uuid);
+		const interpolation = fromTo(options, perso);
 		if (!interpolation) return;
 
 		// mettre à jour la position avant le rafraichissement
@@ -57,6 +53,10 @@ export function doTransition(perso, update, emitter) {
  * il arrive que deux transitions se suivant, la première l'emporte en priorité sur la suivant.
  */
 
+function setCumulateCallback(perso) {
+	const callback = (between) => perso.update({ between });
+	return syncRafUpdate(callback);
+}
 // TODO déplacer la fonction pour centraliser les appels à raf
 function syncRafUpdate(callback) {
 	return {

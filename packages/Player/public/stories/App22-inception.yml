@@ -298,7 +298,7 @@
                 initial: 
                   # dimensions: { width: 421, height: 214 }
                   className: totoo
-                  classStyle: { color: blue,font-weight: bold, padding: 8px 24px  , '&:hover': { cursor: grab }	}
+                  classStyle: { fontSize: 64, color: blue,font-weight: bold, padding: 8px 24px  , '&:hover': { cursor: grab }	}
                   attr: {data-letter: alphabet}
                   content: ${scene.id}
                 emit: 
@@ -317,7 +317,6 @@
                       # marche pas : move: ${scene.entry[1]}_s01 
                       move: '${story.id}_grid-01_s01' 
                       classStyle: {
-                        fontSize: 64,
                         backgroundColor: '#ffff00',
                         position: absolute
                       }

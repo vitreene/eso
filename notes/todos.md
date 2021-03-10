@@ -319,3 +319,40 @@ Le cas se présente où je ne veux pas d'une image dans une variante d'animation
 persos: - ignore : ['id1', 'id2', ...] 
 
 est-ce que cette propriété ignore pourrait etre employée dans un perso pour retirer des listen, emit ou actions ?
+
+[x] 9. revoir les transitions
+les 'actions' deviennent des 'états' : on peut passer d'un état à l'autre par interpolation, mais sans cumul des états successifs. Cela correspond mieux au résultat que l'on peut attendre d'un changement d'état. 
+permettre l'héritage lorsque l'on crée une action ? 
+(garder le nom d'actions pour le moment)
+a quoi cela servirait : plusieurs actions donnent le meme rendu à un perso, mais à des positions différentes. 
+On pourrait imaginer deux actions successives ou simultanées, mais c'est assez lourd ? 
+Il serait difficile de déclarer ne pas vouloir d'interpolation sur certains résultats et pas d'autres. 
+Peut-on dupliquer une action venant d'un autre perso ? pas pour le moment, voir si cela a un intéret ? 
+
+les états peuvent etre partiellement précalculés, si l'on connait les valeurs de départ à utiliser.
+- au plus simple, il faut déclarer une valeur de départ à chaque propriété interpolée;
+- elle peuvent etre déduites des différentes parties ou dess styles sont définis
+- il y a des valeurs courantes par défaut.
+
+Les valeurs qui échappent à la détection :
+- le valeurs de position et dimensions qui sont calculés au rendu,
+- des valeurs définies dans des feuilles de style
+
+pour les positions : 
+- move est dynamique,
+- les valeurs unitless aussi
+c'est déjà pris en compte.
+
+si une propriété n'a pas été déclarée, la rechercher au premier paint ? 
+ou appliquer une valeur par défaut ? laquelle ?
+procédure :
+- rechercher toutes les propriétés qui vont etre employées par les transitions 
+- pour chaque action qui comporte une transition, ajouter un objet 'to' aux propriétés identiques et qui décrit l'état final du Perso après cette action.
+pour chaque état, identifier les bonnes valeurs  
+- commencer par to dans l'état initial, puis duplquer l'objet en modifiant les valeurs interpolées
+- comment chercher des valeurs qui n'ont pas été définies dans initial ?
+
+10. compléter les transitions
+a. traiter dimensions en dehors de Eso, supprimer _pre
+b. accepter des durations distinctes par propriété -> tableau de transitions
+c. tween : repeat, yoyo : faut-il les traiter au niveau du tween, ou bien au niveau des eventimes ?

@@ -52,6 +52,7 @@ export const SCENE_STAGE = {
 
 export const DEFAULT_SCENE_STAGE = SCENE_STAGE['4/3'];
 
+export const MISSING = 'missing';
 export const DEFAULT_STYLES = {
 	x: 0,
 	y: 0,
@@ -72,6 +73,7 @@ export const DEFAULT_STYLES = {
 	rotateZ: 0,
 	opacity: 1,
 	color: '#000',
+	backgroundColor: 'none',
 };
 export const SHORT_STYLES = {
 	s: 'scale',

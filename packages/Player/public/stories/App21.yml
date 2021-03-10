@@ -271,9 +271,16 @@
                 id: text-sample
                 extends: proto_bloc
                 initial: 
-                  # dimensions: { width: 421, height: 214 }
+                  # dimensions: { width: 421, height: 40 }
                   className: totoo
-                  classStyle: { color: blue,font-weight: bold, padding: 8px 24px  , '&:hover': { cursor: grab }	}
+                  classStyle: 
+                    backgroundColor: '#ffff00'
+                    fontSize: 64 
+                    color: blue
+                    font-weight: bold
+                    padding: 8px 24px
+                    '&:hover': { cursor: grab }
+                	
                   attr: {data-letter: alphabet}
                   content: ${scene.id}
                 emit: 
@@ -291,33 +298,29 @@
                       # quelle variable appliquer ?
                       # marche pas : move: ${scene.entry[1]}_s01 
                       move: '${story.id}_grid-01_s01' 
-                      classStyle: {
-                        fontSize: 64,
-                        backgroundColor: '#ffff00',
-                        position: absolute
-                      }
+                      classStyle: {position: absolute }
                       style: {scale: 0.5}
 
                   step01: 
                       content: ${story.id}
-                      move: { slot:  '${story.id}_grid-01_s02', rescale: true }
+                      move: { slot: '${story.id}_grid-01_s02' }
 
                       transition: 
                         to: {
                           x: 100, y: 100,
                           rotate: 200, scale: 0.4,
-                          fontSize: 100,
-                          backgroundColor: '#00ffff', color: '#0033FF'
+                          font-size: 100,
+                          background-color: '#00ffff', color: '#0033FF'
                         }
                         duration: 2000
                   step02:
-                      move: { slot:  '${story.id}_grid-01_s03', rescale: true }
+                      move: { slot:  '${story.id}_grid-01_s03' }
 
                       transition:
                         to: {
-                          scale: 1.5,	rotate: 40,
-                          fontSize: 150,
-                          backgroundColor: '#00ff00',	color: '#3300FF'
+                          scale: 1,	rotate: 40,
+                          font-size: 72,
+                          backgroundColor: orangered,	color: '#3300FF'
                         }
                         duration: 1000
                       content: ${perso.id}
@@ -412,7 +415,6 @@
                 initial:
                   content: ./ikono/Mystery-80.png
                   dimensions: { height: 300 }
-                  classStyle: { opacity: 0 }
                 listen:
                   - { event: ev011, action: enter }
                   - { event: ev013, action: step01 }
@@ -422,7 +424,11 @@
                 actions:
                   enter:
                     move: '${story.id}_grid-01_s03'
-                    transition: { to: { opacity: 1, x: -100, y: 10 } }
+                    transition: {
+                      from: { opacity: 0 }, 
+                      to: { opacity: 1, x: -100, y: 10 } ,
+                      duration: 1000
+                      }
                   step01:
                     move: '${story.id}_grid-01_s01'
                     transition: { to: { x: 100, y: 50, rotate: 15 } }

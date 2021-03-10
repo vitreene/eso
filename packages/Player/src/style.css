@@ -38,7 +38,7 @@ h1 {
 }
 
 .totoo {
-	width: auto;
+	/* width: auto; */
 }
 .grid {
 	display: grid;
@@ -107,5 +107,6 @@ h1 {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	overflow: ;
+	overflow: hidden;
+	text-align: center;
 }

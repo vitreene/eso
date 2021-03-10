@@ -23,7 +23,6 @@ export interface EsoInitial {
 	classStyle?: Style;
 	style?: Style;
 	dimensions?: EsoDimensions;
-	transition?: EsoTansition;
 	content?: EsoContent;
 	attr?: any;
 	fit?: string;
@@ -32,6 +31,7 @@ export interface EsoInitial {
 export type EsoActions = Array<EsoAction>;
 export interface EsoAction extends EsoInitial {
 	name: string;
+	transition?: EsoTansition;
 	move?: string | EsoMove;
 	order?: number;
 	exit?: boolean;

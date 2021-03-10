@@ -29,6 +29,7 @@ import {
 } from '../../../types/Entries-types';
 import { ImagesCollection } from '../../../types/initial';
 import { Eventime } from '../../../types/eventime';
+import { prepareTransistions } from './prepare-transistions';
 
 // emitter.onAny(function (event, value) {
 // 	console.log('EVENT->', event, value);
@@ -56,15 +57,12 @@ export class Scene {
 	// onEnd: () => {};
 	onEndQueue = [];
 
-	// constructor({ scene, stories }) {
 	constructor({ stories, ...scene }: SceneType) {
 		this.id = scene.id;
 		this.name = scene.name;
 		this.description = scene.description;
 
 		this.slot = this.slot.bind(this);
-		// this.onMount = this.onMount.bind(this);
-		// this._setStoryCast = this._setStoryCast.bind(this);
 		this.addStory = this.addStory.bind(this);
 		this._publish = this._publish.bind(this);
 		this._updateSlot = this._updateSlot.bind(this);
@@ -116,11 +114,12 @@ export class Scene {
 		console.log('_register', story);
 		const { isEntry, root, channel, persos } = story;
 		await registerImages(persos, this.imagesCollection);
-		registerPersos(persos, this.persos, {
+		const _persos = persos.map(prepareTransistions);
+		registerPersos(_persos, this.persos, {
 			imagesCollection: this.imagesCollection,
 			slot: this.slot,
 		});
-		registerActions(channel, persos, this._publish(story.id));
+		registerActions(channel, _persos, this._publish(story.id));
 
 		initRuntime(root, isEntry, this.persos, this.onScene);
 	}
@@ -132,21 +131,15 @@ export class Scene {
 	*/
 	private _setStoryCast({ id, root = CONTAINER_ESO, stage, persos }: Story) {
 		// TODO a terme, les slots sont des persos
-
 		//FIXME si root est un slot, il n'est pas accesible ici et maintenant
 		const node = this.persos.has(root)
 			? this.persos.get(root).node
 			: document.getElementById(root);
-
-		console.log(node);
-
 		if (!node) return;
-
 		this.cast[id] = {
 			zoom: new Stage(node, stage, this.renderOnResize(id)),
 			persos: new Set(persos.map((p) => p.id)),
 		};
-		console.log(this.cast[id]);
 	}
 
 	renderOnResize(storyId: string) {

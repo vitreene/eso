@@ -62,7 +62,7 @@ export class TimeLiner {
 
 	private solved: MapEvents = {};
 	private remains: Eventime[] = [];
-	private held: boolean = false;
+	private held = false;
 
 	// FIXME  level === channel ?
 	// level devient un parametre obligatoire
@@ -187,7 +187,7 @@ export class TimeLiner {
 
 	private _once(newTl: TimelineKey, chrono: number, index: number) {
 		const timeLine = this.timeLine[index].timeLine;
-		let tl: TimelineKey = {};
+		const tl: TimelineKey = {};
 		for (const time in timeLine) {
 			if (parseInt(time) < chrono) tl[time] = timeLine[time];
 		}

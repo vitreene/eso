@@ -33,6 +33,7 @@ export function reslot({ transition, ...props }) {
 			from: position,
 			to: { dX: 0, dY: 0 },
 			duration: DEFAULT_DURATION,
+			direct: true,
 		});
 
 		// rescale
@@ -51,6 +52,7 @@ export function reslot({ transition, ...props }) {
 				from: oldDimensions,
 				to: currentDimensions,
 				duration: DEFAULT_DURATION,
+				direct: true,
 			});
 		}
 	}

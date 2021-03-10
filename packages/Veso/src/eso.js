@@ -24,7 +24,8 @@ export function createEso(emitter) {
 		uuid;
 		tag;
 		box;
-		inDom = false;
+		from;
+		to;
 		classStyle;
 		revision;
 		history = {}; // TODO faire une Map
@@ -41,11 +42,12 @@ export function createEso(emitter) {
 		}
 
 		constructor(perso, init = true) {
-			const { id, initial, tag } = perso;
+			const { id, initial, tag, to } = perso;
 			this.id = id;
 			this.tag = tag;
 			this.uuid = { uuid: nanoid(8), id };
 			this.prep = { dimensions: doDimensions }; // a retirer
+			this.to = to;
 			this.revision = {
 				className: doClasses,
 				classStyle: style,
@@ -155,6 +157,13 @@ export function createEso(emitter) {
 					state.props.set(revise, diff);
 				}
 			}
+			this.from = {
+				...this.from,
+				...state.props.get('classStyle'),
+				...state.props.get('style'),
+				...state.props.get('between'),
+			};
+
 			// side effect : ajouter a l'historique
 			this._addToHistory(state, props.chrono);
 		}
@@ -204,6 +213,7 @@ export function createEso(emitter) {
 				...other
 			} = this.history;
 
+			// this.from = {..._classStyle, _style}
 			const content = this.revision.content.prerender
 				? this.revision.content.prerender(contentToRender)
 				: contentToRender;
