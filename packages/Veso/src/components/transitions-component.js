@@ -24,6 +24,7 @@ import {
 import { fromTo } from '../shared/from-to';
 
 export function transition(emitter) {
+	// eslint-disable-next-line @typescript-eslint/no-this-alias
 	const self = this;
 	const callback = (between) => self.update({ between });
 	const accumulate = syncRafUpdate(callback);
