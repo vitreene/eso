@@ -5,7 +5,6 @@ TODO
 import { nanoid } from 'nanoid';
 
 import { pipe } from '../shared/utils';
-import { mergePersos } from './merge-persos';
 
 import {
 	EsoActions,
@@ -13,25 +12,16 @@ import {
 	InputEsoEvents,
 	Perso,
 } from '../../../types/initial';
-import { Story, PersoEntry } from '../../../types/Entries-types';
 
 const PROTO = 'proto';
 type Channel = string | null;
 
-export function transformPersos(s: Story) {
-	if (!s.persos) return s;
-	const channel: Channel = s.channel || null;
-	const prep = prePersos(s.persos);
-	const persos = dispatchPersoProps(channel)(prep);
-	return { ...s, persos };
-}
-
 // pre : conformation
-export function prePersos(persos) {
+export function prePersos(persos: Perso[]) {
 	return pipe(natureSetProperty, idSetProperty)(persos);
 }
 
-export function natureSetProperty(_persos: PersoEntry[]) {
+export function natureSetProperty(_persos: Perso[]) {
 	const persos = [];
 	for (const _perso of _persos) {
 		const nature = Object.keys(_perso).pop();
@@ -43,11 +33,11 @@ export function natureSetProperty(_persos: PersoEntry[]) {
 	return persos;
 }
 
-export function idSetProperty(_persos: PersoEntry[]) {
+export function idSetProperty(_persos: Perso[]) {
 	const persos = [];
 	for (const _perso of _persos) {
-		_perso.id = _perso.id || nanoid(8);
-		persos.push(_perso);
+		const perso = { ..._perso, id: _perso.id || nanoid(8) };
+		persos.push(perso);
 	}
 	return persos;
 }
@@ -58,7 +48,7 @@ export function filterProtos(_persos: Perso[]) {
 
 export function dispatchPersoProps(channel: Channel) {
 	return function (_persos: Perso[]) {
-		const persos = _persos.map((_perso: any) => {
+		const persos = _persos.map((_perso: Perso) => {
 			const _actions = _perso.actions || [];
 			const actions = pipe(actionsToArray, moveExpandProps)(_actions);
 			const _listen = _perso.listen || [];
@@ -125,12 +115,12 @@ export function listenExpandProps(channel: Channel) {
 		return listen;
 	};
 }
-export function actionsToArray(_actions: PersoEntry['actions']) {
+export function actionsToArray(_actions: EsoActions) {
 	const actions = objectKeyToArray(_actions, 'name');
 	return actions;
 }
 
-export function moveExpandProps(_actions: PersoEntry['actions']) {
+export function moveExpandProps(_actions: EsoActions) {
 	if (!Array.isArray(_actions)) return _actions;
 	const actions = _actions.map((action) => {
 		if (typeof action.move === 'string')
@@ -140,7 +130,7 @@ export function moveExpandProps(_actions: PersoEntry['actions']) {
 	return actions;
 }
 
-function objectKeyToArray(obj: PersoEntry['actions'], key: string) {
+function objectKeyToArray(obj: EsoActions, key: string) {
 	if (typeof obj !== 'object') {
 		console.warn("ce n'est pas un object : %s", obj);
 		return obj;

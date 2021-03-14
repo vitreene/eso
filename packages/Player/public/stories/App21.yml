@@ -6,18 +6,19 @@
       - story01:
           startAt: go2
           root: *TC
-      - story04:
+      - story03:
           # startAt: end-story01
           startAt: go1
           root: *MAIN
-      - story02:
-          startAt: go2
-          root: fond-story04_s01
+      # - story02:
+      #     startAt: go2
+      #     root: fond-story04_s01
 
     stories:
       - id: story01
         channel: story01
         extends: anim01
+        ignore: [sprite]
         persos: 
           - *IMG : 
               id: image
@@ -39,13 +40,9 @@
       - id: story04
         channel: story04
         extends: anim01
+        ignore: [text-sample,image]
         entry: ['${story.id}_fond', '${story.id}_grid-01']
         persos:
-          - *IMG : 
-                id: image
-                initial: 
-                  content: ./ikono/vignette.jpg
-
           - *LAYER :
               id: fond-story04
               initial: 
@@ -103,7 +100,7 @@
                     grid-area: 1/1,
                     margin: auto,
                   }
-                content: dimanche
+                content: { ref: txt01 }
               actions:
                 ev011:
                   move: *MAIN
@@ -111,14 +108,14 @@
                   classStyle: { font-size: 100, background-color: '#49b6b6cf' }
                   className: new-text
                 ev012:
-                  content: { lang: fr, refLang: sous-titre, ref: txt01, effect: fade }
+                  # content : { lang: fr, refLang: langue, ref: txt01, effect: fade }
+                  content: { lang: en, refLang: sous-titre, ref: txt01, effect: fade }
                 ev013:
                   content: { lang: en, refLang: langue, ref: txt01, effect: fade }
                 ev014:
-                  # content: { text: "A bientot pour un prochain essai", effect: fade }
                   content: { text: "A bientot", effect: fade }
                 ev015:
-                  content: { text: c’est pas fini, effect: letters-top-down }
+                  content: { text: fin de scène, effect: letters-top-down }
 
           - *IMG :
               id: image3

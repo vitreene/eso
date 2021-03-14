@@ -92,18 +92,35 @@ function explorePersos(inherit: Perso[], scene: Scene = null) {
 		const channel: Channel = story.channel || null;
 		const persos: Perso[] = pipe(
 			prePersos,
-			mergePersosInherit(inherit),
+			mergePersosInherit(inherit, story.ignore),
 			dispatchPersoProps(channel),
 			filterProtos,
 			resolveTemplate({ scene, story })
 		)(story.persos);
+
 		return { ...story, persos };
 	};
 }
 
+// function ignorePersos(items) {
+// 	return function ignore(_persos: Perso[]) {
+// 		if (!items || !items.length) return _persos;
+// 		const persos = _persos.filter((perso) => !items.includes(perso.id));
+// 		return persos;
+// 	};
+// }
+
+// function getIgnoreList(_persos: Perso[]) {
+// 	const index = _persos.findIndex(
+// 		(perso) => Object.keys(perso)[0] === 'ignore'
+// 	);
+// 	const ignore = _persos[index];
+// 	const persos = _persos.slice(0, index).concat(_persos.slice(index + 1));
+// 	return [ignore, persos];
+// }
+
 interface Context {
 	scene?: Scene;
-	// story?: Story | Omit<Story, 'persos' >;
 	story?: any;
 }
 
@@ -119,11 +136,13 @@ function exploreShared(_shared: SharedFileEntry, inherit: Inherit) {
 	if (!_shared) return null;
 	let stories: Story[] = [];
 	let persos: Perso[] = [];
-	if (_shared.persos)
+
+	if (_shared.persos) {
 		persos = pipe(
 			prePersos,
 			mergePersosInherit(inherit.persos)
 		)(_shared.persos);
+	}
 	if (_shared.stories) {
 		stories = _shared.stories.map(
 			explorePersos([...inherit?.persos, ...persos])
@@ -139,8 +158,8 @@ function exploreShared(_shared: SharedFileEntry, inherit: Inherit) {
 	);
 }
 
-function mergePersosInherit(inherit: Perso[]) {
-	return (persos: Perso[]) => mergePersos(persos, inherit);
+function mergePersosInherit(inherit: Perso[], ignore: string[] = []) {
+	return (persos: Perso[]) => mergePersos(persos, inherit, ignore);
 }
 
 // merge deux objets dont les props sont un tableau ou undefined

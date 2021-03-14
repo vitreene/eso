@@ -1,6 +1,6 @@
 import { Perso } from '../../../types/initial';
 import { Eventime } from '../../../types/eventime';
-import { Story, StoryEntry } from '../../../types/Entries-types';
+import { Story } from '../../../types/Entries-types';
 
 export function mergeStories(_stories: Story[], _inherit: Story[]) {
 	if (!_stories.length || !_inherit.length) return _stories;
@@ -24,10 +24,10 @@ export function mergeStories(_stories: Story[], _inherit: Story[]) {
 }
 
 const merge = {
-	story(_proto: Story | StoryEntry, _story: Story | StoryEntry) {
+	story(_proto: Story, _story: Story) {
 		if (!_proto || Object.keys(_proto).length === 0) return _story;
 		if (!_story || Object.keys(_story).length === 0) return _proto;
-		let persos = this.persos(_proto.persos, _story.persos);
+		let persos = this.persos(_proto.persos, _story.persos, _story.ignore);
 		persos = this._updateId(persos, _story.id);
 		const eventimes = this.eventimes(_proto.eventimes, _story.eventimes);
 		return Object.assign(
@@ -38,9 +38,10 @@ const merge = {
 			persos && persos.length && { persos }
 		);
 	},
-	persos(_protos, _persos: Perso[] = []) {
+	persos(_protos, _persos: Perso[] = [], ignore: string[] = []) {
 		const persos = new Map(Array.from(_persos, (perso) => [perso.id, perso]));
-		for (const p of _protos) !persos.has(p.id) && persos.set(p.id, p);
+		for (const p of _protos)
+			!ignore.includes(p.id) && !persos.has(p.id) && persos.set(p.id, p);
 		return Array.from(persos.values());
 	},
 	eventimes(_proto: Eventime, _eventimes: Eventime) {

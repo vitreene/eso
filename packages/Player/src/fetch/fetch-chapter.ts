@@ -11,6 +11,7 @@ post-traitement des variables ${}
 
 */
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import YAML from 'yaml';
 
@@ -32,13 +33,21 @@ export async function fetchChapter(path) {
 		.then((blob) => blob.text())
 		.catch((err) => console.log('erreur de configuration:', err));
 
-	return await fetch(path)
+	const messages = await fetch('/messages/text1.yml')
+		.then((res) => res.blob())
+		.then((blob) => blob.text())
+		.then((yamlAsString) => YAML.parse(yamlAsString, { prettyErrors: true }))
+		.catch((err) => console.log('erreur de configuration:', err));
+
+	const scenes = await fetch(path)
 		.then((res) => res.blob())
 		.then((blob) => blob.text())
 		.then((text) => pre + text)
 		.then((yamlAsString) => YAML.parse(yamlAsString, { prettyErrors: true }))
 		.then((json) => exploreFile(fileToScenes(json), inherit))
 		.catch((err) => console.log('erreur sur la story:', err));
+
+	return { scenes, messages };
 }
 
 /**  

@@ -10,11 +10,11 @@ import './style.css';
 import { Scene } from './Scene';
 
 const Player = async (path) => {
-	// const casting = await Promise.all(path.map(fetchStories));
-	// const casting = await fetchStories(path);
-	const casting = await fetchChapter(path);
-	console.log('PLAYER casting', casting);
-	new Scene(casting[0]);
+	// const scenes = await Promise.all(path.map(fetchStories));
+	// const scenes = await fetchStories(path);
+	const { scenes, messages } = await fetchChapter(path);
+	console.log('PLAYER scenes', scenes);
+	new Scene(scenes[0], messages);
 };
 const path = '/stories/App21.yml';
 

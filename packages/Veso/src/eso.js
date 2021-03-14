@@ -41,7 +41,8 @@ export function createEso(emitter) {
 			return this._node();
 		}
 
-		constructor(perso, init = true) {
+		constructor(perso, options) {
+			const { init } = { init: true, ...options };
 			const { id, initial, tag, to } = perso;
 			this.id = id;
 			this.tag = tag;
@@ -52,7 +53,7 @@ export function createEso(emitter) {
 				className: doClasses,
 				classStyle: style,
 				between: style,
-				content,
+				content: content(options),
 				style,
 			};
 

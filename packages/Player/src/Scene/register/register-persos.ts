@@ -1,11 +1,14 @@
-import { createPerso } from '../../composants';
-import { ImagesCollection, Perso } from '../../../../types/initial';
-import { ScenePersos } from '../../../../types/Entries-types';
 import { Slots } from '../store-slots';
+import { createPerso } from '../../composants';
+
+import { Message } from '../../../../types/message';
+import { ScenePersos } from '../../../../types/Entries-types';
+import { ImagesCollection, Perso } from '../../../../types/initial';
 
 interface Options {
 	imagesCollection?: ImagesCollection;
 	slot?: Slots;
+	messages?: Message;
 }
 
 export function registerPersos(
@@ -19,15 +22,18 @@ export function registerPersos(
 				break;
 			case 'polygon':
 				break;
-			case 'layer':
+			case 'button':
 			case 'bloc':
+				{
+					const { messages } = options;
+					persos.set(perso.id, createPerso.create(perso, { messages }));
+				}
+				break;
+			case 'layer':
 				{
 					const { slot } = options;
 					persos.set(perso.id, createPerso.create(perso, slot));
 				}
-				break;
-			case 'button':
-				persos.set(perso.id, createPerso.create(perso));
 				break;
 			case 'img':
 			case 'sprite':

@@ -19,7 +19,7 @@ export class Layer extends Eso {
 	static nature = 'layer';
 	constructor(story, slot) {
 		story.initial.className = story.initial.className + ' layer-top ';
-		super(story, false);
+		super(story, { init: false });
 		this.revision.content = contentRevision(story.id, slot);
 		this.init();
 	}

@@ -48,6 +48,7 @@ export interface Scene {
 
 export interface Story {
 	extends?: string;
+	ignore?: string[];
 	entry?: any;
 	id: string;
 	channel: string;
@@ -63,6 +64,7 @@ export type StoryWoEventimes = Omit<Story, 'eventimes'>;
 // cette interface amene de la confusion ; a reprendre en fin de dev ?
 export interface StoryEntry {
 	extends?: string;
+	ignore?: string[];
 	entry: any;
 	id?: string;
 	channel?: string;

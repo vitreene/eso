@@ -16,11 +16,18 @@ type ClassName = undefined | string | [string] | [];
  * @param _persos liste de persos sur lesquels appliquer les héritages
  * @param _shared reserve de persos partagés dont les héritages sont résolus
  */
-export function mergePersos(_persos: Perso[], _shared: Perso[] = []): Perso[] {
+export function mergePersos(
+	_persos: Perso[],
+	_shared: Perso[] = [],
+	ignore: string[] = []
+): Perso[] {
 	const persos = new Map(Array.from(_persos, (perso) => [perso.id, perso]));
 	const protos = new Map(Array.from(_shared, (proto) => [proto.id, proto]));
 
-	for (const [id, _perso] of persos) recMerge(id, _perso);
+	for (const [id, _perso] of persos) {
+		ignore.length && console.log(id, ignore);
+		!ignore.includes(id) && recMerge(id, _perso);
+	}
 
 	function recMerge(id: string, _perso: Perso) {
 		const perso = persos.get(_perso.extends) || protos.get(_perso.extends);

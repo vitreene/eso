@@ -2,23 +2,23 @@
 import { o } from 'sinuous';
 import { emitter } from '../App/init';
 
+import { Stage } from '../zoom';
 import { Slots } from './store-slots';
 import { OnScene } from './on-scene.js';
 import { updateComponent } from './update-component';
 
 import { registerImages } from './register/register-images';
 import { registerPersos } from './register/register-persos';
-import { registerActions } from './register/register-actions';
 import { registerStraps } from './register/register-straps';
+import { registerActions } from './register/register-actions';
 
 import { initRuntime } from './runtime';
-import { clock, Clock } from './runtime/clock';
 import { TimeLiner } from './runtime/solver';
+import { clock, Clock } from './runtime/clock';
 import { addEventList } from './runtime/add-event-list';
 
-import { Stage } from '../zoom';
-
 import { CONTAINER_ESO, DEFAULT_NS, MAIN } from '../data/constantes';
+
 import {
 	SceneCast,
 	ScenePersos,
@@ -27,8 +27,9 @@ import {
 	StoryWoEventimes,
 	Cast,
 } from '../../../types/Entries-types';
-import { ImagesCollection } from '../../../types/initial';
+import { Message } from '../../../types/message';
 import { Eventime } from '../../../types/eventime';
+import { ImagesCollection } from '../../../types/initial';
 import { prepareTransistions } from './prepare-transistions';
 
 // emitter.onAny(function (event, value) {
@@ -36,30 +37,51 @@ import { prepareTransistions } from './prepare-transistions';
 // 	console.log(emitter.listeners(event));
 // 	console.log(emitter.eventNames());
 // });
-
+// const messages: Message = {
+// 	langue: {
+// 		fr: {
+// 			txt01: 'Bonjour',
+// 			txt02: `il est ${new Date()}`,
+// 		},
+// 		en: {
+// 			txt01: 'Hello',
+// 			txt02: 'How are you ?',
+// 		},
+// 	},
+// 	'sous-titre': {
+// 		fr: {
+// 			txt01: 'Nouvelle étape',
+// 		},
+// 		en: {
+// 			txt01: 'Jean say Hello',
+// 		},
+// 	},
+// };
 export class Scene {
 	id: string;
 	channel: string;
 	name?: string;
 	description?: string;
 
-	cast: SceneCast = {};
-	persos: ScenePersos = new Map(); //
-	slots: Slots = new Slots(); //
-	imagesCollection: ImagesCollection = new Map(); //
 	straps: any;
-	timeLine: TimeLiner = new TimeLiner();
 	clock: Clock;
+	cast: SceneCast = {};
+	messages: Message;
+	slots: Slots = new Slots(); //
+	persos: ScenePersos = new Map(); //
+	timeLine: TimeLiner = new TimeLiner();
 	onScene: OnScene = new OnScene(this.slots);
+	imagesCollection: ImagesCollection = new Map(); //
 	// nodes: any = storeNodes;
 	// telco: () => {};
 	// onStart: () => {};
 	// onEnd: () => {};
 	onEndQueue = [];
 
-	constructor({ stories, ...scene }: SceneType) {
+	constructor({ stories, ...scene }: SceneType, messages) {
 		this.id = scene.id;
 		this.name = scene.name;
+		this.messages = messages;
 		this.description = scene.description;
 
 		this.slot = this.slot.bind(this);
@@ -118,6 +140,7 @@ export class Scene {
 		registerPersos(_persos, this.persos, {
 			imagesCollection: this.imagesCollection,
 			slot: this.slot,
+			messages: this.messages,
 		});
 		registerActions(channel, _persos, this._publish(story.id));
 
