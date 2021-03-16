@@ -1,6 +1,7 @@
 import { o, svg, api } from 'sinuous';
 import { computed } from 'sinuous/observable';
 import { Eso } from '../App/init';
+import { DEFAULT_FIT } from '../data/constantes';
 
 // HACK en attendant une mise à jour
 import { property } from '../../../Veso/src/shared/property';
@@ -17,40 +18,36 @@ const constrainImage = {
 
 // TODO passer des parametres pour l'image via content
 
+const contentImg = (collection) => {
+	return {
+		update(content, current) {
+			console.log('contentImg-->', content, current);
+			const { src, fit } =
+				typeof content === 'string'
+					? { src: content, fit: content.fit || current?.fit || DEFAULT_FIT }
+					: content;
+			const img = collection.has(src) && collection.get(src);
+			return { img, fit };
+		},
+	};
+};
 export class Img extends Eso {
 	static nature = 'img';
 	constructor(story, collection) {
-		super(story);
-
-		this.imagesCollection = collection;
-		this.imagesCollection.has(story.initial.content) &&
-			this.img(this.imagesCollection.get(story.initial.content));
-		this.fit(story.initial.fit);
-	}
-
-	// TODO virer this.img et this.fit et tout passer par this.content
-	// voir content dans Layers
-	update(props) {
-		super.update(props);
-		const hasContent =
-			props.content && this.imagesCollection.has(props.content);
-		hasContent && this.img(this.imagesCollection.get(props.content));
-		props.fit && this.fit(props.fit);
+		super(story, { init: false });
+		this.revision.content = contentImg(collection);
+		this.init();
 	}
 
 	render(props) {
-		const { id, content, fit, ...attrs } = props;
-		this.img = o({});
-		this.fit = o(fit);
-
+		const { id, content, ...attrs } = props;
 		const viewBox = computed(
-			() => `0 0 ${this.img()?.width || 0} ${this.img()?.height || 0}`
+			() => `0 0 ${content().img?.width || 0} ${content().img?.height || 0}`
 		);
-		const src = computed(() => this.img()?.src);
+		const src = computed(() => content().img?.src);
 		const preserveAspectRatio = computed(
-			() => `xMidYMid ${constrainImage[this.fit()]}` || 'slice'
+			() => `xMidYMid ${constrainImage[content().fit]}` || 'slice'
 		);
-
 		return svg`<svg
         id=${id}
         viewBox=${viewBox}
