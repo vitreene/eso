@@ -2,7 +2,7 @@ import { splitUnitValue } from '../../shared/utils';
 
 // TODO transformer les % en px
 // si % lire les dimensions du node
-export function dimensions(dimensions) {
+export function doDimensions(dimensions) {
 	// dimensions ; width,height,ratio
 	// ratio = w/h
 	// units: w, h

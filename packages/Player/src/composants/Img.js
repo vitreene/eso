@@ -16,12 +16,9 @@ const constrainImage = {
 	undefined: 'slice',
 };
 
-// TODO passer des parametres pour l'image via content
-
 const contentImg = (collection) => {
 	return {
 		update(content, current) {
-			console.log('contentImg-->', content, current);
 			const { src, fit } =
 				typeof content === 'string'
 					? { src: content, fit: content.fit || current?.fit || DEFAULT_FIT }
@@ -48,7 +45,8 @@ export class Img extends Eso {
 		const preserveAspectRatio = computed(
 			() => `xMidYMid ${constrainImage[content().fit]}` || 'slice'
 		);
-		return svg`<svg
+		return svg`
+			<svg
         id=${id}
         viewBox=${viewBox}
         preserveAspectRatio=${preserveAspectRatio}

@@ -78,7 +78,7 @@ export class Scene {
 	// onEnd: () => {};
 	onEndQueue = [];
 
-	constructor({ stories, ...scene }: SceneType, messages) {
+	constructor({ stories, ...scene }: SceneType, messages: Message) {
 		this.id = scene.id;
 		this.name = scene.name;
 		this.messages = messages;
@@ -116,9 +116,6 @@ export class Scene {
 	start() {
 		const _clock = clock(this.timeLine);
 		addEventList(_clock.chrono, this.timeLine);
-
-		console.log(emitter.listeners('main.go1'));
-
 		return _clock.start;
 	}
 

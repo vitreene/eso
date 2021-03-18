@@ -18,13 +18,15 @@
       - id: story01
         channel: story01
         extends: anim01
-        ignore: [sprite]
+        # ignore: [sprite]
         persos: 
           - *IMG : 
               id: image
               extends: image-shared
               initial:
-                content: ./ikono/9.jpg
+                content: 
+                  src: ./ikono/9.jpg
+                  fit: contain
         
       - id: story02
         channel: story02
