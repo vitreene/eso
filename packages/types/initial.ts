@@ -86,7 +86,7 @@ interface EsoLang {
 	effect?: string;
 }
 
-type EsoContent = string | Array<EsoInitial> | EsoLang;
+type EsoContent = string | Array<EsoInitial> | EsoLang | CollectionImages;
 
 export interface CollectionImages {
 	width: number;
