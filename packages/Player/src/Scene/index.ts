@@ -7,7 +7,6 @@ import { Slots } from './store-slots';
 import { OnScene } from './on-scene.js';
 import { updateComponent } from './update-component';
 
-import { registerImages } from './register/register-images';
 import { registerPersos } from './register/register-persos';
 import { registerStraps } from './register/register-straps';
 import { registerActions } from './register/register-actions';
@@ -29,34 +28,15 @@ import {
 } from '../../../types/Entries-types';
 import { Message } from '../../../types/message';
 import { Eventime } from '../../../types/eventime';
-import { ImagesCollection } from '../../../types/initial';
 import { prepareTransistions } from './prepare-transistions';
+import { ImagesCollection } from '../../../types/initial';
 
 // emitter.onAny(function (event, value) {
 // 	console.log('EVENT->', event, value);
 // 	console.log(emitter.listeners(event));
 // 	console.log(emitter.eventNames());
 // });
-// const messages: Message = {
-// 	langue: {
-// 		fr: {
-// 			txt01: 'Bonjour',
-// 			txt02: `il est ${new Date()}`,
-// 		},
-// 		en: {
-// 			txt01: 'Hello',
-// 			txt02: 'How are you ?',
-// 		},
-// 	},
-// 	'sous-titre': {
-// 		fr: {
-// 			txt01: 'Nouvelle étape',
-// 		},
-// 		en: {
-// 			txt01: 'Jean say Hello',
-// 		},
-// 	},
-// };
+
 export class Scene {
 	id: string;
 	channel: string;
@@ -71,18 +51,22 @@ export class Scene {
 	persos: ScenePersos = new Map(); //
 	timeLine: TimeLiner = new TimeLiner();
 	onScene: OnScene = new OnScene(this.slots);
-	imagesCollection: ImagesCollection = new Map(); //
+	// imagesCollection; //: ImagesCollection = new Map();
 	// nodes: any = storeNodes;
 	// telco: () => {};
 	// onStart: () => {};
 	// onEnd: () => {};
 	onEndQueue = [];
 
-	constructor({ stories, ...scene }: SceneType, messages) {
+	constructor(
+		{ stories, ...scene }: SceneType,
+		{ messages, mediasCollection }
+	) {
 		this.id = scene.id;
 		this.name = scene.name;
 		this.messages = messages;
 		this.description = scene.description;
+		// this.imagesCollection = mediasCollection;
 
 		this.slot = this.slot.bind(this);
 		this.addStory = this.addStory.bind(this);
@@ -92,9 +76,9 @@ export class Scene {
 
 		registerStraps({ cast: () => this.cast });
 
-		Promise.all(stories.map(this.addStory))
-			.then(() => this.initOnMount(scene.cast, stories))
-			.then(this.start());
+		stories.forEach(this.addStory(mediasCollection));
+		this.initOnMount(scene.cast, stories);
+		this.start();
 	}
 
 	initOnMount(_cast: Cast[], stories: Story[]) {
@@ -116,29 +100,32 @@ export class Scene {
 	start() {
 		const _clock = clock(this.timeLine);
 		addEventList(_clock.chrono, this.timeLine);
-
-		console.log(emitter.listeners('main.go1'));
-
-		return _clock.start;
+		console.log('START');
+		return _clock.start();
 	}
 
-	async addStory(story: Story) {
-		const { eventimes, ...others } = story;
-		this._addEventsToTimeLine(eventimes);
-		await this._register(others);
+	addStory(mediasCollection) {
+		return (story: Story) => {
+			const { eventimes, ...others } = story;
+			this._addEventsToTimeLine(eventimes);
+			this._register(others, mediasCollection);
+		};
 	}
-
 	private _addEventsToTimeLine(eventimes: Eventime) {
 		this.timeLine.addEventList(eventimes, { level: DEFAULT_NS });
 	}
 
-	private async _register(story: StoryWoEventimes) {
-		console.log('_register', story);
+	private _register(
+		story: StoryWoEventimes,
+		mediasCollection: ImagesCollection
+	) {
+		// console.log('_register', story);
+		// console.log('this.imagesCollection', this.imagesCollection);
+
 		const { isEntry, root, channel, persos } = story;
-		await registerImages(persos, this.imagesCollection);
 		const _persos = persos.map(prepareTransistions);
 		registerPersos(_persos, this.persos, {
-			imagesCollection: this.imagesCollection,
+			imagesCollection: mediasCollection,
 			slot: this.slot,
 			messages: this.messages,
 		});

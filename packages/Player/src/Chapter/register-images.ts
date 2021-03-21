@@ -1,11 +1,10 @@
-import { Nature } from '../../../../types/ESO_enum';
-import { ImagesCollection, Perso } from '../../../../types/initial';
+import { toArray } from '../shared/utils';
 
-import { toArray } from '../../shared/utils';
+import { Nature } from '../../../types/ESO_enum';
+import { EsoAction, ImagesCollection, Perso } from '../../../types/initial';
+import { DEFAULT_IMG } from '../data/constantes';
 
 const composantTypeImage = [Nature.IMG, Nature.SPRITE];
-
-//TODO passer vers fetch !
 
 type Srcs = string[];
 export async function registerImages(
@@ -24,7 +23,7 @@ function findSrcs(imgs: Perso[]) {
 	for (const perso of imgs) {
 		if (!perso.actions) continue;
 		toArray(perso.actions).forEach(
-			(action) => action.content && srcs.push(action.content)
+			(action: EsoAction) => action.content && srcs.push(action.content)
 		);
 	}
 	return srcs as Srcs;
@@ -45,10 +44,16 @@ export async function loadImages(srcs: string[], imagesCollection) {
 						});
 						resolve(true);
 					};
-					ikono.onerror = reject;
+
+					ikono.onerror = (err) => {
+						imagesCollection.set(src, DEFAULT_IMG);
+						return reject(err);
+					};
 
 					ikono.src = src;
 				})
 		)
-	).catch((err) => console.log('erreur image :', err));
+	).catch((err) =>
+		console.log('on s‘est pas trompé ; ça a pas fonctionné', err)
+	);
 }

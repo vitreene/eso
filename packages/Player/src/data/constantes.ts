@@ -50,6 +50,13 @@ export const SCENE_STAGE = {
 	},
 };
 
+export const DEFAULT_IMG = {
+	width: 250,
+	height: 250,
+	ratio: 1,
+	src: './ikono/placeholder.png',
+};
+
 export const DEFAULT_SCENE_STAGE = SCENE_STAGE['4/3'];
 
 export const MISSING = 'missing';

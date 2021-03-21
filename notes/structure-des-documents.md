@@ -517,14 +517,94 @@ les stories n'ont pas de listen ou actions, aussi il faut créer un event en deh
 		Scene.setStoryCast(story);
 		Scene.activateZoom(story.id);
 
-## inceptions : améliorations
-le principe fonctionne, mais des clarifications seraient les bienvenues :
 
+## Chapter
+chapter est appelé par 
+- le sommaire du  Project, 
+- un autre chapitre
+Chapter est appelé :
+- par l'id du chapitre,
+- par le path vers les ressources à charger 
+- option, la scene à lire en premier
+dans le sommaire, les chapitres sont désignés par 
+- id,
+- titre,
+- path vers le dossier. Par convention, path peut etre déduit par l'id du chapitre
+Dans le dossier du chapitre :
+- lit dans index les fichiers à charger,
+- un seul fichier à lire,
+- ou un mix : par défaut un fichier, mais en en-tete optionnellement les fichiers à lier.
 
+methodes :
+init : 
+  - charge les fichiers scene, 
+  - les transforme,
+  - charge les medias, en priorité celle de la scene courante
+  - lorsque les medias sont chargés/ disponibles, indique que la scene peut commencer
+  - liste les scènes dans l'ordre de lecture
+start : lance la scene demandée
+next: lance la scene suivante 
+prec: lance la scene precedente
+goto: lance la scene demandée
+end : termine le chapitre
 
+changement de scene
+- dans le meme chapitre :
+  - vérifier que les medias sont chargés
+  - creer la scene
+  - détruire la scene actuelle
+  - lancer la nouvelle scene
+- changer de chapitre
+  - lancer un loader
+  - chrger les ressources
 
+> possible ?
+cloner le node "app", pour maintenir l'affichage, pendant que la nouvelle scene se charge. La scene originale est perdue, les nodes originaux attachés à la scene aussi.
+pas besoin de maintenir deux objets Scene
 
  
+Les méthodes prec, next, goto sont appelées via des events
+> les méthodes de fin de scene ou de chapitre pourraient etre des méthodes asynchrones
+
+## chapter ne doit pas dépendre des srtatégies de chargement des scenes
+chapter doit ignorer comment les scenes sont obtenues, puisqu'il sera possible de varier les approches selon l'application, ou meme au sein d'une meme app. 
+
+La stratégie de chargement est choisie au niveau de l'app.  A précisier quend le besoin sera défini.
+
+
+## Comment gérer les events d'une scene à l'autre ?
+- plusieurs emitters : scene/chapter/app
+  - celui en charge de la scene est re-crée à chaque fois.
+  - comment appeler l'emitter chapter dans une scene ? -> il faut passer par des fonction relais, potentiellement compliqué
+  - il existe la methode listenTo qui a cette fonction.
+
+
+- un emitter unique :
+  - interactions directes avec tous les composants de l'app
+  - nettoyage complexe : il faut identifier tous les emitters , risque de fuites mémoire. emitter est disponible dans tout l'app, il n'y a pas de garantie qu'un event soit détruit 
+  > créer une api par dessus emitter qui dispose automatiquement les events créés
+
+
+## Project
+project contient le sommaire et des parametres généraux
+
+sommaire: tableau de chapitres
+chapitre : 
+- ordre
+- id
+- titre
+- description
+- vignette
+- path : chemin d'accès au chapitre depuis le point d'entrée
+- filter: condition d'apparition selon le profil
+- can-play: condition d'accès au chapitre (profil, pré-requis, score...)
+- scene entry : si pas renseigné, la premiere dans le tableau
 
 
 
+parametres
+- langue par défaut
+- sous-titres : o/n
+- langue des sous-titres par défaut
+- profil: variable entrée par l'utilisateur
+- datas-profil : données contextuelles au profil
