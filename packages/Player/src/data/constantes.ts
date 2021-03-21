@@ -32,6 +32,7 @@ export const DEFAULT_TRANSITION_IN = 'fadeIn';
 export const DEFAULT_TRANSITION_OUT = 'fadeOut';
 
 export const DEFAULT_DURATION = 500;
+export const DEFAULT_FIT = 'cover';
 
 //Langues
 export const FR = ESO_Lang.FR;

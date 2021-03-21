@@ -28,12 +28,16 @@ function findSrcs(imgs: Perso[]) {
 	}
 	return srcs as Srcs;
 }
-
-export async function loadImages(srcs: string[], imagesCollection) {
+interface ImgSrc {
+	src: string;
+	fit?: string;
+}
+export async function loadImages(srcs: string[] | ImgSrc[], imagesCollection) {
 	return await Promise.all(
 		srcs.map(
-			(src) =>
+			(source) =>
 				new Promise((resolve, reject) => {
+					const src = typeof source === 'string' ? source : source.src;
 					const ikono = new Image();
 					ikono.onload = () => {
 						imagesCollection.set(src, {

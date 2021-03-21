@@ -21,6 +21,7 @@ export function updateComponent(
 		perso.prerender(box.zoom);
 	}
 
+	// if (update.dimensions)
 	// RESLOT , RESCALE, TRANSITIONS
 	Eso.transition({ perso, update, changed, box, updateSlot });
 
@@ -28,6 +29,8 @@ export function updateComponent(
 }
 /* 
 TODO : déplacer cette fonction ici et supprimer de Eso
+FIXME Sprite utilise eso.dimensions
+
 const dimensions = doDim(update.dimensions);
 	const classStyle = {
 		...(update && update.classStyle),
