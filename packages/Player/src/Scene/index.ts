@@ -60,13 +60,12 @@ export class Scene {
 
 	constructor(
 		{ stories, ...scene }: SceneType,
-		{ messages, mediasCollection }
+		{ messages, mediasCollection, connectChapterEmitter }
 	) {
 		this.id = scene.id;
 		this.name = scene.name;
 		this.messages = messages;
 		this.description = scene.description;
-		// this.imagesCollection = mediasCollection;
 
 		this.slot = this.slot.bind(this);
 		this.addStory = this.addStory.bind(this);
@@ -78,6 +77,7 @@ export class Scene {
 
 		stories.forEach(this.addStory(mediasCollection));
 		this.initOnMount(scene.cast, stories);
+		connectChapterEmitter(emitter);
 		this.start();
 	}
 
@@ -100,7 +100,7 @@ export class Scene {
 	start() {
 		const _clock = clock(this.timeLine);
 		addEventList(_clock.chrono, this.timeLine);
-		console.log('START');
+		console.log('START', emitter.eventNames());
 		return _clock.start();
 	}
 
