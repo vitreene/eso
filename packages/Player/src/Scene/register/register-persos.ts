@@ -21,8 +21,8 @@ export function registerPersos(
 	persos: ScenePersos,
 	options: Options
 ) {
-	(Array.isArray(_persos) ? _persos : [_persos]).forEach((perso: Perso) => {
-		switch (perso.nature) {
+	(Array.isArray(_persos) ? _persos : [_persos]).forEach((_perso: Perso) => {
+		switch (_perso.nature) {
 			case 'sound':
 				break;
 			case 'polygon':
@@ -31,18 +31,21 @@ export function registerPersos(
 			case 'bloc':
 				{
 					const { messages } = options;
+					const perso = preInitProps(_perso);
 					persos.set(perso.id, createPerso.create(perso, { messages }));
 				}
 				break;
 			case 'layer':
 				{
 					const { slot } = options;
+					const perso = preInitProps(_perso);
 					persos.set(perso.id, createPerso.create(perso, slot));
 				}
 				break;
 			case 'img':
 				{
 					const { imagesCollection } = options;
+					const perso = preInitProps(_perso);
 					persos.set(perso.id, createPerso.create(perso, imagesCollection));
 				}
 
@@ -51,22 +54,28 @@ export function registerPersos(
 				{
 					const { imagesCollection } = options;
 					const initialDimensions = imagesCollection.get(
-						perso.initial.content as string
+						_perso.initial.content as string
 					);
-					const dimensions = {
-						...initialDimensions,
-						...doDimensions(perso.initial.dimensions),
-					};
-
-					const classStyle = {
+					const additionnalStyles = {
 						position: 'absolute' as Property.Position,
-						...perso.initial.classStyle,
-						...(dimensions && dimensions.classStyle),
+						initialDimensions,
 					};
-					perso.initial.classStyle = {
-						...perso.initial.classStyle,
-						...classStyle,
-					};
+					const perso = preInitProps(_perso, additionnalStyles);
+
+					// const imgDimensions = {
+					// 	...initialDimensions,
+					// 	...doDimensions(perso.initial.dimensions),
+					// };
+
+					// const classStyle = {
+					// 	position: 'absolute' as Property.Position,
+					// 	...perso.initial.classStyle,
+					// 	...(imgDimensions && imgDimensions.classStyle),
+					// };
+					// perso.initial.classStyle = {
+					// 	...perso.initial.classStyle,
+					// 	...classStyle,
+					// };
 
 					persos.set(perso.id, createPerso.create(perso, imagesCollection));
 				}
@@ -76,4 +85,25 @@ export function registerPersos(
 				break;
 		}
 	});
+}
+
+function preInitProps(_perso: Perso, additionnalStyles = {}) {
+	const dimensions = doDimensions(_perso.initial.dimensions);
+	const classStyle = {
+		// position: 'absolute' as Property.Position,
+		..._perso.initial.classStyle,
+		...additionnalStyles,
+		...(dimensions && dimensions.classStyle),
+	};
+
+	return {
+		..._perso,
+		initial: {
+			..._perso.initial,
+			classStyle: {
+				..._perso.initial.classStyle,
+				...classStyle,
+			},
+		},
+	};
 }
