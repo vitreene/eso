@@ -1,4 +1,4 @@
-import { TimeLiner, TimelineKey } from './solver';
+import { TimeLiner, TimelineKey } from './timeline';
 
 import { controlAnimations } from 'veso';
 import { emitter } from '../../App/init';

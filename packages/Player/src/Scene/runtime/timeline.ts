@@ -76,8 +76,32 @@ export class TimeLiner {
 		// console.log('timeLine)', timeLine);
 		// console.log('mapEvents', mapEvents);
 		// console.log('this.timeLine', this.timeLine);
+		// console.log('this.eventDatas', this.eventDatas);
 		// console.log('remains', this.remains);
 		// console.log('solved', this.solved);
+	}
+
+	get lastEvent() {
+		// trouver le time le plus tardif
+		const timevents = this.timeLine.reduce((tls, tl) => {
+			const events = [];
+			for (const channel in tl.timeLine) {
+				for (const time in tl.timeLine[channel]) events.push(Number(time));
+			}
+			return tls.concat(events);
+		}, []);
+		const lastTime = Math.max(...timevents.filter(Boolean));
+
+		// trouver un event correspondant à ce time
+		let event = null;
+		mark: for (const tm of this.timeLine) {
+			for (const channel in tm.timeLine) {
+				event = [channel, tm.timeLine[channel][lastTime][0]];
+				if (event) break mark;
+			}
+		}
+
+		return { event, lastTime };
 	}
 
 	// ajouter aux autres timelines

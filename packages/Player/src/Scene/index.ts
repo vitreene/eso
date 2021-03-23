@@ -12,7 +12,7 @@ import { registerStraps } from './register/register-straps';
 import { registerActions } from './register/register-actions';
 
 import { initRuntime } from './runtime';
-import { TimeLiner } from './runtime/solver';
+import { TimeLiner } from './runtime/timeline';
 import { clock, Clock } from './runtime/clock';
 import { addEventList } from './runtime/add-event-list';
 
@@ -31,11 +31,13 @@ import { Eventime } from '../../../types/eventime';
 import { prepareTransistions } from './prepare-transistions';
 import { ImagesCollection } from '../../../types/initial';
 
-// emitter.onAny(function (event, value) {
-// 	console.log('EVENT->', event, value);
-// 	console.log(emitter.listeners(event));
-// 	console.log(emitter.eventNames());
-// });
+/* emitter.onAny(function (event, value) {
+	if (event !== 'elapsed') {
+		console.log('EVENT->', event, value);
+		// console.log(emitter.listeners(event));
+		console.log(emitter.eventNames(event));
+	}
+}); */
 
 export class Scene {
 	id: string;
@@ -78,6 +80,8 @@ export class Scene {
 		stories.forEach(this.addStory(mediasCollection));
 		this.initOnMount(scene.cast, stories);
 		connectChapterEmitter(emitter);
+
+		this.last();
 		this.start();
 	}
 
@@ -102,6 +106,13 @@ export class Scene {
 		addEventList(_clock.chrono, this.timeLine);
 		console.log('START', emitter.eventNames());
 		return _clock.start();
+	}
+
+	last() {
+		console.log('LAST', this.timeLine.lastEvent);
+		emitter.on(this.timeLine.lastEvent.event, () => {
+			console.log('******************FINI****************');
+		});
 	}
 
 	addStory(mediasCollection) {

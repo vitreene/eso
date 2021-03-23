@@ -14,7 +14,7 @@ interface Project {
 	scene?: string; // id de la scene, index 0 par défaut
 }
 
-const chapemitter = new EventEmitter2({ maxListeners: 0 });
+const chapemitter = new EventEmitter2({ maxListeners: 0, delimiter: '.' });
 const chapEvents = { 'main,start': 'start', 'story01,go': 'start' };
 
 export class Chapter {

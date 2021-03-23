@@ -1,5 +1,5 @@
 import { Eventime } from '../../../../types/eventime';
-import { TimeLiner } from './solver';
+import { TimeLiner } from './timeline';
 
 import { emitter } from '../../App/init';
 import { STRAP, TEMP } from '../../data/constantes';
