@@ -92,6 +92,8 @@ export function createEso(emitter) {
 		//  TODO retirer cette fonction
 		// dimensions sera traité au chargement des fichiers
 		_pre(props) {
+			props.dimensions && console.log('ESO DIMENSIONS, ', this.id, props);
+			return props;
 			const modiffs = [];
 			for (const prep in this.prep) {
 				if (props[prep]) {

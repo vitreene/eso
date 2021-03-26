@@ -21,25 +21,11 @@ export function updateComponent(
 		perso.prerender(box.zoom);
 	}
 
-	// if (update.dimensions)
-	// RESLOT , RESCALE, TRANSITIONS
+	// RESLOT , RESCALE, TRANSITIONS, DIMENSIONS
 	Eso.transition({ perso, update, changed, box, updateSlot });
 
 	perso.update(update);
 }
-/* 
-TODO : déplacer cette fonction ici et supprimer de Eso
-FIXME Sprite utilise eso.dimensions
-
-const dimensions = doDim(update.dimensions);
-	const classStyle = {
-		...(update && update.classStyle),
-		...(dimensions && dimensions.classStyle),
-	};
-	update.dimensions && console.log(perso.id, update.dimensions, dimensions);
-	perso.update({ ...update, transition, classStyle });
-}
- */
 
 let body;
 function updateMissingProps(perso) {

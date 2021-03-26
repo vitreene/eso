@@ -1,12 +1,54 @@
 import { splitUnitValue } from '../../shared/utils';
 
+function scaleDimensions(dimensions, original) {
+	// fusionne les dimensions : met à l'echelle
+	/* 
+	X si seulement width : factor = width / imgDimensions.width
+	X si seulement height : factor = height / imgDimensions.height
+	si seulement ratio : déformation = imgDimensions.width/imgDimensions.height - ratio
+
+	si width et height : -> utiliser ces valeurs
+	si width et height et ratio : ignorer ratio
+	si width et ratio : -> calculer height -> utiliser ces valeurs
+	si height et ratio : -> calculer width -> utiliser ces valeurs
+
+
+	
+	*/
+}
+
+function only(property, obj) {
+	const keys = Object.keys(obj);
+	const one = keys.length === 1;
+	const hasProperty = keys[0] === property;
+	return one && hasProperty;
+}
+
 // TODO transformer les % en px
 // si % lire les dimensions du node
-export function doDimensions(dimensions) {
+export function doDimensions(_dimensions, original) {
 	// dimensions ; width,height,ratio
 	// ratio = w/h
 	// units: w, h
-	if (!dimensions) return null;
+	if (!_dimensions && !original) return null;
+	let dimensions = !_dimensions && original ? original : _dimensions;
+
+	if (only('width', _dimensions) && original?.width) {
+		const scale = _dimensions.width / original.width;
+		dimensions = {
+			width: _dimensions.width,
+			height: original.height * scale,
+		};
+	}
+	if (only('height', _dimensions) && original?.height) {
+		const scale = _dimensions.height / original.height;
+		console.log('HEIGHT', _dimensions, original);
+		dimensions = {
+			width: original.width * scale,
+			height: _dimensions.height,
+		};
+		console.log('SCALE', dimensions, scale);
+	}
 
 	const regW = splitUnitValue(dimensions.width);
 	const regH = splitUnitValue(dimensions.height);
@@ -55,6 +97,7 @@ export function doDimensions(dimensions) {
 	if (hasNoWidth && hasNoRatio) width = '100%';
 	if (hasNoHeight && hasNoRatio) height = '100%';
 
-	// console.log("dimensions", dimensions, { width, height });
+	console.log('pre-DIMENSIONS', dimensions, { width, height });
+
 	return { classStyle: { width, height } };
 }

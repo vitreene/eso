@@ -4,6 +4,7 @@ import { splitUnitValue } from '../shared/utils';
 // si % lire les dimensions du node
 export const doDimensions = {
 	update(dimensions) {
+		console.log('eso dans DIMENSIONS', this.id, dimensions);
 		// dimensions ; width,height,ratio
 		// ratio = w/h
 		// units: w, h
