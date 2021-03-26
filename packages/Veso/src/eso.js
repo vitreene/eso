@@ -5,7 +5,7 @@ import { getElementOffset } from './shared/get-element-offset';
 import { createRegisterKeyEvents } from './shared/register-keyEvents';
 import { pipe, isVoid } from './shared/utils';
 
-import { doDimensions } from './components/dimensions-component';
+// import { doDimensions } from './components/dimensions-component';
 import { doStyle } from './components/style-component';
 import { doClasses } from './components/classNames-component';
 import { content } from './components/content-component';
@@ -47,7 +47,7 @@ export function createEso(emitter) {
 			this.id = id;
 			this.tag = tag;
 			this.uuid = { uuid: nanoid(8), id };
-			this.prep = { dimensions: doDimensions }; // a retirer
+			// this.prep = { dimensions: doDimensions }; // a retirer
 			this.to = to;
 			this.revision = {
 				className: doClasses,
