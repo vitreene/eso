@@ -12,29 +12,26 @@ export function createTransition(emitter) {
 			setTransitions,
 			reslot,
 			onLeaveTransitions,
-			mergeDimensions
+			mergeDimensionsInProps
 		)({ ...props, transition: [] });
 
 		transition.length && doTransition(props.perso, transition, emitter);
 	};
 }
 
-function mergeDimensions(props) {
-	console.log('mergeDimensions', typeof doDimensions);
+function mergeDimensionsInProps(props) {
 	if (!props.update && !props.update.dimensions) return props;
+	const update = mergeDimensions(props.update);
+	return { ...props, update };
+}
 
-	const { dimensions, ...update } = props.update;
+export function mergeDimensions(_update) {
+	if (!_update && !_update.dimensions) return _update;
+	const { dimensions, ...update } = _update;
 	const dims = doDimensions.update(dimensions);
 	const classStyle = {
 		...update.classStyle,
 		...(dims && dims.classStyle),
 	};
-
-	return {
-		...props,
-		update: {
-			...update,
-			classStyle,
-		},
-	};
+	return { ...update, classStyle };
 }

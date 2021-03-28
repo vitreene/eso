@@ -38,6 +38,11 @@ export const DEFAULT_FIT = 'cover';
 export const FR = ESO_Lang.FR;
 export const EN = ESO_Lang.EN;
 
+export const START_SCENE = 'start-scene';
+export const END_SCENE = 'end-scene';
+export const NEXT_SCENE = 'next-scene';
+export const PREC_SCENE = 'prec-scene';
+
 export const SCENE_STAGE = {
 	'16/9': {
 		w: 1600,

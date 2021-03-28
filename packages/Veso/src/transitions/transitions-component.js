@@ -5,6 +5,7 @@ import { fromTo } from './from-to';
 export function doTransition(perso, update, emitter) {
 	if (!update || !update.length) return null;
 	const accumulate = setCumulateCallback(perso);
+	const interpolate = (between) => accumulate.add(between);
 
 	Array.isArray(update) ? update.forEach(exeTransition) : exeTransition(update);
 	return update;
@@ -40,10 +41,6 @@ export function doTransition(perso, update, emitter) {
 			},
 		});
 	}
-
-	function interpolate(between) {
-		accumulate.add(between);
-	}
 }
 /**
  *
@@ -74,7 +71,7 @@ function syncRafUpdate(callback) {
 			for (const acc of this.cumul) {
 				typeof acc === 'function' ? fn.push(acc) : Object.assign(between, acc);
 			}
-
+			// console.log('between', between);
 			callback(between);
 			fn.forEach((f) => f());
 		},

@@ -1,12 +1,13 @@
 import { EventEmitter2 } from 'eventemitter2';
 
-import { fetchChapter } from '../fetch/fetch-chapter';
 import { Scene } from '../Scene';
 import { registerImages } from './register-images';
+import { fetchChapter } from '../fetch/fetch-chapter';
 
-import { Scene as SceneProps, Story } from '../../../types/Entries-types';
+import { END_SCENE } from '../data/constantes';
 import { Message } from '../../../types/message';
 import { ImagesCollection } from '../../../types/initial';
+import { Scene as SceneProps, Story } from '../../../types/Entries-types';
 
 interface Project {
 	id?: string; // id du chapitre
@@ -15,9 +16,14 @@ interface Project {
 }
 
 const chapemitter = new EventEmitter2({ maxListeners: 0, delimiter: '.' });
-const chapEvents = { 'main,start': 'start', 'story01,go': 'start' };
+const chapEvents = {
+	[END_SCENE]: 'end',
+	'main,start': 'start',
+	'story01,go': 'start',
+};
 
 export class Chapter {
+	scene: Scene;
 	scenes: SceneProps[];
 	messages: Message;
 	mediasCollection: Map<string, ImagesCollection> = new Map(); //
@@ -26,21 +32,23 @@ export class Chapter {
 		this.init(props);
 	}
 
-	private async init({ path, scene }: Project) {
+	private async init({ path, scene: sceneId }: Project) {
 		const { scenes, messages } = await fetchChapter(path);
 		console.log('PLAYER scenes', scenes);
 		if (!scenes) return false;
 		this.scenes = scenes;
 		this.messages = messages;
-		const index = scene ? scenes.findIndex((sc) => sc.id === scene) : 0;
+		const index = sceneId
+			? scenes.findIndex((scene) => scene.id === sceneId)
+			: 0;
 
 		this.loadMedias(scenes[index]).then((response) => {
-			console.log('RESPONSE', response.loaded);
+			console.log('LA REPONSE', response.loaded);
 			response.loaded && this.start(index);
 		});
 	}
 
-	private async loadMedias(scene) {
+	private async loadMedias(scene: SceneProps) {
 		if (this.mediasCollection.has(scene.id)) return { loaded: true };
 		const collection: ImagesCollection = new Map();
 		return await Promise.all(
@@ -56,7 +64,7 @@ export class Chapter {
 	start(index: number) {
 		const scene = this.scenes[index];
 		this.initChapterEvents();
-		new Scene(scene, {
+		this.scene = new Scene(scene, {
 			messages: this.messages,
 			mediasCollection: this.mediasCollection.get(scene.id),
 			connectChapterEmitter: (emitter) => {
@@ -69,9 +77,13 @@ export class Chapter {
 
 	private initChapterEvents() {
 		chapemitter.on('start', this.test);
+		chapemitter.on('end', this.testEnd);
 	}
 
 	private test(evt) {
-		console.log('XXXXXXXXXXXXX TEST CHAPTER ON', evt);
+		console.log('••••••••••••• TEST CHAPTER ON', evt);
+	}
+	private testEnd(evt) {
+		console.log('XXXXXXXXXXXXX TEST CHAPTER OFF', evt);
 	}
 }

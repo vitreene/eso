@@ -15,8 +15,9 @@ import { initRuntime } from './runtime';
 import { TimeLiner } from './runtime/timeline';
 import { clock, Clock } from './runtime/clock';
 import { addEventList } from './runtime/add-event-list';
+import { prepareTransitions } from './prepare-transitions';
 
-import { CONTAINER_ESO, DEFAULT_NS, MAIN } from '../data/constantes';
+import { CONTAINER_ESO, DEFAULT_NS, MAIN, END_SCENE } from '../data/constantes';
 
 import {
 	SceneCast,
@@ -28,7 +29,6 @@ import {
 } from '../../../types/Entries-types';
 import { Message } from '../../../types/message';
 import { Eventime } from '../../../types/eventime';
-import { prepareTransistions } from './prepare-transistions';
 import { ImagesCollection } from '../../../types/initial';
 
 /* emitter.onAny(function (event, value) {
@@ -75,18 +75,18 @@ export class Scene {
 		this._updateSlot = this._updateSlot.bind(this);
 		this.renderOnResize = this.renderOnResize.bind(this);
 
+		connectChapterEmitter(emitter);
 		registerStraps({ cast: () => this.cast });
 
 		stories.forEach(this.addStory(mediasCollection));
 		this.initOnMount(scene.cast, stories);
-		connectChapterEmitter(emitter);
 
-		this.last();
+		this.last(scene.lastEvent);
 		this.start();
 	}
 
-	initOnMount(_cast: Cast[], stories: Story[]) {
-		for (const cast of _cast) {
+	initOnMount(casting: Cast[], stories: Story[]) {
+		for (const cast of casting) {
 			const story = stories.find((s) => s.id === cast.id);
 			emitter.prependListener([MAIN, cast.startAt], this.onMount(story));
 		}
@@ -101,18 +101,18 @@ export class Scene {
 		};
 	}
 
+	last(lastEvent = this.timeLine.lastEvent.event) {
+		console.log('LAST', this.timeLine.lastEvent);
+		emitter.on(lastEvent, (chrono) => {
+			emitter.emit(END_SCENE, { id: this.id, ...chrono });
+		});
+	}
+
 	start() {
 		const _clock = clock(this.timeLine);
 		addEventList(_clock.chrono, this.timeLine);
 		console.log('START', emitter.eventNames());
 		return _clock.start();
-	}
-
-	last() {
-		console.log('LAST', this.timeLine.lastEvent);
-		emitter.on(this.timeLine.lastEvent.event, () => {
-			console.log('******************FINI****************');
-		});
 	}
 
 	addStory(mediasCollection) {
@@ -134,7 +134,7 @@ export class Scene {
 		// console.log('this.imagesCollection', this.imagesCollection);
 
 		const { isEntry, root, channel, persos } = story;
-		const _persos = persos.map(prepareTransistions);
+		const _persos = persos.map(prepareTransitions);
 		registerPersos(_persos, this.persos, {
 			imagesCollection: mediasCollection,
 			slot: this.slot,

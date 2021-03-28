@@ -44,6 +44,7 @@ export interface Scene {
 	cast: Cast[];
 	stories?: Story[];
 	shared?: SharedFileEntry;
+	lastEvent?: string;
 }
 
 export interface Story {

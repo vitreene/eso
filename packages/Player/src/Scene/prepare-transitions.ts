@@ -1,7 +1,7 @@
 import { DEFAULT_STYLES, MISSING } from '../data/constantes';
 import { Style } from '../../../types/initial';
 
-export function prepareTransistions(perso) {
+export function prepareTransitions(perso) {
 	const { initial, actions } = perso;
 	if (!actions) return perso;
 	const styleProps = initial

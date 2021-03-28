@@ -10703,6 +10703,11 @@ shellwords@^0.1.1:
   resolved "https://registry.yarnpkg.com/shellwords/-/shellwords-0.1.1.tgz#d6b9181c1a48d397324c84871efbcfc73fc0654b"
   integrity sha512-vFwSUfQvqybiICwZY5+DAWIPLKsWO31Q91JSKl3UYv+K5c2QRPzn0qzec6QPu1Qc9eHYItiP3NdJqNVqetYAww==
 
+shifty@^2.15.2:
+  version "2.15.2"
+  resolved "https://registry.yarnpkg.com/shifty/-/shifty-2.15.2.tgz#be74f83b5494708ca5531c3725027a0b51d1dc3d"
+  integrity sha512-uaDIdYXrOGncvPula4Pi2jl7kv46IwvZ10AYBSGsl/vrvclOXqzMWOAQCgDjNR7LVPgQki0CTtOMJOH9gnJgsg==
+
 shifty@^2.9.1:
   version "2.13.0"
   resolved "https://registry.yarnpkg.com/shifty/-/shifty-2.13.0.tgz#29163e817d29d4e8034ef5576f182ad3e07488d3"

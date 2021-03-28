@@ -96,8 +96,9 @@ export class TimeLiner {
 		let event = null;
 		mark: for (const tm of this.timeLine) {
 			for (const channel in tm.timeLine) {
-				event = [channel, tm.timeLine[channel][lastTime][0]];
-				if (event) break mark;
+				const lastEvent = tm.timeLine[channel][lastTime];
+				event = [channel, lastEvent && lastEvent[0]];
+				if (lastEvent) break mark;
 			}
 		}
 

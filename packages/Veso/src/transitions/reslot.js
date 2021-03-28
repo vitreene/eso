@@ -28,7 +28,6 @@ export function reslot({ transition, ...props }) {
 			dX: old.x - current.x,
 			dY: old.y - current.y,
 		};
-
 		transition.push({
 			from: position,
 			to: { dX: 0, dY: 0 },

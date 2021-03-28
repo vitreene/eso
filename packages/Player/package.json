@@ -3,6 +3,7 @@
 	"main": "lib/index.js",
 	"version": "0.1.0",
 	"dependencies": {
+		"shifty": "^2.15.2",
 		"veso": "^0.1.0"
 	},
 	"scripts": {

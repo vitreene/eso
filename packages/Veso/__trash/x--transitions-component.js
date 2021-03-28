@@ -16,7 +16,7 @@
  dans addToStore, progression et transition seront utilisés pour la timeline, style est destiné à prerender
  */
 
-import { controlAnimations } from '../shared/control-animation';
+import { controlAnimations } from '../src/shared/control-animation';
 import {
 	selectTransition,
 	directTransition,
@@ -24,19 +24,21 @@ import {
 import { fromTo } from '../shared/from-to';
 
 export function transition(emitter) {
+	console.log('transition');
 	// eslint-disable-next-line @typescript-eslint/no-this-alias
 	const self = this;
-	const callback = (between) => self.update({ between });
+	const callback = (between) => update({ between });
 	const accumulate = syncRafUpdate(callback);
-
-	function update(props) {
+	const interpolate = (between) => accumulate.add(between);
+	const update = (props) => {
 		if (!props) return null;
-		(Array.isArray(props) ? props : [props]).forEach(doTransition);
+		Array.isArray(props) ? props.forEach(doTransition) : doTransition(props);
 		return props;
-	}
+	};
 
 	// FIXME from et to peuvent etre nuls ?
-	function doTransition(props) {
+	const doTransition = (props) => {
+		console.log('doTransition');
 		const options = props.direct
 			? directTransition(props)
 			: selectTransition(props);
@@ -44,9 +46,8 @@ export function transition(emitter) {
 		// from-to
 		const interpolation = fromTo(options, self.history, self.uuid);
 		if (!interpolation) return;
-
 		// mettre à jour la position avant le rafraichissement
-		self.update({ between: interpolation.from });
+		update({ between: interpolation.from });
 
 		//lancer la ou les transitions
 		controlAnimations.tween({
@@ -64,11 +65,7 @@ export function transition(emitter) {
 				});
 			},
 		});
-	}
-
-	function interpolate(between) {
-		accumulate.add(between);
-	}
+	};
 
 	return { update };
 }

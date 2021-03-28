@@ -3,9 +3,8 @@ import { nanoid } from 'nanoid';
 import { createPerso, commit } from './create-perso';
 import { getElementOffset } from './shared/get-element-offset';
 import { createRegisterKeyEvents } from './shared/register-keyEvents';
-import { pipe, isVoid } from './shared/utils';
+import { isVoid } from './shared/utils';
 
-// import { doDimensions } from './components/dimensions-component';
 import { doStyle } from './components/style-component';
 import { doClasses } from './components/classNames-component';
 import { content } from './components/content-component';
@@ -47,7 +46,6 @@ export function createEso(emitter) {
 			this.id = id;
 			this.tag = tag;
 			this.uuid = { uuid: nanoid(8), id };
-			// this.prep = { dimensions: doDimensions }; // a retirer
 			this.to = to;
 			this.revision = {
 				className: doClasses,
@@ -58,7 +56,6 @@ export function createEso(emitter) {
 			};
 
 			this._revise = this._revise.bind(this);
-			this._pre = this._pre.bind(this);
 			this.commit = commit.bind(this);
 
 			// TODO ajouter des events liés à l'app (ex: langues)
@@ -68,54 +65,18 @@ export function createEso(emitter) {
 		}
 
 		init() {
-			this.propsInit && pipe(this._pre, this._revise)(this.propsInit);
+			this.propsInit && this._revise(this.propsInit);
 			this.prerender();
 			//  this.node call storeNodes
 			this.node = createPerso.call(this);
 		}
 
 		update(props) {
-			// const { between } = props;
-			// this.id === 'text-sample' &&
-			// 	between &&
-			// 	console.log('between', this.id, between);
-			// console.log('PROPS', props);
 			// séparer : calculer les diffs, puis assembler
 			// les diffs seront stockés pour la timeline (il faut le time)
-
-			props && pipe(this._pre, this._revise)(props);
-
+			props && this._revise(props);
 			this.prerender();
 			this.commit(this.current);
-		}
-
-		//  TODO retirer cette fonction
-		// dimensions sera traité au chargement des fichiers
-		_pre(props) {
-			props.dimensions && console.log('ESO DIMENSIONS, ', this.id, props);
-			return props;
-			const modiffs = [];
-			for (const prep in this.prep) {
-				if (props[prep]) {
-					const modiff = this.prep[prep].update(
-						props[prep],
-						this.history[prep]
-					);
-					modiffs.push(modiff);
-				}
-			}
-			if (modiffs.length === 0) return props;
-
-			// intégrer les nouvelles valeurs à l'existant
-			// les valeurs de prop sont prioritaires
-			const up = modiffs.reduce((acc, modiff) => {
-				const curr = {};
-				for (const [key, value] of Object.entries(modiff))
-					curr[key] = { ...value, ...props[key] };
-				return { ...acc, ...curr };
-			}, props);
-
-			return up;
 		}
 
 		// répartit les traitements par canal puis àjoute à l'historique
@@ -199,8 +160,6 @@ export function createEso(emitter) {
 
 		// TODO  mise en cache des classes
 		prerender(box) {
-			// console.log('ESO box --> ', box);
-
 			box && (this.box = box);
 
 			// calculer styles : appliquer zoom sur unitless
@@ -216,12 +175,10 @@ export function createEso(emitter) {
 				...other
 			} = this.history;
 
-			// this.from = {..._classStyle, _style}
 			const content = this.revision.content.prerender
 				? this.revision.content.prerender(contentToRender)
 				: contentToRender;
 
-			// const pointerEvents = options.pointerEvents ? "all" : "none";
 			const style = this.revision.style.prerender(this.box, _style);
 
 			if (_classStyle) {
@@ -241,7 +198,6 @@ export function createEso(emitter) {
 				...Object.fromEntries(events || []),
 				...other,
 			};
-			// console.log('this.current', this.current);
 			box && this.commit(this.current);
 		}
 	}

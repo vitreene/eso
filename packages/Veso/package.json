@@ -7,6 +7,6 @@
 		"csstype": "^2.6.2",
 		"goober": "^2.0.19-next.1",
 		"goober-autoprefixer": "^1.2.1",
-		"shifty": "^2.9.1"
+		"shifty": "^2.15.2"
 	}
 }

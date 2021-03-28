@@ -179,9 +179,6 @@
           events:
             # - { startAt: 2000, name: *PAUSE, channel: *TC  }
               1500: { channel: *DEFAULT_NS, name: go2 }
-
-
-
         persos:
           - *LAYER :
               id: *CONTAINER_ESO
