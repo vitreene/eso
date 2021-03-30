@@ -16,9 +16,8 @@ import {
 	StageEntry,
 	Story,
 	StoryEntry,
+	CastEntry,
 } from '../../../types/Entries-types';
-
-type CastEntry = Cast | string;
 
 export function sceneExpandCast(_cast: CastEntry[]): Cast[] {
 	if (!_cast) return [];
@@ -73,6 +72,8 @@ export function preStory(stories) {
 }
 
 function addStartAndEndEvents(story, cast) {
+	console.log(story, cast);
+
 	const eventimes = story.eventimes;
 	eventimes.startAt = cast.startAt;
 	eventimes.channel = DEFAULT_NS;

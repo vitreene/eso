@@ -26,8 +26,14 @@
               #  1000: *Q2
               #  2000 : *Q3
               #  3000 : *Q4
-              #  3600 : *Q2
+              #  4000 : *Q2
               #  5000 : *Q1
+               
+              #  5500: *Q2
+              #  6000 : *Q3
+              #  6500 : *Q4
+              #  7000 : *Q2
+              #  7500 : *Q1
                0: *Q1
                500: *Q2
                1500 : *Q3
@@ -89,7 +95,8 @@
                   - id: *Q4
                     classStyle: {display: grid, grid-row: 2, grid-column: 2}
               actions:
-                end-scene: { leave: true }
+                 x-start : 
+                    style: {background-color: green}
 
 - scene:
     id: scene2
@@ -98,6 +105,8 @@
     stories:
       - id: story01
         channel: story01
+        eventimes:
+          0: {name: start}
         persos:
           - *BLOC :
               id: bl-01
@@ -136,8 +145,8 @@
                     classStyle: {display: grid, grid-row: 1, grid-column: 2}
                   - id: *Q4
                     classStyle: {display: grid, grid-row: 2, grid-column: 2}
-              actions:
-                end-scene: { leave: true }
+              # actions:
+              #   end-scene: { leave: true }
 
 - shared:
     persos:
@@ -146,3 +155,31 @@
           initial:
             className: bloc-center
             classStyle: {  align-self: center,  justify-self: center}
+    stories:
+      - id: scene-w-telco
+        channel: *DEFAULT_NS
+        entry: *CONTAINER_ESO
+        stage: '4/3'
+        eventimes:
+          name: go
+          startAt: 0
+        persos:
+          - *LAYER :
+              id: *CONTAINER_ESO
+              initial:
+                className: container
+                classStyle: {
+                  display: grid,
+                  grid-template-columns: '2fr 2fr'
+                }
+                content:
+                  - id: *Q1
+                    classStyle: {display: grid, grid-row: 1, grid-column: 1}
+                  - id: *Q2
+                    classStyle: {display: grid, grid-row: 2, grid-column: 1}
+                  - id: *Q3
+                    classStyle: {display: grid, grid-row: 1, grid-column: 2}
+                  - id: *Q4
+                    classStyle: {display: grid, grid-row: 2, grid-column: 2}
+              actions:
+                end-scene: { leave: true }

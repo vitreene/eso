@@ -25,7 +25,12 @@ eventDatas[channel][count][name]
 */
 import { ESO_Channel } from '../../../../types/ESO_enum';
 import { Eventime } from '../../../../types/eventime';
-import { DEFAULT_NS } from '../../data/constantes';
+import {
+	DEFAULT_DURATION,
+	DEFAULT_NS,
+	END_SCENE,
+	MAIN,
+} from '../../data/constantes';
 
 export type TimeLine = {
 	level: string;
@@ -101,6 +106,12 @@ export class TimeLiner {
 				if (lastEvent) break mark;
 			}
 		}
+		const eventTime: Eventime = {
+			startAt: Number(lastTime) + DEFAULT_DURATION,
+			name: END_SCENE,
+		};
+		const options: Options = { level: MAIN };
+		this.addEventList(eventTime, options);
 
 		return { event, lastTime };
 	}

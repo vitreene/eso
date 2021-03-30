@@ -102,10 +102,11 @@ export class Scene {
 	}
 
 	last(lastEvent = this.timeLine.lastEvent.event) {
-		console.log('LAST', this.timeLine.lastEvent);
-		emitter.on(lastEvent, (chrono) => {
-			emitter.emit(END_SCENE, { id: this.id, ...chrono });
-		});
+		console.log('LAST', lastEvent);
+		// console.log('LAST', this.timeLine.lastEvent);
+		// emitter.on(lastEvent, (chrono) => {
+		// 	emitter.emit(END_SCENE, { id: this.id, ...chrono });
+		// });
 	}
 
 	start() {
@@ -188,6 +189,8 @@ export class Scene {
 	private _publish(id) {
 		function publish(data: any) {
 			const onSceneUpdateComponent = (update: any) => {
+				// console.log('onSceneUpdateComponent', id, this.cast, update);
+
 				if (!this.persos.has(update.id)) {
 					console.warn('pas de perso ayant l’id %s', update.id);
 					return;

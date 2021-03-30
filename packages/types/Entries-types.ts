@@ -36,6 +36,8 @@ export type Cast = {
 	startAt: string;
 	root: string;
 };
+
+export type CastEntry = Cast | string;
 export interface Scene {
 	id: string;
 	name?: string;

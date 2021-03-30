@@ -25,7 +25,7 @@ export const DEFAULT_NS = MAIN;
 export const DEFAULT_TRANSITION_IN = 'fadeIn';
 export const DEFAULT_TRANSITION_OUT = 'fadeOut';
 
-export const DEFAULT_DURATION = 450;
+export const DEFAULT_DURATION = 1450;
 
 export const SCENE_STAGE = {
 	'16/9': {

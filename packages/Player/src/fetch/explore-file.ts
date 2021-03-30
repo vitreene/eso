@@ -50,6 +50,15 @@ function exploreScene(scene: Scene, inherit: Inherit) {
 	const sceneShared = exploreShared(scene.shared, inherit);
 	const _inherit = mergeProps(sceneShared, inherit, ['stories', 'persos']);
 
+	/* 
+	la story entry ne prend pas d'actions, elle n'est pas déclarée comme les autres ?	
+	
+	*/
+	// console.log(typeof scene.cast, scene.cast);
+	// const cast: Cast[] = scene.cast
+	// 	? sceneExpandCast([scene.entry, ...scene.cast])
+	// 	: sceneCreateCast(_stories);
+
 	const _stories = exploreStories(scene.stories, _inherit, scene);
 	const cast: Cast[] = sceneExpandCast(scene.cast) || sceneCreateCast(_stories);
 	const entry = getEntry(scene.entry)(_stories);

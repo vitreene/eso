@@ -4,7 +4,7 @@ import { Scene } from '../Scene';
 import { registerImages } from './register-images';
 import { fetchChapter } from '../fetch/fetch-chapter';
 
-import { END_SCENE } from '../data/constantes';
+import { MAIN, END_SCENE } from '../data/constantes';
 import { Message } from '../../../types/message';
 import { ImagesCollection } from '../../../types/initial';
 import { Scene as SceneProps, Story } from '../../../types/Entries-types';
@@ -17,7 +17,8 @@ interface Project {
 
 const chapemitter = new EventEmitter2({ maxListeners: 0, delimiter: '.' });
 const chapEvents = {
-	[END_SCENE]: 'end',
+	// [END_SCENE]: 'end',
+	[MAIN + ',' + END_SCENE]: 'end',
 	'main,start': 'start',
 	'story01,go': 'start',
 };
