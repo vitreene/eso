@@ -23,14 +23,16 @@ id: string
 timeline: { time: [name]} : number:string[]
 eventDatas[channel][count][name]
 */
-import { ESO_Channel } from '../../../../types/ESO_enum';
-import { Eventime } from '../../../../types/eventime';
 import {
 	DEFAULT_DURATION,
 	DEFAULT_NS,
 	END_SCENE,
 	MAIN,
+	START_SCENE,
 } from '../../data/constantes';
+
+import { Eventime } from '../../../../types/eventime';
+import { ESO_Channel } from '../../../../types/ESO_enum';
 
 export type TimeLine = {
 	level: string;
@@ -58,10 +60,10 @@ type Options = {
 	chrono?: number;
 	once?: boolean;
 	unique?: boolean;
+	prepend?: boolean;
 };
 
 export class TimeLiner {
-	// public evenTimes: Eventime;
 	public eventDatas: EventDatas = {};
 	public timeLine: TimeLine[] = [];
 
@@ -75,7 +77,7 @@ export class TimeLiner {
 	public addEventList(evenTimes: Eventime, options: Options) {
 		this.eventDatas = this._mapEventDatas(evenTimes, this.eventDatas);
 		const mapEvents = this._mapEvents(evenTimes, options);
-		const timeLine = this._mapTimeEvents(mapEvents);
+		const timeLine = this._mapTimeEvents(mapEvents, options);
 		this._addToTimeLines(timeLine, options);
 
 		// console.log('timeLine)', timeLine);
@@ -86,7 +88,18 @@ export class TimeLiner {
 		// console.log('solved', this.solved);
 	}
 
-	get lastEvent() {
+	addStartEvent() {
+		const options: Options = { level: DEFAULT_NS, prepend: true };
+		const startEventTime: Eventime = {
+			startAt: 0,
+			name: START_SCENE,
+			channel: MAIN,
+		};
+		this.addEventList(startEventTime, options);
+	}
+	addEndEvent() {
+		const options: Options = { level: DEFAULT_NS, prepend: true };
+
 		// trouver le time le plus tardif
 		const timevents = this.timeLine.reduce((tls, tl) => {
 			const events = [];
@@ -95,7 +108,7 @@ export class TimeLiner {
 			}
 			return tls.concat(events);
 		}, []);
-		const lastTime = Math.max(...timevents.filter(Boolean));
+		const lastTime = Math.max(0, ...timevents.filter(Boolean));
 
 		// trouver un event correspondant à ce time
 		let event = null;
@@ -106,12 +119,14 @@ export class TimeLiner {
 				if (lastEvent) break mark;
 			}
 		}
-		const eventTime: Eventime = {
-			startAt: Number(lastTime) + DEFAULT_DURATION,
+
+		const endEventTime: Eventime = {
+			channel: MAIN,
 			name: END_SCENE,
+			startAt: Number(lastTime) + DEFAULT_DURATION,
 		};
-		const options: Options = { level: MAIN };
-		this.addEventList(eventTime, options);
+
+		this.addEventList(endEventTime, options);
 
 		return { event, lastTime };
 	}
@@ -205,16 +220,20 @@ export class TimeLiner {
 		return eventDatas;
 	}
 
-	private _mapTimeEvents(mapEvents: MapEvents) {
+	private _mapTimeEvents(mapEvents: MapEvents, options: Options) {
 		const evenTimes: TimelineKey = {};
 
 		for (const channel in mapEvents) {
 			for (const event in mapEvents[channel]) {
 				!evenTimes[channel] && (evenTimes[channel] = {});
 				mapEvents[channel][event].forEach((time) => {
-					evenTimes[channel][time]
-						? evenTimes[channel][time].push(event)
-						: (evenTimes[channel][time] = [event]);
+					if (evenTimes[channel][time]) {
+						options.prepend
+							? evenTimes[channel][time].unshift(event)
+							: evenTimes[channel][time].push(event);
+					} else {
+						evenTimes[channel][time] = [event];
+					}
 				});
 			}
 		}
@@ -238,10 +257,10 @@ export class TimeLiner {
 		return this.remains.findIndex((e) => e.name === event.name);
 	}
 
-	private _removeEvent(event: Eventime) {
-		const _found = this._found(event);
-		_found && this.remains.splice(_found, 1);
-	}
+	// private _removeEvent(event: Eventime) {
+	// 	const _found = this._found(event);
+	// 	_found && this.remains.splice(_found, 1);
+	// }
 
 	// private _findEventList(name: string) {
 	// 	const eventList = this.evenTimes.events.find((e) => e.name === name);

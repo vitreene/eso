@@ -8,11 +8,11 @@ entree :
 
 sortie : {from, to, duration}
 */
-import { getComputedStyle } from '../create-perso';
-import { getCssValue } from './colors';
-import { keyToLowercase, stringToLowercase } from './js-to-css';
+import { getComputedStyle } from '../src/create-perso';
+import { getCssValue } from '../src/shared/colors';
+import { keyToLowercase, stringToLowercase } from '../src/shared/js-to-css';
 
-import { DEFAULT_STYLES, DEFAULT_DURATION } from './constantes';
+import { DEFAULT_STYLES, DEFAULT_DURATION } from '../src/shared/constantes';
 
 export function fromTo(opts, store, uuid) {
 	if (!opts.from && !opts.to) return null;

@@ -1,4 +1,6 @@
+import { nanoid } from 'nanoid';
 import { Tweenable } from 'shifty';
+
 import { DEFAULT_DURATION } from './constantes';
 
 // tween({
@@ -76,7 +78,9 @@ function Anime(interpolation) {
 export class ControlAnimations {
 	tweens = new Map(); // key:  tween-id, value: tween()
 	tweenSet = new Map(); // key: actor-id , values: tween-id[]
-	uuid = Math.random();
+	uuid(s = 8) {
+		return nanoid(s);
+	}
 
 	status(status, id = null) {
 		if (id) {
@@ -105,7 +109,6 @@ export class ControlAnimations {
 	reset() {
 		this.tweenSet.clear();
 		this.tweens.clear();
-		this.uuid = Math.random();
 	}
 
 	startAnimation(uuid, options) {
@@ -139,6 +142,7 @@ dX et dY sont relatives au slot, en cas de changement de slot, une interpolation
 	tween(options) {
 		const { id } = options;
 		const from = {};
+
 		if (this.tweenSet.has(id)) {
 			Array.from(this.tweenSet.get(id)).forEach(([uuid, tween]) => {
 				const { timeElapsed, ...state } = tween.state;
@@ -171,7 +175,8 @@ dX et dY sont relatives au slot, en cas de changement de slot, une interpolation
 				for (const prop in interpolation.from) {
 					interpolation.to[prop] = tween.interpolation.to[prop];
 				}
-				this.removeTween(id, uuid);
+
+				if (Object.keys(state).length) this.removeTween(id, uuid);
 				if (Object.keys(interpolation.from).length) {
 					this.setTween(id, interpolation, options);
 				}
@@ -186,10 +191,11 @@ dX et dY sont relatives au slot, en cas de changement de slot, une interpolation
 	}
 
 	setTween(id, interpolation, options) {
-		this.uuid++;
-		this.addTween(id, this.uuid, interpolation);
-		this.startAnimation(this.uuid, { ...options, interpolation });
+		const uuid = this.uuid();
+		this.addTween(id, uuid, interpolation);
+		this.startAnimation(uuid, { ...options, interpolation });
 	}
+
 	addTween(id, uuid, interpolation) {
 		if (this.tweenSet.has(id)) {
 			this.tweenSet.get(id).set(uuid, { interpolation, state: {} });
@@ -214,23 +220,21 @@ dX et dY sont relatives au slot, en cas de changement de slot, une interpolation
 			this.tweens.delete(uuid);
 		}
 	}
-	info() {
-		console.log('this.tweens', this.tweens);
-		console.log('this.tweenSet', this.tweenSet);
-		console.log('this.uuid', this.uuid);
+	info(i) {
+		// console.log('this.tweens', this.tweens);
+		// console.log('this.tweenSet', this.tweenSet);
+		// console.log('this.uuid', this.uuid);
+		const tSet = {};
+		Array.from(this.tweenSet, (m) => {
+			const tw = {};
+			Array.from(m[1], (v) => {
+				tw[v[0]] = v[1];
+			});
+			tSet[m[0]] = tw;
+		});
+
+		console.log('info : %s', i, tSet);
 	}
 }
 
 export const controlAnimations = new ControlAnimations();
-
-/* 
-					console.log('•••••••••••••••••••••••••');
-					console.log('updateTweens', id, uuid);
-					this.info();
-					console.log('options      ', options.interpolation.from);
-					console.log('interpolation', interpolation.from);
-					console.log('from         ', {
-						...options.interpolation.from,
-						...from,
-					});
-*/

@@ -2,18 +2,20 @@ import { controlAnimations } from '../shared/control-animation';
 import { selectTransition, directTransition } from './select-transition';
 import { fromTo } from './from-to';
 
-export function doTransition(perso, update, emitter) {
-	if (!update || !update.length) return null;
+export function doTransition(perso, transition, emitter) {
+	if (!transition || !transition.length) return null;
 	const accumulate = setCumulateCallback(perso);
 	const interpolate = (between) => accumulate.add(between);
 
-	Array.isArray(update) ? update.forEach(exeTransition) : exeTransition(update);
-	return update;
+	Array.isArray(transition)
+		? transition.forEach(exeTransition)
+		: exeTransition(transition);
+	return transition;
 
-	function exeTransition(props) {
-		const options = props.direct
-			? directTransition(props)
-			: selectTransition(props);
+	function exeTransition(transition) {
+		const options = transition.direct
+			? directTransition(transition)
+			: selectTransition(transition);
 
 		// from-to
 		const interpolation = fromTo(options, perso);
@@ -28,7 +30,7 @@ export function doTransition(perso, update, emitter) {
 			interpolation,
 			update: interpolate,
 			complete() {
-				[perso?.oncomplete, props?.oncomplete]
+				[perso?.oncomplete, transition?.oncomplete]
 					.flat()
 					.forEach(function (action) {
 						if (!action) return;

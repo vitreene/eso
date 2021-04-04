@@ -3,16 +3,20 @@
     name: introduction
     entry: scene-w-telco
     cast:
-      - story01:
-          startAt: go2
-          root: *TC
       - story03:
           # startAt: end-story01
           startAt: go1
           root: *MAIN
-      # - story02:
-      #     startAt: go2
-      #     root: fond-story04_s01
+      - story04:
+          startAt: go1
+          root: *TC
+      - story02:
+          startAt: go2
+          root: fond-story04_s01
+
+      - story01:
+          startAt: end-story04
+          root: *MAIN
 
     stories:
       - id: story01
@@ -65,19 +69,19 @@
       
       - id: story03
         # channel: ma second story
-        channel: story02
+        channel: story03
         stage: '4/3'
 
         # ici pas d'entrée, tous les élements montent sur une story parente. 
         # Bonne pratique ?
 
         eventimes:
-          0:
+          500:
             name: start
             events:
               0: { name: go, data: [un, deux, trois] }
               500: ev011
-              1000: [ev012, { channel: *DEFAULT_NS, name: go2 }]
+              # 1000: [ev012, { channel: *DEFAULT_NS, name: go2 }]
               2000: ev013
               3000: ev014
               4000: ev015
@@ -167,34 +171,6 @@
                 click:
                   event: { channel: *STRAP, name: *TOGGLE }
                   data: { id: telco,  event: {channel: *TC, name: [pause, play]} }
-
-      - id: scene-w-telco
-        channel: *DEFAULT_NS
-        entry: *CONTAINER_ESO
-        stage: '4/3'
-
-        eventimes:
-          name: go1
-          startAt: 0
-          events:
-            # - { startAt: 2000, name: *PAUSE, channel: *TC  }
-              1500: { channel: *DEFAULT_NS, name: go2 }
-        persos:
-          - *LAYER :
-              id: *CONTAINER_ESO
-              initial:
-                className: container
-                classStyle: {
-                  display: grid,
-                  grid-template-columns: '5fr 5fr'
-                }
-                content:
-                  - id: *MAIN
-                    classStyle: {display: grid, grid-column: 1, overflow: hidden}
-                  - id: *TC
-                    classStyle: {display: grid, grid-column: 2}
-              actions:
-                end-scene: { leave: true }
 
     shared: 
       stories:
@@ -496,6 +472,35 @@
                 transition: { to: { opacity: 1 } }
 
 - shared:
+    stories:
+      - id: scene-w-telco
+        channel: *DEFAULT_NS
+        entry: *CONTAINER_ESO
+        stage: '4/3'
+
+        eventimes:
+          name: go1
+          startAt: 500
+          events:
+            # - { startAt: 2000, name: *PAUSE, channel: *TC  }
+              1500: { channel: *DEFAULT_NS, name: go2 }
+        persos:
+          - *LAYER :
+              id: *CONTAINER_ESO
+              initial:
+                className: container
+                classStyle: {
+                  display: grid,
+                  grid-template-columns: '5fr 5fr'
+                }
+                content:
+                  - id: *MAIN
+                    classStyle: {display: grid, grid-column: 1, overflow: hidden}
+                  - id: *TC
+                    classStyle: {display: grid, grid-column: 2}
+              actions:
+                end-scene: { leave: true }
+
     persos:
       - *PROTO :
           id: proto_bloc

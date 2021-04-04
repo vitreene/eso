@@ -20,16 +20,19 @@ import { parseVariables } from './variables-template';
 
 import {
 	Cast,
+	CastEntry,
 	Scene,
+	SceneCastEntry,
 	SceneEntry,
 	SharedFileEntry,
 	Story,
 } from '../../../types/Entries-types';
 import { Perso } from '../../../types/initial';
 import { Inherit, Channel } from './fetch-chapter';
+import { CONTAINER_ESO, START_SCENE } from '../data/constantes';
 
 export function exploreFile(file: SceneEntry, inherit: Inherit) {
-	const _scenes: Scene[] = Array.isArray(file.scene)
+	const _scenes: SceneCastEntry[] = Array.isArray(file.scene)
 		? file.scene
 		: [file.scene];
 	const shareds: Inherit[] = Array.isArray(file.shared)
@@ -46,47 +49,87 @@ export function exploreFile(file: SceneEntry, inherit: Inherit) {
 	console.log('============================================================');
 	return scenes;
 }
-function exploreScene(scene: Scene, inherit: Inherit) {
+
+/* 
+
+rendre entry moins spécifique, c'est une story comme les autres, chargée en tout premeir dans l'app
+*/
+
+function exploreScene(scene: SceneCastEntry, inherit: Inherit): Scene {
 	const sceneShared = exploreShared(scene.shared, inherit);
 	const _inherit = mergeProps(sceneShared, inherit, ['stories', 'persos']);
 
-	/* 
-	la story entry ne prend pas d'actions, elle n'est pas déclarée comme les autres ?	
-	
-	*/
-	// console.log(typeof scene.cast, scene.cast);
-	// const cast: Cast[] = scene.cast
-	// 	? sceneExpandCast([scene.entry, ...scene.cast])
-	// 	: sceneCreateCast(_stories);
+	const _stories = exploreStories(scene, _inherit);
 
-	const _stories = exploreStories(scene.stories, _inherit, scene);
-	const cast: Cast[] = sceneExpandCast(scene.cast) || sceneCreateCast(_stories);
-	const entry = getEntry(scene.entry)(_stories);
-	const casting = getStories(cast)(_stories);
-	const stories = [entry, ...casting].filter(Boolean);
-	const { shared, ..._scene } = scene;
-	return { ..._scene, cast, stories };
+	// const entry = getEntry(scene.entry)(_stories);
+	// console.log('ENTRY', entry);
+
+	const cast: Cast[] = setCast(scene, _stories);
+
+	const stories = getStories(cast)(_stories);
+	// const casting = getStories(cast)(_stories);
+	// const stories = [entry, ...casting].filter(Boolean);
+	const { shared, ...__scene } = scene;
+	return { ...__scene, cast, stories };
 }
 
-function exploreStories(
-	_stories: Story[],
-	inherit: Inherit,
-	scene: Scene
-): Story[] {
-	if (!_stories) return;
+function exploreStories(scene: SceneCastEntry, inherit: Inherit): Story[] {
+	if (!scene.stories) return;
+	// const entry = findEntry(scene, inherit);
+	// const entry = getEntry(scene.entry)(inherit.stories);
+	const entry = inherit.stories.find((story) => story.id === scene.entry);
+
 	let stories: Story[];
-	stories = preStory(_stories);
+	stories = preStory(scene.stories);
 	stories = stories.map(explorePersos(inherit?.persos, scene));
 	stories = mergeStories(stories, inherit.stories);
-	console.log(stories[1]);
+
+	// stories = [entry, ...stories];
+	entry && stories.unshift(entry);
 
 	stories = stories.map(transformEventimes);
 	stories = stories.map(setStage);
 	stories = stories.map(resolveTemplateStory(scene));
+
 	return stories;
 }
 
-function resolveTemplateStory(scene: Scene) {
+function setCast(scene: SceneCastEntry, _stories: Story[]) {
+	const cast = scene.cast || sceneCreateCast(_stories);
+
+	if (scene.entry) {
+		const castEntry: CastEntry = {
+			[scene.entry]: {
+				root: CONTAINER_ESO,
+				startAt: START_SCENE,
+				isEntry: true,
+			},
+		};
+		cast.push(castEntry);
+	} else {
+		console.warn("Pas d'entrée déclarée dans la scene");
+	}
+
+	return sceneExpandCast(cast);
+}
+
+function findEntry(scene: SceneCastEntry, inherit: Inherit): Story {
+	if (!scene.entry) {
+		console.warn("Pas d'entrée déclarée dans la scene");
+		return undefined;
+	}
+	const entry =
+		// getEntry(scene.entry)(scene.stories) ||
+		getEntry(scene.entry)(inherit.stories);
+
+	// if (!entry) {
+	// 	console.warn(`Pas d'entrée ${scene.entry} dans la scene ${scene.id}`);
+	// 	return undefined;
+	// }
+	return entry;
+}
+
+function resolveTemplateStory(scene: SceneCastEntry) {
 	return ({ persos, ...story }): Story => {
 		const _persos = resolveTemplate({ scene, story })(persos);
 
@@ -95,7 +138,7 @@ function resolveTemplateStory(scene: Scene) {
 	};
 }
 
-function explorePersos(inherit: Perso[], scene: Scene = null) {
+function explorePersos(inherit: Perso[], scene: SceneCastEntry = null) {
 	return function explorePersosInherit(story: Story) {
 		if (!story.persos) return story;
 		const channel: Channel = story.channel || null;
@@ -106,30 +149,12 @@ function explorePersos(inherit: Perso[], scene: Scene = null) {
 			filterProtos,
 			resolveTemplate({ scene, story })
 		)(story.persos);
-
 		return { ...story, persos };
 	};
 }
 
-// function ignorePersos(items) {
-// 	return function ignore(_persos: Perso[]) {
-// 		if (!items || !items.length) return _persos;
-// 		const persos = _persos.filter((perso) => !items.includes(perso.id));
-// 		return persos;
-// 	};
-// }
-
-// function getIgnoreList(_persos: Perso[]) {
-// 	const index = _persos.findIndex(
-// 		(perso) => Object.keys(perso)[0] === 'ignore'
-// 	);
-// 	const ignore = _persos[index];
-// 	const persos = _persos.slice(0, index).concat(_persos.slice(index + 1));
-// 	return [ignore, persos];
-// }
-
 interface Context {
-	scene?: Scene;
+	scene?: SceneCastEntry;
 	story?: any;
 }
 

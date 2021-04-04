@@ -24,7 +24,7 @@ export function sceneExpandCast(_cast: CastEntry[]): Cast[] {
 	const _stories = _cast.map((_story: CastEntry) =>
 		typeof _story === 'string' ? _story : Object.keys(_story)[0]
 	);
-	const cast = _cast.map((_story: CastEntry, i: number, _c: CastEntry[]) => {
+	const cast = _cast.map((_story: CastEntry, i: number) => {
 		const id = _stories[i];
 		const c =
 			typeof _story === 'string'
@@ -39,7 +39,7 @@ export function sceneExpandCast(_cast: CastEntry[]): Cast[] {
 }
 export function sceneCreateCast(stories: Story[]) {
 	const _cast = stories.map((_story) => _story.id);
-	return sceneExpandCast(_cast);
+	return _cast;
 }
 
 export function getEntry(_entry: string) {
@@ -72,8 +72,6 @@ export function preStory(stories) {
 }
 
 function addStartAndEndEvents(story, cast) {
-	console.log(story, cast);
-
 	const eventimes = story.eventimes;
 	eventimes.startAt = cast.startAt;
 	eventimes.channel = DEFAULT_NS;

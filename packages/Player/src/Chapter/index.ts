@@ -1,6 +1,6 @@
 import { EventEmitter2 } from 'eventemitter2';
 
-import { Scene } from '../Scene';
+import { Scene } from '../Scene/index';
 import { registerImages } from './register-images';
 import { fetchChapter } from '../fetch/fetch-chapter';
 

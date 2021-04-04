@@ -2,7 +2,14 @@ import { TimeLiner, TimelineKey } from './timeline';
 
 import { controlAnimations } from 'veso';
 import { emitter } from '../../App/init';
-import { TC, PLAY, PAUSE, REWIND } from '../../data/constantes';
+import {
+	TC,
+	PLAY,
+	PAUSE,
+	REWIND,
+	MAIN,
+	START_SCENE,
+} from '../../data/constantes';
 import { ESO_Channel } from '../../../../types/ESO_enum';
 
 export type Clock = {

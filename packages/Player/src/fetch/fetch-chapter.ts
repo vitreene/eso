@@ -27,7 +27,7 @@ export interface Inherit {
 
 const inherit: Inherit = { stories: [], persos: [] };
 
-export async function fetchChapter(path) {
+export async function fetchChapter(path: string) {
 	const pre = await fetch('/config/defs.yml')
 		.then((res) => res.blob())
 		.then((blob) => blob.text())

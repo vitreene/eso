@@ -5,6 +5,7 @@ FIXME
 - rescale Bloc, doit prendre en compte la taille du bloc, pas du parent
 - quend reslot et transition, la mise à l'echelle est perdue
 */
+
 export function reslot({ transition, ...props }) {
 	const { perso, update, changed, box, updateSlot } = props;
 

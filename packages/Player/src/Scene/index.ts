@@ -11,13 +11,19 @@ import { registerPersos } from './register/register-persos';
 import { registerStraps } from './register/register-straps';
 import { registerActions } from './register/register-actions';
 
-import { initRuntime } from './runtime';
 import { TimeLiner } from './runtime/timeline';
 import { clock, Clock } from './runtime/clock';
 import { addEventList } from './runtime/add-event-list';
 import { prepareTransitions } from './prepare-transitions';
 
-import { CONTAINER_ESO, DEFAULT_NS, MAIN, END_SCENE } from '../data/constantes';
+import {
+	APP_ID,
+	CONTAINER_ESO,
+	DEFAULT_NS,
+	MAIN,
+	PAUSE,
+	TC,
+} from '../data/constantes';
 
 import {
 	SceneCast,
@@ -38,6 +44,11 @@ import { ImagesCollection } from '../../../types/initial';
 		console.log(emitter.eventNames(event));
 	}
 }); */
+// setTimeout(() => {
+// 	emitter.emit([TC, PAUSE]);
+// }, 3000);
+
+export const appContainer = document.getElementById(APP_ID);
 
 export class Scene {
 	id: string;
@@ -47,13 +58,12 @@ export class Scene {
 
 	straps: any;
 	clock: Clock;
-	cast: SceneCast = {};
 	messages: Message;
+	cast: SceneCast = {};
 	slots: Slots = new Slots(); //
 	persos: ScenePersos = new Map(); //
 	timeLine: TimeLiner = new TimeLiner();
 	onScene: OnScene = new OnScene(this.slots);
-	// imagesCollection; //: ImagesCollection = new Map();
 	// nodes: any = storeNodes;
 	// telco: () => {};
 	// onStart: () => {};
@@ -78,17 +88,34 @@ export class Scene {
 		connectChapterEmitter(emitter);
 		registerStraps({ cast: () => this.cast });
 
-		stories.forEach(this.addStory(mediasCollection));
+		this.initStories(stories, scene.entry, mediasCollection);
 		this.initOnMount(scene.cast, stories);
 
-		this.last(scene.lastEvent);
 		this.start();
+	}
+
+	initStories(
+		stories: Story[],
+		entry: string,
+		mediasCollection: ImagesCollection
+	) {
+		this.timeLine.addStartEvent();
+		stories
+			.sort((s) => (s.id === entry ? -1 : 0))
+			.forEach(this.addStory(mediasCollection));
+		this.timeLine.addEndEvent();
 	}
 
 	initOnMount(casting: Cast[], stories: Story[]) {
 		for (const cast of casting) {
 			const story = stories.find((s) => s.id === cast.id);
 			emitter.prependListener([MAIN, cast.startAt], this.onMount(story));
+			if (cast.isEntry) {
+				const { root } = story;
+				appContainer.appendChild(this.persos.get(root).node);
+				this.slot(root);
+				this.onScene.areOnScene.set(root, root);
+			}
 		}
 	}
 
@@ -97,26 +124,17 @@ export class Scene {
 			console.log('onMount-->', story.id);
 			this._setStoryCast(story);
 			this.activateZoom(story.id);
-			console.log(this.cast);
 		};
-	}
-
-	last(lastEvent = this.timeLine.lastEvent.event) {
-		console.log('LAST', lastEvent);
-		// console.log('LAST', this.timeLine.lastEvent);
-		// emitter.on(lastEvent, (chrono) => {
-		// 	emitter.emit(END_SCENE, { id: this.id, ...chrono });
-		// });
 	}
 
 	start() {
 		const _clock = clock(this.timeLine);
 		addEventList(_clock.chrono, this.timeLine);
-		console.log('START', emitter.eventNames());
+		// console.log('START', emitter.eventNames());
 		return _clock.start();
 	}
 
-	addStory(mediasCollection) {
+	addStory(mediasCollection: ImagesCollection) {
 		return (story: Story) => {
 			const { eventimes, ...others } = story;
 			this._addEventsToTimeLine(eventimes);
@@ -131,19 +149,16 @@ export class Scene {
 		story: StoryWoEventimes,
 		mediasCollection: ImagesCollection
 	) {
-		// console.log('_register', story);
-		// console.log('this.imagesCollection', this.imagesCollection);
-
-		const { isEntry, root, channel, persos } = story;
+		const { channel, persos } = story;
 		const _persos = persos.map(prepareTransitions);
+		console.log(persos);
+
 		registerPersos(_persos, this.persos, {
 			imagesCollection: mediasCollection,
 			slot: this.slot,
 			messages: this.messages,
 		});
 		registerActions(channel, _persos, this._publish(story.id));
-
-		initRuntime(root, isEntry, this.persos, this.onScene);
 	}
 
 	/* 

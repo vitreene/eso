@@ -25,7 +25,7 @@ export interface SharedFileEntry {
 }
 export interface SceneEntry {
 	defs?: string[];
-	scene: Scene;
+	scene: SceneCastEntry;
 	shared?: {
 		stories?: Story[];
 		persos?: PersoEntry[];
@@ -33,11 +33,24 @@ export interface SceneEntry {
 }
 export type Cast = {
 	id?: string;
-	startAt: string;
+	startAt: string | number;
 	root: string;
+	isEntry?: boolean;
 };
 
-export type CastEntry = Cast | string;
+export type CastEntry =
+	| {
+			[id: string]: {
+				startAt: string | number;
+				root: string;
+				isEntry?: boolean;
+			};
+	  }
+	| string;
+
+export interface SceneCastEntry extends Omit<Scene, 'cast'> {
+	cast: CastEntry[];
+}
 export interface Scene {
 	id: string;
 	name?: string;
