@@ -1,5 +1,5 @@
 import { Perso } from '../../../../types/initial';
-import { emitter } from '../../App/init';
+// import { emitter } from '../../App/init';
 
 type Subscribe = {
 	channel: string;
@@ -7,8 +7,13 @@ type Subscribe = {
 	data?: any;
 };
 
-export function registerActions(_channel: string, persos: Perso[], publish) {
-	const subscribe = initSubscribe(publish);
+export function registerActions(
+	_channel: string,
+	persos: Perso[],
+	publish,
+	emitter
+) {
+	const subscribe = initSubscribe(publish, emitter);
 	for (const perso of persos) {
 		const { id, listen, actions } = perso;
 		if (!listen) continue;
@@ -34,7 +39,7 @@ export function registerActions(_channel: string, persos: Perso[], publish) {
 	}
 }
 
-function initSubscribe(publish) {
+function initSubscribe(publish, emitter) {
 	return function subscribe({ channel, name, data = null }: Subscribe) {
 		return emitter.on([channel, name], publish({ channel, ...data }));
 	};

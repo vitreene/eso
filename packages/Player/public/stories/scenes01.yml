@@ -80,13 +80,19 @@
         channel: story01
         eventimes:
           0: {name: start}
+          events:
+            500: *Q1
+            1500 : *Q4
+            2000 : *Q3
+            2500 : *Q2
+            3500 : *Q1
         persos:
           - *BLOC :
               id: bl-01
               initial:
                 dimensions: {width: 400, height: 100}
                 style: {background-color: blue }
-                content: du texte
+                content: la suite
               actions:
                 *Q1 : {move: *Q1}
                 *Q2 : {move: *Q2}

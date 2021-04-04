@@ -1,4 +1,4 @@
-import { Eso } from '../App/init';
+// import { Eso } from '../App/init';
 import { mergeDimensions } from './pre/dimensions';
 
 import { MISSING } from '../data/constantes';
@@ -8,7 +8,8 @@ export function updateComponent(
 	perso,
 	{ changed, update, ...others },
 	box,
-	updateSlot
+	updateSlot,
+	Eso
 ) {
 	if (!update || Object.keys(update).length === 0) return;
 	if (typeof changed === 'string') {

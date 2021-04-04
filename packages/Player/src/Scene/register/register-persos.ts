@@ -1,5 +1,4 @@
 import { Slots } from '../store-slots';
-import { createPerso } from '../../composants';
 import { doDimensions } from '../pre/dimensions';
 
 import { Message } from '../../../../types/message';
@@ -16,6 +15,7 @@ interface Options {
 export function registerPersos(
 	_persos: Perso[],
 	persos: ScenePersos,
+	createPerso,
 	options: Options
 ) {
 	(Array.isArray(_persos) ? _persos : [_persos]).forEach((_perso: Perso) => {

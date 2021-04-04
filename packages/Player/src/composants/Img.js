@@ -1,6 +1,5 @@
-import { o, svg, api } from 'sinuous';
+import { svg, api } from 'sinuous';
 import { computed } from 'sinuous/observable';
-import { Eso } from '../App/init';
 import { DEFAULT_FIT } from '../data/constantes';
 
 // HACK en attendant une mise à jour
@@ -28,24 +27,25 @@ const contentImg = (collection) => {
 		},
 	};
 };
-export class Img extends Eso {
-	static nature = 'img';
-	constructor(story, collection) {
-		super(story, { init: false });
-		this.revision.content = contentImg(collection);
-		this.init();
-	}
+export const img = (Eso) =>
+	class Img extends Eso {
+		static nature = 'img';
+		constructor(story, collection) {
+			super(story, { init: false });
+			this.revision.content = contentImg(collection);
+			this.init();
+		}
 
-	render(props) {
-		const { id, content, ...attrs } = props;
-		const viewBox = computed(
-			() => `0 0 ${content().img?.width || 0} ${content().img?.height || 0}`
-		);
-		const src = computed(() => content().img?.src);
-		const preserveAspectRatio = computed(
-			() => `xMidYMid ${constrainImage[content().fit]}` || 'slice'
-		);
-		return svg`
+		render(props) {
+			const { id, content, ...attrs } = props;
+			const viewBox = computed(
+				() => `0 0 ${content().img?.width || 0} ${content().img?.height || 0}`
+			);
+			const src = computed(() => content().img?.src);
+			const preserveAspectRatio = computed(
+				() => `xMidYMid ${constrainImage[content().fit]}` || 'slice'
+			);
+			return svg`
 			<svg
         id=${id}
         viewBox=${viewBox}
@@ -54,5 +54,5 @@ export class Img extends Eso {
       >
         <image  href=${src} width="100%" height="100%" />
       </svg>`;
-	}
-}
+		}
+	};

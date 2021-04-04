@@ -1,15 +1,16 @@
 export default class StoreComponents {
 	static singleton = false;
-	constructor() {
+	lib = new Map();
+	/* 	constructor() {
 		if (StoreComponents.singleton) return this;
 		StoreComponents.singleton = true;
 		this.lib = new Map();
-	}
+	} */
 
 	register = (Composant) => {
 		if (this.lib.has(Composant.nature))
 			throw new Error(`"${Composant.nature}" est déja déclaré`);
-		this.lib.set(Composant.nature, Composant);
+		else this.lib.set(Composant.nature, Composant);
 	};
 
 	create = (perso, ...args) => {

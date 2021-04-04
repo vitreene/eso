@@ -1,4 +1,4 @@
-import { emitter } from '../../App/init';
+// import { emitter } from '../../App/init';
 
 import { moveStrap } from '../../straps/move-strap';
 import Drag from '../../straps/drag-strap';
@@ -8,6 +8,8 @@ import GameStrap from '../../straps/game-logic-strap';
 import Minuteur from '../../straps/minuteur';
 
 import { STRAP, TOGGLE, DRAG, MOVE } from '../../data/constantes';
+import { SceneCast } from '../../../../types/Entries-types';
+import { EventEmitter2 } from 'eventemitter2';
 
 /* 
 Par composition, ajouter aux straps :
@@ -25,11 +27,15 @@ key est donc soit par appel, soit à la création d'instance.
 créer un cas réel.
 */
 
-export function registerStraps({ cast }: { cast: Function }): void {
+export function registerStraps(
+	callback: SceneCast,
+	emitter: EventEmitter2
+): void {
 	/* 
 	trouver une meilleure façon d'initialiser les strap 
 	ne pourrait-on  pas importer directement emitter dans chaque strap ?
 	*/
+	const cast = () => callback;
 	const DragStrap = Drag(emitter);
 	emitter.on([STRAP, DRAG], (data) => new DragStrap(data));
 	const Move = moveStrap(emitter, cast);
@@ -42,6 +48,6 @@ export function registerStraps({ cast }: { cast: Function }): void {
 
 	emitter.on(
 		[STRAP, Minuteur.name.toLowerCase()],
-		(data) => new Minuteur(data)
+		(data) => new Minuteur(data, emitter)
 	);
 }

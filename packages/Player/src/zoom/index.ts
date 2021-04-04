@@ -1,4 +1,4 @@
-import { Eso } from '../App/init';
+// import { Eso } from '../App/init';
 
 import { Box, StageEntry } from '../../../types/Entries-types';
 
@@ -114,6 +114,6 @@ function idem(o1, o2) {
 	return res;
 }
 
-export function getElementOffsetZoomed(el, z) {
-	return Stage.deZoom(Eso.getElementOffset(el), z);
-}
+// export function getElementOffsetZoomed(el, z) {
+// 	return Stage.deZoom(Eso.getElementOffset(el), z);
+// }

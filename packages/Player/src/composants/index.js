@@ -1,18 +1,16 @@
 import StoreComponents from './store-components';
-import { Layer } from './Layer';
-import { Bloc } from './Bloc';
-import { Button } from './Button';
-import { Img } from './Img';
-import { Sprite } from './Sprite';
+import { layer } from './Layer';
+import { bloc } from './Bloc';
+import { button } from './Button';
+import { img } from './Img';
+import { sprite } from './Sprite';
 
-function initCreatePerso() {
+export function initCreatePerso(Eso) {
 	const createPerso = new StoreComponents();
-	createPerso.register(Layer);
-	createPerso.register(Bloc);
-	createPerso.register(Button);
-	createPerso.register(Img);
-	createPerso.register(Sprite);
+	createPerso.register(layer(Eso));
+	createPerso.register(bloc(Eso));
+	createPerso.register(button(Eso));
+	createPerso.register(img(Eso));
+	createPerso.register(sprite(Eso));
 	return createPerso;
 }
-
-export const createPerso = initCreatePerso();

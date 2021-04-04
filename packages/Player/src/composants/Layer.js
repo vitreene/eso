@@ -1,7 +1,5 @@
 import { html } from 'sinuous';
 
-import { Eso } from '../App/init';
-
 import { DEFAULT_STYLES } from '../data/constantes';
 
 // surcharger content
@@ -15,18 +13,19 @@ const contentRevision = (id, slot) => {
 	};
 };
 
-export class Layer extends Eso {
-	static nature = 'layer';
-	constructor(story, slot) {
-		story.initial.className = story.initial.className + ' layer-top ';
-		super(story, { init: false });
-		this.revision.content = contentRevision(story.id, slot);
-		this.init();
-	}
-	render({ id, content, ...attrs }) {
-		return html`<section id=${id} ...${attrs}>${content}</section>`;
-	}
-}
+export const layer = (Eso) =>
+	class Layer extends Eso {
+		static nature = 'layer';
+		constructor(story, slot) {
+			story.initial.className = story.initial.className + ' layer-top ';
+			super(story, { init: false });
+			this.revision.content = contentRevision(story.id, slot);
+			this.init();
+		}
+		render({ id, content, ...attrs }) {
+			return html`<section id=${id} ...${attrs}>${content}</section>`;
+		}
+	};
 
 function innerLayer(content, layerId, slot) {
 	if (!content || Object.keys(content).length === 0) return null;

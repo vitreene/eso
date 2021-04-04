@@ -1,7 +1,6 @@
 import { Eventime } from './eventime';
 import { Perso } from './initial';
 import { Stage } from '../Player/src/zoom';
-import { Eso } from '../Player/src/App/init';
 import { Nature } from './ESO_enum';
 
 export interface ChapEntry {
@@ -119,3 +118,8 @@ export type Box = {
 };
 
 export type ScenePersos = Map<string, Eso>;
+
+export interface Eso {
+	node: Element;
+	prerender: (box: Box) => void;
+}

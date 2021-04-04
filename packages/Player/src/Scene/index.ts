@@ -1,6 +1,8 @@
 // storeNodes à transférer vers Scene ?
 import { o } from 'sinuous';
-import { emitter } from '../App/init';
+// import { emitter } from '../App/init';
+import { createEso } from 'veso';
+import { initCreatePerso } from '../composants';
 
 import { Stage } from '../zoom';
 import { Slots } from './store-slots';
@@ -15,6 +17,7 @@ import { TimeLiner } from './runtime/timeline';
 import { clock, Clock } from './runtime/clock';
 import { addEventList } from './runtime/add-event-list';
 import { prepareTransitions } from './prepare-transitions';
+import { mergeDimensions } from '../Scene/pre/dimensions';
 
 import {
 	APP_ID,
@@ -32,10 +35,12 @@ import {
 	Story,
 	StoryWoEventimes,
 	Cast,
+	Eso,
 } from '../../../types/Entries-types';
 import { Message } from '../../../types/message';
 import { Eventime } from '../../../types/eventime';
 import { ImagesCollection } from '../../../types/initial';
+import { EventEmitter2 } from 'eventemitter2';
 
 /* emitter.onAny(function (event, value) {
 	if (event !== 'elapsed') {
@@ -56,6 +61,13 @@ export class Scene {
 	name?: string;
 	description?: string;
 
+	emitter = new EventEmitter2({
+		maxListeners: 0,
+		delimiter: '.',
+	});
+
+	Eso = createEso(this.emitter, { mergeDimensions });
+	createPerso = initCreatePerso(this.Eso);
 	straps: any;
 	clock: Clock;
 	messages: Message;
@@ -85,12 +97,12 @@ export class Scene {
 		this._updateSlot = this._updateSlot.bind(this);
 		this.renderOnResize = this.renderOnResize.bind(this);
 
-		connectChapterEmitter(emitter);
-		registerStraps({ cast: () => this.cast });
+		connectChapterEmitter(this.emitter);
+		registerStraps(this.cast, this.emitter);
 
 		this.initStories(stories, scene.entry, mediasCollection);
+		document.getElementById(APP_ID).innerHTML = '';
 		this.initOnMount(scene.cast, stories);
-
 		this.start();
 	}
 
@@ -109,7 +121,10 @@ export class Scene {
 	initOnMount(casting: Cast[], stories: Story[]) {
 		for (const cast of casting) {
 			const story = stories.find((s) => s.id === cast.id);
-			emitter.prependListener([MAIN, cast.startAt], this.onMount(story));
+			this.emitter.prependListener(
+				[MAIN, cast.startAt.toString()],
+				this.onMount(story)
+			);
 			if (cast.isEntry) {
 				const { root } = story;
 				appContainer.appendChild(this.persos.get(root).node);
@@ -128,8 +143,8 @@ export class Scene {
 	}
 
 	start() {
-		const _clock = clock(this.timeLine);
-		addEventList(_clock.chrono, this.timeLine);
+		const _clock = clock(this.timeLine, this.emitter);
+		addEventList(_clock.chrono, this.timeLine, this.emitter);
 		// console.log('START', emitter.eventNames());
 		return _clock.start();
 	}
@@ -153,12 +168,12 @@ export class Scene {
 		const _persos = persos.map(prepareTransitions);
 		console.log(persos);
 
-		registerPersos(_persos, this.persos, {
+		registerPersos(_persos, this.persos, this.createPerso, {
 			imagesCollection: mediasCollection,
 			slot: this.slot,
 			messages: this.messages,
 		});
-		registerActions(channel, _persos, this._publish(story.id));
+		registerActions(channel, _persos, this._publish(story.id), this.emitter);
 	}
 
 	/* 
@@ -201,7 +216,7 @@ export class Scene {
 		this.onEndQueue.forEach((fn) => fn());
 	}
 
-	private _publish(id) {
+	private _publish(id: string) {
 		function publish(data: any) {
 			const onSceneUpdateComponent = (update: any) => {
 				// console.log('onSceneUpdateComponent', id, this.cast, update);
@@ -213,7 +228,7 @@ export class Scene {
 				const perso = this.persos.get(update.id);
 				const up = this.onScene.update(update);
 				const zoom = this.cast[id].zoom.box;
-				updateComponent(perso, up, zoom, this._updateSlot);
+				updateComponent(perso, up, zoom, this._updateSlot, this.Eso);
 			};
 
 			return (other: any) => onSceneUpdateComponent({ ...data, ...other });
