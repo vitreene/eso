@@ -1,18 +1,7 @@
 import { Eso } from '../App/init';
+import { mergeDimensions } from './pre/dimensions';
+
 import { MISSING } from '../data/constantes';
-import { mergeDimensions } from '../../../Veso/src/transitions';
-
-/* 
-FIXME mettre au propre :
-- dimensions fait partie de "pre" (il en est l'unique composant pour le moment)
-ce sont des facilités qui sont ensuite fusionnées dans les props standard
-
-- dimensions est en doublon, utilisé dans register ; ici aussi un "pre" est necessaire
-attention la fonction a varié et integre le parametre "original"
-
-- si "pre" est dans Veso, l'importer depuis Eso ; pas d'import direct comme ci-dessus
-
-*/
 
 // // déclenche les updates ; appelé par chaque action
 export function updateComponent(

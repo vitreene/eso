@@ -1,24 +1,23 @@
 import { nanoid } from 'nanoid';
 
+import { isVoid } from './shared/utils';
+import { createTransition } from './transitions';
 import { createPerso, commit } from './create-perso';
 import { getElementOffset } from './shared/get-element-offset';
 import { createRegisterKeyEvents } from './shared/register-keyEvents';
-import { isVoid } from './shared/utils';
 
 import { doStyle } from './components/style-component';
-import { doClasses } from './components/classNames-component';
 import { content } from './components/content-component';
-
-import { createTransition } from './transitions';
+import { doClasses } from './components/classNames-component';
 
 const { css, ...style } = doStyle;
 
 // TODO attr
-export function createEso(emitter) {
+export function createEso(emitter, options) {
 	class Eso {
 		static registerKeyEvents = createRegisterKeyEvents(emitter);
 		static getElementOffset = getElementOffset;
-		static transition = createTransition(emitter);
+		static transition = createTransition(emitter, options);
 		id;
 		uuid;
 		tag;

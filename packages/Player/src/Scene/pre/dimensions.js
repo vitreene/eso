@@ -10,17 +10,7 @@ import { splitUnitValue } from '../../shared/utils';
 	si width et height et ratio : ignorer ratio
 	si width et ratio : -> calculer height -> utiliser ces valeurs
 	si height et ratio : -> calculer width -> utiliser ces valeurs
-
-
-	
 	*/
-
-function only(property, obj) {
-	const keys = Object.keys(obj);
-	const one = keys.length === 1;
-	const hasProperty = keys[0] === property;
-	return one && hasProperty;
-}
 
 // TODO transformer les % en px
 // si % lire les dimensions du node
@@ -93,7 +83,23 @@ export function doDimensions(_dimensions, original) {
 	if (hasNoWidth && hasNoRatio) width = '100%';
 	if (hasNoHeight && hasNoRatio) height = '100%';
 
-	console.log('pre-DIMENSIONS', dimensions, { width, height });
+	return { width, height };
+}
 
-	return { classStyle: { width, height } };
+export function mergeDimensions(_update) {
+	if (!_update && !_update.dimensions) return _update;
+	const { dimensions, ...update } = _update;
+	const dims = doDimensions(dimensions);
+	const classStyle = {
+		...update.classStyle,
+		...dims,
+	};
+	return { ...update, classStyle };
+}
+
+function only(property, obj) {
+	const keys = Object.keys(obj);
+	const one = keys.length === 1;
+	const hasProperty = keys[0] === property;
+	return one && hasProperty;
 }

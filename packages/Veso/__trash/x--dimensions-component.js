@@ -1,4 +1,4 @@
-import { splitUnitValue } from '../shared/utils';
+import { splitUnitValue } from '../src/shared/utils';
 
 // TODO transformer les % en px
 // si % lire les dimensions du node

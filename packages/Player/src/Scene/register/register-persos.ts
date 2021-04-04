@@ -68,7 +68,7 @@ function preInitSprite(_perso: Perso, imagesCollection: ImagesCollection) {
 	const _classStyle = {
 		...classStyle,
 		position: 'absolute' as Property.Position,
-		...(dims && dims.classStyle),
+		...dims,
 	};
 	return { ..._perso, initial: { ...initial, classStyle: _classStyle } };
 }
@@ -79,7 +79,7 @@ function preInit(_perso: Perso, additionnalStyles = {}) {
 	const _classStyle = {
 		...classStyle,
 		...additionnalStyles,
-		...(dims && dims.classStyle),
+		...dims,
 	};
 	return { ..._perso, initial: { ...initial, classStyle: _classStyle } };
 }

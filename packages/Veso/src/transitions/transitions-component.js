@@ -1,6 +1,6 @@
+import { fromTo } from './from-to';
 import { controlAnimations } from '../shared/control-animation';
 import { selectTransition, directTransition } from './select-transition';
-import { fromTo } from './from-to';
 
 export function doTransition(perso, transition, emitter) {
 	if (!transition || !transition.length) return null;
