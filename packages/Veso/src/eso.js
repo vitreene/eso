@@ -3,7 +3,6 @@ import { nanoid } from 'nanoid';
 import { isVoid } from './shared/utils';
 import { createTransition } from './transitions';
 import { createPerso, commit } from './create-perso';
-import { getElementOffset } from './shared/get-element-offset';
 import { createRegisterKeyEvents } from './shared/register-keyEvents';
 
 import { doStyle } from './components/style-component';
@@ -15,9 +14,8 @@ const { css, ...style } = doStyle;
 // TODO attr
 export function createEso(emitter, options) {
 	class Eso {
-		static registerKeyEvents = createRegisterKeyEvents(emitter);
-		static getElementOffset = getElementOffset;
 		static transition = createTransition(emitter, options);
+		static registerKeyEvents = createRegisterKeyEvents(emitter);
 		id;
 		uuid;
 		tag;

@@ -24,6 +24,7 @@ const chapEvents = {
 };
 
 export class Chapter {
+	times = 0;
 	index: number;
 	scene: Scene;
 	scenes: SceneProps[];
@@ -103,5 +104,9 @@ export class Chapter {
 			color: 'blue',
 			'font-weight': 'bold',
 		});
+		this.times++;
+
+		this.index = 0;
+		this.times < 1 && this.start(this.index);
 	}
 }

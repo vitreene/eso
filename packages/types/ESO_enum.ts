@@ -42,4 +42,5 @@ export enum Nature {
 	SOUND = 'sound',
 	VIDEO = 'video',
 	PROTO = 'proto',
+	list = 'list',
 }

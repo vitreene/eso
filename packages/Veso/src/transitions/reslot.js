@@ -56,6 +56,7 @@ export function reslot({ transition, ...props }) {
 			});
 		}
 	}
+
 	return { ...props, transition };
 }
 

@@ -1,4 +1,3 @@
-// import { Eso } from '../App/init';
 import { mergeDimensions } from './pre/dimensions';
 
 import { MISSING } from '../data/constantes';

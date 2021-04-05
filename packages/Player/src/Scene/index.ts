@@ -35,7 +35,6 @@ import {
 	Story,
 	StoryWoEventimes,
 	Cast,
-	Eso,
 } from '../../../types/Entries-types';
 import { Message } from '../../../types/message';
 import { Eventime } from '../../../types/eventime';

@@ -22,7 +22,7 @@ export function doTransition(perso, transition, emitter) {
 		if (!interpolation) return;
 
 		// mettre à jour la position avant le rafraichissement
-		perso.update({ between: interpolation.from });
+		accumulate.add(interpolation.from);
 
 		//lancer la ou les transitions
 		controlAnimations.tween({
@@ -52,7 +52,7 @@ export function doTransition(perso, transition, emitter) {
  * il arrive que deux transitions se suivant, la première l'emporte en priorité sur la suivant.
  */
 
-function setCumulateCallback(perso) {
+export function setCumulateCallback(perso) {
 	const callback = (between) => perso.update({ between });
 	return syncRafUpdate(callback);
 }

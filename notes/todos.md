@@ -428,3 +428,63 @@ procédure :
 - a. traiter dimensions en dehors de Eso, supprimer \_pre
 - b. accepter des durations distinctes par propriété -> tableau de transitions
 - c. tween : repeat, yoyo : faut-il les traiter au niveau du tween, ou bien au niveau des eventimes ?
+
+## Content : une classe pour gérer les contenus ?
+
+a l'exception du composant img, tous les autres composants simples ont des caractéristiques communes, seul le contenu les distingue.
+Eso contient meme la gestion des attributs et des events applicables aux inputs.
+
+en ajoutant slot aux types de contenus, on peut gérer l'essentiel des besoins d'affichage.
+
+- text : accepte une string ou un objet.
+
+  - String est un raccourci pour un type de contenu.
+    Un réglage au niveau du projet (/ scene / story) permet de régler la préférence : s'agit-il d'un contenu ou d'une référence
+  - objet :
+    { lang: fr, ref: sous-titre, key: txt01, effect: fade }
+    { text: c’est fini, effect: letters-top-down }
+    - ref: groupe dans lequel rechercher la clé. ex: sous-titre, langue
+    - key: clé de la string
+    - isHtml : un flag pour signaler un contenu riche (ou bien, tout contenu est sanitusé par défaut ?)
+    - effect : effet de transition d'un contenu à l'autre.
+
+- image :
+  ce composant fonctionne différemment des autres, à garder à part
+
+  - src: lien vers l'image
+  - fit: cover / contains
+
+- sprite :
+
+  - src
+  - dimensions
+
+- slot
+
+## List un composant pour ramplacer Layer
+
+list doit générer des blocs avec une slot comme contenu.
+Dans un premier temps, List pourrait désigner un composant contenu un slot.
+
+### slot: propriétés
+
+faut-il définir les propriétés de positionnement dans slot, ou directement dans className ?
+(align et justify items) => moins magique de les passer par les classes css
+Réglage d'empilement des contenus:
+
+- seat : cote à cote, horizontal ou vertical. Autre nom : row et column
+- stack : empilement les uns sur les autres -> position: absolute
+- static : ignorer un pré-positionnement
+
+### redéfinir move, de nouvelles propriétés
+
+move :
+
+- to: id du slot
+- story: par défaut, slot est recherché soit dans la story, soit dans entry. préciser ici le domaine de recherche (facultatif)
+- order:
+  - index : nombre, 0 est le premier node de la liste, donc le plus éloigné
+  - mot-clé: 'first' 'last', pour garder l'élément en tete ou queue de liste.
+    si plusieurs éléments ont le meme mot-clé, ils sont rangés dans l'ordre d'arrivée
+    Order est passé à slot pour permettre à Slot de calculer les positions de chaque item dans le slot
+    Les items sont positionnée en absolute, avec décalage en letfy et top.

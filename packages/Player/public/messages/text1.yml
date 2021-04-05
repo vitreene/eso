@@ -1,13 +1,13 @@
 langue:
   fr:
     txt01: Bonjour Adyu
-    txt02: il est l'heure
+    txt02: Quelle heure est-il ?
   en:
     txt01: Hello
-    txt02: How are you ?
+    txt02: What time is it ?
 
 sous-titre:
   fr:
-    txt01: Nouvelle étape
+    txt01: sous-titre
   en:
-    txt01: Jean say Hello
+    txt01: undertitle

@@ -32,6 +32,7 @@ export function registerPersos(
 					persos.set(perso.id, createPerso.create(perso, { messages }));
 				}
 				break;
+			case 'list':
 			case 'layer':
 				{
 					const { slot } = options;
