@@ -75,15 +75,44 @@
 - scene:
     id: scene2
     name: suite
-    entry: scene-w-telco
+    entry: decor
+    # entry: scene-w-telco
     cast:
       - story01:
           startAt: go
+          root: fond
+
+
+    shared:
+      persos:
+        - list:
+            id: list
+            initial:
+              classStyle: { display: grid}
+              className: container
+
     stories:
+      - id: decor
+        channel: *DEFAULT_NS
+        entry: fond
+        stage: '4/3'
+        eventimes:
+          name: go
+          startAt: 0
+    
+        persos:
+          - *LIST :
+              id: fond
+              extends: list
+              initial:
+                className: top-container
+                classStyle: {
+                  grid-template-columns: '2fr 2fr'
+                }
+
       - id: story01
         channel: story01
         stage: '4/3'
-
         eventimes:
           0: 
             name: start
@@ -93,19 +122,38 @@
               1500 : [ *Q3, {channel: *MAIN, name: *Q2}]
               2000 : *Q4
               2500 : *Q1
-
+              3500 : fin
 
         persos:
           - list :
-              id: list01
-              extends: proto_bloc
+              id: *Q1
+              extends: list
               initial:
-                dimensions: {width: 400, height: 400}
-                style:
-                  background-color: yellow
-              actions:
-                *Q1 : 
-                  move: *Q4
+                classStyle: {grid-row: 1, grid-column: 1 }
+              actions: { start : { move: fond } }
+          - list :
+              id: *Q2
+              extends: list
+              initial:
+                classStyle: {grid-row: 2, grid-column: 1 }
+              actions: { start : { move: fond } }
+          - list :
+              id: *Q3
+              extends: list
+              initial:
+                classStyle: {grid-row: 1, grid-column: 2 }
+              actions: { start : { move: fond } }
+          - list :
+              id: *Q4
+              extends: list
+              initial:
+                classStyle: {grid-row: 2, grid-column: 2 }
+              actions: 
+                 start : { move: fond } 
+                 *Q2 : 
+                    transition: 
+                      to: {background-color: 'rgba(0, 128, 255, 0.5)'}
+                      duration: 1000
 
           - *BLOC :
               id: bl-01
@@ -114,6 +162,7 @@
                 # dimensions: {width: 400, height: 100}
                 style:
                   background-color: cyan
+                  color: red
                   position: absolute
                   font-size: 40
                   font-family: Helvetica
@@ -124,7 +173,7 @@
               actions:
                 *Q1 : 
                   move: *Q1
-                  transition: {to: {color: purple} }
+                  # transition: {to: {color: purple} }
                   
                 *Q2 :
                   move: *Q2
@@ -223,7 +272,7 @@
     stories:
       - id: scene-w-telco
         channel: *DEFAULT_NS
-        entry: *CONTAINER_ESO
+        entry: *CONTAINER_ESO 
         stage: '4/3'
         eventimes:
           name: go

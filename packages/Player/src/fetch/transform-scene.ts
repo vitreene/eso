@@ -72,7 +72,20 @@ export function preStory(stories) {
 }
 
 function addStartAndEndEvents(story, cast) {
-	const eventimes = story.eventimes;
+	// const eventimes = story.eventimes;
+	const { events, ...firstEvent } = story.eventimes;
+	const initEvent = {
+		startAt: cast.startAt,
+		channel: DEFAULT_NS,
+	};
+	const eventsAdded = Array.isArray(events)
+		? events.concat([firstEvent])
+		: [firstEvent];
+	const eventimes = {
+		...initEvent,
+		events: eventsAdded,
+	};
+
 	eventimes.startAt = cast.startAt;
 	eventimes.channel = DEFAULT_NS;
 	if (!story.entry) return { ...story, eventimes };
@@ -98,6 +111,11 @@ function addEventsToEntry(story, cast) {
 		(_persos, entry) => {
 			const index = _persos.findIndex((p) => p.id === entry);
 			if (index === -1) return _persos;
+
+			// Scene entry ne doit pas se voir ajouter une action "enter"
+			// car c'est fait directement
+			if (cast.isEntry && _persos[index].id === cast.root) return _persos;
+
 			const perso = addEventToPerso(enterEvent, _persos[index]);
 			const res = [..._persos];
 			res.splice(index, 1, perso);

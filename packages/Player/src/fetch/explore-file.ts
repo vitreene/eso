@@ -58,25 +58,15 @@ rendre entry moins spécifique, c'est une story comme les autres, chargée en to
 function exploreScene(scene: SceneCastEntry, inherit: Inherit): Scene {
 	const sceneShared = exploreShared(scene.shared, inherit);
 	const _inherit = mergeProps(sceneShared, inherit, ['stories', 'persos']);
-
 	const _stories = exploreStories(scene, _inherit);
-
-	// const entry = getEntry(scene.entry)(_stories);
-	// console.log('ENTRY', entry);
-
 	const cast: Cast[] = setCast(scene, _stories);
-
 	const stories = getStories(cast)(_stories);
-	// const casting = getStories(cast)(_stories);
-	// const stories = [entry, ...casting].filter(Boolean);
 	const { shared, ...__scene } = scene;
 	return { ...__scene, cast, stories };
 }
 
 function exploreStories(scene: SceneCastEntry, inherit: Inherit): Story[] {
 	if (!scene.stories) return;
-	// const entry = findEntry(scene, inherit);
-	// const entry = getEntry(scene.entry)(inherit.stories);
 	const entry = inherit.stories.find((story) => story.id === scene.entry);
 
 	let stories: Story[];
@@ -84,7 +74,6 @@ function exploreStories(scene: SceneCastEntry, inherit: Inherit): Story[] {
 	stories = stories.map(explorePersos(inherit?.persos, scene));
 	stories = mergeStories(stories, inherit.stories);
 
-	// stories = [entry, ...stories];
 	entry && stories.unshift(entry);
 
 	stories = stories.map(transformEventimes);
@@ -96,11 +85,14 @@ function exploreStories(scene: SceneCastEntry, inherit: Inherit): Story[] {
 
 function setCast(scene: SceneCastEntry, _stories: Story[]) {
 	const cast = scene.cast || sceneCreateCast(_stories);
+	console.log('setCast', scene, _stories);
 
 	if (scene.entry) {
+		const root = _stories.find((s) => s.id === scene.entry).entry;
 		const castEntry: CastEntry = {
 			[scene.entry]: {
-				root: CONTAINER_ESO,
+				root,
+				// root: CONTAINER_ESO,
 				startAt: START_SCENE,
 				isEntry: true,
 			},
@@ -113,7 +105,7 @@ function setCast(scene: SceneCastEntry, _stories: Story[]) {
 	return sceneExpandCast(cast);
 }
 
-function findEntry(scene: SceneCastEntry, inherit: Inherit): Story {
+/* function findEntry(scene: SceneCastEntry, inherit: Inherit): Story {
 	if (!scene.entry) {
 		console.warn("Pas d'entrée déclarée dans la scene");
 		return undefined;
@@ -127,7 +119,7 @@ function findEntry(scene: SceneCastEntry, inherit: Inherit): Story {
 	// 	return undefined;
 	// }
 	return entry;
-}
+} */
 
 function resolveTemplateStory(scene: SceneCastEntry) {
 	return ({ persos, ...story }): Story => {

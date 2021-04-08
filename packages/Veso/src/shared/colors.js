@@ -15,8 +15,9 @@ export function transformColor(c) {
 		case colorName.has(c):
 			return colorName.rgb(c);
 		case c.charAt(0) === '#':
-			if ([4, 7].includes(c.length)) return hexToRGB(c);
-			if ([5, 9].includes(c.length)) return hexAToRGBA(c);
+			return hexAToRGBA(c);
+		// if ([4, 7].includes(c.length)) return hexToRGB(c);
+		// if ([5, 9].includes(c.length)) return hexAToRGBA(c);
 		default:
 			return c;
 	}
@@ -121,7 +122,7 @@ export const colorName = {
 		const rgb = this[n];
 		if (!rgb) return null;
 		const [r, g, b] = this[n];
-		const color = 'rgb(' + +r + ',' + +g + ',' + +b + ')';
+		const color = 'rgba(' + r + ',' + g + ',' + b + ',1)';
 		return color;
 	},
 	aliceblue: [240, 248, 255],

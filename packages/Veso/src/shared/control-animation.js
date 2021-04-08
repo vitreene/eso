@@ -187,6 +187,7 @@ dX et dY sont relatives au slot, en cas de changement de slot, une interpolation
 			...options.interpolation,
 			from: { ...options.interpolation.from, ...from },
 		};
+		console.log('newInterpolation', id, newInterpolation);
 		this.setTween(id, newInterpolation, options);
 	}
 

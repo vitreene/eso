@@ -48,9 +48,10 @@ import { EventEmitter2 } from 'eventemitter2';
 		console.log(emitter.eventNames(event));
 	}
 }); */
-// setTimeout(() => {
-// 	emitter.emit([TC, PAUSE]);
-// }, 3000);
+const timer = (emitter, duree = 1000) =>
+	setTimeout(() => {
+		emitter.emit([TC, PAUSE]);
+	}, duree);
 
 export const appContainer = document.getElementById(APP_ID);
 
@@ -90,6 +91,7 @@ export class Scene {
 		this.messages = messages;
 		this.description = scene.description;
 
+		this.start = this.start.bind(this);
 		this.slot = this.slot.bind(this);
 		this.addStory = this.addStory.bind(this);
 		this._publish = this._publish.bind(this);
@@ -100,9 +102,8 @@ export class Scene {
 		registerStraps(this.cast, this.emitter);
 
 		this.initStories(stories, scene.entry, mediasCollection);
-		document.getElementById(APP_ID).innerHTML = '';
-		this.initOnMount(scene.cast, stories);
-		this.start();
+		this.initOnMount(scene.cast, stories).then(this.start);
+		// timer(this.emitter, 1500);
 	}
 
 	initStories(
@@ -117,26 +118,35 @@ export class Scene {
 		this.timeLine.addEndEvent();
 	}
 
-	initOnMount(casting: Cast[], stories: Story[]) {
+	async initOnMount(casting: Cast[], stories: Story[]) {
+		let entry: Story;
 		for (const cast of casting) {
 			const story = stories.find((s) => s.id === cast.id);
 			this.emitter.prependListener(
 				[MAIN, cast.startAt.toString()],
-				this.onMount(story)
+				this.onMount(story, cast)
 			);
-			if (cast.isEntry) {
-				const { root } = story;
-				appContainer.appendChild(this.persos.get(root).node);
-				this.slot(root);
-				this.onScene.areOnScene.set(root, root);
-			}
+			cast.isEntry && (entry = story);
 		}
+
+		await new Promise(requestAnimationFrame);
+		if (!entry) return;
+		const { root } = entry;
+		console.log(casting, stories);
+		console.log(root, this.persos);
+
+		appContainer.innerHTML = '';
+		appContainer.appendChild(this.persos.get(root).node);
+		this.slot(root);
+		this.onScene.areOnScene.set(root, root);
 	}
 
-	onMount(story: Story) {
+	onMount(story: Story, cast) {
 		return () => {
 			console.log('onMount-->', story.id);
-			this._setStoryCast(story);
+			console.log(story);
+			console.log(cast);
+			this._setStoryCast(story, cast);
 			this.activateZoom(story.id);
 		};
 	}
@@ -155,6 +165,7 @@ export class Scene {
 			this._register(others, mediasCollection);
 		};
 	}
+
 	private _addEventsToTimeLine(eventimes: Eventime) {
 		this.timeLine.addEventList(eventimes, { level: DEFAULT_NS });
 	}
@@ -165,13 +176,14 @@ export class Scene {
 	) {
 		const { channel, persos } = story;
 		const _persos = persos.map(prepareTransitions);
-		console.log(persos);
+		console.log('_register', persos);
 
 		registerPersos(_persos, this.persos, this.createPerso, {
 			imagesCollection: mediasCollection,
 			slot: this.slot,
 			messages: this.messages,
 		});
+
 		registerActions(channel, _persos, this._publish(story.id), this.emitter);
 	}
 
@@ -180,9 +192,14 @@ export class Scene {
 	ou : un slot sera forcément un perso, donc disponible ici
 	
 	*/
-	private _setStoryCast({ id, root = CONTAINER_ESO, stage, persos }: Story) {
+
+	// FIXME mieux definir root !!
+	private _setStoryCast(
+		{ id, /* root = CONTAINER_ESO, */ stage, persos }: Story,
+		{ root }
+	) {
 		// TODO a terme, les slots sont des persos
-		//FIXME si root est un slot, il n'est pas accesible ici et maintenant
+
 		const node = this.persos.has(root)
 			? this.persos.get(root).node
 			: document.getElementById(root);
@@ -203,6 +220,8 @@ export class Scene {
 	}
 
 	activateZoom(id: string) {
+		console.log('ZOOM', id, this.cast);
+
 		const zoom = this.cast[id].zoom;
 		if (!zoom) return () => {};
 		window.addEventListener('resize', zoom.resize);
@@ -218,8 +237,6 @@ export class Scene {
 	private _publish(id: string) {
 		function publish(data: any) {
 			const onSceneUpdateComponent = (update: any) => {
-				// console.log('onSceneUpdateComponent', id, this.cast, update);
-
 				if (!this.persos.has(update.id)) {
 					console.warn('pas de perso ayant l’id %s', update.id);
 					return;
@@ -227,7 +244,7 @@ export class Scene {
 				const perso = this.persos.get(update.id);
 				const up = this.onScene.update(update);
 				const zoom = this.cast[id].zoom.box;
-				updateComponent(perso, up, zoom, this._updateSlot, this.Eso);
+				updateComponent(perso, up, zoom, this._updateSlot, this.Eso.transition);
 			};
 
 			return (other: any) => onSceneUpdateComponent({ ...data, ...other });

@@ -16,11 +16,13 @@
 	outline: 2px cyan solid;
 }
 
+.top-container {
+	overflow: hidden;
+}
 .container {
 	flex: 1;
 	min-width: 100%;
 	outline: 2px red solid;
-	overflow: hidden;
 	position: relative;
 	display: flex;
 }

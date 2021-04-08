@@ -11,7 +11,6 @@ export function createPerso() {
 		if (p[0] === 'o' && p[1] === 'n') attributes[p] = this.current[p];
 		else attributes[p] = o(this.current[p]);
 	}
-	console.log('attributes', this.id, attributes.content());
 	storeNodes.set(this.uuid, this.render({ tag: this.tag, ...attributes }));
 	this.attributes = attributes;
 	return () => storeNodes.get(this.uuid);

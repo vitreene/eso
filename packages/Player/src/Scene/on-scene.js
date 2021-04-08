@@ -81,7 +81,9 @@ export class OnScene {
 			const isLeaving = up.leave;
 			const { move } = up;
 			const changeSlot = move /* && move.layer */ && move.slot;
-			// console.log('changeSlot', changeSlot, move);
+
+			// console.log('changeSlot', changeSlot, move, this._slots.has(changeSlot));
+
 			changeSlot && (action = this._moveToSlot);
 			isLeaving && (action = this._leaveScene);
 		} else action = this._addToScene;

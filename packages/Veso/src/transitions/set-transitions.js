@@ -4,5 +4,6 @@ export function setTransitions({ transition, ...props }) {
 			? transition.push(...props.update.transition)
 			: transition.push(props.update.transition);
 	}
+
 	return { ...props, transition };
 }

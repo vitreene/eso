@@ -8,7 +8,7 @@ export function updateComponent(
 	{ changed, update, ...others },
 	box,
 	updateSlot,
-	Eso
+	transition
 ) {
 	if (!update || Object.keys(update).length === 0) return;
 	if (typeof changed === 'string') {
@@ -23,7 +23,7 @@ export function updateComponent(
 	}
 
 	// RESLOT , RESCALE, TRANSITIONS,
-	Eso.transition({ perso, update, changed, box, updateSlot });
+	transition({ perso, update, changed, box, updateSlot });
 
 	// PRE : DIMENSIONS
 	perso.update(mergeDimensions(update));

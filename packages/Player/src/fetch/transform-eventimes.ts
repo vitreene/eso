@@ -17,6 +17,7 @@ export function eventimesAddChannel(channel: string) {
 	return function addChannel(eventimes: Eventime) {
 		const events = eventimes.events ? eventimes.events.map(addChannel) : null;
 		//si channel est déjà défini, il a la priorité
+
 		return { channel, ...eventimes, ...(events && { events }) };
 	};
 }
@@ -29,7 +30,7 @@ export function eventimesStartAt(eventimes) {
 }
 
 function setStartAt(eventime: unknown) {
-	let time: string = '';
+	let time = '';
 	let _events: string | any = '';
 
 	// ex	{ 500: 'ev011' }
