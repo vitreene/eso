@@ -41,9 +41,11 @@ function Anime(interpolation) {
 
 	const facade = {
 		play() {
+			console.log('Anime PLAY');
 			animation.resume();
 		},
 		pause() {
+			console.log('Anime PAUSE');
 			animation.pause();
 		},
 		seek(millisecond) {
@@ -187,7 +189,7 @@ dX et dY sont relatives au slot, en cas de changement de slot, une interpolation
 			...options.interpolation,
 			from: { ...options.interpolation.from, ...from },
 		};
-		console.log('newInterpolation', id, newInterpolation);
+		// console.log('newInterpolation', id, newInterpolation);
 		this.setTween(id, newInterpolation, options);
 	}
 

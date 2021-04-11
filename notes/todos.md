@@ -488,3 +488,28 @@ move :
     si plusieurs éléments ont le meme mot-clé, ils sont rangés dans l'ordre d'arrivée
     Order est passé à slot pour permettre à Slot de calculer les positions de chaque item dans le slot
     Les items sont positionnée en absolute, avec décalage en letfy et top.
+
+story.entry -> scene.entry pas concerné, les stories sont toujours uniques
+move
+name
+content
+emit mousedown data
+
+dresser la liste des id par story,
+(chercher les slots ne suffit pas, il peut y avoir d'autres recherches)
+preciser quelle story est l'entry
+lorsque un id est demandé:
+
+- chercher dans sa propre story,
+- puis dans entry,
+- si toujours pas trouvé, chercher dans les autres stories
+
+  - si un seul trouvé -> ok
+  - si plusieurs, warning / error ?
+    -> il vaut mieux une erreur qu'un comportement innatendu plus difficile à résoudre
+
+  placer la fonction après merge, avant les subtitutions de variables
+  après la collecte des id, ceux-ci sont remplacés par les items complets
+  utiliser un point comme jointure (paramétrable) : story.perso
+
+dans action / move : si move est un objet, la propriété story/layer ? sera utiliser pltot que la découverte de la story. remplacer l'id, puis supprimer la prop layer/story

@@ -102,7 +102,8 @@ export class Scene {
 		registerStraps(this.cast, this.emitter);
 
 		this.initStories(stories, scene.entry, mediasCollection);
-		this.initOnMount(scene.cast, stories).then(this.start);
+		const entry = this.initOnMount(scene.cast, stories);
+		this.entryInDom(entry).then(this.start);
 		// timer(this.emitter, 1500);
 	}
 
@@ -118,7 +119,7 @@ export class Scene {
 		this.timeLine.addEndEvent();
 	}
 
-	async initOnMount(casting: Cast[], stories: Story[]) {
+	initOnMount(casting: Cast[], stories: Story[]) {
 		let entry: Story;
 		for (const cast of casting) {
 			const story = stories.find((s) => s.id === cast.id);
@@ -128,25 +129,28 @@ export class Scene {
 			);
 			cast.isEntry && (entry = story);
 		}
+		return entry;
+	}
 
+	async entryInDom(entry: Story) {
 		await new Promise(requestAnimationFrame);
 		if (!entry) return;
 		const { root } = entry;
-		console.log(casting, stories);
-		console.log(root, this.persos);
-
-		appContainer.innerHTML = '';
-		appContainer.appendChild(this.persos.get(root).node);
 		this.slot(root);
 		this.onScene.areOnScene.set(root, root);
+		appContainer.innerHTML = '';
+		// debugger;
+
+		appContainer.appendChild(this.persos.get(root).node);
 	}
 
 	onMount(story: Story, cast) {
 		return () => {
 			console.log('onMount-->', story.id);
-			console.log(story);
-			console.log(cast);
+
 			this._setStoryCast(story, cast);
+			// debugger;
+
 			this.activateZoom(story.id);
 		};
 	}
@@ -193,11 +197,7 @@ export class Scene {
 	
 	*/
 
-	// FIXME mieux definir root !!
-	private _setStoryCast(
-		{ id, /* root = CONTAINER_ESO, */ stage, persos }: Story,
-		{ root }
-	) {
+	private _setStoryCast({ id, stage, persos }: Story, { root }) {
 		// TODO a terme, les slots sont des persos
 
 		const node = this.persos.has(root)

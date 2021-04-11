@@ -72,7 +72,6 @@ export function preStory(stories) {
 }
 
 function addStartAndEndEvents(story, cast) {
-	// const eventimes = story.eventimes;
 	const { events, ...firstEvent } = story.eventimes;
 	const initEvent = {
 		startAt: cast.startAt,
@@ -85,7 +84,6 @@ function addStartAndEndEvents(story, cast) {
 		...initEvent,
 		events: eventsAdded,
 	};
-
 	eventimes.startAt = cast.startAt;
 	eventimes.channel = DEFAULT_NS;
 	if (!story.entry) return { ...story, eventimes };
@@ -95,7 +93,9 @@ function addStartAndEndEvents(story, cast) {
 
 function addEventsToEntry(story, cast) {
 	const { entry } = story;
-	if (!entry) return story.persos;
+	console.log('addEventsToEntry', entry);
+
+	// if (!entry) return story.persos;
 
 	const enterEvent = createActionListen({
 		name: 'enter',

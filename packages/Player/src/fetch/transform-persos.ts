@@ -7,6 +7,7 @@ import { nanoid } from 'nanoid';
 import { pipe } from '../shared/utils';
 
 import {
+	EsoAction,
 	EsoActions,
 	EsoEvent,
 	InputEsoEvents,
@@ -50,7 +51,7 @@ export function dispatchPersoProps(channel: Channel) {
 	return function (_persos: Perso[]) {
 		const persos = _persos.map((_perso: Perso) => {
 			const _actions = _perso.actions || [];
-			const actions = pipe(actionsToArray, moveExpandProps)(_actions);
+			const actions = actionsToArray(_actions);
 			const _listen = _perso.listen || [];
 			const listen = listenDisptachProps(channel, _listen, actions);
 			return { ..._perso, actions, listen };
@@ -62,7 +63,7 @@ export function dispatchPersoProps(channel: Channel) {
 function listenDisptachProps(
 	channel: Channel,
 	_listen: InputEsoEvents,
-	actions: EsoActions
+	actions: EsoAction[]
 ) {
 	const listen = pipe(
 		listenExpandProps(channel),
@@ -71,7 +72,7 @@ function listenDisptachProps(
 	return listen;
 }
 
-export function listenCollectAll(channel: Channel, actions: EsoActions) {
+export function listenCollectAll(channel: Channel, actions: EsoAction[]) {
 	return function (_listen: EsoEvent[]) {
 		const addNames: InputEsoEvents = [];
 		const actionsName = new Set(actions.map((action) => action.name));
@@ -91,7 +92,8 @@ _listen peut avoir les formes :
 	- [ {ev011: 'enter'},...]
 	- [{ event: go, action: enter }]
 	- [ { channel: *TC, event: *PLAY, action: *PLAY }]
-	*/
+*/
+
 // TODO channel prendra la ref de sa story par defaut
 export function listenExpandProps(channel: Channel) {
 	return function (_listen: InputEsoEvents) {
@@ -115,7 +117,7 @@ export function listenExpandProps(channel: Channel) {
 		return listen;
 	};
 }
-export function actionsToArray(_actions: EsoActions) {
+export function actionsToArray(_actions: any): any {
 	const actions = objectKeyToArray(_actions, 'name');
 	return actions;
 }
@@ -130,7 +132,7 @@ export function moveExpandProps(_actions: EsoActions) {
 	return actions;
 }
 
-function objectKeyToArray(obj: EsoActions, key: string) {
+function objectKeyToArray(obj: any, key: string): any {
 	if (typeof obj !== 'object') {
 		console.warn("ce n'est pas un object : %s", obj);
 		return obj;

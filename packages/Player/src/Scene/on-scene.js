@@ -62,6 +62,7 @@ export class OnScene {
 		this._slots = new Map(Array.from(_storeSlots.keys(), (id) => [id, []]));
 		// en fin de scene
 		this.clear = _storeSlots.subscribe(this.add_slots);
+		console.log('this.areOnScene', this.areOnScene);
 	}
 	/* 
   TODO un élément qui a quitté la scene ne peut revenir que par un autre "enter"
@@ -75,19 +76,15 @@ export class OnScene {
 		this._slots.set(id, []);
 	}
 	update(up) {
-		let action = (update) => ({ changed: { status: 'update' }, update });
 		if (!up.id) return this._getError('id', up);
+		let action = (update) => ({ changed: { status: 'update' }, update });
 		if (this.areOnScene.has(up.id)) {
 			const isLeaving = up.leave;
 			const { move } = up;
 			const changeSlot = move /* && move.layer */ && move.slot;
-
-			// console.log('changeSlot', changeSlot, move, this._slots.has(changeSlot));
-
 			changeSlot && (action = this._moveToSlot);
 			isLeaving && (action = this._leaveScene);
 		} else action = this._addToScene;
-
 		return action(up);
 	}
 

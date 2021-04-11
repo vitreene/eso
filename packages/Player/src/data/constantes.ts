@@ -13,8 +13,8 @@ export const REWIND = ESO_EventName.REWIND;
 export const STRAP = ESO_Channel.STRAP;
 export const TEMPO = ESO_EventName.TEMPO;
 
-export const SUPPORT = 'support';
-export const ACTOR = 'actor';
+// export const SUPPORT = 'support';
+// export const ACTOR = 'actor';
 
 export const DRAG = 'drag';
 export const MOVE = 'move';
@@ -66,6 +66,8 @@ export const DEFAULT_IMG = {
 export const DEFAULT_SCENE_STAGE = SCENE_STAGE['4/3'];
 
 export const MISSING = 'missing';
+export const DELIMITER = '.';
+
 export const DEFAULT_STYLES = {
 	x: 0,
 	y: 0,

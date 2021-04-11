@@ -12,6 +12,7 @@
     cast:
       - story01:
           startAt: go
+          root: *CONTAINER_ESO 
 
     stories:
       - id: story01
@@ -76,12 +77,10 @@
     id: scene2
     name: suite
     entry: decor
-    # entry: scene-w-telco
     cast:
       - story01:
           startAt: go
           root: fond
-
 
     shared:
       persos:
@@ -147,12 +146,16 @@
               id: *Q4
               extends: list
               initial:
-                classStyle: {grid-row: 2, grid-column: 2 }
+                classStyle: {grid-row: 2, grid-column: 2 , top: 0, left: 0}
               actions: 
                  start : { move: fond } 
-                 *Q2 : 
+                 *Q4 : 
                     transition: 
-                      to: {background-color: 'rgba(0, 128, 255, 0.5)'}
+                      to: 
+                        background-color: 'rgba(0, 128, 255, 0.5)'
+                        scale: 1.2
+                        top: -50
+                        left: -100
                       duration: 1000
 
           - *BLOC :
@@ -176,7 +179,7 @@
                   # transition: {to: {color: purple} }
                   
                 *Q2 :
-                  move: *Q2
+                  # move: *Q2
                   transition: 
                     to: 
                       background-color: green
@@ -193,6 +196,16 @@
                   move: *Q4
                   transition: {to: {background-color: orange},duration: 1000}
 
+          - *BUTTON :
+              id: tPlay
+              extends: togglePlay
+              initial:
+                classStyle:
+                  align-self: self-end
+                  justify-self: self-end
+              actions:
+                *Q1 : {move: *Q4}
+
 
 - scene:
     id: scene3
@@ -201,6 +214,8 @@
     cast:
       - story01:
           startAt: go
+          root: *CONTAINER_ESO 
+
     stories:
       - id: story01
         channel: story01
@@ -260,6 +275,16 @@
                   move: *Q4
                   transition: {to: {background-color: orange},duration: 1000}
                   content: { text:  A bientot pour un prochain essai, effect: letters-top-down }
+           
+          - *BUTTON :
+              id: tPlay
+              extends: togglePlay
+              initial:
+                classStyle:
+                  align-self: self-end
+                  justify-self: self-end
+              actions:
+                *Q1 : {move: *Q2}
 
 
 - shared:
@@ -269,6 +294,36 @@
           initial:
             className: bloc-center
             classStyle: {  align-self: center,  justify-self: center}
+
+      - *BUTTON :
+          id: togglePlay
+          initial:
+            classStyle: {
+              color: white,
+              backgroundColor: green,
+              borderRadius: 4px,
+              fontWeight: bold,
+              fontSize: 12px,
+              padding: 1rem,
+              textTransform: uppercase,
+              textAlign: center,
+              transition: color 0.3s,
+              '&:hover': { color: cyan }
+             }
+            content: pause
+          listen:
+            - { channel: *TC, event: play, action: play }
+            - { channel: *TC, event: pause, action: pause }
+          actions:
+            play:
+              content: pause
+            pause: 
+              content: play
+          emit: 
+            click: 
+              event: { channel: *STRAP, name: *TOGGLE }
+              data: { id: telco,  event: {channel: *TC, name: [pause, play]} }
+
     stories:
       - id: scene-w-telco
         channel: *DEFAULT_NS

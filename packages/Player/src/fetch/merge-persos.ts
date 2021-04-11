@@ -100,22 +100,14 @@ export const merge = {
   sinon elles s'ajoutent
   */
 	actions(proto: EsoActions, ref: EsoActions) {
-		if (!proto || proto.length === 0) return ref;
-		if (!ref || ref.length === 0) return proto;
-		const protoNames = new Map();
-		proto.forEach((action) => protoNames.set(action.name, action));
-		const refNames = new Map();
-		ref.forEach((action) => refNames.set(action.name, action));
-
-		for (const name of protoNames.keys()) {
-			const action = refNames.has(name)
-				? Object.assign({}, protoNames.get(name), refNames.get(name))
-				: protoNames.get(name);
-			refNames.set(name, action);
+		if (!proto || Object.keys(proto).length === 0) return ref;
+		if (!ref || Object.keys(ref).length === 0) return proto;
+		const merged = {};
+		for (const name in ref) {
+			if (proto[name]) merged[name] = { ...proto[name], ...ref[name] };
 		}
-		const actions = [];
-		refNames.forEach((action) => actions.push(action));
-		return actions.length === 0 ? null : actions;
+		const actions = { ...proto, ...ref, ...merged };
+		return actions;
 	},
 	/* 
    les propriétés sont surchargées

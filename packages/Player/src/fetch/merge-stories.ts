@@ -2,27 +2,28 @@ import { Perso } from '../../../types/initial';
 import { Eventime } from '../../../types/eventime';
 import { Story } from '../../../types/Entries-types';
 
-export function mergeStories(_stories: Story[], _inherit: Story[]) {
-	if (!_stories.length || !_inherit.length) return _stories;
-	const shared = new Map(Array.from(_inherit, (story) => [story.id, story]));
-	const stories = new Map(Array.from(_stories, (story) => [story.id, story]));
+export function mergeStories(_inherit: Story[]) {
+	return function mergeWithInherit(_stories: Story[]) {
+		if (!_stories.length || !_inherit.length) return _stories;
+		const shared = new Map(Array.from(_inherit, (story) => [story.id, story]));
+		const stories = new Map(Array.from(_stories, (story) => [story.id, story]));
 
-	for (const [id, _story] of stories) recMerge(id, _story);
+		for (const [id, _story] of stories) recMerge(id, _story);
 
-	function recMerge(id: string, _story: Story) {
-		const story = stories.get(_story.extends) || shared.get(_story.extends);
-		if (!story) return _story;
-		const _proto = recMerge(_story.extends, story);
-		if (_proto) {
-			const { extends: _, ...others } = merge.story(_proto, _story);
+		function recMerge(id: string, _story: Story) {
+			const story = stories.get(_story.extends) || shared.get(_story.extends);
+			if (!story) return _story;
+			const _proto = recMerge(_story.extends, story);
+			if (_proto) {
+				const { extends: _, ...others } = merge.story(_proto, _story);
 
-			stories.set(id, others);
+				stories.set(id, others);
+			}
+			return _story;
 		}
-		return _story;
-	}
-	return Array.from(stories.values());
+		return Array.from(stories.values());
+	};
 }
-
 const merge = {
 	story(_proto: Story, _story: Story) {
 		if (!_proto || Object.keys(_proto).length === 0) return _story;

@@ -98,6 +98,7 @@ export function mergeDimensions(_update) {
 }
 
 function only(property, obj) {
+	if (!obj) return null;
 	const keys = Object.keys(obj);
 	const one = keys.length === 1;
 	const hasProperty = keys[0] === property;

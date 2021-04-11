@@ -1,4 +1,4 @@
-import { pipe } from '../shared/utils';
+import { map, pipe, joinId } from '../shared/utils';
 import { mergePersos } from './merge-persos';
 import { mergeStories } from './merge-stories';
 import { transformEventimes } from './transform-eventimes';
@@ -11,7 +11,6 @@ import {
 import {
 	setStage,
 	preStory,
-	getEntry,
 	getStories,
 	sceneCreateCast,
 	sceneExpandCast,
@@ -29,7 +28,8 @@ import {
 } from '../../../types/Entries-types';
 import { Perso } from '../../../types/initial';
 import { Inherit, Channel } from './fetch-chapter';
-import { CONTAINER_ESO, START_SCENE } from '../data/constantes';
+
+import { START_SCENE } from '../data/constantes';
 
 export function exploreFile(file: SceneEntry, inherit: Inherit) {
 	const _scenes: SceneCastEntry[] = Array.isArray(file.scene)
@@ -50,83 +50,114 @@ export function exploreFile(file: SceneEntry, inherit: Inherit) {
 	return scenes;
 }
 
-/* 
-
-rendre entry moins spécifique, c'est une story comme les autres, chargée en tout premeir dans l'app
-*/
-
-function exploreScene(scene: SceneCastEntry, inherit: Inherit): Scene {
-	const sceneShared = exploreShared(scene.shared, inherit);
+function exploreScene(_scene: SceneCastEntry, inherit: Inherit): Scene {
+	const sceneShared = exploreShared(_scene.shared, inherit);
 	const _inherit = mergeProps(sceneShared, inherit, ['stories', 'persos']);
-	const _stories = exploreStories(scene, _inherit);
-	const cast: Cast[] = setCast(scene, _stories);
-	const stories = getStories(cast)(_stories);
-	const { shared, ...__scene } = scene;
+	let scene;
+	scene = exploreMergeStories(_scene, _inherit);
+	scene = tagAllIds(scene);
+	const __stories = exploreAddonsStories(scene as SceneAllIds);
+	const cast: Cast[] = setCast(scene, __stories);
+	const stories = getStories(cast)(__stories);
+	const { shared, allIds, ...__scene } = scene;
 	return { ...__scene, cast, stories };
 }
 
-function exploreStories(scene: SceneCastEntry, inherit: Inherit): Story[] {
+function exploreMergeStories(
+	scene: SceneCastEntry,
+	inherit: Inherit
+): SceneCastEntry {
 	if (!scene.stories) return;
-	const entry = inherit.stories.find((story) => story.id === scene.entry);
+	// expand scene.entry
+	const stories = pipe(
+		preStory,
+		map(explorePersos(inherit?.persos, scene)),
+		mergeStories(inherit.stories),
+		addEntryInStory(inherit.stories, scene.entry)
+		// logs
+	)(scene.stories);
+	return { ...scene, stories };
+}
 
-	let stories: Story[];
-	stories = preStory(scene.stories);
-	stories = stories.map(explorePersos(inherit?.persos, scene));
-	stories = mergeStories(stories, inherit.stories);
-
-	entry && stories.unshift(entry);
-
-	stories = stories.map(transformEventimes);
-	stories = stories.map(setStage);
-	stories = stories.map(resolveTemplateStory(scene));
-
+function exploreAddonsStories(scene: SceneAllIds): Story[] {
+	if (!scene.stories) return;
+	// expand scene.entry
+	const stories = pipe(
+		map(transformEventimes),
+		map(setStage),
+		setUniqueIds(scene.allIds),
+		map(resolveTemplateStory(scene))
+	)(scene.stories);
 	return stories;
 }
 
-function setCast(scene: SceneCastEntry, _stories: Story[]) {
-	const cast = scene.cast || sceneCreateCast(_stories);
-	console.log('setCast', scene, _stories);
+function logs<T>(obj: T) {
+	console.log('LOG', obj);
+	return obj;
+}
 
-	if (scene.entry) {
-		const root = _stories.find((s) => s.id === scene.entry).entry;
+function addEntryInStory(stories: Story[], entryId: string) {
+	const isSceneEntry = true;
+	const mergeEntry = stories.find((story) => story.id === entryId);
+	return function (stories: Story[]): Story[] {
+		if (mergeEntry) return [{ ...mergeEntry, isSceneEntry }, ...stories];
+		const entry = stories.find((story) => story.id === entryId);
+		return entry
+			? [
+					{ ...entry, isSceneEntry },
+					...stories.filter((story) => story.id !== entryId),
+			  ]
+			: stories;
+	};
+}
+
+function setCast(scene: SceneAllIds, _stories: Story[]) {
+	const _cast = scene.cast || sceneCreateCast(_stories);
+	const cast = pipe(
+		resolveRootId(scene.allIds),
+		addSceneEntry(scene.entry, _stories),
+		sceneExpandCast
+	)(_cast);
+
+	return cast;
+}
+
+// entry traité, pas les autres
+function resolveRootId(allIds) {
+	return function (_cast: CastEntry[]) {
+		const cast = _cast.map((c) => {
+			if (typeof c === 'string') return c;
+			const storyId = Object.keys(c)[0];
+			const root = allIds.findId(c[storyId].root, storyId);
+			return { [storyId]: { ...c[storyId], root } };
+		});
+		return cast;
+	};
+}
+
+function addSceneEntry(entry: string, _stories: Story[]) {
+	return function (cast: CastEntry[]) {
+		if (!entry) {
+			console.warn("Pas d'entrée déclarée dans la scene");
+			return cast;
+		}
+		const root = _stories.find((s) => s.id === entry).entry;
 		const castEntry: CastEntry = {
-			[scene.entry]: {
+			[entry]: {
 				root,
-				// root: CONTAINER_ESO,
 				startAt: START_SCENE,
 				isEntry: true,
 			},
 		};
-		cast.push(castEntry);
-	} else {
-		console.warn("Pas d'entrée déclarée dans la scene");
-	}
-
-	return sceneExpandCast(cast);
+		return [castEntry, ...cast];
+	};
 }
-
-/* function findEntry(scene: SceneCastEntry, inherit: Inherit): Story {
-	if (!scene.entry) {
-		console.warn("Pas d'entrée déclarée dans la scene");
-		return undefined;
-	}
-	const entry =
-		// getEntry(scene.entry)(scene.stories) ||
-		getEntry(scene.entry)(inherit.stories);
-
-	// if (!entry) {
-	// 	console.warn(`Pas d'entrée ${scene.entry} dans la scene ${scene.id}`);
-	// 	return undefined;
-	// }
-	return entry;
-} */
-
 function resolveTemplateStory(scene: SceneCastEntry) {
-	return ({ persos, ...story }): Story => {
+	return ({ persos, ...story }: Story): Story => {
 		const _persos = resolveTemplate({ scene, story })(persos);
 
-		const _story = parseVariables(story, { scene, story });
-		return { ...(_story as Story), persos: _persos };
+		const _story: Story = parseVariables(story, { scene, story });
+		return { ..._story, persos: _persos };
 	};
 }
 
@@ -147,7 +178,7 @@ function explorePersos(inherit: Perso[], scene: SceneCastEntry = null) {
 
 interface Context {
 	scene?: SceneCastEntry;
-	story?: any;
+	story?: Omit<Story, 'persos'>;
 }
 
 function resolveTemplate(context: Context) {
@@ -174,7 +205,7 @@ function exploreShared(_shared: SharedFileEntry, inherit: Inherit) {
 			explorePersos([...inherit?.persos, ...persos])
 		);
 		// FIXME stories.shared est muté ; ne pas appliquer de template ici !
-		stories = mergeStories(stories, inherit.stories);
+		stories = mergeStories(inherit.stories)(stories);
 	}
 	return Object.assign(
 		{},
@@ -199,4 +230,67 @@ function mergeProps(obj1: unknown, obj2: unknown, props: string[]) {
 		res[prop] = arr1.concat(arr2);
 	}
 	return res;
+}
+
+type SceneAllIds = SceneCastEntry & { allIds: AllIds };
+
+function tagAllIds(scene: SceneCastEntry): SceneAllIds {
+	const allIds = new AllIds(scene);
+	return { ...scene, allIds };
+}
+
+class AllIds {
+	ids = {};
+	entryId = null;
+	constructor(scene) {
+		scene.stories.forEach((story) => {
+			const allPersoIds = story.persos.map((perso) => perso.id);
+			this.ids[story.id] = new Set(allPersoIds);
+		});
+		this.entryId = scene.stories.find((story) => story.isSceneEntry).id;
+	}
+	findId(persoId: string, storyId: string) {
+		if (this.ids[storyId].has(persoId)) return joinId(storyId, persoId);
+		if (this.ids[this.entryId].has(persoId))
+			return joinId(this.entryId, persoId);
+		return persoId;
+	}
+}
+
+function setUniqueIds(allIds: AllIds) {
+	return function (_stories: Story[]) {
+		const stories = _stories.map((story) =>
+			pipe(expandId, resolveMoveId)(story)
+		);
+
+		function expandId(story: Story) {
+			const persos = story.persos.map((perso) => ({
+				...perso,
+				id: joinId(story.id, perso.id),
+			}));
+			return { ...story, persos };
+		}
+
+		function resolveMoveId(story: Story) {
+			const persos = story.persos.map((perso) => {
+				const actions = perso.actions.map((action) => {
+					if (action.move) {
+						if (typeof action.move === 'string') {
+							const move = allIds.findId(action.move, story.id);
+							return { ...action, move: { slot: move } };
+						}
+					} else return action;
+				});
+				return { ...perso, actions };
+			});
+			return { ...expandStoryEntry(story), persos };
+
+			function expandStoryEntry(story: Story) {
+				if (!story.entry) return story;
+				const entry = allIds.findId(story.entry, story.id);
+				return { ...story, entry };
+			}
+		}
+		return stories;
+	};
 }

@@ -1,3 +1,5 @@
+import { DELIMITER } from '../data/constantes';
+
 export function throttle(callback, limit) {
 	let wait = false; // Initially, we're not waiting
 	return () => {
@@ -17,15 +19,14 @@ export function throttle(callback, limit) {
 }
 
 export function debounce(func, wait, immediate) {
-	var timeout;
+	const timeout;
 	return function () {
-		var context = this,
-			args = arguments;
-		var later = function () {
+		const args = arguments;
+		const later = () => {
 			timeout = null;
-			if (!immediate) func.apply(context, args);
+			if (!immediate) func.apply(this, args);
 		};
-		var callNow = immediate && !timeout;
+		const callNow = immediate && !timeout;
 		clearTimeout(timeout);
 		timeout = setTimeout(later, wait);
 		if (callNow) func.apply(context, args);
@@ -90,7 +91,7 @@ export function arrayToObject(arr) {
 
 // creer des noms composés
 export function joinId(...args) {
-	return args.filter((a) => a !== '').join('_');
+	return args.filter((a) => a !== '').join(DELIMITER);
 }
 
 export function isPlainObject(obj) {
@@ -170,4 +171,12 @@ export function objectToArray(obj) {
 	// propriétés itérables seulement
 	for (const o in obj) arr.push({ [o]: obj[o] });
 	return arr;
+}
+
+export function map(fn) {
+	if (typeof fn !== 'function') throw new Error('une fonction est demandée');
+	return function _map(arr) {
+		if (!Array.isArray(arr)) throw new Error('un tableau est demandé');
+		return arr.map(fn);
+	};
 }

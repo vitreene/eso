@@ -62,16 +62,17 @@ export interface Scene {
 }
 
 export interface Story {
+	id: string;
+	root: string;
+	channel: string;
+	persos: Perso[];
+	stage: StageEntry;
+	entry?: string;
 	extends?: string;
 	ignore?: string[];
-	entry?: any;
-	id: string;
-	channel: string;
-	root: string;
-	stage: StageEntry;
 	isEntry?: boolean;
+	isSceneEntry?: boolean;
 	eventimes?: Eventime;
-	persos: Perso[];
 }
 
 export type StoryWoEventimes = Omit<Story, 'eventimes'>;
