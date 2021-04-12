@@ -102,7 +102,7 @@ export class Scene {
 		registerStraps(this.cast, this.emitter);
 
 		this.initStories(stories, scene.entry, mediasCollection);
-		const entry = this.initOnMount(scene.cast, stories);
+		const entry = this.initOnMount(stories, scene.cast);
 		this.entryInDom(entry).then(this.start);
 		// timer(this.emitter, 1500);
 	}
@@ -119,15 +119,17 @@ export class Scene {
 		this.timeLine.addEndEvent();
 	}
 
-	initOnMount(casting: Cast[], stories: Story[]) {
+	initOnMount(stories: Story[], casting: Cast[]) {
 		let entry: Story;
 		for (const cast of casting) {
 			const story = stories.find((s) => s.id === cast.id);
-			this.emitter.prependListener(
-				[MAIN, cast.startAt.toString()],
-				this.onMount(story, cast)
-			);
-			cast.isEntry && (entry = story);
+			if (cast.isEntry) entry = story;
+			else {
+				this.emitter.prependListener(
+					[MAIN, cast.startAt.toString()],
+					this.onMount(story, cast)
+				);
+			}
 		}
 		return entry;
 	}
@@ -136,21 +138,17 @@ export class Scene {
 		await new Promise(requestAnimationFrame);
 		if (!entry) return;
 		const { root } = entry;
+		this.onMount(entry, { root })();
 		this.slot(root);
 		this.onScene.areOnScene.set(root, root);
 		appContainer.innerHTML = '';
-		// debugger;
-
 		appContainer.appendChild(this.persos.get(root).node);
 	}
 
 	onMount(story: Story, cast) {
 		return () => {
 			console.log('onMount-->', story.id);
-
 			this._setStoryCast(story, cast);
-			// debugger;
-
 			this.activateZoom(story.id);
 		};
 	}
@@ -243,6 +241,8 @@ export class Scene {
 				}
 				const perso = this.persos.get(update.id);
 				const up = this.onScene.update(update);
+				console.log(this.cast, id);
+
 				const zoom = this.cast[id].zoom.box;
 				updateComponent(perso, up, zoom, this._updateSlot, this.Eso.transition);
 			};
