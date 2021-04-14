@@ -180,3 +180,8 @@ export function map(fn) {
 		return arr.map(fn);
 	};
 }
+
+export function logs(obj, message = '') {
+	console.log('LOG %s', message, obj);
+	return obj;
+}

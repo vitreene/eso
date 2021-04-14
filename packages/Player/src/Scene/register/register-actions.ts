@@ -1,4 +1,4 @@
-import { Perso } from '../../../../types/initial';
+import { EsoAction, Perso } from '../../../../types/initial';
 // import { emitter } from '../../App/init';
 
 type Subscribe = {
@@ -21,7 +21,7 @@ export function registerActions(
 			const channel: string = e.channel || _channel;
 			const name: string = e.event;
 			const action: string = e.action;
-			const actionFound = actions.find((a) => a.name === action);
+			const actionFound: EsoAction = actions.find((a) => a.name === action);
 			if (actionFound) {
 				const { name: _, ...other } = actionFound;
 				subscribe({

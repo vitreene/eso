@@ -8,7 +8,6 @@ import { pipe } from '../shared/utils';
 
 import {
 	EsoAction,
-	EsoActions,
 	EsoEvent,
 	InputEsoEvents,
 	Perso,
@@ -51,7 +50,7 @@ export function dispatchPersoProps(channel: Channel) {
 	return function (_persos: Perso[]) {
 		const persos = _persos.map((_perso: Perso) => {
 			const _actions = _perso.actions || [];
-			const actions = actionsToArray(_actions);
+			const actions = objectKeyToArray(_actions, 'name' as keyof EsoAction);
 			const _listen = _perso.listen || [];
 			const listen = listenDisptachProps(channel, _listen, actions);
 			return { ..._perso, actions, listen };
@@ -117,12 +116,8 @@ export function listenExpandProps(channel: Channel) {
 		return listen;
 	};
 }
-export function actionsToArray(_actions: any): any {
-	const actions = objectKeyToArray(_actions, 'name');
-	return actions;
-}
 
-export function moveExpandProps(_actions: EsoActions) {
+export function moveExpandProps(_actions: EsoAction[]) {
 	if (!Array.isArray(_actions)) return _actions;
 	const actions = _actions.map((action) => {
 		if (typeof action.move === 'string')
@@ -132,10 +127,10 @@ export function moveExpandProps(_actions: EsoActions) {
 	return actions;
 }
 
-function objectKeyToArray(obj: any, key: string): any {
+function objectKeyToArray<T>(obj: T, key: string) {
 	if (typeof obj !== 'object') {
 		console.warn("ce n'est pas un object : %s", obj);
-		return obj;
+		return [];
 	}
 	const arr = [];
 	for (const o in obj) arr.push({ [key]: o, ...obj[o] });

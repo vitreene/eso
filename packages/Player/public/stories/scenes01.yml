@@ -8,7 +8,7 @@
 - scene:
     id: scene1
     name: introduction
-    entry: scene-w-telco
+    entry: scene-background
     cast:
       - story01:
           startAt: go
@@ -76,38 +76,60 @@
 - scene:
     id: scene2
     name: suite
-    entry: decor
+    entry: scene-telco
     cast:
-      - story01:
+      - decor:
           startAt: go
+          root: scene
+      - story01:
+          startAt: go2
           root: fond
-
-    shared:
-      persos:
-        - list:
-            id: list
-            initial:
-              classStyle: { display: grid}
-              className: container
 
     stories:
       - id: decor
-        channel: *DEFAULT_NS
-        entry: fond
+        channel: *MAIN
+        entry: [ *Q1 , *Q2 , *Q3 , *Q4 ]
         stage: '4/3'
         eventimes:
-          name: go
+          name: go2
           startAt: 0
+          events: [{ startAt: 1000 , name: *Q4 }]
     
         persos:
           - *LIST :
-              id: fond
+              id: *Q1
               extends: list
               initial:
-                className: top-container
-                classStyle: {
-                  grid-template-columns: '2fr 2fr'
-                }
+                classStyle: {grid-row: 1, grid-column: 1 }
+              # actions: { go2 : { move: fond } }
+          - *LIST :
+              id: *Q2
+              extends: list
+              initial:
+                classStyle: {grid-row: 2, grid-column: 1 }
+              # actions: { go2 : { move: fond } }
+          - *LIST :
+              id: *Q3
+              extends: list
+              initial:
+                classStyle: {grid-row: 1, grid-column: 2 }
+              # actions: { go2 : { move: fond } }
+          - *LIST :
+              id: *Q4
+              extends: list
+              initial:
+                classStyle: {grid-row: 2, grid-column: 2 , top: 0, left: 0}
+              actions: 
+                #  go2 : { move: fond } 
+                 *Q4 : 
+                    transition: 
+                      to: 
+                        background-color: 'rgba(0, 128, 255, 0.5)'
+                        scale: 1.2
+                        top: -50
+                        left: -100
+                      duration: 1000
+                
 
       - id: story01
         channel: story01
@@ -124,40 +146,6 @@
               3500 : fin
 
         persos:
-          - list :
-              id: *Q1
-              extends: list
-              initial:
-                classStyle: {grid-row: 1, grid-column: 1 }
-              actions: { start : { move: fond } }
-          - list :
-              id: *Q2
-              extends: list
-              initial:
-                classStyle: {grid-row: 2, grid-column: 1 }
-              actions: { start : { move: fond } }
-          - list :
-              id: *Q3
-              extends: list
-              initial:
-                classStyle: {grid-row: 1, grid-column: 2 }
-              actions: { start : { move: fond } }
-          - list :
-              id: *Q4
-              extends: list
-              initial:
-                classStyle: {grid-row: 2, grid-column: 2 , top: 0, left: 0}
-              actions: 
-                 start : { move: fond } 
-                 *Q4 : 
-                    transition: 
-                      to: 
-                        background-color: 'rgba(0, 128, 255, 0.5)'
-                        scale: 1.2
-                        top: -50
-                        left: -100
-                      duration: 1000
-
           - *BLOC :
               id: bl-01
               extends: proto_bloc
@@ -196,21 +184,12 @@
                   move: *Q4
                   transition: {to: {background-color: orange},duration: 1000}
 
-          - *BUTTON :
-              id: tPlay
-              extends: togglePlay
-              initial:
-                classStyle:
-                  align-self: self-end
-                  justify-self: self-end
-              actions:
-                *Q1 : {move: *Q4}
 
 
 - scene:
     id: scene3
     name: suite
-    entry: scene-w-telco
+    entry: scene-background
     cast:
       - story01:
           startAt: go
@@ -224,6 +203,7 @@
         eventimes:
           0: 
             name: start
+            # channel: story01
             events:
               # 500: *Q1
               # 1000 : *Q2
@@ -294,6 +274,12 @@
           initial:
             className: bloc-center
             classStyle: {  align-self: center,  justify-self: center}
+      
+      - *LIST :
+          id: list
+          initial:
+            classStyle: { display: grid}
+            className: container
 
       - *BUTTON :
           id: togglePlay
@@ -325,7 +311,7 @@
               data: { id: telco,  event: {channel: *TC, name: [pause, play]} }
 
     stories:
-      - id: scene-w-telco
+      - id: scene-background
         channel: *DEFAULT_NS
         entry: *CONTAINER_ESO 
         stage: '4/3'
@@ -357,5 +343,55 @@
                 *Q3 : {transition: {to: {scale: 1}}}
                 *Q2 : {transition: {to: {background-color: blue}, duration: 1000}}
                 *Q4 : {transition: {to: {background-color: red}}}
+      
+      - id: scene-telco
+        entry: fond
+        stage: '4/3'
+        channel: *MAIN 
+        eventimes:
+          name: go
+          startAt: 0
+      
+        persos: 
+          - *LIST :
+              id: fond
+              extends: list
+              initial:
+                className: top-container
+                classStyle: 
+                  grid-template-columns: '1fr'
+                  grid-template-rows: '9fr 1fr'
+
+          - *LIST :
+              id: scene
+              initial: 
+                dimensions: { width: 100%, height: 100% }
+                className: container top-container
+                classStyle: 
+                  display: grid
+                  grid-template-columns: '2fr 2fr'
+                  background-color: limegreen
+
+              actions:
+                go : {move: fond}
+
+          - *LIST :
+              id: telco
+              initial: 
+                dimensions: { width: 100%, height: 100% }
+                classStyle: { background-color: royalblue }
+              actions:
+                go : {move: fond}
+
+              
+          - *BUTTON :
+              id: tPlay
+              extends: togglePlay
+              initial:
+                classStyle:
+                  align-self: self-center
+                  justify-self: self-start
+              actions:
+                go : {move: telco}
 
                      

@@ -2,181 +2,35 @@
     id: scene1
     name: introduction
     entry: scene-w-telco
-    cast:
-      - story03:
-          # startAt: end-story01
-          startAt: go1
-          root: *MAIN
-      - story04:
-          startAt: go1
-          root: *TC
-      - story02:
-          startAt: go2
-          root: fond-story04_s01
-
-      - story01:
-          startAt: end-story04
-          root: *MAIN
-
+    # cast:
+    #   - story04:
+    #       startAt: go1
+    #       root: *TC
     stories:
-      - id: story01
-        channel: story01
-        extends: anim01
-        persos: 
-          - *IMG : 
-              id: image
-              extends: image-shared
-              initial:
-                content: 
-                  src: ./ikono/9.jpg
-                  fit: contain
-        
-      - id: story02
-        channel: story02
-        stage: '16/9'
-        extends: anim01
-        ignore: [togglePlay]
-
-        persos:
-          - *IMG : 
-              id: image2
-              extends: image2-shared
-              initial:
-                content: ./ikono/Aesthedes.jpg
-
-      - id: story04
-        channel: story04
-        extends: anim01
-        ignore: [text-sample,image]
-        entry: ['${story.id}_fond', '${story.id}_grid-01']
-        persos:
-          - *LAYER :
-              id: fond-story04
-              initial: 
-                classStyle: {
-                  position: absolute,
-                  inset: 0,
-                  display: grid,
-                  gridColumn: 1,
-                  gridRow: 1,
-                  backgroundColor: orange
-                }
-                content: [{ id: 'fond-story04_s01' }] 
-              actions: 
-                go: 
-                  move: '${story.id}_grid-01_s02'
-                  transition: { to: fadeIn }
-
-      
-      - id: story03
-        # channel: ma second story
-        channel: story03
-        stage: '4/3'
-
-        # ici pas d'entrée, tous les élements montent sur une story parente. 
-        # Bonne pratique ?
-
-        eventimes:
-          500:
-            name: start
-            events:
-              0: { name: go, data: [un, deux, trois] }
-              500: ev011
-              # 1000: [ev012, { channel: *DEFAULT_NS, name: go2 }]
-              2000: ev013
-              3000: ev014
-              4000: ev015
-              5000:
-                name: 'leave-root'
-                events: { 1000: { name: 'bye', data: ['quatre', 'cinq', 'six'] } }
-
-        persos:
-          - *BLOC :
-              id: text-sample2
-              extends: proto_bloc
-              initial:
-                classStyle:
-                  {
-                    color: white,
-                    font-weight: bold,
-                    padding-top: 12,
-                    padding-bottom: 12,
-                    padding-left: 24,
-                    padding-right: 24,
-                    border-radius: 16,
-                    grid-area: 1/1,
-                    margin: auto,
-                  }
-                content: { ref: txt01 }
-              actions:
-                ev011:
-                  move: *MAIN
-                  transition: { to: fadeIn }
-                  classStyle: { font-size: 100, background-color: '#49b6b6cf' }
-                  className: new-text
-                ev012:
-                  # content : { lang: fr, refLang: langue, ref: txt01, effect: fade }
-                  content: { lang: en, refLang: sous-titre, ref: txt01, effect: fade }
-                ev013:
-                  content: { lang: en, refLang: langue, ref: txt01, effect: fade }
-                ev014:
-                  content: { text: "A bientot", effect: fade }
-                ev015:
-                  content: { text: fin de scène, effect: letters-top-down }
-
-          - *IMG :
-              id: image3
-              initial:
-                content: 
-                  src: ./ikono/vignette.jpg
-                  fit: cover
-                classStyle: { grid-area: 1/1 }
-              listen: [{ event: go, action: enter }]
-              actions:
-                enter:
-                  move: *MAIN
-                  dimensions: { width: 100%, height: 100% }
-                  transition: { to: fadeIn }
-
-          - button:
-              id: togglePlay2
-              initial:
-                classStyle:
-                  {
-                    color: white,
-                    background-color: blue,
-                    border-radius: 4px,
-                    font-weight: bold,
-                    font-size: 12px,
-                    padding: 1rem,
-                    text-transform: uppercase,
-                    text-align: center,
-                    grid-area: 1/1,
-                  }
-                dimensions: { width: 200, ratio: 1.5 }
-                content: Pause
-              listen:
-                [
-                  { event: go, action: enter },
-                  { channel: *TC, event: *PLAY, action: *PLAY },
-                  { channel: *TC, event: *PAUSE, action: *PAUSE },
-                ]
-              actions:
-                enter:
-                  move: *MAIN
-                *PLAY :
-                  content: Pause
-                *PAUSE :
-                  content: Play
-              emit:
-                click:
-                  event: { channel: *STRAP, name: *TOGGLE }
-                  data: { id: telco,  event: {channel: *TC, name: [pause, play]} }
+    #   - id: story04
+    #     channel: story04
+    #     extends: anim01
+    #     persos:
+    #       - *LIST :
+    #           id: s01
+    #           initial: 
+    #             classStyle: {
+    #               position: absolute,
+    #               inset: 0,
+    #               display: grid,
+    #               gridColumn: 1,
+    #               gridRow: 1,
+    #               backgroundColor: orange
+    #             }
+    #           actions: 
+    #             go: 
+    #               move: {story: grid-01, slot: s02}
+    #               transition: { to: fadeIn }
 
     shared: 
       stories:
         - id: anim01
-          entry: ['${story.id}_fond', '${story.id}_grid-01']
+          entry: [fond, grid-01]
           stage: '4/3'
 
           eventimes: 
@@ -198,7 +52,7 @@
               # - 7000: [end-story, {channel: *DEFAULT_NS, name: end-story01}]
 
           persos:                
-            - *LAYER :
+            - *LIST :
                 id: fond
                 initial: 
                   classStyle: {
@@ -212,7 +66,7 @@
                     gridRow: 1,
                     backgroundColor: cyan
                   }
-                  content: [{ id: '${perso.id}_s01' }]
+                  content: [{ id: s01 }]
                 actions:
                     end-story: {exit: true, transition: {to: fadeOut}}
                     leave-fond: {leave: true}
@@ -232,12 +86,12 @@
                     gridTemplateRows: '4fr 3fr repeat(3, 1fr)',
                   }
                   content: 
-                    - { id: '${perso.id}_s01', classStyle: { gridColumn: '1 / 3', gridRow: 1}}
-                    - { id: '${perso.id}_s02', classStyle: { gridColumn: 1, gridRow: '2 / 6'}}
-                    - { id: '${perso.id}_s03', classStyle: { gridRow: 2 } }
-                    - { id: '${perso.id}_s04', classStyle: { gridColumn: 2 } }
-                    - { id: '${perso.id}_s05', classStyle: { gridColumn: 2 } }
-                    - { id: '${perso.id}_s06', classStyle: { gridColumn: 2 } }
+                    - { id: 's01', classStyle: { gridColumn: '1 / 3', gridRow: 1}}
+                    - { id: 's02', classStyle: { gridColumn: 1, gridRow: '2 / 6'}}
+                    - { id: 's03', classStyle: { gridRow: 2 } }
+                    - { id: 's04', classStyle: { gridColumn: 2 } }
+                    - { id: 's05', classStyle: { gridColumn: 2 } }
+                    - { id: 's06', classStyle: { gridColumn: 2 } }
                 actions: 
                   end-story: {leave: true, transition: {to: fadeOut}}
                       
@@ -271,13 +125,13 @@
                   enter: 
                       # quelle variable appliquer ?
                       # marche pas : move: ${scene.entry[1]}_s01 
-                      move: '${story.id}_grid-01_s01' 
+                      move: 'grid-01.s01' 
                       classStyle: {position: absolute }
                       style: {scale: 0.5}
 
                   step01: 
                       content: ${story.id}
-                      move: { slot: '${story.id}_grid-01_s02' }
+                      move: { slot: 'grid-01.s02' }
 
                       transition: 
                         to: {
@@ -288,7 +142,7 @@
                         }
                         duration: 2000
                   step02:
-                      move: { slot:  '${story.id}_grid-01_s03' }
+                      move: { slot:  'grid-01.s03' }
 
                       transition:
                         to: {
@@ -319,14 +173,14 @@
                   end-rescale-image :
                     style: { outline: 20px solid red	}
                   enter: 
-                    move: '${story.id}_grid-01_s03'
+                    move: 'grid-01_s03'
                     transition: { to: fadeIn }
                   step01:
-                    move: { slot: '${story.id}_fond_s01' , rescale: true}
+                    move: { slot: 'fond_s01' , rescale: true}
                     transition:
                       to: { opacity: 0.5 }
                   step02:
-                    move: { slot: '${story.id}_grid-01_s02', rescale: true}
+                    move: { slot: 'grid-01_s02', rescale: true}
                     transition:
                       to: { opacity: 1 }
 
@@ -346,12 +200,12 @@
                   end-rescale-image2 :
                     style: {outline: 20px solid blue}
                   enter:
-                    move: '${story.id}_grid-01_s02' 
+                    move: 'grid-01_s02' 
                   step01:
-                    move: { slot: '${story.id}_grid-01_s01', rescale: true }
+                    move: { slot: 'grid-01_s01', rescale: true }
                     transition: { to: { opacity: 0.5 } }
                   step02:
-                    move: { slot: '${story.id}_fond_s01', rescale: true }
+                    move: { slot: 'fond_s01', rescale: true }
                     transition: { to: { opacity: 1 } }
                       
             - *BUTTON :
@@ -376,7 +230,7 @@
                   - { channel: *TC, event: 'pause', action: 'pause' }
                 actions:
                   enter: 
-                    move: '${story.id}_grid-01_s05'
+                    move: 'grid-01_s05'
                   play:
                     content: pause
                   pause: 
@@ -399,14 +253,14 @@
                   - { event: leave-sprite, action: leave }
                 actions:
                   enter:
-                    move: '${story.id}_grid-01_s03'
+                    move: 'grid-01_s03'
                     transition: {
                       from: { opacity: 0 }, 
                       to: { opacity: 1, x: -100, y: 10 } ,
                       duration: 1000
                       }
                   step01:
-                    move: '${story.id}_grid-01_s01'
+                    move: 'grid-01_s01'
                     transition: { to: { x: 100, y: 50, rotate: 15 } }
                   exit:
                     exit: true
@@ -438,14 +292,14 @@
               end-rescale-image :
                 style: { outline: 20px solid red	}
               enter: 
-                move: '${story.id}_grid-01_s03'
+                move: 'grid-01_s03'
                 transition: { to: fadeIn }
               step01:
-                move: { slot: '${story.id}_fond_s01' , rescale: true}
+                move: { slot: 'fond_s01' , rescale: true}
                 transition:
                   to: { opacity: 0.5 }
               step02:
-                move: { slot: '${story.id}_grid-01_s02', rescale: true}
+                move: { slot: 'grid-01_s02', rescale: true}
                 transition:
                   to: { opacity: 1 }
         - *IMG : 
@@ -464,12 +318,12 @@
               end-rescale-image2 :
                 style: {outline: 20px solid blue}
               enter:
-                move: '${story.id}_grid-01_s02' 
+                move: 'grid-01_s02' 
               step01:
-                move: { slot: '${story.id}_grid-01_s01', rescale: true }
+                move: { slot: 'grid-01_s01', rescale: true }
                 transition: { to: { opacity: 0.5 } }
               step02:
-                move: { slot: '${story.id}_fond_s01', rescale: true }
+                move: { slot: 'fond_s01', rescale: true }
                 transition: { to: { opacity: 1 } }
 
 - shared:
@@ -486,7 +340,7 @@
             # - { startAt: 2000, name: *PAUSE, channel: *TC  }
               1500: { channel: *DEFAULT_NS, name: go2 }
         persos:
-          - *LAYER :
+          - *LIST :
               id: *CONTAINER_ESO
               initial:
                 className: container
@@ -494,13 +348,19 @@
                   display: grid,
                   grid-template-columns: '5fr 5fr'
                 }
-                content:
-                  - id: *MAIN
-                    classStyle: {display: grid, grid-column: 1, overflow: hidden}
-                  - id: *TC
-                    classStyle: {display: grid, grid-column: 2}
               actions:
                 end-scene: { leave: true }
+
+          - *LIST :
+              id: *MAIN
+              initial:
+                classStyle: {display: grid, grid-column: 1, overflow: hidden}
+          - *LIST :
+              id: *MAIN
+              initial:
+                classStyle: {display: grid, grid-column: 2}
+                    
+              
 
     persos:
       - *PROTO :

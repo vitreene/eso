@@ -7,7 +7,7 @@ export function parseVariables(template: unknown, data: unknown) {
 			if (Array.isArray(tpl)) {
 				tpl = tpl.map(parse);
 			} else {
-				for (let t in tpl) tpl[t] = parse(tpl[t]);
+				for (const t in tpl) tpl[t] = parse(tpl[t]);
 			}
 		} else if (typeof tpl === 'string') tpl = pipapo(tpl, data);
 

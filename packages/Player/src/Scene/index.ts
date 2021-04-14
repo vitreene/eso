@@ -41,13 +41,14 @@ import { Eventime } from '../../../types/eventime';
 import { ImagesCollection } from '../../../types/initial';
 import { EventEmitter2 } from 'eventemitter2';
 
-/* emitter.onAny(function (event, value) {
-	if (event !== 'elapsed') {
-		console.log('EVENT->', event, value);
-		// console.log(emitter.listeners(event));
-		console.log(emitter.eventNames(event));
-	}
-}); */
+const onAny = (emitter) =>
+	emitter.onAny(function (event, value) {
+		if (event !== 'elapsed') {
+			console.log('EVENT->', event, value);
+			// console.log(emitter.listeners(event));
+			value === 0 && console.log(emitter.eventNames(event));
+		}
+	});
 const timer = (emitter, duree = 1000) =>
 	setTimeout(() => {
 		emitter.emit([TC, PAUSE]);
@@ -104,7 +105,9 @@ export class Scene {
 		this.initStories(stories, scene.entry, mediasCollection);
 		const entry = this.initOnMount(stories, scene.cast);
 		this.entryInDom(entry).then(this.start);
+
 		// timer(this.emitter, 1500);
+		// onAny(this.emitter);
 	}
 
 	initStories(
@@ -241,7 +244,6 @@ export class Scene {
 				}
 				const perso = this.persos.get(update.id);
 				const up = this.onScene.update(update);
-				console.log(this.cast, id);
 
 				const zoom = this.cast[id].zoom.box;
 				updateComponent(perso, up, zoom, this._updateSlot, this.Eso.transition);

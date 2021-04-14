@@ -1,13 +1,12 @@
 import { nanoid } from 'nanoid';
 
-import { pipe } from '../shared/utils';
+import { pipe, joinId, toArray } from '../shared/utils';
 
 import {
 	CONTAINER_ESO,
 	DEFAULT_NS,
 	DEFAULT_SCENE_STAGE,
 	DEFAULT_TRANSITION_IN,
-	MAIN,
 	SCENE_STAGE,
 } from '../data/constantes';
 
@@ -16,31 +15,8 @@ import {
 	StageEntry,
 	Story,
 	StoryEntry,
-	CastEntry,
+	SceneCastEntry,
 } from '../../../types/Entries-types';
-
-export function sceneExpandCast(_cast: CastEntry[]): Cast[] {
-	if (!_cast) return [];
-	const _stories = _cast.map((_story: CastEntry) =>
-		typeof _story === 'string' ? _story : Object.keys(_story)[0]
-	);
-	const cast = _cast.map((_story: CastEntry, i: number) => {
-		const id = _stories[i];
-		const c =
-			typeof _story === 'string'
-				? {
-						startAt: i === 0 ? 0 : `end-${_stories[i - 1]}`,
-						root: MAIN,
-				  }
-				: _story[id];
-		return { id, ...c };
-	});
-	return cast;
-}
-export function sceneCreateCast(stories: Story[]) {
-	const _cast = stories.map((_story) => _story.id);
-	return _cast;
-}
 
 export function getEntry(_entry: string) {
 	return function getStoryFromEntry(stories: Story[]): Story {
@@ -191,4 +167,113 @@ export function setStage(_story: Story) {
 			break;
 	}
 	return { ..._story, ...(stage && { stage }) };
+}
+
+export function addEntryInStory(stories: Story[], entryId: string) {
+	const isSceneEntry = true;
+	const mergeEntry = stories.find((story) => story.id === entryId);
+	return function (stories: Story[]): Story[] {
+		if (mergeEntry) return [{ ...mergeEntry, isSceneEntry }, ...stories];
+		const entry = stories.find((story) => story.id === entryId);
+		return entry
+			? [
+					{ ...entry, isSceneEntry },
+					...stories.filter((story) => story.id !== entryId),
+			  ]
+			: stories;
+	};
+}
+
+export function setUniqueIds(allIds: AllIds) {
+	return function (_stories: Story[]) {
+		const stories = _stories.map((story) =>
+			pipe(expandId, resolveMoveId)(story)
+		);
+
+		function expandId(story: Story) {
+			const persos = story.persos.map((perso) => ({
+				...perso,
+				id: joinId(story.id, perso.id),
+			}));
+			return { ...story, persos };
+		}
+
+		function resolveMoveId(story: Story) {
+			const persos = story.persos.map((perso) => {
+				const actions = perso.actions.map((action) => {
+					if (action.move) {
+						if (typeof action.move === 'string') {
+							const move = allIds.findId(action.move, story.id);
+							return { ...action, move: { slot: move } };
+						} else if (typeof action.move === 'object') {
+							const move = allIds.findId(
+								action.move.slot,
+								action.move.story || story.id
+							);
+							return { ...action, move: { slot: move } };
+						}
+					} else return action;
+				});
+				return { ...perso, actions };
+			});
+			return { ...expandStoryEntry(story), persos };
+
+			function expandStoryEntry(story: Story) {
+				if (!story.entry) return story;
+				const entry = allIds.findId(story.entry, story.id);
+				console.log('expandStoryEntry', entry, story.entry);
+
+				return { ...story, entry };
+			}
+		}
+		return stories;
+	};
+}
+
+export type SceneAllIds = SceneCastEntry & { allIds: AllIds };
+
+export function tagAllIds(scene: SceneCastEntry): SceneAllIds {
+	const allIds = new AllIds(scene);
+	return { ...scene, allIds };
+}
+
+class AllIds {
+	ids = {};
+	entryId = null;
+	constructor(scene) {
+		if (!scene.stories) return;
+
+		scene.stories.forEach((story) => {
+			const allPersoIds = story.persos.map((perso) => perso.id);
+			this.ids[story.id] = new Set(allPersoIds);
+		});
+		this.entryId = scene.stories.find((story: Story) => story.isSceneEntry).id;
+	}
+	findId(_persoId: string | string[], storyId: string) {
+		const persoIds: string[] = toArray(_persoId);
+
+		const storiesId: Set<string> = new Set([
+			storyId,
+			this.entryId,
+			...Object.keys(this.ids),
+		]);
+
+		const idPerso: string[] = [];
+		for (const sId of storiesId.keys()) {
+			persoIds.forEach(
+				(persoId) =>
+					this.ids[sId].has(persoId) && idPerso.push(joinId(sId, persoId))
+			);
+		}
+		// console.log('findId', _persoId, idPerso, this.ids);
+
+		switch (idPerso.length) {
+			case 0:
+				return _persoId;
+			case 1:
+				return idPerso[0];
+			default:
+				return idPerso;
+		}
+	}
 }

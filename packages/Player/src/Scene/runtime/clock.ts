@@ -87,7 +87,7 @@ export function clock(timeLiner: TimeLiner, emitter: EventEmitter2): Clock {
 
 	return {
 		start() {
-			console.log('timeLine', timeLine);
+			console.log('timeLine', timeLine[0].timeLine);
 			console.log('eventDatas', eventDatas);
 			loop.bind(this)();
 		},

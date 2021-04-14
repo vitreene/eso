@@ -28,7 +28,7 @@ export interface EsoInitial {
 	fit?: string;
 }
 
-export type EsoActions = { [action: string]: EsoAction };
+export type EsoActionEntry = { [action: string]: EsoAction };
 export interface EsoAction extends EsoInitial {
 	name: string;
 	transition?: EsoTansition;
@@ -43,7 +43,7 @@ export interface Perso {
 	readonly nature: Nature;
 	initial: EsoInitial;
 	listen?: EsoEvent[];
-	actions: EsoActions[];
+	actions: EsoAction[];
 	emit?: EsoEmit;
 	extends?: string;
 }
@@ -61,6 +61,7 @@ interface EsoEmitEvent {
 
 interface EsoMove {
 	layer?: string;
+	story?: string;
 	slot: string;
 	rescale?: boolean;
 }
