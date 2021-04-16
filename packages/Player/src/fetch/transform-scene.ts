@@ -17,6 +17,7 @@ import {
 	StoryEntry,
 	SceneCastEntry,
 } from '../../../types/Entries-types';
+import { Perso } from '../../../types/initial';
 
 export function getEntry(_entry: string) {
 	return function getStoryFromEntry(stories: Story[]): Story {
@@ -67,11 +68,8 @@ function addStartAndEndEvents(story, cast) {
 	return { ...story, root: cast.root, eventimes, persos };
 }
 
-function addEventsToEntry(story, cast) {
+function addEventsToEntry(story: Story, cast: Cast) {
 	const { entry } = story;
-	console.log('addEventsToEntry', entry);
-
-	// if (!entry) return story.persos;
 
 	const enterEvent = createActionListen({
 		name: 'enter',
@@ -83,22 +81,19 @@ function addEventsToEntry(story, cast) {
 		},
 	});
 
-	const persos = (Array.isArray(entry) ? entry : [entry]).reduce(
-		(_persos, entry) => {
-			const index = _persos.findIndex((p) => p.id === entry);
-			if (index === -1) return _persos;
+	const persos = toArray(entry).reduce((_persos: Perso[], ety: string) => {
+		const index = _persos.findIndex((p) => p.id === ety);
+		if (index === -1) return _persos;
 
-			// Scene entry ne doit pas se voir ajouter une action "enter"
-			// car c'est fait directement
-			if (cast.isEntry && _persos[index].id === cast.root) return _persos;
+		// Scene entry ne doit pas se voir ajouter une action "enter"
+		// car c'est fait directement
+		if (cast.isEntry && _persos[index].id === cast.root) return _persos;
 
-			const perso = addEventToPerso(enterEvent, _persos[index]);
-			const res = [..._persos];
-			res.splice(index, 1, perso);
-			return res;
-		},
-		story.persos
-	);
+		const perso = addEventToPerso(enterEvent, _persos[index]);
+		const res = [..._persos];
+		res.splice(index, 1, perso);
+		return res;
+	}, story.persos);
 	return persos;
 }
 
@@ -154,17 +149,15 @@ function setIdAndChannel(_story: StoryEntry) {
 export function setStage(_story: Story) {
 	let stage: StageEntry;
 	switch (typeof _story.stage) {
-		case undefined:
-			stage = DEFAULT_SCENE_STAGE['4/3'];
-			break;
 		case 'string':
 			const name = (_story.stage as unknown) as string;
-			stage = SCENE_STAGE[name] || DEFAULT_SCENE_STAGE['4/3'];
+			stage = SCENE_STAGE[name] || DEFAULT_SCENE_STAGE;
 			break;
-
 		case 'object':
 			stage = _story.stage as StageEntry;
 			break;
+		default:
+			stage = DEFAULT_SCENE_STAGE;
 	}
 	return { ..._story, ...(stage && { stage }) };
 }

@@ -514,22 +514,5 @@ lorsque un id est demandé:
 
 dans action / move : si move est un objet, la propriété story/layer ? sera utiliser pltot que la découverte de la story. remplacer l'id, puis supprimer la prop layer/story
 
-BUG Entry : LIST ne fonctionne pas comme entry
-
-1 seul élément peut etre placé comme entrée de scene
-scene.entry = story
-story.entry = perso
-
-story.entry peut accepter un tableau d'entrées, cela ne fonctionne pas dans une entrée de scene
-Cela fonctionne avec un layer, qui pose un seul élément et ses slots en meme temps.
-
-13/04
-en cours
-les persos secondaires de l'entry scene ne se chargent pas.
-Apparemment, les events les concernant ne semblent pas executés.
-des anomalies sur les events :
-
-- undefined dans la timeline,
-- ,start dans les eventNames
-
-le channel par défaut ne semble pas toujours choisi.
+story.entry pourrait accepter un tableau de tuples : [persoId : slotId]
+entry permet de placer les élements de cadre en tout premier, ils pourraient etre distribués plus finement

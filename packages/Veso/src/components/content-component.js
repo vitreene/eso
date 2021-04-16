@@ -7,8 +7,10 @@ const defaults = {
 
 // content pourra accepter des nodes
 export const content = (options) => ({
+	content: null,
 	update(content, current) {
 		if (!options || isRawContent(content)) return content;
+
 		const {
 			ref,
 			lang = current?.lang || defaults.lang,
@@ -31,9 +33,13 @@ export const content = (options) => ({
 		}
 		return text;
 	},
-	// la transition est refaite s'il y a un autre rendu
-	prerender(content) {
+
+	// mettre tinyEffects en cache
+	prerender(content, current) {
 		if (isRawContent(content)) return content;
+		if (content == this.content) return current;
+		this.content = content;
+
 		const { text, oldText, effect } = content;
 		return tinyEffects(effect, text, oldText);
 	},

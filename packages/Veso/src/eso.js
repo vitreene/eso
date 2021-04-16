@@ -173,9 +173,8 @@ export function createEso(emitter, options) {
 			} = this.history;
 
 			const content = this.revision.content.prerender
-				? this.revision.content.prerender(contentToRender)
+				? this.revision.content.prerender(contentToRender, this.current.content)
 				: contentToRender;
-
 			const style = this.revision.style.prerender(this.box, _style);
 
 			if (_classStyle) {

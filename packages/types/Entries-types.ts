@@ -67,7 +67,7 @@ export interface Story {
 	channel: string;
 	persos: Perso[];
 	stage: StageEntry;
-	entry?: string;
+	entry?: string | string[];
 	extends?: string;
 	ignore?: string[];
 	isEntry?: boolean;
