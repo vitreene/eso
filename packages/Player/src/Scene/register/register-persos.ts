@@ -1,10 +1,10 @@
 import { Slots } from '../store-slots';
 import { doDimensions } from '../pre/dimensions';
 
+import { Property } from 'csstype';
 import { Message } from '../../../../types/message';
 import { ScenePersos } from '../../../../types/Entries-types';
 import { ImagesCollection, Perso } from '../../../../types/initial';
-import { Property } from 'csstype';
 
 interface Options {
 	imagesCollection?: ImagesCollection;

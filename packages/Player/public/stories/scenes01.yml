@@ -159,7 +159,6 @@
               id: bl-01
               extends: proto_bloc
               initial:
-                # dimensions: {width: 400, height: 100}
                 style:
                   background-color: cyan
                   color: red
@@ -173,26 +172,34 @@
               actions:
                 *Q1 : 
                   move: *Q1
-                  # transition: {to: {color: purple} }
-                  
+                  style: { backgroundColor: purple}
                 *Q2 :
-                  # move: *Q2
                   transition: 
                     to: 
-                      background-color: green
                       color: red
                       rotate: 45
                       border: 20px solid blue
                     duration: 1000
-                  
                 *Q3 : 
                   move: *Q3
                   transition: {to: {color: black},duration: 2000}
-
                 *Q4 : 
                   move: *Q4
                   transition: {to: {background-color: orange},duration: 1000}
 
+          - *IMG :
+              id: image
+              initial:
+                content: 
+                  src: ./ikono/vignette.jpg
+                  fit: cover
+                classStyle:
+                  position: absolute
+              actions:
+                *Q1 : 
+                  move: { slot: *Q4, rescale: true }
+                *Q2 : 
+                  move: { slot: scene, rescale: true }
 
 
 - scene:
@@ -283,12 +290,16 @@
           id: proto_bloc
           initial:
             className: bloc-center
-            classStyle: {  align-self: center,  justify-self: center}
+            classStyle: 
+              align-self: center
+              justify-self: center
       
       - *LIST :
           id: list
           initial:
-            classStyle: { display: grid}
+            classStyle: 
+              display: grid
+              background-color: limegreen
             className: container
 
       - *BUTTON :
@@ -380,7 +391,8 @@
                 classStyle: 
                   display: grid
                   grid-template-columns: '2fr 2fr'
-                  background-color: limegreen
+                  grid-template-rows: '2fr 2fr'
+                  background-color: green
 
               actions:
                 go : {move: fond}

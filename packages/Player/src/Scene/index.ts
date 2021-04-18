@@ -41,6 +41,10 @@ import { Eventime } from '../../../types/eventime';
 import { ImagesCollection } from '../../../types/initial';
 import { EventEmitter2 } from 'eventemitter2';
 
+import { StoreContent } from '../../../Veso/src/Content';
+
+// console.log('StoreContent', StoreContent.lib);
+
 const onAny = (emitter) =>
 	emitter.onAny(function (event, value) {
 		if (event !== 'elapsed') {
@@ -69,12 +73,12 @@ export class Scene {
 
 	Eso = createEso(this.emitter, { mergeDimensions });
 	createPerso = initCreatePerso(this.Eso);
+	messages: Message;
+	slots: Slots = new Slots(); //
+	cast: SceneCast = {};
+	persos: ScenePersos = new Map(); //
 	straps: any;
 	clock: Clock;
-	messages: Message;
-	cast: SceneCast = {};
-	slots: Slots = new Slots(); //
-	persos: ScenePersos = new Map(); //
 	timeLine: TimeLiner = new TimeLiner();
 	onScene: OnScene = new OnScene(this.slots);
 	// nodes: any = storeNodes;
@@ -92,6 +96,7 @@ export class Scene {
 		this.messages = messages;
 		this.description = scene.description;
 
+		this.registerContents(messages, mediasCollection, this.slots);
 		this.start = this.start.bind(this);
 		this.slot = this.slot.bind(this);
 		this.addStory = this.addStory.bind(this);
@@ -106,7 +111,7 @@ export class Scene {
 		const entry = this.initOnMount(stories, scene.cast);
 		this.entryInDom(entry).then(this.start);
 
-		// timer(this.emitter, 1500);
+		timer(this.emitter, 3000);
 		// onAny(this.emitter);
 	}
 
@@ -175,6 +180,14 @@ export class Scene {
 		this.timeLine.addEventList(eventimes, { level: DEFAULT_NS });
 	}
 
+	registerContents(messages, mediasCollection, slots) {
+		[
+			['text', messages],
+			['image', mediasCollection],
+			['slot', slots],
+		].forEach((args) => StoreContent.create(...args));
+		console.log(StoreContent.lib);
+	}
 	private _register(
 		story: StoryWoEventimes,
 		mediasCollection: ImagesCollection

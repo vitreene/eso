@@ -7,11 +7,12 @@ FIXME
 */
 
 export function reslot({ transition, ...props }) {
-	const { perso, update, changed, box, updateSlot } = props;
+	const { perso, changed, box, updateSlot } = props;
+	perso.id === 'story01.image' && console.log('RESLOT update', props);
 
 	let old;
 	let current;
-	const rescale = update.move?.rescale;
+	const rescale = props.update.move?.rescale;
 
 	if (changed?.remove) {
 		old = getElementOffsetZoomed(perso.node, box.zoom);
@@ -56,7 +57,6 @@ export function reslot({ transition, ...props }) {
 			});
 		}
 	}
-
 	return { ...props, transition };
 }
 

@@ -203,7 +203,7 @@ export function setUniqueIds(allIds: AllIds) {
 								action.move.slot,
 								action.move.story || story.id
 							);
-							return { ...action, move: { slot: move } };
+							return { ...action, move: { ...action.move, slot: move } };
 						}
 					} else return action;
 				});

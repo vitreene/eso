@@ -20,13 +20,14 @@ export function updateComponent(
 		perso = updateMissingProps(perso);
 		// zoom enter
 		perso.prerender(box.zoom);
+		update = enterMoveRescale(update);
 	}
-
 	// RESLOT , RESCALE, TRANSITIONS,
 	transition({ perso, update, changed, box, updateSlot });
 
 	// PRE : DIMENSIONS
-	perso.update(mergeDimensions(update));
+	const mergedUpdate = mergeDimensions(update);
+	perso.update(mergedUpdate);
 }
 
 let body;
@@ -42,4 +43,20 @@ function updateMissingProps(perso) {
 		}
 	}
 	return perso;
+}
+
+function enterMoveRescale(update) {
+	console.log(update);
+
+	if (update.move?.rescale) {
+		return {
+			...update,
+			style: {
+				...update.style,
+				width: '100%',
+				height: '100%',
+			},
+		};
+	}
+	return update;
 }

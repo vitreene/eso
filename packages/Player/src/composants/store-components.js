@@ -7,13 +7,13 @@ export default class StoreComponents {
 		this.lib = new Map();
 	} */
 
-	register = (Composant) => {
+	register(Composant) {
 		if (this.lib.has(Composant.nature))
 			throw new Error(`"${Composant.nature}" est déja déclaré`);
 		else this.lib.set(Composant.nature, Composant);
-	};
+	}
 
-	create = (perso, ...args) => {
+	create(perso, ...args) {
 		const { id, nature } = perso;
 		if (!nature) throw new Error(`"${id}" n'a pas de composant déclaré`);
 		if (!this.lib.has(nature))
@@ -21,7 +21,7 @@ export default class StoreComponents {
 
 		const Composant = this.lib.get(nature);
 		return new Composant(perso, ...args);
-	};
+	}
 
 	raz = () => this.lib.clear();
 }

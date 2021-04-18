@@ -12,9 +12,9 @@ import { doClasses } from './components/classNames-component';
 const { css, ...style } = doStyle;
 
 // TODO attr
-export function createEso(emitter, options) {
+export function createEso(emitter, opts) {
 	class Eso {
-		static transition = createTransition(emitter, options);
+		static transition = createTransition(emitter, opts);
 		static registerKeyEvents = createRegisterKeyEvents(emitter);
 		id;
 		uuid;
