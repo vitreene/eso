@@ -1,16 +1,18 @@
-//FIX incomplet
-
 export class SlotContent {
 	static type = 'slot';
-	content = null;
-	collection = null;
+	slot = null;
+	constructor(slotFn) {
+		this.slot = slotFn;
+	}
 
-	constructor(slots) {
-		this.collection = slots;
-		this.update = this.update.bind(this);
-		// this.prerender = this.prerender.bind(this);
-	}
-	update(id) {
-		return this.slots(id);
-	}
+	content = {
+		update(el) {
+			console.log('update slot');
+			return el;
+		},
+		prerender(el) {
+			console.log('prerender slot');
+			return el;
+		},
+	};
 }

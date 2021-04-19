@@ -5,9 +5,9 @@ import { createTransition } from './transitions';
 import { createPerso, commit } from './create-perso';
 import { createRegisterKeyEvents } from './shared/register-keyEvents';
 
-import { doStyle } from './components/style-component';
-import { content } from './components/content-component';
-import { doClasses } from './components/classNames-component';
+import { doStyle } from './addons/style-component';
+// import { content } from './addons/content-component';
+import { doClasses } from './addons/classNames-component';
 
 const { css, ...style } = doStyle;
 
@@ -48,7 +48,8 @@ export function createEso(emitter, opts) {
 				className: doClasses,
 				classStyle: style,
 				between: style,
-				content: content(options),
+				// content: content(options),
+				content: null,
 				style,
 			};
 
@@ -111,10 +112,9 @@ export function createEso(emitter, opts) {
 
 			for (const revise in this.revision) {
 				if (!isVoid(props[revise])) {
-					const diff = this.revision[revise].update(
-						props[revise],
-						this.history[revise]
-					);
+					const diff =
+						this.revision[revise] &&
+						this.revision[revise].update(props[revise], this.history[revise]);
 					state.props.set(revise, diff);
 				}
 			}
@@ -172,6 +172,7 @@ export function createEso(emitter, opts) {
 				...other
 			} = this.history;
 
+			// console.log('-->', this.id);
 			const content = this.revision.content.prerender
 				? this.revision.content.prerender(contentToRender, this.current.content)
 				: contentToRender;

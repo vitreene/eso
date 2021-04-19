@@ -36,6 +36,8 @@ export const content = (options) => ({
 
 	// mettre tinyEffects en cache
 	prerender(content, current) {
+		const c = typeof content === 'function' ? content() : content;
+		console.log(c, 'ANCIEN prerender');
 		if (isRawContent(content)) return content;
 		if (content == this.content) return current;
 		this.content = content;

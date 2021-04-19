@@ -88,3 +88,26 @@ Scene constuctor :
 
 les déclarations de persos se font sur des classes composées ;
 intégrer preInit aux classes
+
+Apparait deux questions
+
+- complexité
+- destination
+
+un Bloc peut recevoir du texte sous forme de textContent ou de innerHtml.
+entre les deux,il pourrait recevoir du rich text
+comment signaler
+
+- la nature du texte
+  - dans la description du composant,
+  - dans la clé de texte,
+- Content doit-il gérer tous les type de contenus texte et html dans un seul composant ; dans ce cas, à quoi bon spécialiser image et slot ?
+
+pour garder la construction des composants simples, l'injection d'Eso et de Content est faite au préalable. Est-ce une bonne chose ?
+La construction du composant est éclatée, rendant sa lisibilité et ses corrections difficiles
+Ilfaut aussi intégrer PrepInit qui permet de conformer initial au composant. PrepInit doit avoir acces aux collections, sans pour autant faire partie d'Eso...
+
+Basculer register perso, Pre, Composants vers Veso :
+tout c qui à besoin de Sinuous passe chez Veso.
+Ultérieurement, pourquoi ne pas passer à Solid ?
+Il y a trop d'aller-retour Player/Veso pour le moment.

@@ -1,9 +1,8 @@
 import { svg, api } from 'sinuous';
 import { computed } from 'sinuous/observable';
-import { DEFAULT_FIT } from '../data/constantes';
 
 // HACK en attendant une mise à jour
-import { property } from '../../../Veso/src/shared/property';
+import { property } from '../shared/property';
 api.property = property;
 
 // cache l'implémentation
@@ -15,26 +14,10 @@ const constrainImage = {
 	undefined: 'slice',
 };
 
-const contentImg = (collection) => {
-	return {
-		update(content, current) {
-			const { src, fit } =
-				typeof content === 'string'
-					? { src: content, fit: content.fit || current?.fit || DEFAULT_FIT }
-					: content;
-			const img = collection.has(src) && collection.get(src);
-			return { img, fit };
-		},
-	};
-};
 export const img = (Eso) =>
 	class Img extends Eso {
 		static nature = 'img';
-		constructor(story, collection) {
-			super(story, { init: false });
-			this.revision.content = contentImg(collection);
-			this.init();
-		}
+		static contentType = 'image';
 
 		render(props) {
 			const { id, content, ...attrs } = props;

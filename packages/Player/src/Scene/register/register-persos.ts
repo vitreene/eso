@@ -1,7 +1,7 @@
-import { Slots } from '../store-slots';
 import { doDimensions } from '../pre/dimensions';
 
 import { Property } from 'csstype';
+import { Slots } from '../store-slots';
 import { Message } from '../../../../types/message';
 import { ScenePersos } from '../../../../types/Entries-types';
 import { ImagesCollection, Perso } from '../../../../types/initial';
@@ -27,24 +27,26 @@ export function registerPersos(
 			case 'button':
 			case 'bloc':
 				{
-					const { messages } = options;
 					const perso = preInit(_perso);
-					persos.set(perso.id, createPerso.create(perso, { messages }));
+					persos.set(perso.id, createPerso.create(perso));
 				}
 				break;
 			case 'list':
+				const perso = preInit(_perso);
+				persos.set(perso.id, createPerso.create(perso));
+				break;
 			case 'layer':
 				{
-					const { slot } = options;
 					const perso = preInit(_perso);
+					const { slot } = options;
 					persos.set(perso.id, createPerso.create(perso, slot));
+					// persos.set(perso.id, createPerso.create(perso));
 				}
 				break;
 			case 'img':
 				{
-					const { imagesCollection } = options;
 					const perso = preInit(_perso);
-					persos.set(perso.id, createPerso.create(perso, imagesCollection));
+					persos.set(perso.id, createPerso.create(perso));
 				}
 
 				break;

@@ -57,11 +57,12 @@ export class OnScene {
 		this._addToScene = this._addToScene.bind(this);
 		this._moveToSlot = this._moveToSlot.bind(this);
 		this._leaveScene = this._leaveScene.bind(this);
-		this.add_slots = this.add_slots.bind(this);
+		this.addSlots = this.addSlots.bind(this);
 
-		this._slots = new Map(Array.from(_storeSlots.keys(), (id) => [id, []]));
+		this._slots = new Map();
+		// this._slots = new Map(Array.from(_storeSlots.keys(), (id) => [id, []]));
 		// en fin de scene
-		this.clear = _storeSlots.subscribe(this.add_slots);
+		// this.clear = _storeSlots.subscribe(this.add_slots);
 		console.log('this.areOnScene', this.areOnScene);
 	}
 	/* 
@@ -72,7 +73,7 @@ export class OnScene {
   - quels sont les cas ou c'est utile ?
  */
 
-	add_slots(id) {
+	addSlots(id) {
 		this._slots.set(id, []);
 	}
 	update(up) {
