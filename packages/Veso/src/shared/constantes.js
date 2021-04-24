@@ -27,6 +27,9 @@ export const DEFAULT_TRANSITION_OUT = 'fadeOut';
 
 export const DEFAULT_DURATION = 500;
 
+export const DEFAULT_FIT = 'cover';
+export const MISSING = 'missing';
+
 export const SCENE_STAGE = {
 	'16/9': {
 		w: 1600,

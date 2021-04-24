@@ -24,16 +24,22 @@ export class StoreComponents {
 					}
 				};
 				this.lib.set(Composant.nature, C);
-			} else if (Composant.contentType === 'slot') {
-				const slotContent = Content.lib.get(Composant.contentType);
+			} else if (
+				Composant.contentType === 'slot' ||
+				Composant.contentType === 'layer'
+			) {
+				const content = Content.lib.get(Composant.contentType);
+
 				const C = class extends Composant {
 					constructor(perso) {
-						perso.initial.content = slotContent.slot(perso.id);
+						Composant.contentType === 'slot' &&
+							(perso.initial.content = content.slot(perso.id));
 						super(perso, { init: false });
-						this.revision.content = slotContent.content;
+						this.revision.content = content.content;
 						this.init();
 					}
 				};
+
 				this.lib.set(Composant.nature, C);
 			} else this.lib.set(Composant.nature, Composant);
 		}
@@ -47,7 +53,7 @@ export class StoreComponents {
 
 		const Composant = this.lib.get(nature);
 		const C = new Composant(perso, ...args);
-		console.log('Composant', C);
+		// console.log('Composant', C);
 		return C;
 	}
 

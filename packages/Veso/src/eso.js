@@ -1,21 +1,18 @@
 import { nanoid } from 'nanoid';
 
 import { isVoid } from './shared/utils';
-import { createTransition } from './transitions';
 import { createPerso, commit } from './create-perso';
 import { createRegisterKeyEvents } from './shared/register-keyEvents';
 
 import { doStyle } from './addons/style-component';
-// import { content } from './addons/content-component';
 import { doClasses } from './addons/classNames-component';
 
 const { css, ...style } = doStyle;
 
 // TODO attr
-export function createEso(emitter, opts) {
-	class Eso {
-		static transition = createTransition(emitter, opts);
-		static registerKeyEvents = createRegisterKeyEvents(emitter);
+export function createEso(emitter) {
+	const registerKeyEvents = createRegisterKeyEvents(emitter);
+	return class Eso {
 		id;
 		uuid;
 		tag;
@@ -48,7 +45,6 @@ export function createEso(emitter, opts) {
 				className: doClasses,
 				classStyle: style,
 				between: style,
-				// content: content(options),
 				content: null,
 				style,
 			};
@@ -57,7 +53,7 @@ export function createEso(emitter, opts) {
 			this.commit = commit.bind(this);
 
 			// TODO ajouter des events liés à l'app (ex: langues)
-			const events = Eso.registerKeyEvents(perso.emit);
+			const events = registerKeyEvents(perso.emit);
 			this.propsInit = { id, ...initial, ...events };
 			init && this.init();
 		}
@@ -197,7 +193,5 @@ export function createEso(emitter, opts) {
 			};
 			box && this.commit(this.current);
 		}
-	}
-
-	return Eso;
+	};
 }

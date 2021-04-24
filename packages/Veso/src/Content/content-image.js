@@ -1,3 +1,4 @@
+import { DEFAULT_FIT } from '../shared/constantes';
 export class ImageContent {
 	static type = 'image';
 	content = null;

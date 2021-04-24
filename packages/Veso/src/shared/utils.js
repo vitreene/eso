@@ -17,15 +17,13 @@ export function throttle(callback, limit) {
 }
 
 export function debounce(func, wait, immediate) {
-	var timeout;
-	return function () {
-		var context = this,
-			args = arguments;
-		var later = function () {
+	let timeout;
+	return function (...args) {
+		const later = () => {
 			timeout = null;
 			if (!immediate) func.apply(context, args);
 		};
-		var callNow = immediate && !timeout;
+		const callNow = immediate && !timeout;
 		clearTimeout(timeout);
 		timeout = setTimeout(later, wait);
 		if (callNow) func.apply(context, args);
@@ -158,4 +156,17 @@ export function isVoid(x) {
 // true si null ou undefined ('' -> false)
 export function isNull(x) {
 	return x == null;
+}
+
+export function map(fn) {
+	if (typeof fn !== 'function') throw new Error('une fonction est demandée');
+	return function _map(arr) {
+		if (!Array.isArray(arr)) throw new Error('un tableau est demandé');
+		return arr.map(fn);
+	};
+}
+
+export function logs(obj, message = '') {
+	console.log('LOG %s', message, obj);
+	return obj;
 }

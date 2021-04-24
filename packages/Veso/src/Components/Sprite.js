@@ -1,4 +1,5 @@
 import { html } from 'sinuous';
+import { computed } from 'sinuous/observable';
 
 export const sprite = (Eso) =>
 	class Sprite extends Eso {
@@ -7,6 +8,7 @@ export const sprite = (Eso) =>
 
 		render(props) {
 			const { id, content, attr, ...others } = props;
-			return html`<img id=${id} src=${content} ...${others} ...${attr} />`;
+			const src = computed(() => content().img?.src);
+			return html`<img id=${id} src=${src} ...${others} ...${attr} />`;
 		}
 	};

@@ -1,12 +1,14 @@
 import { reslot } from './reslot';
 import { setTransitions } from './set-transitions';
+import { mergeDimensions } from '../shared/dimensions';
 import { doTransition } from './transitions-component';
 import { onLeaveTransitions } from './on-leave-transitions';
 
 import { pipe } from '../shared/utils';
+
 import { DEFAULT_TRANSITION_IN } from '../shared/constantes';
 
-export function createTransition(emitter, { mergeDimensions }) {
+export function createTransition(emitter) {
 	return function transitions(props) {
 		const { transition } = pipe(
 			setTransitions,

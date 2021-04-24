@@ -32,6 +32,7 @@ export class Chapter {
 	mediasCollection: Map<string, ImagesCollection> = new Map(); //
 
 	constructor(props: Project) {
+		this.loadMedias = this.loadMedias.bind(this);
 		this.init(props);
 	}
 
@@ -47,6 +48,13 @@ export class Chapter {
 
 		this.loadMedias(scenes[this.index]).then((response) => {
 			console.log('OK - medias loaded', response.loaded);
+			Promise.all(
+				scenes.filter((_, i) => i !== this.index).map(this.loadMedias)
+			).then((responses) => {
+				responses.forEach((r, i) =>
+					console.log('OK - other medias loaded', i, r.loaded)
+				);
+			});
 			response.loaded && this.start(this.index);
 		});
 	}

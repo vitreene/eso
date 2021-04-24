@@ -282,6 +282,38 @@
                   justify-self: self-end
               actions:
                 *Q1 : {move: *Q2}
+          
+          - *SPRITE :
+              id: sprite
+              initial:
+                content: ./ikono/Mystery-80.png
+                dimensions: { height: 300 }
+              listen:
+                - { event: *Q1, action: enter }
+                - { event: *Q2, action: step01 }
+                - { event: *Q3, action: exit }
+                - { channel: *DEFAULT_NS, event: move-sprite, action: idle }
+                - { event: leave-sprite, action: leave }
+              actions:
+                enter:
+                  move: *Q3
+                  transition: {
+                    from: { opacity: 0 }, 
+                    to: { opacity: 1, x: -100, y: 10 } ,
+                    duration: 1000
+                    }
+                step01:
+                  move: *Q2
+                  transition: { to: { x: 100, y: 50, rotate: 15 } }
+                exit:
+                  exit: true
+                  transition: { to: fadeOut }
+                leave: {leave: true}
+                idle: { }
+              emit:
+                mousedown:
+                  event: { channel: *STRAP, name: move }
+                  data: { id: sprite, event: move-sprite }
 
 
 - shared:

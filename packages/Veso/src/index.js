@@ -1,5 +1,12 @@
-import { createEso } from './eso';
+import { createTransition } from './transitions';
 import { initCreatePerso } from './Components';
 import { setClassNames } from './shared/classNames';
 import { controlAnimations } from './shared/control-animation';
-export { createEso, setClassNames, initCreatePerso, controlAnimations };
+import { registerPersos } from './register/register-persos';
+export {
+	setClassNames,
+	registerPersos,
+	initCreatePerso,
+	createTransition,
+	controlAnimations,
+};

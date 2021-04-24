@@ -7,11 +7,11 @@ export class SlotContent {
 
 	content = {
 		update(el) {
-			console.log('update slot');
+			// console.log('update slot');
 			return el;
 		},
 		prerender(el) {
-			console.log('prerender slot');
+			// console.log('prerender slot');
 			return el;
 		},
 	};

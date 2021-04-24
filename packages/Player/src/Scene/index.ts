@@ -1,22 +1,20 @@
 import { o } from 'sinuous';
 import { EventEmitter2 } from 'eventemitter2';
 
+// a passer vers Veso
 import { Slots } from './store-slots';
-import { createEso, initCreatePerso } from 'veso';
+import { initCreatePerso, registerPersos, createTransition } from 'veso';
 
 import { Stage } from '../zoom';
 import { OnScene } from './on-scene.js';
 import { updateComponent } from './update-component';
 
-import { registerPersos } from './register/register-persos';
 import { registerStraps } from './register/register-straps';
 import { registerActions } from './register/register-actions';
 
 import { TimeLiner } from './runtime/timeline';
 import { clock, Clock } from './runtime/clock';
 import { addEventList } from './runtime/add-event-list';
-import { mergeDimensions } from '../Scene/pre/dimensions';
-import { prepareTransitions } from './prepare-transitions';
 
 import { TC, MAIN, PAUSE, APP_ID, DEFAULT_NS } from '../data/constantes';
 
@@ -32,9 +30,10 @@ import { Message } from '../../../types/message';
 import { Eventime } from '../../../types/eventime';
 import { ImagesCollection } from '../../../types/initial';
 
-interface MediasProps {
+export interface MediasProps {
 	messages: Message;
 	mediasCollection: ImagesCollection;
+	slots?: Slots;
 }
 
 const onAny = (emitter) =>
@@ -63,7 +62,7 @@ export class Scene {
 		delimiter: '.',
 	});
 
-	Eso = createEso(this.emitter, { mergeDimensions });
+	transition = createTransition(this.emitter);
 	slots: Slots = new Slots(); //
 
 	cast: SceneCast = {};
@@ -106,17 +105,17 @@ export class Scene {
 		const entry = this.initOnMount(stories, scene.cast);
 		this.entryInDom(entry).then(this.start);
 
-		timer(this.emitter, 1200);
-		console.log(this.persos);
-
+		// timer(this.emitter, 1200);
+		// console.log(this.persos);
 		// onAny(this.emitter);
 	}
 
 	initStories(stories: Story[], entry: string, medias: MediasProps) {
 		this.timeLine.addStartEvent();
+		const { createPerso, contentTypes } = this.registerComponents(medias);
 		stories
 			.sort((s) => (s.id === entry ? -1 : 0))
-			.forEach(this.addStory(medias));
+			.forEach(this.addStory(createPerso, contentTypes));
 		this.timeLine.addEndEvent();
 	}
 
@@ -142,6 +141,9 @@ export class Scene {
 		this.onMount(entry, { root })();
 		// NOTE
 		this.slot(root);
+
+		console.log('DOM', this.persos.get(root));
+
 		this.onScene.areOnScene.set(root, root);
 		appContainer.innerHTML = '';
 		appContainer.appendChild(this.persos.get(root).node);
@@ -162,11 +164,11 @@ export class Scene {
 		return _clock.start();
 	}
 
-	addStory(medias: MediasProps) {
+	addStory(createPerso, contentTypes) {
 		return (story: Story) => {
 			const { eventimes, ...others } = story;
 			this._addEventsToTimeLine(eventimes);
-			this._register(others, medias);
+			this._register(others, createPerso, contentTypes);
 		};
 	}
 
@@ -174,25 +176,23 @@ export class Scene {
 		this.timeLine.addEventList(eventimes, { level: DEFAULT_NS });
 	}
 
-	private _register(story: StoryWoEventimes, medias: MediasProps) {
-		const { channel, persos } = story;
-		const _persos = persos.map(prepareTransitions);
-		const createPerso = this._registerContents(medias);
-		registerPersos(_persos, this.persos, createPerso, {
-			imagesCollection: medias.mediasCollection,
+	registerComponents({ messages, mediasCollection }: MediasProps) {
+		const contentTypes = {
 			slot: this.slot,
-		});
-
-		registerActions(channel, _persos, this._publish(story.id), this.emitter);
+			layer: this.slot,
+			text: messages,
+			image: mediasCollection,
+		};
+		const createPerso = initCreatePerso(this.emitter, contentTypes);
+		return { createPerso, contentTypes };
 	}
 
-	private _registerContents({ messages, mediasCollection }: MediasProps) {
-		const contentTypes = [
-			['slot', this.slot],
-			['text', messages],
-			['image', mediasCollection],
-		];
-		return initCreatePerso(this.Eso, contentTypes);
+	private _register(story: StoryWoEventimes, createPerso, contentTypes) {
+		const { channel, persos } = story;
+
+		const addedPersos = registerPersos(persos, createPerso, contentTypes);
+		this.persos = concatMaps(this.persos, addedPersos);
+		registerActions(channel, persos, this._publish(story.id), this.emitter);
 	}
 
 	private _setStoryCast({ id, stage, persos }: Story, { root }) {
@@ -241,7 +241,7 @@ export class Scene {
 				const up = this.onScene.update(update);
 
 				const zoom = this.cast[id].zoom.box;
-				updateComponent(perso, up, zoom, this._updateSlot, this.Eso.transition);
+				updateComponent(perso, up, zoom, this._updateSlot, this.transition);
 			};
 
 			return (other: any) => onSceneUpdateComponent({ ...data, ...other });
@@ -260,4 +260,16 @@ export class Scene {
 		!this.slots.has(uuid) && this.slots.set(uuid, o(null));
 		return this.slots.get(uuid);
 	}
+}
+
+function concatMaps<K, V>(
+	map: Map<K, V>,
+	...iterables: Array<Map<K, V>>
+): Map<K, V> {
+	for (const iterable of iterables) {
+		for (const item of iterable) {
+			map.set(...item);
+		}
+	}
+	return map;
 }

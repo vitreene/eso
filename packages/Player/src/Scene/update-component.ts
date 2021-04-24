@@ -1,4 +1,4 @@
-import { mergeDimensions } from './pre/dimensions';
+import { mergeDimensions } from '../../../Veso/src/shared/dimensions';
 
 import { MISSING } from '../data/constantes';
 
@@ -46,7 +46,7 @@ function updateMissingProps(perso) {
 }
 
 function enterMoveRescale(update) {
-	console.log(update);
+	// console.log(update);
 
 	if (update.move?.rescale) {
 		return {

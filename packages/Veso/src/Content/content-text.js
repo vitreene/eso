@@ -49,7 +49,7 @@ export class TextContent {
 	prerender(content, current) {
 		const c = typeof content === 'function' ? content() : content;
 
-		console.log(c, 'NEW PRERENDER');
+		// console.log(c, 'NEW PRERENDER');
 		if (isRawContent(content)) return content;
 		if (content == this.content) return current;
 		this.content = content;
