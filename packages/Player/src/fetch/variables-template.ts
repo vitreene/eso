@@ -20,6 +20,8 @@ export function parseVariables(template: unknown, data: unknown) {
 /* 
 créer une version qui traverse un objet à la recherche de variable, consigne les strings trouvées et leur chemin, pour les réappliquer dans une map
 */
+// "take my ${variable} et ma ${deux.ieme} test"
+const braceRegex = /\${(\d+|[a-z$_][a-z\d$_]*?(?:\.[a-z\d$_]*?)*?)}/gi;
 
 export const pipapo = (template: unknown, data: unknown) => {
 	if (typeof template !== 'string') {
@@ -32,8 +34,6 @@ export const pipapo = (template: unknown, data: unknown) => {
 			`Expected an \`object\` or \`Array\` in the second argument, got \`${typeof data}\``
 		);
 	}
-	// "take my ${variable} et ma ${deux.ieme} test"
-	const braceRegex = /\${(\d+|[a-z$_][a-z\d$_]*?(?:\.[a-z\d$_]*?)*?)}/gi;
 
 	const res = template.replace(braceRegex, (_, key) => {
 		let result = data;

@@ -6,7 +6,6 @@ import { Perso } from '../../../types/initial';
 export function resolveTemplateStory(scene: SceneCastEntry) {
 	return ({ persos, ...story }: Story): Story => {
 		const _persos = resolveTemplate({ scene, story })(persos);
-
 		const _story: Story = parseVariables(story, { scene, story });
 		return { ..._story, persos: _persos };
 	};

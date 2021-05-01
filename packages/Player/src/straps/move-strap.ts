@@ -60,6 +60,8 @@ export function moveStrap(emitter: EventEmitter2, cast: () => SceneCast) {
 			this.data = data;
 			this.below = null;
 
+			console.log(this.zoom);
+
 			// passe un nom plutot que la fonction complete ?
 			this.reactions = data?.reactions;
 			const cssprops = window.getComputedStyle(data.e.target as Element);
@@ -173,8 +175,6 @@ export function moveStrap(emitter: EventEmitter2, cast: () => SceneCast) {
 			document.addEventListener('pointermove', this.move);
 			document.addEventListener('pointerup', this.up);
 
-			const z = this.zoom;
-
 			// faut-il cibler la story à l'origine de l'appel ?
 			emitter.emit([DEFAULT_NS, event], {
 				style: {
@@ -197,12 +197,16 @@ export function moveStrap(emitter: EventEmitter2, cast: () => SceneCast) {
 }
 
 function findBoxInCast(id: string, cast: SceneCast) {
+	console.log(id, cast);
+
 	let result = defaultBox;
 	for (const story in cast) {
 		const found = cast[story].persos.has(id);
 		if (found) {
 			result = cast[story].zoom.box;
 			break;
+		} else {
+			console.warn(story, found);
 		}
 	}
 	return result;

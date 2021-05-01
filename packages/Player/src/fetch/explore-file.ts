@@ -18,7 +18,9 @@ import {
 } from './transform-scene';
 import { setCast } from './transform-cast';
 import { transformEventimes } from './transform-eventimes';
-import { resolveTemplateStory, resolveTemplate } from './transform-variables';
+import {
+	resolveTemplateStory /* , resolveTemplate  */,
+} from './transform-variables';
 
 import {
 	Cast,
@@ -66,7 +68,7 @@ function exploreMergeStories(inherit: Inherit) {
 		// expand scene.entry
 		const stories = pipe(
 			preStory,
-			map(explorePersos(inherit?.persos, scene)),
+			map(explorePersos(inherit?.persos /* , scene */)),
 			mergeStories(inherit.stories),
 			addEntryInStory(inherit.stories, scene.entry)
 		)(scene.stories);
@@ -86,7 +88,8 @@ function exploreAddonsStories(scene: SceneAllIds): Story[] {
 	return stories;
 }
 
-function explorePersos(inherit: Perso[], scene: SceneCastEntry = null) {
+// NOTE ne pas utiliser resolveTemplate ici, c'est trop tôt
+function explorePersos(inherit: Perso[] /* , scene: SceneCastEntry = null */) {
 	return function explorePersosInherit(story: Story) {
 		if (!story.persos) return story;
 		const channel: Channel = story.channel || null;
@@ -94,8 +97,8 @@ function explorePersos(inherit: Perso[], scene: SceneCastEntry = null) {
 			prePersos,
 			mergePersosInherit(inherit, story.ignore),
 			dispatchPersoProps(channel),
-			filterProtos,
-			resolveTemplate({ scene, story })
+			filterProtos
+			// resolveTemplate({ scene, story })
 		)(story.persos);
 		return { ...story, persos };
 	};

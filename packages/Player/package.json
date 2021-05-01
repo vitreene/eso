@@ -3,6 +3,8 @@
 	"main": "lib/index.js",
 	"version": "0.1.0",
 	"dependencies": {
+		"audio2d": "^1.0.1",
+		"musk-ox": "^5.0.2",
 		"shifty": "^2.15.2",
 		"veso": "^0.1.0"
 	},

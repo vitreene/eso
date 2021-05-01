@@ -57,11 +57,13 @@
                   font-family: Helvetica
                   border: 0px solid purple
                   padding: 20
-                content: du texte
+                  color: blue
+                content: un texte
               actions:
                 *Q1 : {move: *Q1, transition: {to: {color: purple} }}
                 *Q2 :
                   move: *Q2
+                  content: ou un titre
                   transition: 
                     to: 
                       background-color: green
@@ -71,7 +73,7 @@
                     duration: 2000
 
                 *Q3 : {move: *Q3, transition: {to: {color: cyan, scale: 2}}}
-                *Q4 : {move: *Q4, transition: {to: {background-color: orange}}}
+                *Q4 : {move: *Q4, transition: {to: {background-color: orangered}}}
 
 - scene:
     id: scene2
@@ -246,6 +248,9 @@
                   font-family: Helvetica
                   border: 0px solid purple
                   padding: 20
+              listen:
+                - { channel: *DEFAULT_NS, event: move-text, action: move-text }
+
               actions:
                 *Q1 : 
                   move: *Q1
@@ -272,7 +277,15 @@
                   move: *Q4
                   transition: {to: {background-color: orange},duration: 1000}
                   content: { text:  A bientot pour un prochain essai, effect: letters-top-down }
-           
+
+                move-text: {font-weight: 48px }
+              emit:
+                mousedown:
+                  event: { channel: *STRAP, name: move }
+                  data: { id: '${perso.id}', event: move-text }
+                  
+                  
+
           - *BUTTON :
               id: tPlay
               extends: togglePlay
@@ -313,7 +326,7 @@
               emit:
                 mousedown:
                   event: { channel: *STRAP, name: move }
-                  data: { id: sprite, event: move-sprite }
+                  data: { id: '${perso.id}', event: move-sprite }
 
 
 - shared:
@@ -361,7 +374,7 @@
           emit: 
             click: 
               event: { channel: *STRAP, name: *TOGGLE }
-              data: { id: telco,  event: {channel: *TC, name: [pause, play]} }
+              data: { id: telco,  event: {channel: *TC, name: [play,pause]}, message: 'tototo' }
 
     stories:
       - id: scene-background

@@ -17,10 +17,8 @@ export default function toggleStrap(emitter) {
 				index: 0,
 			};
 		}
-
 		toggles[id].index = (toggles[id].index + 1) % toggles[id].name.length;
 		toggles[id].value = toggles[id].name[toggles[id].index];
-
 		toggles[id].channel.forEach(emit(toggles[id].value, others));
 	};
 }

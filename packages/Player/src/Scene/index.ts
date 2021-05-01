@@ -1,13 +1,10 @@
 import { o } from 'sinuous';
 import { EventEmitter2 } from 'eventemitter2';
-
-// a passer vers Veso
-import { Slots } from './store-slots';
-import { initCreatePerso, registerPersos, createTransition } from 'veso';
+import { initVeso } from 'veso';
 
 import { Stage } from '../zoom';
+import { Slots } from './store-slots';
 import { OnScene } from './on-scene.js';
-import { updateComponent } from './update-component';
 
 import { registerStraps } from './register/register-straps';
 import { registerActions } from './register/register-actions';
@@ -62,15 +59,13 @@ export class Scene {
 		delimiter: '.',
 	});
 
-	transition = createTransition(this.emitter);
-	slots: Slots = new Slots(); //
-
 	cast: SceneCast = {};
+	slots: Slots = new Slots(); //
 	persos: ScenePersos = new Map(); //
 	straps: any;
 	clock: Clock;
-	timeLine: TimeLiner = new TimeLiner();
 	onScene: OnScene = new OnScene();
+	timeLine: TimeLiner = new TimeLiner();
 	// telco: () => {};
 	// onEnd: () => {};
 	// onStart: () => {};
@@ -88,7 +83,7 @@ export class Scene {
 		this.slot = this.slot.bind(this);
 		this.addStory = this.addStory.bind(this);
 		this._publish = this._publish.bind(this);
-		this._updateSlot = this._updateSlot.bind(this);
+		this.updateSlot = this.updateSlot.bind(this);
 		this.renderOnResize = this.renderOnResize.bind(this);
 
 		connectChapterEmitter(this.emitter);
@@ -112,10 +107,10 @@ export class Scene {
 
 	initStories(stories: Story[], entry: string, medias: MediasProps) {
 		this.timeLine.addStartEvent();
-		const { createPerso, contentTypes } = this.registerComponents(medias);
+		const registerPersos = this._registerComponents(medias);
 		stories
 			.sort((s) => (s.id === entry ? -1 : 0))
-			.forEach(this.addStory(createPerso, contentTypes));
+			.forEach(this.addStory(registerPersos));
 		this.timeLine.addEndEvent();
 	}
 
@@ -164,11 +159,21 @@ export class Scene {
 		return _clock.start();
 	}
 
-	addStory(createPerso, contentTypes) {
+	private _registerComponents({ messages, mediasCollection }: MediasProps) {
+		const contentTypes = {
+			slot: this.slot,
+			layer: this.slot,
+			text: messages,
+			image: mediasCollection,
+		};
+		return initVeso(this.emitter, contentTypes);
+	}
+
+	addStory(registerPersos) {
 		return (story: Story) => {
 			const { eventimes, ...others } = story;
 			this._addEventsToTimeLine(eventimes);
-			this._register(others, createPerso, contentTypes);
+			this._register(others, registerPersos);
 		};
 	}
 
@@ -176,23 +181,14 @@ export class Scene {
 		this.timeLine.addEventList(eventimes, { level: DEFAULT_NS });
 	}
 
-	registerComponents({ messages, mediasCollection }: MediasProps) {
-		const contentTypes = {
-			slot: this.slot,
-			layer: this.slot,
-			text: messages,
-			image: mediasCollection,
-		};
-		const createPerso = initCreatePerso(this.emitter, contentTypes);
-		return { createPerso, contentTypes };
-	}
-
-	private _register(story: StoryWoEventimes, createPerso, contentTypes) {
+	private _register(story: StoryWoEventimes, registerPersos) {
 		const { channel, persos } = story;
+		const { register, update } = registerPersos;
+		const publish = this._publish(story.id, update);
+		registerActions(channel, persos, publish, this.emitter);
 
-		const addedPersos = registerPersos(persos, createPerso, contentTypes);
+		const addedPersos = register(persos);
 		this.persos = concatMaps(this.persos, addedPersos);
-		registerActions(channel, persos, this._publish(story.id), this.emitter);
 	}
 
 	private _setStoryCast({ id, stage, persos }: Story, { root }) {
@@ -230,8 +226,8 @@ export class Scene {
 		this.onEndQueue.forEach((fn) => fn());
 	}
 
-	private _publish(id: string) {
-		function publish(data: any) {
+	private _publish(id: string, updateComponent) {
+		return function publish(data: any) {
 			const onSceneUpdateComponent = (update: any) => {
 				if (!this.persos.has(update.id)) {
 					console.warn('pas de perso ayant l’id %s', update.id);
@@ -239,20 +235,15 @@ export class Scene {
 				}
 				const perso = this.persos.get(update.id);
 				const up = this.onScene.update(update);
-
-				const zoom = this.cast[id].zoom.box;
-				updateComponent(perso, up, zoom, this._updateSlot, this.transition);
+				const zoomBox = this.cast[id].zoom.box;
+				updateComponent(perso, up, zoomBox, this.updateSlot);
 			};
-
 			return (other: any) => onSceneUpdateComponent({ ...data, ...other });
-		}
-
-		return publish.bind(this);
+		}.bind(this);
 	}
 
-	private _updateSlot(slotId: string, persosIds: string[]) {
+	updateSlot(slotId: string, persosIds: string[]) {
 		const content = persosIds.map((id: string) => this.persos.get(id).node);
-		// NOTE
 		this.slots.get(slotId)(content);
 	}
 

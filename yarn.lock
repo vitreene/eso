@@ -1079,6 +1079,13 @@
     "@babel/helper-plugin-utils" "^7.10.4"
     "@babel/plugin-transform-typescript" "^7.10.4"
 
+"@babel/runtime@^7.11.2", "@babel/runtime@^7.12.5":
+  version "7.13.17"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.13.17.tgz#8966d1fc9593bf848602f0662d6b4d0069e3a7ec"
+  integrity sha512-NCdgJEelPTSh+FEFylhnP1ylq848l1z9t9N0j1Lfbcw0+KXGjsTvUmkxy+voLLXB5SOKMbLLx4jxYliGrYQseA==
+  dependencies:
+    regenerator-runtime "^0.13.4"
+
 "@babel/runtime@^7.8.4":
   version "7.11.2"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.11.2.tgz#f549c13c754cc40b87644b9fa9f09a6a95fe0736"
@@ -3063,6 +3070,13 @@ atob@^2.1.2:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.2.tgz#6d9517eb9e030d2436666651e86bd9f6f13533c9"
   integrity sha512-Wm6ukoaOGJi/73p/cl2GvLjTI5JM1k/O14isD73YML8StrH/7/lRFgmg8nICZgD3bZZvjwCGxtMOD3wWNAu8cg==
+
+audio2d@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/audio2d/-/audio2d-1.0.1.tgz#4884d7cb92788fc74940919e1f26b729031ce687"
+  integrity sha512-X6yzVMukcy2W1VxIuIbXoPRwF15McrJc1yZRURs+9gT+wU0wadr2T31q2GukiL+I1Kn8yyvyGlkb7EGESm9pzw==
+  dependencies:
+    "@babel/runtime" "^7.12.5"
 
 autoprefixer@^9.6.1:
   version "9.8.6"
@@ -6383,6 +6397,13 @@ humanize-ms@^1.2.1:
   dependencies:
     ms "^2.0.0"
 
+hypergiant@^3.0.5:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/hypergiant/-/hypergiant-3.1.0.tgz#7ec3884afa67561e1911d02741873fcb811a6924"
+  integrity sha512-ddDjI/p+peymGseSuiWbyyiPhmCmuAyWzrZHefR2zBBE0BX2g/a0+De7zkS0qq5QUmpIAkQGXpoB71wKNinBvg==
+  dependencies:
+    "@babel/runtime" "^7.11.2"
+
 iconv-lite@0.4.24, iconv-lite@^0.4.24:
   version "0.4.24"
   resolved "https://registry.yarnpkg.com/iconv-lite/-/iconv-lite-0.4.24.tgz#2022b4b25fbddc21d2f524974a474aafe733908b"
@@ -8233,6 +8254,13 @@ multimatch@^3.0.0:
     array-union "^1.0.2"
     arrify "^1.0.1"
     minimatch "^3.0.4"
+
+musk-ox@^5.0.2:
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/musk-ox/-/musk-ox-5.0.2.tgz#1d073687fc572d16627fe89a82212022188bc413"
+  integrity sha512-x/tvUxSIg/lzPJdB4jud/DFNZbEZ4eINv/k/p8iz502GwPdk29erj6mnDDS7tU6vO97IxisRuhM8hrhS+5ntDA==
+  dependencies:
+    hypergiant "^3.0.5"
 
 mute-stream@0.0.7:
   version "0.0.7"
@@ -10707,13 +10735,6 @@ shifty@^2.15.2:
   version "2.15.2"
   resolved "https://registry.yarnpkg.com/shifty/-/shifty-2.15.2.tgz#be74f83b5494708ca5531c3725027a0b51d1dc3d"
   integrity sha512-uaDIdYXrOGncvPula4Pi2jl7kv46IwvZ10AYBSGsl/vrvclOXqzMWOAQCgDjNR7LVPgQki0CTtOMJOH9gnJgsg==
-
-shifty@^2.9.1:
-  version "2.13.0"
-  resolved "https://registry.yarnpkg.com/shifty/-/shifty-2.13.0.tgz#29163e817d29d4e8034ef5576f182ad3e07488d3"
-  integrity sha512-d0rfJoKknn9SxLCxU1Gm4jfoe6m5Z/NBLL1DHXQOb5fWWw7YQWx+FZVhDdNfhKHGFZmWHYZqYr47WhO1CKvwsg==
-  dependencies:
-    object-assign "^4.1.1"
 
 signal-exit@^3.0.0, signal-exit@^3.0.2:
   version "3.0.3"

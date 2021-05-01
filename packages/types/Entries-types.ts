@@ -122,5 +122,6 @@ export type ScenePersos = Map<string, Eso>;
 
 export interface Eso {
 	node: Element;
-	prerender: (box: Box) => void;
+	update: (props: any) => void;
+	prerender: (box: Box | number) => void;
 }

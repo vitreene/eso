@@ -19,32 +19,33 @@ interface CreatePerso {
 }
 
 export function registerPersos(
-	_persos: Perso[],
 	createPerso: CreatePerso,
 	contentTypes: ContentTypes
 ) {
-	const persos = prep(_persos, contentTypes);
-	const scenePersos: ScenePersos = new Map();
+	return function register(_persos: Perso[]): ScenePersos {
+		const persos = prep(_persos, contentTypes);
+		const scenePersos: ScenePersos = new Map();
 
-	(Array.isArray(persos) ? persos : [persos]).forEach((perso: Perso) => {
-		switch (perso.nature) {
-			case 'sound':
-				break;
-			case 'polygon':
-				break;
-			case 'button':
-			case 'bloc':
-			case 'list':
-			case 'img':
-			case 'sprite':
-			case 'layer':
-				scenePersos.set(perso.id, createPerso.create(perso));
-				break;
-			default:
-				break;
-		}
-	});
-	return scenePersos;
+		(Array.isArray(persos) ? persos : [persos]).forEach((perso: Perso) => {
+			switch (perso.nature) {
+				case 'sound':
+					break;
+				case 'polygon':
+					break;
+				case 'button':
+				case 'bloc':
+				case 'list':
+				case 'img':
+				case 'sprite':
+				case 'layer':
+					scenePersos.set(perso.id, createPerso.create(perso));
+					break;
+				default:
+					break;
+			}
+		});
+		return scenePersos;
+	};
 }
 
 function prep(persos, contentTypes) {

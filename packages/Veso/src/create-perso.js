@@ -6,7 +6,7 @@ export const storeNodes = new WeakMap();
 
 export function createPerso() {
 	// console.log('createPerso', this);
-	const attributes = { content: o('') };
+	const attributes = {};
 	for (const p in this.current) {
 		if (p[0] === 'o' && p[1] === 'n') attributes[p] = this.current[p];
 		else attributes[p] = o(this.current[p]);
@@ -27,8 +27,6 @@ export function commit(props) {
 
 		const hasNewContent = this.attributes.content() !== content;
 		if (hasNewContent) this.attributes.content(content);
-
-		// p === 'style' && console.log('current[%s]', p, current[p]);
 	}
 }
 
