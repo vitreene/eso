@@ -29,6 +29,8 @@ export function registerPersos(
 		(Array.isArray(persos) ? persos : [persos]).forEach((perso: Perso) => {
 			switch (perso.nature) {
 				case 'sound':
+					console.log('SOUND', perso);
+
 					break;
 				case 'polygon':
 					break;

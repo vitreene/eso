@@ -212,6 +212,9 @@
       - story01:
           startAt: go
           root: *CONTAINER_ESO 
+      - counter:
+          startAt: go
+          root: *CONTAINER_ESO 
 
     stories:
       - id: story01
@@ -283,8 +286,6 @@
                 mousedown:
                   event: { channel: *STRAP, name: move }
                   data: { id: '${perso.id}', event: move-text }
-                  
-                  
 
           - *BUTTON :
               id: tPlay
@@ -328,7 +329,52 @@
                   event: { channel: *STRAP, name: move }
                   data: { id: '${perso.id}', event: move-sprite }
 
+      - id: counter
+        eventimes:
+          0: 
+            name: start
+            events:
+              1000 : e01
+              2000 : e02
+              3000 : e03
+              4000 : e04
+              5000 : e05
+              6000 : e06
+              7000 : e07
+              8000 : e08
+              9000 : e09
+              10000 : e10
+              11000 : e11
+        persos:
+          - sound:
+              id: count
+              initial: 
+                  content: ./sounds/microphone-countdown-341.mp3
+              actions:
+                e01: {play: true}
 
+          - *BLOC :
+              id: compteur
+              extends: proto_bloc
+              initial:
+                classStyle: 
+                  # position: relative
+                  padding: 10
+                  font-size: 80
+                  color: white
+                  backgroundColor: grey
+              actions:
+                e01: {move: *Q3 , content: 10, style: {x: 200, y: -100}}
+                e02: {content: 9}
+                e03: {content: 8}
+                e04: {content: 7}
+                e05: {content: 6}
+                e06: {content: 5}
+                e07: {content: 4}
+                e08: {content: 3}
+                e09: {content: 2}
+                e10: {content: 1}
+                e11: {content: 0}
 - shared:
     persos:
       - *PROTO :

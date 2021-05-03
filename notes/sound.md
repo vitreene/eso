@@ -13,47 +13,31 @@ Faire en sorte qu'un event qui à lieu par exemple 4s après le départ d'un son
   ce traitement pourrait se faire dans un requestAnimationFrame
   -> rAF est appelé 60f/s , la granularité des events est de 10f/s
 
-# Timeline
+## Comment intégrer Sounds ?
 
-au lancement de la scene, consigner les états-clés de chaque perso:
-etat-clé : tous les parametres actifs du perso
+- sera-t- il un modele pour video ?
 
-- les styles et classes
-- l'état des transitions
+pour traiter simplement les evenements sound doit etre présenté comme un Perso avec l'interface Eso {node, update, prerender}
+sauf que seul update peut etre utile.
+Avoir un perso pour le son permet de simplifier la gestion des update events, mais complique le reste ; il vaudrait mieux avoir un traitement séparé pour le moment, à voir plus tard si l'on peut se rapprocher du cas général.
+Video va procéder de sound et de Composant avec les deux interfaces à gérer
 
-une état-clé est créé :
+hypothese : ajouter une interface play à Eso ?
 
-- en début de chaque action,
-- à la fin d'une transition.
-  un flag détermine si une transition suit cet état.
-  chaque état est lié à un chronometre.
+- permettra de piloter l'état du jeu du Perso quand je passerai le controle des animations par le système général ?
+- Pour la timeLine -> seek, il faudra aussi proposer un rendu direct de l'état, sans les calculs d'incrementation de l'état du Perso
+  A quel niveau prendre la décision de partir sur update ou une autre entrée ?
 
-si le pointeur s'arrete entre deux états :
+que contiendrait l'interface play
 
-- il regarde le précédent;
-- il utilise cet état
-- si l'état comporte une transition,
-  - calculer la progression
-- appliquer la progression
+- la facade animation :
+  - play
+  - pause
+  - seek
+  - cancel ? : termine l'animation ?
 
-lorsqu'un état-clé est créé, il se peut qu'une précédente transition ne soit pas terminée
+Mais Eso ne gere plus les animations, cela se passe au niveau d'updateComponent.
+-> donc c'est à ce niveau que cela doit se gérer
+-> Eso doit pouvoir accepter un paramètre "direct" comme pour les transitions, qui remplace l'état actuel du composant par celui qu'il reçoit.
 
-- intégrer la progression à l'état,
-- transformer le restant en une nouvelle transition.
-- si la transition comporte un repeat (Shifty n'enpropose pas de natif)
-  - scinder la transition en cours
-  - appliquer les suivantes, avec un délai d'exécution de la fin de transition
-- si la transition comporte un effet yoyo
-  - voir si l'on peut connaitre le sens de l'animation
-
-Il restera à envisager :
-
-- comment enregistrer les intéractions
-- certains états ne seraient pas consignés dans la timeline : par exemple, des stories activées par la pause. (ou alors dans une autre ligne de temps, mais je vois pas l'usage sinon débug)
-
-## Où ces états sont consignés ?
-
-les états clés sont reflétés dans les persos, donc, ils effacent d'abord l'état courant, pour ne pas activer les surcharges (comme pour les classes par exemple)
--> il faut un signal pour update, ou bien une méthode "direct"
-Eso ne gérant plus les transitions par lui-meme, il n'y a plus non plus de raisons d'y enregistrer les états-clés.
-Ceux-ci peuvent etre adjoints au Persos
+donc updateComponent recoit un état play/pause/seek signalé dans changed

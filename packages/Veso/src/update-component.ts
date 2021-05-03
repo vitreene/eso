@@ -4,12 +4,14 @@ import { Box, Eso } from '../../types/Entries-types';
 
 // // déclenche les updates ; appelé par chaque action
 export function updateComponent(transition) {
-	return function update(
+	return function _updateComponent(
 		perso: Eso,
 		{ changed, update, ...others },
 		box: Box,
 		updateSlot: (slotId: string, persosIds: string[]) => void
 	) {
+		console.log('UPDATE', update);
+
 		if (!update || Object.keys(update).length === 0) return;
 		if (typeof changed === 'string') {
 			console.error(changed, update, others);
@@ -22,6 +24,7 @@ export function updateComponent(transition) {
 			perso.prerender(box.zoom);
 			update = enterMoveRescale(update);
 		}
+
 		// RESLOT , RESCALE, TRANSITIONS,
 		transition({ perso, update, changed, box, updateSlot });
 

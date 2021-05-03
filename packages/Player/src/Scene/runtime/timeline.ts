@@ -66,7 +66,7 @@ type Options = {
 export class TimeLiner {
 	public eventDatas: EventDatas = {};
 	public timeLine: TimeLine[] = [];
-
+	public times: number[];
 	private solved: MapEvents = {};
 	private remains: Eventime[] = [];
 	private held = false;
@@ -79,7 +79,7 @@ export class TimeLiner {
 		const mapEvents = this._mapEvents(evenTimes, options);
 		const timeLine = this._mapTimeEvents(mapEvents, options);
 		this._addToTimeLines(timeLine, options);
-
+		this._setEventTime();
 		// console.log('timeLine)', timeLine);
 		// console.log('mapEvents', mapEvents);
 		// console.log('this.timeLine', this.timeLine);
@@ -129,6 +129,16 @@ export class TimeLiner {
 		this.addEventList(endEventTime, options);
 
 		return { event, lastTime };
+	}
+
+	private _setEventTime() {
+		const times = new Set<number>();
+		this.timeLine.forEach((level) => {
+			for (const t in level.timeLine) {
+				for (const l in level.timeLine[t]) times.add(Number(l));
+			}
+		});
+		this.times = Array.from(times).sort((a: number, b: number) => a - b);
 	}
 
 	// ajouter aux autres timelines

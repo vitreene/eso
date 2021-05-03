@@ -1,7 +1,9 @@
+import { Audio2D } from 'audio2d';
+import MuskOx from 'musk-ox';
+
 import { TimeLiner, TimelineKey } from './timeline';
 
 import { controlAnimations } from 'veso';
-// import { emitter } from '../../App/init';
 
 import { TC, PLAY, PAUSE, REWIND } from '../../data/constantes';
 import { EventEmitter2 } from 'eventemitter2';
@@ -12,21 +14,14 @@ export type Clock = {
 	chrono(): number;
 };
 
+// init au niveau du projet
+const AC = new AudioContext();
+
 //////// CLOCK /////////////////////////
-// TODO use performance.now()
 export function clock(timeLiner: TimeLiner, emitter: EventEmitter2): Clock {
-	const beat = 10; // tout les 1/100e de seconde
-	const startTime: number = Date.now();
-	const maxCount: number = 100000 + 1;
-
-	let tick: number = beat;
-	let count = 0;
-	let elapsed = 0;
-	let secondes = 0;
-	let timeout: any;
-
 	let isPlaying = true;
 
+	/// a retirer d'ici
 	emitter.on([TC, PLAY], () => {
 		isPlaying = true;
 		controlAnimations.play();
@@ -35,16 +30,21 @@ export function clock(timeLiner: TimeLiner, emitter: EventEmitter2): Clock {
 		isPlaying = false;
 		controlAnimations.pause();
 	});
-	emitter.on([TC, REWIND], () => {
-		count = 0;
-		secondes = 0;
-		controlAnimations.reset();
-		clearTimeout(timeout);
-		loop();
-	});
+	// emitter.on([TC, REWIND], () => {
+	// 	count = 0;
+	// 	secondes = 0;
+	// 	controlAnimations.reset();
+	// 	clearTimeout(timeout);
+	// 	loop();
+	// });
+	////
 
-	// emitter.emit('*.init', { chrono: 0 });
+	let count = 0;
+	let elapsed = 0;
+	let raf: number;
+	const maxTime = 20_000;
 
+	const times = timeLiner.times;
 	const timeLine = timeLiner.timeLine;
 	const eventDatas = timeLiner.eventDatas;
 
@@ -53,7 +53,7 @@ export function clock(timeLiner: TimeLiner, emitter: EventEmitter2): Clock {
 	) => {
 		if (tm[channel][count]) {
 			const _emitEvent = (name: string) => {
-				const data: any = ((eventDatas[channel] || {})[count] || {})[name];
+				const data: any = eventDatas[channel]?.[count]?.[name];
 				console.log('|-->', channel, name, data ? data : '');
 				emitter.emit([channel, name], { ...data, chrono: count });
 			};
@@ -61,38 +61,70 @@ export function clock(timeLiner: TimeLiner, emitter: EventEmitter2): Clock {
 		}
 	};
 
-	function loop(): void {
-		if (isPlaying) {
-			// tout les dixièmes de seconde
-			if (count % 100 === 0) {
-				const emitEventCount = emitEvent(count);
-				for (const timeEvent of timeLine) {
-					const emitEventCountTimeLine = emitEventCount(timeEvent.timeLine);
-					Object.keys(timeEvent.timeLine).forEach(emitEventCountTimeLine);
+	function setLoop(_start: number) {
+		const start = AC.currentTime - _start;
+		function loop() {
+			if (isPlaying) {
+				const currentTime = Math.round((AC.currentTime - start) * 10) * 100;
+
+				if (currentTime !== count) {
+					count = currentTime;
+					setTimeout(() => {
+						while (times.length && times[0] <= count) {
+							const emitEventCount = emitEvent(times[0]);
+							for (const timeEvent of timeLine) {
+								const emitEventCountTimeLine = emitEventCount(
+									timeEvent.timeLine
+								);
+								Object.keys(timeEvent.timeLine).forEach(emitEventCountTimeLine);
+							}
+							times.shift();
+						}
+
+						if (count >= maxTime || !times.length)
+							return cancelAnimationFrame(raf);
+					});
 				}
-
-				secondes = count / 1000;
 			}
-			count % 1000 === 0 && emitter.emit('secondes', secondes);
-			count = count + beat;
+
+			const _elapsed = Math.round((AC.currentTime - start) * 10) * 100;
+			if (_elapsed !== elapsed) {
+				elapsed = _elapsed;
+				elapsed % 100 === 0 && emitter.emit('secondes', elapsed / 100);
+				emitter.emit('elapsed', elapsed);
+			}
+			raf = requestAnimationFrame(loop);
 		}
-		emitter.emit('elapsed', elapsed);
-		elapsed = elapsed + beat;
-		tick = startTime + count - Date.now();
-		count < maxCount && (timeout = setTimeout(loop, tick));
+		loop();
 	}
-
-	//  séparer le lancement de la boucle de emit init;
-	// setTimeout(loop, 0);
-
 	return {
 		start() {
 			console.log('timeLine', timeLine[0].timeLine);
 			console.log('eventDatas', eventDatas);
-			loop.bind(this)();
+			initSound(setLoop);
 		},
 		chrono() {
 			return Math.round(count / 100) * 100 + 100;
 		},
 	}; // next tick
+}
+
+let sound;
+function initSound(callback) {
+	const a2d = new Audio2D();
+	const muskox = new MuskOx();
+
+	sound && sound.stop();
+	a2d.removeAllAudio();
+	const loaded = () => {
+		const levelUpBuffer = muskox.fetch.audioBuffer('my-sound');
+		sound = a2d.addAudio('my-sound', levelUpBuffer);
+		console.log('LOADED');
+		sound.play();
+		callback(sound.currentTime);
+	};
+	muskox.onComplete.add(loaded);
+	muskox.audioBuffer('my-sound', './sounds/microphone-countdown-341.mp3');
+	muskox.start();
+	return sound;
 }
