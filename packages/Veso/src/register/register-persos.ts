@@ -56,8 +56,8 @@ function prep(persos, contentTypes) {
 	);
 }
 
-function resolveInitialProperties(contentTypes: ContentTypes) {
-	return function pre(perso: Perso) {
+function resolveInitialProperties(contentTypes: Pick<ContentTypes, 'image'>) {
+	return function pre(perso: Pick<Perso, 'nature' | 'initial'>) {
 		switch (perso.nature) {
 			case 'sprite':
 				const imagesCollection = contentTypes.image;
@@ -68,7 +68,10 @@ function resolveInitialProperties(contentTypes: ContentTypes) {
 	};
 }
 
-function preInitSprite(perso: Perso, imagesCollection: ImagesCollection) {
+function preInitSprite(
+	perso: Pick<Perso, 'initial'>,
+	imagesCollection: ImagesCollection
+) {
 	console.log(perso, imagesCollection);
 
 	const original = imagesCollection.get(perso.initial.content as string);
@@ -82,7 +85,8 @@ function preInitSprite(perso: Perso, imagesCollection: ImagesCollection) {
 	return { ...perso, initial: { ...initial, classStyle: _classStyle } };
 }
 
-function preInit(_perso: Perso, additionnalStyles = {}) {
+function preInit(_perso: Pick<Perso, 'initial'>, additionnalStyles = {}) {
+	if (!_perso.initial) return _perso;
 	const { dimensions, classStyle, ...initial } = _perso.initial;
 	const dims = doDimensions(dimensions);
 	const _classStyle = {

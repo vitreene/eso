@@ -35,14 +35,14 @@ il faut :
 
 #### root
 
-Le point d'entrée est unique et distinct. Il dépend du parent.
+- [x] Le point d'entrée est unique et distinct. Il dépend du parent.
 
 #### zoom et cadre
 
 La story se joue dans un cadre virtuel, centré dans le slot où il est monté.
 
-Le zoom est calculé par rapport au parent, mais il n'est recalculé qu'en cas de resize global de la fenetre
-amélioration possible, un listener sur le parent ; attention à des boucles infinies si l'enfant modifie la taille du parent.
+- [x] Le zoom est calculé par rapport au parent, mais il n'est recalculé qu'en cas de resize global de la fenetre
+      amélioration possible, un listener sur le parent ; attention à des boucles infinies si l'enfant modifie la taille du parent.
 
 #### id's
 
@@ -134,6 +134,8 @@ Après chargement des images de la première scene, la scene est lancée, le res
 - tenter d'implementer un changement de langue à la volée
 
   > trop complexe, un changement dans l'ordre des events peut perturber l'animation en cours
+
+avec la timeline et les levels une animation peut se mattre à jour en changeant de langue
 
 - un canal audio doit etre ouvert à la première intéraction, et ne pas disparaitre au changement de page.
   Le strap Audio doit manager l'ajout et le retrait de canaux ainsi que l'activation des eventimes liés.
@@ -425,7 +427,7 @@ procédure :
 
 10. **compléter les transitions**
 
-- a. traiter dimensions en dehors de Eso, supprimer \_pre
+- [x] a. traiter dimensions en dehors de Eso, supprimer \_pre
 - b. accepter des durations distinctes par propriété -> tableau de transitions
 - c. tween : repeat, yoyo : faut-il les traiter au niveau du tween, ou bien au niveau des eventimes ?
 
@@ -434,7 +436,7 @@ procédure :
 a l'exception du composant img, tous les autres composants simples ont des caractéristiques communes, seul le contenu les distingue.
 Eso contient meme la gestion des attributs et des events applicables aux inputs.
 
-en ajoutant slot aux types de contenus, on peut gérer l'essentiel des besoins d'affichage.
+[x] en ajoutant slot aux types de contenus, on peut gérer l'essentiel des besoins d'affichage.
 
 - text : accepte une string ou un objet.
 
@@ -516,3 +518,32 @@ dans action / move : si move est un objet, la propriété story/layer ? sera uti
 
 story.entry pourrait accepter un tableau de tuples : [persoId : slotId]
 entry permet de placer les élements de cadre en tout premier, ils pourraient etre distribués plus finement
+
+todos 06/05/21
+
+- composant et saisie sound
+
+  - play/pause
+
+- play/pause comme action sur les persos
+- telco devant update composant
+- retrait control animations
+
+- timeline
+
+  - keyframes des persos
+    - actions
+    - transitions
+      - to
+      - repeat, yoyo
+
+- seek
+
+levels
+
+- pause
+- langues
+- sommaire
+- aide
+
+Edit

@@ -18,6 +18,10 @@ eventDatas collecte les données additionnelles à un event enregistré
 */
 
 /* 
+ TODO level: PLAY | PAUSE | EDIT | TEMP
+*/
+
+/* 
 this.timeLine :  { id, timeline}[]
 id: string
 timeline: { time: [name]} : number:string[]

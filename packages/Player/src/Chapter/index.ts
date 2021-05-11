@@ -8,11 +8,14 @@ import { MAIN, END_SCENE } from '../data/constantes';
 import { Message } from '../../../types/message';
 import { ImagesCollection } from '../../../types/initial';
 import { Scene as SceneProps, Story } from '../../../types/Entries-types';
+import { Audio2D } from 'audio2d';
+import { registerAudio, SceneSounds, SoundClips } from './register-audios';
 
 interface Project {
 	id?: string; // id du chapitre
 	path?: string; // ou bien le path du chapitre
 	scene?: string; // id de la scene, index 0 par défaut
+	audio?: Audio2D; // id de la scene, index 0 par défaut
 }
 
 const chapEmitter = new EventEmitter2({ maxListeners: 0, delimiter: '.' });
@@ -22,17 +25,26 @@ const chapEvents = {
 	'main,start': 'start',
 	'story01,go': 'start',
 };
+const connectChapterEmitter = (emitter: EventEmitter2) => {
+	// console.log('connectChapterEmitter', emitter.eventNames());
+	chapEmitter.listenTo((emitter as unknown) as GeneralEventEmitter, chapEvents);
+};
 
 export class Chapter {
 	times = 0;
 	index: number;
 	scene: Scene;
+	audio: Audio2D;
 	scenes: SceneProps[];
 	messages: Message;
+	audioCollection: Map<string, SoundClips> = new Map(); //
 	mediasCollection: Map<string, ImagesCollection> = new Map(); //
+	registerAudio: (scene: SceneProps) => Promise<SceneSounds>;
 
 	constructor(props: Project) {
 		this.loadMedias = this.loadMedias.bind(this);
+		this.audio = props.audio;
+		this.registerAudio = registerAudio(props.audio);
 		this.init(props);
 	}
 
@@ -46,8 +58,11 @@ export class Chapter {
 			? scenes.findIndex((scene) => scene.id === sceneId)
 			: 0;
 
+		await this.loadAudio(scenes);
+		// chager les medias de la scene courante, puis ensuite les autres
 		this.loadMedias(scenes[this.index]).then((response) => {
 			console.log('OK - medias loaded', response.loaded);
+
 			Promise.all(
 				scenes.filter((_, i) => i !== this.index).map(this.loadMedias)
 			).then((responses) => {
@@ -55,6 +70,7 @@ export class Chapter {
 					console.log('OK - other medias loaded', i, r.loaded)
 				);
 			});
+
 			response.loaded && this.start(this.index);
 		});
 	}
@@ -72,6 +88,19 @@ export class Chapter {
 		});
 	}
 
+	private async loadAudio(scenes: SceneProps[]) {
+		const { id, soundClips } = await this.registerAudio(scenes[this.index]);
+		this.audioCollection.set(id, soundClips);
+		Promise.all(
+			scenes.filter((_, i) => i !== this.index).map(this.registerAudio)
+		).then((collection) => {
+			collection.forEach(({ id, soundClips }) =>
+				this.audioCollection.set(id, soundClips)
+			);
+			return { loaded: true };
+		});
+	}
+
 	start(index: number) {
 		const scene = this.scenes[index];
 		console.log(index, scene);
@@ -84,13 +113,8 @@ export class Chapter {
 		this.scene = new Scene(scene, {
 			messages: this.messages,
 			mediasCollection: this.mediasCollection.get(scene.id),
-			connectChapterEmitter: (emitter: EventEmitter2) => {
-				// console.log('connectChapterEmitter', emitter.eventNames());
-				chapEmitter.listenTo(
-					(emitter as unknown) as GeneralEventEmitter,
-					chapEvents
-				);
-			},
+			audioCollection: this.audioCollection.get(scene.id),
+			connectChapterEmitter,
 		});
 	}
 

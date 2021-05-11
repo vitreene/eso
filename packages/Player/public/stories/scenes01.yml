@@ -348,10 +348,37 @@
         persos:
           - sound:
               id: count
-              initial: 
-                  content: ./sounds/microphone-countdown-341.mp3
+
+              src: ./sounds/microphone-countdown-341.mp3
+              play: start
+              complete: { channel: *MAIN , name: '${story.id}.complete' }
+
+              initial:
+                content: ./sounds/microphone-countdown-341.mp3
+              listen: 
+                - {start: play}
+                - {channel: *TC, event: pause, action: pause}
+                - {channel: *TC, event: play, action: play}
               actions:
-                e01: {play: true}
+                play: {play: true}
+                pause: {pause: true}
+              emit: 
+                complete : 
+                  event: { channel: *MAIN , name: '${story.id}.complete' }
+                
+          # - sound:
+          #     id: saudacao
+          #     initial:
+          #       content: ./sounds/01-saudacao.mp3
+          #     listen: 
+          #       - {e04: play}
+          #       - {e09: pause}
+          #       - {channel: *TC, event: pause, action: pause}
+          #       - {channel: *TC, event: play, action: play}
+          #     actions:
+          #       play: {play: true}
+          #       pause: {pause: true}
+                
 
           - *BLOC :
               id: compteur

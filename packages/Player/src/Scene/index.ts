@@ -26,12 +26,25 @@ import {
 import { Message } from '../../../types/message';
 import { Eventime } from '../../../types/eventime';
 import { ImagesCollection } from '../../../types/initial';
+import { SoundClips } from '../Chapter/register-audios';
 
-export interface MediasProps {
+// export interface MediasProps {
+// 	slots?: Slots;
+// 	messages: Message;
+// 	audioCollection?:SceneSounds['soundIds'];
+// 	mediasCollection: ImagesCollection;
+// }
+
+export interface SceneOptions {
 	messages: Message;
+	audioCollection?: SoundClips;
 	mediasCollection: ImagesCollection;
-	slots?: Slots;
+	connectChapterEmitter: (emitter: EventEmitter2) => void;
 }
+
+export type MediasProps = Omit<SceneOptions, 'connectChapterEmitter'> & {
+	slots?: Slots;
+};
 
 const onAny = (emitter) =>
 	emitter.onAny(function (event, value) {
@@ -61,6 +74,7 @@ export class Scene {
 
 	cast: SceneCast = {};
 	slots: Slots = new Slots(); //
+	audioCollection: SoundClips;
 	persos: ScenePersos = new Map(); //
 	straps: any;
 	clock: Clock;
@@ -73,11 +87,17 @@ export class Scene {
 
 	constructor(
 		{ stories, ...scene }: SceneType,
-		{ messages, mediasCollection, connectChapterEmitter }
+		{
+			messages,
+			mediasCollection,
+			audioCollection,
+			connectChapterEmitter,
+		}: SceneOptions
 	) {
 		this.id = scene.id;
 		this.name = scene.name;
 		this.description = scene.description;
+		this.audioCollection = audioCollection;
 
 		this.start = this.start.bind(this);
 		this.slot = this.slot.bind(this);
@@ -229,8 +249,11 @@ export class Scene {
 	private _publish(id: string, updateComponent) {
 		return function publish(data: any) {
 			const onSceneUpdateComponent = (update: any) => {
+				// console.log('onSceneUpdateComponent UPDATE', update);
+
 				if (!this.persos.has(update.id)) {
-					console.warn('pas de perso ayant l’id %s', update.id);
+					if (this.audioCollection.has(update.id)) this.updateAudio(update);
+					else console.warn('pas de perso ayant l’id %s', update.id);
 					return;
 				}
 				const perso = this.persos.get(update.id);
@@ -250,6 +273,16 @@ export class Scene {
 	slot(uuid: string) {
 		!this.slots.has(uuid) && this.slots.set(uuid, o(null));
 		return this.slots.get(uuid);
+	}
+
+	updateAudio(update) {
+		console.warn('j’ai trouve le son  %s', update.id, update);
+		const clip = this.audioCollection.get(update.id);
+		console.log(clip.name, clip.state, clip.currentTime);
+
+		update.play && (clip.state === 'STOPPED' ? clip.play() : clip.resume());
+		update.pause && clip.pause();
+		// debugger;
 	}
 }
 

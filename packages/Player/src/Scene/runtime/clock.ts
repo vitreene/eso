@@ -40,6 +40,8 @@ export function clock(timeLiner: TimeLiner, emitter: EventEmitter2): Clock {
 	////
 
 	let count = 0;
+	let pause = 0;
+
 	let elapsed = 0;
 	let raf: number;
 	const maxTime = 20_000;
@@ -64,27 +66,25 @@ export function clock(timeLiner: TimeLiner, emitter: EventEmitter2): Clock {
 	function setLoop(_start: number) {
 		const start = AC.currentTime - _start;
 		function loop() {
-			if (isPlaying) {
-				const currentTime = Math.round((AC.currentTime - start) * 10) * 100;
+			const time = Math.round((AC.currentTime - start) * 10) * 100;
+			pause = isPlaying ? pause : time - count;
+			const currentTime = time - pause;
 
-				if (currentTime !== count) {
-					count = currentTime;
-					setTimeout(() => {
-						while (times.length && times[0] <= count) {
-							const emitEventCount = emitEvent(times[0]);
-							for (const timeEvent of timeLine) {
-								const emitEventCountTimeLine = emitEventCount(
-									timeEvent.timeLine
-								);
-								Object.keys(timeEvent.timeLine).forEach(emitEventCountTimeLine);
-							}
-							times.shift();
+			if (currentTime !== count) {
+				count = currentTime;
+				setTimeout(() => {
+					while (times.length && times[0] <= count) {
+						const emitEventCount = emitEvent(times[0]);
+						for (const timeEvent of timeLine) {
+							const emitEventCountTimeLine = emitEventCount(timeEvent.timeLine);
+							Object.keys(timeEvent.timeLine).forEach(emitEventCountTimeLine);
 						}
+						times.shift();
+					}
 
-						if (count >= maxTime || !times.length)
-							return cancelAnimationFrame(raf);
-					});
-				}
+					if (count >= maxTime || !times.length)
+						return cancelAnimationFrame(raf);
+				});
 			}
 
 			const _elapsed = Math.round((AC.currentTime - start) * 10) * 100;
@@ -99,9 +99,11 @@ export function clock(timeLiner: TimeLiner, emitter: EventEmitter2): Clock {
 	}
 	return {
 		start() {
+			console.log('timeLineR', timeLiner);
 			console.log('timeLine', timeLine[0].timeLine);
 			console.log('eventDatas', eventDatas);
-			initSound(setLoop);
+			// initSound(setLoop);
+			setLoop(0);
 		},
 		chrono() {
 			return Math.round(count / 100) * 100 + 100;

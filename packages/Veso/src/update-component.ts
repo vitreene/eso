@@ -10,8 +10,6 @@ export function updateComponent(transition) {
 		box: Box,
 		updateSlot: (slotId: string, persosIds: string[]) => void
 	) {
-		console.log('UPDATE', update);
-
 		if (!update || Object.keys(update).length === 0) return;
 		if (typeof changed === 'string') {
 			console.error(changed, update, others);

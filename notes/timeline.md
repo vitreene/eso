@@ -42,3 +42,13 @@ les états clés sont reflétés dans les persos, donc, ils effacent d'abord l'�
 -> il faut un signal pour update, ou bien une méthode "direct"
 Eso ne gérant plus les transitions par lui-meme, il n'y a plus non plus de raisons d'y enregistrer les états-clés.
 Ceux-ci peuvent etre adjoints au Persos
+
+Lecture de la timeLine
+Après SEEK :
+
+- pouvoir lire un extrait de Scene,
+- pouvoir commencer à tel event ou time
+- lire à l'envers ?
+  Lire une scene à l'envers n'est pas forcément pertinent – le son à une direction – mais ca peut etre bien pour une story.
+  En principe, il suffirait d'inverser l'ordre des events en calculant totalTime - timeEvent. Cependant, c'est contradictoire avec l'effet de cumul automatique (dans les classes notemment ) construit dans Eso.
+  Les timeEvents donnent le point de départ d'une action, pas son aboutissement.
