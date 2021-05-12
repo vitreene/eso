@@ -9,13 +9,13 @@ import { Message } from '../../../types/message';
 import { ImagesCollection } from '../../../types/initial';
 import { Scene as SceneProps, Story } from '../../../types/Entries-types';
 import { Audio2D } from 'audio2d';
-import { registerAudio, SceneSounds, SoundClips } from './register-audios';
+import { registerAudio, AudioClips } from './register-audios';
 
 interface Project {
 	id?: string; // id du chapitre
 	path?: string; // ou bien le path du chapitre
 	scene?: string; // id de la scene, index 0 par défaut
-	audio?: Audio2D; // id de la scene, index 0 par défaut
+	audio?: AudioContext; // id de la scene, index 0 par défaut
 }
 
 const chapEmitter = new EventEmitter2({ maxListeners: 0, delimiter: '.' });
@@ -27,19 +27,21 @@ const chapEvents = {
 };
 const connectChapterEmitter = (emitter: EventEmitter2) => {
 	// console.log('connectChapterEmitter', emitter.eventNames());
-	chapEmitter.listenTo((emitter as unknown) as GeneralEventEmitter, chapEvents);
+	chapEmitter.listenTo(emitter as unknown as GeneralEventEmitter, chapEvents);
 };
 
 export class Chapter {
 	times = 0;
 	index: number;
 	scene: Scene;
-	audio: Audio2D;
+	audio: AudioContext;
 	scenes: SceneProps[];
 	messages: Message;
-	audioCollection: Map<string, SoundClips> = new Map(); //
+	audioCollection: Map<string, AudioClips> = new Map(); //
 	mediasCollection: Map<string, ImagesCollection> = new Map(); //
-	registerAudio: (scene: SceneProps) => Promise<SceneSounds>;
+	registerAudio: (
+		scene: SceneProps
+	) => Promise<{ id: string; audioClips: AudioClips }>;
 
 	constructor(props: Project) {
 		this.loadMedias = this.loadMedias.bind(this);
@@ -89,13 +91,13 @@ export class Chapter {
 	}
 
 	private async loadAudio(scenes: SceneProps[]) {
-		const { id, soundClips } = await this.registerAudio(scenes[this.index]);
-		this.audioCollection.set(id, soundClips);
+		const { id, audioClips } = await this.registerAudio(scenes[this.index]);
+		this.audioCollection.set(id, audioClips);
 		Promise.all(
 			scenes.filter((_, i) => i !== this.index).map(this.registerAudio)
 		).then((collection) => {
-			collection.forEach(({ id, soundClips }) =>
-				this.audioCollection.set(id, soundClips)
+			collection.forEach(({ id, audioClips }) =>
+				this.audioCollection.set(id, audioClips)
 			);
 			return { loaded: true };
 		});
@@ -115,6 +117,7 @@ export class Chapter {
 			mediasCollection: this.mediasCollection.get(scene.id),
 			audioCollection: this.audioCollection.get(scene.id),
 			connectChapterEmitter,
+			audio: this.audio,
 		});
 	}
 

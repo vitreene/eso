@@ -1,9 +1,11 @@
-import { Audio2D } from 'audio2d';
+// import { Audio2D } from 'audio2d';
 
 import { Chapter } from './Chapter';
 import './style.css';
 
-const audio = new Audio2D();
+// const audio = new Audio2D();
+const audio = new AudioContext();
+
 const path = '/stories/scenes01.yml';
 const Player = async (path) => new Chapter({ path, audio, scene: 'scene3' });
 

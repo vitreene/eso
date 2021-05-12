@@ -46,6 +46,7 @@ export interface Perso {
 	actions: EsoAction[];
 	emit?: EsoEmit;
 	extends?: string;
+	src?: string;
 }
 
 export type EsoEmit = {

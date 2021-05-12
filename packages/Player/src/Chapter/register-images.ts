@@ -35,7 +35,7 @@ interface ImgSrc {
 export async function loadImages(srcs: string[] | ImgSrc[], imagesCollection) {
 	return await Promise.all(
 		srcs.map(
-			(source) =>
+			(source: string | ImgSrc) =>
 				new Promise((resolve, reject) => {
 					const src = typeof source === 'string' ? source : source.src;
 					const ikono = new Image();

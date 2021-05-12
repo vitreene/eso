@@ -26,7 +26,7 @@ import {
 import { Message } from '../../../types/message';
 import { Eventime } from '../../../types/eventime';
 import { ImagesCollection } from '../../../types/initial';
-import { SoundClips } from '../Chapter/register-audios';
+import { AudioClips } from '../Chapter/register-audios';
 
 // export interface MediasProps {
 // 	slots?: Slots;
@@ -37,12 +37,16 @@ import { SoundClips } from '../Chapter/register-audios';
 
 export interface SceneOptions {
 	messages: Message;
-	audioCollection?: SoundClips;
+	audioCollection?: AudioClips;
 	mediasCollection: ImagesCollection;
 	connectChapterEmitter: (emitter: EventEmitter2) => void;
+	audio: AudioContext;
 }
 
-export type MediasProps = Omit<SceneOptions, 'connectChapterEmitter'> & {
+export type MediasProps = Omit<
+	SceneOptions,
+	'connectChapterEmitter' | 'audio'
+> & {
 	slots?: Slots;
 };
 
@@ -74,7 +78,8 @@ export class Scene {
 
 	cast: SceneCast = {};
 	slots: Slots = new Slots(); //
-	audioCollection: SoundClips;
+	audio: AudioContext;
+	audioCollection: AudioClips;
 	persos: ScenePersos = new Map(); //
 	straps: any;
 	clock: Clock;
@@ -92,9 +97,11 @@ export class Scene {
 			mediasCollection,
 			audioCollection,
 			connectChapterEmitter,
+			audio,
 		}: SceneOptions
 	) {
 		this.id = scene.id;
+		this.audio = audio;
 		this.name = scene.name;
 		this.description = scene.description;
 		this.audioCollection = audioCollection;
@@ -278,10 +285,11 @@ export class Scene {
 	updateAudio(update) {
 		console.warn('j’ai trouve le son  %s', update.id, update);
 		const clip = this.audioCollection.get(update.id);
-		console.log(clip.name, clip.state, clip.currentTime);
 
-		update.play && (clip.state === 'STOPPED' ? clip.play() : clip.resume());
-		update.pause && clip.pause();
+		console.log();
+
+		update.play && clip.mediaElement.play();
+		update.pause && clip.mediaElement.pause();
 		// debugger;
 	}
 }
