@@ -11,6 +11,8 @@ la fonction onScene gere le flux des objets.
     ces événements sont transmis à l'objet lui-meme
 */
 
+import { TELCO } from '../data/constantes';
+
 /**
     * Slots : collection des ids des slots: pour chaque slot, liste des persos
     * onScene: liste des persos visibles, dans leur slot
@@ -51,19 +53,16 @@ simplifier leave :
 
 export class OnScene {
 	areOnScene = new Map();
-	constructor(_storeSlots) {
-		console.log('_storeSlots', _storeSlots);
+	_slots = new Map();
+
+	constructor() {
 		this.update = this.update.bind(this);
+		this.addSlots = this.addSlots.bind(this);
+		this._enterScene = this._enterScene.bind(this);
 		this._addToScene = this._addToScene.bind(this);
 		this._moveToSlot = this._moveToSlot.bind(this);
 		this._leaveScene = this._leaveScene.bind(this);
-		this.addSlots = this.addSlots.bind(this);
-
-		this._slots = new Map();
-		// this._slots = new Map(Array.from(_storeSlots.keys(), (id) => [id, []]));
-		// en fin de scene
-		// this.clear = _storeSlots.subscribe(this.add_slots);
-		console.log('this.areOnScene', this.areOnScene);
+		this._exitScene = this._exitScene.bind(this);
 	}
 	/* 
   TODO un élément qui a quitté la scene ne peut revenir que par un autre "enter"
@@ -71,6 +70,8 @@ export class OnScene {
   - comment faire fonctionner ce procédé avec la timeline ?
   - y a il d'autres façons de faire ?
   - quels sont les cas ou c'est utile ?
+
+	ATTENTION play et pause peuvent activer un élément; c'est neutralisé pour TELCO, mais  cela peut etre utilisé autrement et provoquer l'apparition d'un élément ?
  */
 
 	addSlots(id) {
@@ -78,22 +79,39 @@ export class OnScene {
 	}
 	update(up) {
 		if (!up.id) return this._getError('id', up);
-		let action = (update) => ({ changed: { status: 'update' }, update });
+		if (up.channel === TELCO) return this._update(up);
+
+		let action = this._update;
 		if (this.areOnScene.has(up.id)) {
 			const isLeaving = up.leave;
 			const { move } = up;
 			const changeSlot = move /* && move.layer */ && move.slot;
 			changeSlot && (action = this._moveToSlot);
 			isLeaving && (action = this._leaveScene);
-		} else action = this._addToScene;
+		} else action = this._enterScene;
 		return action(up);
 	}
 
+	_update(update) {
+		return { changed: { status: 'update' }, update };
+	}
+
+	_enterScene(up) {
+		if (up.move) return this._addToScene(up);
+		if (up.sound) return this._soundToScene(up);
+		console.warn('_addToScene fail', up);
+		return { update: null };
+	}
+
+	_soundToScene(up) {
+		this.areOnScene.set(up.id, 'sound');
+		return {
+			changed: { status: 'enter' },
+			update: { ...up, enter: true },
+		};
+	}
+
 	_addToScene(up) {
-		if (!up.move) {
-			console.warn('_addToScene fail', up);
-			return { update: null };
-		}
 		const { move } = up;
 		const slotId = move.slot;
 		if (!slotId || !this._slots.has(slotId)) return this._getError('slot', up);
@@ -136,6 +154,18 @@ export class OnScene {
 	}
 
 	_leaveScene(up) {
+		if (up.sound) return this._exitSound(up);
+		return this._exitScene(up);
+	}
+
+	_exitSound(up) {
+		return {
+			changed: { status: 'leave' },
+			update: up,
+		};
+	}
+
+	_exitScene(up) {
 		const { id } = up;
 		const slotId = this.areOnScene.get(id);
 		if (!this._slots.has(slotId)) {
