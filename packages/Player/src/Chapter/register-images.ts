@@ -14,7 +14,6 @@ export async function registerImages(
 	const srcs: Srcs = findSrcs(
 		persos.filter((perso) => composantTypeImage.includes(perso.nature))
 	);
-	console.log('src', srcs);
 	await loadImages(srcs, imagesCollection);
 }
 

@@ -1,6 +1,11 @@
 import { Scene as SceneProps } from '../../../types/Entries-types';
 
-export type AudioClips = Map<string, MediaElementAudioSourceNode>;
+export type AudioClip = {
+	audio: MediaElementAudioSourceNode;
+	playing: boolean;
+};
+
+export type AudioClips = Map<string, AudioClip>;
 
 export function registerAudio(audioContext) {
 	return async function _registerAudio(
@@ -9,29 +14,29 @@ export function registerAudio(audioContext) {
 		const audioClips: AudioClips = new Map();
 
 		return new Promise((resolve, reject) => {
-			scene.stories.forEach(({ persos }) => {
-				const sounds = persos.filter((perso) => perso.nature === 'sound');
-				Promise.all(
-					sounds.map(async (perso) => {
-						const src = perso.src || (perso.initial?.content as string);
-						const audio = await getAudio(src, audioContext);
-						audio.mediaElement.play();
-						audioClips.set(perso.id, audio);
+			const sounds = scene.stories
+				.flatMap(({ persos }) => persos)
+				.filter((perso) => perso.nature === 'sound');
+			Promise.all(
+				sounds.map(async (perso) => {
+					const src = perso.src || (perso.initial?.content as string);
+					const audio = await loadAudio(src, audioContext);
+					audioClips.set(perso.id, { audio, playing: false });
+					console.log('audioClips', audioClips.get(perso.id));
 
-						return perso.id;
-					})
-				)
-					.then(() => resolve({ id: scene.id, audioClips }))
-					.catch((error) => {
-						console.log('l‘audio ne s‘est pas correctement chargé ', error);
-						return reject({ error, audioClips });
-					});
-			});
+					return perso.id;
+				})
+			)
+				.then(() => resolve({ id: scene.id, audioClips }))
+				.catch((error) => {
+					console.log('l‘audio ne s‘est pas correctement chargé ', error);
+					return reject({ error, audioClips });
+				});
 		});
 	};
 }
 
-async function getAudio(
+async function loadAudio(
 	filepath: string,
 	audioContext: AudioContext
 ): Promise<MediaElementAudioSourceNode> {

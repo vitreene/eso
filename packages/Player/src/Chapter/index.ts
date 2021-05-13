@@ -8,7 +8,6 @@ import { MAIN, END_SCENE } from '../data/constantes';
 import { Message } from '../../../types/message';
 import { ImagesCollection } from '../../../types/initial';
 import { Scene as SceneProps, Story } from '../../../types/Entries-types';
-import { Audio2D } from 'audio2d';
 import { registerAudio, AudioClips } from './register-audios';
 
 interface Project {
@@ -61,6 +60,7 @@ export class Chapter {
 			: 0;
 
 		await this.loadAudio(scenes);
+
 		// chager les medias de la scene courante, puis ensuite les autres
 		this.loadMedias(scenes[this.index]).then((response) => {
 			console.log('OK - medias loaded', response.loaded);
@@ -93,7 +93,7 @@ export class Chapter {
 	private async loadAudio(scenes: SceneProps[]) {
 		const { id, audioClips } = await this.registerAudio(scenes[this.index]);
 		this.audioCollection.set(id, audioClips);
-		Promise.all(
+		return Promise.all(
 			scenes.filter((_, i) => i !== this.index).map(this.registerAudio)
 		).then((collection) => {
 			collection.forEach(({ id, audioClips }) =>

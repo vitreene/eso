@@ -1,6 +1,3 @@
-import { Audio2D } from 'audio2d';
-import MuskOx from 'musk-ox';
-
 import { TimeLiner, TimelineKey } from './timeline';
 
 import { controlAnimations } from 'veso';
@@ -50,18 +47,17 @@ export function clock(timeLiner: TimeLiner, emitter: EventEmitter2): Clock {
 	const timeLine = timeLiner.timeLine;
 	const eventDatas = timeLiner.eventDatas;
 
-	const emitEvent = (count: number) => (tm: TimelineKey) => (
-		channel: ESO_Channel
-	) => {
-		if (tm[channel][count]) {
-			const _emitEvent = (name: string) => {
-				const data: any = eventDatas[channel]?.[count]?.[name];
-				console.log('|-->', channel, name, data ? data : '');
-				emitter.emit([channel, name], { ...data, chrono: count });
-			};
-			tm[channel][count].forEach(_emitEvent);
-		}
-	};
+	const emitEvent =
+		(count: number) => (tm: TimelineKey) => (channel: ESO_Channel) => {
+			if (tm[channel][count]) {
+				const _emitEvent = (name: string) => {
+					const data: any = eventDatas[channel]?.[count]?.[name];
+					console.log('|-->', channel, name, data ? data : '');
+					emitter.emit([channel, name], { ...data, chrono: count });
+				};
+				tm[channel][count].forEach(_emitEvent);
+			}
+		};
 
 	function setLoop(_start: number) {
 		const start = AC.currentTime - _start;
@@ -87,9 +83,8 @@ export function clock(timeLiner: TimeLiner, emitter: EventEmitter2): Clock {
 				});
 			}
 
-			const _elapsed = Math.round((AC.currentTime - start) * 10) * 100;
-			if (_elapsed !== elapsed) {
-				elapsed = _elapsed;
+			if (time !== elapsed) {
+				elapsed = time;
 				elapsed % 100 === 0 && emitter.emit('secondes', elapsed / 100);
 				emitter.emit('elapsed', elapsed);
 			}
@@ -102,31 +97,10 @@ export function clock(timeLiner: TimeLiner, emitter: EventEmitter2): Clock {
 			console.log('timeLineR', timeLiner);
 			console.log('timeLine', timeLine[0].timeLine);
 			console.log('eventDatas', eventDatas);
-			// initSound(setLoop);
 			setLoop(0);
 		},
 		chrono() {
 			return Math.round(count / 100) * 100 + 100;
 		},
 	}; // next tick
-}
-
-let sound;
-function initSound(callback) {
-	const a2d = new Audio2D();
-	const muskox = new MuskOx();
-
-	sound && sound.stop();
-	a2d.removeAllAudio();
-	const loaded = () => {
-		const levelUpBuffer = muskox.fetch.audioBuffer('my-sound');
-		sound = a2d.addAudio('my-sound', levelUpBuffer);
-		console.log('LOADED');
-		sound.play();
-		callback(sound.currentTime);
-	};
-	muskox.onComplete.add(loaded);
-	muskox.audioBuffer('my-sound', './sounds/microphone-countdown-341.mp3');
-	muskox.start();
-	return sound;
 }

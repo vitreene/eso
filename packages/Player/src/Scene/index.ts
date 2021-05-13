@@ -22,11 +22,14 @@ import {
 	ScenePersos,
 	StoryWoEventimes,
 	Scene as SceneType,
+	Eso,
+	Box,
 } from '../../../types/Entries-types';
 import { Message } from '../../../types/message';
 import { Eventime } from '../../../types/eventime';
-import { ImagesCollection } from '../../../types/initial';
+import { ImagesCollection, Perso } from '../../../types/initial';
 import { AudioClips } from '../Chapter/register-audios';
+import { updateAudio } from './update-audio';
 
 // export interface MediasProps {
 // 	slots?: Slots;
@@ -37,10 +40,10 @@ import { AudioClips } from '../Chapter/register-audios';
 
 export interface SceneOptions {
 	messages: Message;
+	audio: AudioContext;
 	audioCollection?: AudioClips;
 	mediasCollection: ImagesCollection;
 	connectChapterEmitter: (emitter: EventEmitter2) => void;
-	audio: AudioContext;
 }
 
 export type MediasProps = Omit<
@@ -48,6 +51,23 @@ export type MediasProps = Omit<
 	'connectChapterEmitter' | 'audio'
 > & {
 	slots?: Slots;
+};
+export type InitVeso = {
+	register: (_persos: Perso[]) => ScenePersos;
+	update: (
+		perso: Eso,
+		{
+			changed,
+			update,
+			...others
+		}: {
+			[x: string]: any;
+			changed: any;
+			update: any;
+		},
+		box: Box,
+		updateSlot: (slotId: string, persosIds: string[]) => void
+	) => void;
 };
 
 const onAny = (emitter) =>
@@ -93,11 +113,11 @@ export class Scene {
 	constructor(
 		{ stories, ...scene }: SceneType,
 		{
-			messages,
-			mediasCollection,
-			audioCollection,
-			connectChapterEmitter,
 			audio,
+			messages,
+			audioCollection,
+			mediasCollection,
+			connectChapterEmitter,
 		}: SceneOptions
 	) {
 		this.id = scene.id;
@@ -105,6 +125,8 @@ export class Scene {
 		this.name = scene.name;
 		this.description = scene.description;
 		this.audioCollection = audioCollection;
+		console.log('this.audioCollection', Array.from(this.audioCollection));
+		console.log('mediasCollection', Array.from(mediasCollection));
 
 		this.start = this.start.bind(this);
 		this.slot = this.slot.bind(this);
@@ -186,7 +208,10 @@ export class Scene {
 		return _clock.start();
 	}
 
-	private _registerComponents({ messages, mediasCollection }: MediasProps) {
+	private _registerComponents({
+		messages,
+		mediasCollection,
+	}: MediasProps): InitVeso {
 		const contentTypes = {
 			slot: this.slot,
 			layer: this.slot,
@@ -196,7 +221,7 @@ export class Scene {
 		return initVeso(this.emitter, contentTypes);
 	}
 
-	addStory(registerPersos) {
+	addStory(registerPersos: InitVeso) {
 		return (story: Story) => {
 			const { eventimes, ...others } = story;
 			this._addEventsToTimeLine(eventimes);
@@ -208,7 +233,7 @@ export class Scene {
 		this.timeLine.addEventList(eventimes, { level: DEFAULT_NS });
 	}
 
-	private _register(story: StoryWoEventimes, registerPersos) {
+	private _register(story: StoryWoEventimes, registerPersos: InitVeso) {
 		const { channel, persos } = story;
 		const { register, update } = registerPersos;
 		const publish = this._publish(story.id, update);
@@ -257,16 +282,28 @@ export class Scene {
 		return function publish(data: any) {
 			const onSceneUpdateComponent = (update: any) => {
 				// console.log('onSceneUpdateComponent UPDATE', update);
-
-				if (!this.persos.has(update.id)) {
-					if (this.audioCollection.has(update.id)) this.updateAudio(update);
-					else console.warn('pas de perso ayant l’id %s', update.id);
+				if (
+					!this.persos.has(update.id) &&
+					!this.audioCollection.has(update.id)
+				) {
+					console.warn('pas de perso ayant l’id %s', update.id);
 					return;
 				}
-				const perso = this.persos.get(update.id);
-				const up = this.onScene.update(update);
-				const zoomBox = this.cast[id].zoom.box;
-				updateComponent(perso, up, zoomBox, this.updateSlot);
+
+				const _update = {
+					...update,
+					...(this.audioCollection.has(update.id) && { sound: true }),
+				};
+
+				const up = this.onScene.update(_update);
+				if (_update.sound) {
+					const clip = this.audioCollection.get(update.id);
+					updateAudio(up, clip);
+				} else {
+					const perso = this.persos.get(update.id);
+					const zoomBox = this.cast[id].zoom.box;
+					updateComponent(perso, up, zoomBox, this.updateSlot);
+				}
 			};
 			return (other: any) => onSceneUpdateComponent({ ...data, ...other });
 		}.bind(this);
@@ -280,17 +317,6 @@ export class Scene {
 	slot(uuid: string) {
 		!this.slots.has(uuid) && this.slots.set(uuid, o(null));
 		return this.slots.get(uuid);
-	}
-
-	updateAudio(update) {
-		console.warn('j’ai trouve le son  %s', update.id, update);
-		const clip = this.audioCollection.get(update.id);
-
-		console.log();
-
-		update.play && clip.mediaElement.play();
-		update.pause && clip.mediaElement.pause();
-		// debugger;
 	}
 }
 

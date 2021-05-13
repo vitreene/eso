@@ -366,18 +366,19 @@
                 complete : 
                   event: { channel: *MAIN , name: '${story.id}.complete' }
                 
-          # - sound:
-          #     id: saudacao
-          #     initial:
-          #       content: ./sounds/01-saudacao.mp3
-          #     listen: 
-          #       - {e04: play}
-          #       - {e09: pause}
-          #       - {channel: *TC, event: pause, action: pause}
-          #       - {channel: *TC, event: play, action: play}
-          #     actions:
-          #       play: {play: true}
-          #       pause: {pause: true}
+          - sound:
+              id: saudacao
+              initial:
+                content: ./sounds/saudacao30s.mp3
+              listen: 
+                - {e06: play}
+                - {e09: stop}
+                - {channel: *TC, event: pause, action: pause}
+                - {channel: *TC, event: play, action: play}
+              actions:
+                play: {play: true}
+                pause: {pause: true}
+                stop: {leave: true}
                 
 
           - *BLOC :
