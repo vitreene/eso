@@ -1,15 +1,16 @@
 import { fromTo } from './from-to';
 import { controlAnimations } from '../shared/control-animation';
 import { selectTransition, directTransition } from './select-transition';
+import { DEFAULT_DURATION } from '../shared/constantes';
 
 export function doTransition(perso, transition, emitter) {
 	if (!transition || !transition.length) return null;
+
+	transition.unshift(transitionToDefault(perso.to, transition));
 	const accumulate = setCumulateCallback(perso);
 	const interpolate = (between) => accumulate.add(between);
 
-	Array.isArray(transition)
-		? transition.forEach(exeTransition)
-		: exeTransition(transition);
+	transition.forEach(exeTransition);
 	return transition;
 
 	function exeTransition(transition) {
@@ -19,6 +20,11 @@ export function doTransition(perso, transition, emitter) {
 
 		// from-to
 		const interpolation = fromTo(options, perso);
+		// if (perso.id === 'story01.sprite') {
+		// 	console.log('perso', perso.from, perso.to);
+		// 	console.log('options', options);
+		// 	console.log('interpolation', interpolation);
+		// }
 		if (!interpolation) return;
 
 		// mettre à jour la position avant le rafraichissement
@@ -82,4 +88,10 @@ function syncRafUpdate(callback) {
 			this.cumul = [];
 		},
 	};
+}
+
+function transitionToDefault(to, transition) {
+	let d = transition.map((t) => t.duration).filter(Boolean);
+	const duration = d.length ? Math.min(...d) : DEFAULT_DURATION;
+	return { from: {}, to, duration };
 }
