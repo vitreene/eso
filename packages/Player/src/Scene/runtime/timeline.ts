@@ -68,15 +68,15 @@ type Options = {
 };
 
 export class TimeLiner {
-	public eventDatas: EventDatas = {};
-	public timeLine: TimeLine[] = [];
-	public times: number[];
+	private held = false;
 	private solved: MapEvents = {};
 	private remains: Eventime[] = [];
-	private held = false;
 
-	// FIXME  level === channel ?
-	// level devient un parametre obligatoire
+	public times: number[];
+	public timeLine: TimeLine[] = [];
+	public eventDatas: EventDatas = {};
+
+	// TODO level devient track et est un parametre obligatoire
 
 	public addEventList(evenTimes: Eventime, options: Options) {
 		this.eventDatas = this._mapEventDatas(evenTimes, this.eventDatas);

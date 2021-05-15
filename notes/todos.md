@@ -521,9 +521,8 @@ entry permet de placer les élements de cadre en tout premier, ils pourraient et
 
 todos 06/05/21
 
-- composant et saisie sound
-
-  - play/pause
+- [x] composant et saisie sound
+- [x] play/pause
 
 - play/pause comme action sur les persos
 - telco devant update composant

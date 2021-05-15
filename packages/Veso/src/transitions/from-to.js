@@ -43,15 +43,40 @@ import { getCssValue } from '../shared/colors';
 export function fromTo({ direct = false, ...transition }, perso) {
 	if (direct) return transition;
 	const duration = transition.duration || DEFAULT_DURATION;
-	let from = {},
-		to = {};
+	const from = {};
+	const to = {};
 
 	const propsFrom = { ...perso.to, ...perso.from, ...transition.from };
-	const propsTo = { ...perso.to, ...transition.to };
+	const propsTo = transition.to;
 
-	for (const key in perso.to) {
-		from[key] = getCssValue(propsFrom[key]);
-		to[key] = getCssValue(propsTo[key]);
+	for (const key in propsTo) {
+		const f = getCssValue(propsFrom[key]);
+		const t = getCssValue(propsTo[key]);
+		// removeEqualProperties
+		if (f !== t) {
+			from[key] = f;
+			to[key] = t;
+		}
 	}
+
 	return { from, to, duration };
 }
+
+/* 
+// [from, to] = removeEqualProperties(from, to);
+function removeEqualProperties(obj1, obj2) {
+	const _obj1 = {};
+	const _obj2 = {};
+
+	const keys1 = new Set(Object.keys(obj1));
+	const keys2 = new Set(Object.keys(obj2));
+	const keys = new Set(keys1, keys2);
+
+	keys.forEach((key) => {
+		if (keys1.has(key) && keys2.has(key) && obj1[key] === obj2[key]) return;
+		keys1.has(key) && (_obj1[key] = obj1[key]);
+		keys2.has(key) && (_obj2[key] = obj2[key]);
+	});
+	return [_obj1, _obj2];
+}
+ */

@@ -67,7 +67,10 @@ YAML pour sound
 comme composant :
 créer une classe qui va créer une interface pour audio2d pour jouer le son, emettre des events
 
-**Utiliser "level" de la timeline**
+## Utiliser "level" de la timeline
+
+> **"level" devient "track"**
+
 **level** qui pourrait etre renommé, sert initialement à créer des niveaux différents ou les events sont enregistrés.
 Par défaut existe un level MAIN, et il y avait eu une tentative pour utiliser un second channel pour les events "à la volée", comme un clic qui génere une serie d'events, qui peuvent etre interrompues ou
 oubliées

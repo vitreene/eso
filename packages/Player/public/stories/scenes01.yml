@@ -310,7 +310,7 @@
                 - { event: leave-sprite, action: leave }
               actions:
                 enter:
-                  move: *Q3
+                  move: {slot: *Q3 , duration: 2000}
                   transition: {
                     from: { opacity: 0 }, 
                     to: { opacity: 1, x: -100, y: 10 } ,
@@ -318,7 +318,10 @@
                     }
                 step01:
                   move: *Q2
-                  transition: { to: { x: 100, y: 50, rotate: 15 } }
+                  transition: [
+                    { to: { x: 300, y: 50 }, duration: 2000 }, 
+                    { to: { rotate: 35 }, duration: 1000  }
+                  ]
                 exit:
                   exit: true
                   transition: { to: fadeOut }

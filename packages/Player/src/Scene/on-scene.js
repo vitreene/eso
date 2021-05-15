@@ -1,3 +1,5 @@
+import { TELCO } from '../data/constantes';
+
 /** 
 la fonction onScene gere le flux des objets.
 - liste le contenu de chaque slot,
@@ -10,8 +12,6 @@ la fonction onScene gere le flux des objets.
         
     ces événements sont transmis à l'objet lui-meme
 */
-
-import { TELCO } from '../data/constantes';
 
 /**
     * Slots : collection des ids des slots: pour chaque slot, liste des persos
@@ -41,14 +41,6 @@ simplifier leave :
 - le Perso recoit le flag "exit"
 - en fin de transition, il emet un event "leave" 
 - le composant est retiré de la scène.
-*/
-
-/* 
-- reslot est géré à part, avant up
-- il faut pouvoir ensuite lire sa nouvelle position , puis le mettre a jour avant rafraichissement de l'écran
-    // reslot : position du node avant et après déplacement
-    // créer une transition
-    // le tout avant réaffichage
 */
 
 export class OnScene {

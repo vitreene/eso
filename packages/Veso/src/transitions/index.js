@@ -17,6 +17,7 @@ export function createTransition(emitter) {
 			onLeaveTransitions,
 			mergeDimensionsInProps
 		)({ ...props, transition: [] });
+
 		transition.length && doTransition(props.perso, transition, emitter);
 	};
 

@@ -100,6 +100,7 @@ function preInit(_perso: Pick<Perso, 'initial'>, additionnalStyles = {}) {
 export function prepareTransitions(perso: Perso) {
 	const { initial, actions } = perso;
 	if (!actions) return perso;
+	// styleProps: styles déclarés dans le perso, hors classes
 	const styleProps = initial
 		? {
 				...DEFAULT_STYLES,
@@ -110,11 +111,20 @@ export function prepareTransitions(perso: Perso) {
 		: DEFAULT_STYLES;
 
 	const toStyles = actions
-		.map((action) => action.transition?.to)
+		.flatMap((action) => {
+			return (
+				action.transition &&
+				(Array.isArray(action.transition)
+					? action.transition.map((transition) => transition.to)
+					: action.transition.to)
+			);
+		})
 		.filter(Boolean)
 		.filter((action) => typeof action === 'object');
+
 	const transitionsProps = Object.keys(Object.assign({}, ...toStyles));
 
+	// to : styles modifiés dans les transitions
 	const to = {};
 	for (const p of transitionsProps)
 		to[p] = styleProps[p] === undefined ? MISSING : styleProps[p];

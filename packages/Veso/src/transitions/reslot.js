@@ -13,6 +13,7 @@ export function reslot({ transition, ...props }) {
 	let old;
 	let current;
 	const rescale = props.update.move?.rescale;
+	const duration = props.update.move?.duration || DEFAULT_DURATION;
 
 	if (changed?.remove) {
 		old = getElementOffsetZoomed(perso.node, box.zoom);
@@ -33,7 +34,7 @@ export function reslot({ transition, ...props }) {
 		transition.push({
 			from: position,
 			to: { dX: 0, dY: 0 },
-			duration: DEFAULT_DURATION,
+			duration,
 			direct: true,
 		});
 
@@ -52,7 +53,7 @@ export function reslot({ transition, ...props }) {
 			transition.push({
 				from: oldDimensions,
 				to: currentDimensions,
-				duration: DEFAULT_DURATION,
+				duration,
 				direct: true,
 			});
 		}

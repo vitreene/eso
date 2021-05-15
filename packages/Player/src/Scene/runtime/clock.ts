@@ -95,6 +95,7 @@ export function clock(timeLiner: TimeLiner, emitter: EventEmitter2): Clock {
 	return {
 		start() {
 			console.log('timeLineR', timeLiner);
+			console.log('times', timeLiner.times);
 			console.log('timeLine', timeLine[0].timeLine);
 			console.log('eventDatas', eventDatas);
 			setLoop(0);
