@@ -273,15 +273,17 @@
                   
                 *Q3 : 
                   move: *Q3
-                  transition: {to: {color: black, scale: 2},duration: 1000}
+                  transition: {to: {color: black, scale: 2},duration: 1500}
                   content: { text: encore un, effect: fade }
+                  style: {font-size: 48 }
 
                 *Q4 : 
                   move: *Q4
                   transition: {to: {background-color: orange},duration: 1000}
                   content: { text:  A bientot pour un prochain essai, effect: letters-top-down }
+                  style: {font-size: 16 }
 
-                move-text: {font-weight: 48px }
+                move-text: {style: {font-size: 48px }}
               emit:
                 mousedown:
                   event: { channel: *STRAP, name: move }

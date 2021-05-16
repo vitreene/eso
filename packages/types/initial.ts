@@ -61,10 +61,12 @@ interface EsoEmitEvent {
 }
 
 interface EsoMove {
-	layer?: string;
+	layer?: string; // déprécié
 	story?: string;
 	slot: string;
 	rescale?: boolean;
+	duration?: number;
+	progress?: number;
 }
 
 interface EsoTansition {

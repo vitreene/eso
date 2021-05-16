@@ -30,6 +30,7 @@ import { Message } from '../../../types/message';
 import { Eventime } from '../../../types/eventime';
 import { ImagesCollection, Perso } from '../../../types/initial';
 import { AudioClips } from '../Chapter/register-audios';
+import { buildTimeLine } from './build-timeLine';
 
 export interface SceneOptions {
 	messages: Message;
@@ -131,7 +132,7 @@ export class Scene {
 
 		this.slots.subscribe(this.onScene.addSlots);
 		this.initStories(stories, scene.entry, medias);
-
+		buildTimeLine(stories, this.timeLine, this.persos);
 		const entry = this.initOnMount(stories, scene.cast);
 		this.entryInDom(entry).then(this.start);
 

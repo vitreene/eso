@@ -69,10 +69,10 @@ type Options = {
 
 export class TimeLiner {
 	private held = false;
-	private solved: MapEvents = {};
 	private remains: Eventime[] = [];
 
 	public times: number[];
+	public solved: MapEvents = {};
 	public timeLine: TimeLine[] = [];
 	public eventDatas: EventDatas = {};
 

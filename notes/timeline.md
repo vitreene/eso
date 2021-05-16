@@ -168,3 +168,40 @@ si les valeurs par défaut ne sont pas concernées, celles-ci vont transiter ave
 
 Priorité des transitions
 les transitions les plus récentes sont prioritaires sur les autres
+
+Il faut envoyer des données conformes à updateComponent pour qu'il puisse correctement les traiter, et appliquer les memes hacks qu'une utilisation régulière.
+Ne pas résoudre tous les cas singuliers, ce ne sera jamais conforme.
+
+en mode seek, les données de transition doivent avoir
+
+- un indicateur progress,
+- une donnée elapsed, qui pourrait faciliter les calculs ?
+  si j'ai deux events , p.e. à 1000 et 2000, et seek à 1500 :
+- regarder l'event à 1000;
+- calculer pour chaque transition le progress :
+  - si progress à 0, duration à 2000, alors : 1500-1000 / 2000 = 0.25
+- calculer les transitions avec ce progress
+- fusionner avec style
+  à calculer dans Eso, pas dans build-timeline
+
+j'ai plusieurs stratégies pour afficher les snapshots.
+Idéalement, il représentent l'aspect calculé que j'attend du perso.
+MAIS ce n'est jamais possible : move, par exemple, necessite un calcul au runtime
+donc cela peut s'appliquer à toutes les propriétés qui ont besoin d'un calcul, comme dimensions et transitions
+
+d'un autre coté, il faut refleter l'evolution des autres propriétés, telles que style, classes, et content.
+
+style et classStyle fonctionnent par cumul
+classes utilise un système de modificateurs (mais pourrait fonctionner en cumul à priori)
+
+- Une première passe pourrait créer les états avec tout sauf transition et move
+- 2e en créant les états achevés des transitions
+- 3e en fragmentant les transitions qui débordent sur les suivantes
+
+seek
+la valeur seek est un time : chercher le premier event egal ou avant sa valeur
+
+seekprogress = (seek - event)/ duration + progress
+si seekprogress > 1 seekprogress = 1
+
+dans controlAnimation, gérer la valuer progress
