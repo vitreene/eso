@@ -31,7 +31,7 @@ export interface EsoInitial {
 export type EsoActionEntry = { [action: string]: EsoAction };
 export interface EsoAction extends EsoInitial {
 	name: string;
-	transition?: EsoTansition;
+	transition?: EsoTansition | EsoTansition[];
 	move?: string | EsoMove;
 	order?: number;
 	exit?: boolean;
@@ -60,7 +60,7 @@ interface EsoEmitEvent {
 	data?: any;
 }
 
-interface EsoMove {
+export interface EsoMove {
 	layer?: string; // déprécié
 	story?: string;
 	slot: string;
@@ -69,10 +69,11 @@ interface EsoMove {
 	progress?: number;
 }
 
-interface EsoTansition {
+export interface EsoTansition {
 	from?: string | Style;
 	to: string | Style;
 	duration?: number;
+	progress?: number;
 	oncomplete?: any;
 }
 

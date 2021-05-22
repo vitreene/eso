@@ -1,5 +1,5 @@
 import { Eventime } from './eventime';
-import { Perso } from './initial';
+import { Perso, Style } from './initial';
 import { Stage } from '../Player/src/zoom';
 import { Nature } from './ESO_enum';
 
@@ -118,9 +118,10 @@ export type Box = {
 	zoom: number;
 };
 
-export type ScenePersos = Map<string, Eso>;
+export type ScenePersos = Map<string, Eso & { from?: Style; to?: Style }>;
 
 export interface Eso {
+	id: string;
 	node: Element;
 	update: (props: any) => void;
 	prerender: (box: Box | number) => void;

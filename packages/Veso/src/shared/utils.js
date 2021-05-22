@@ -145,8 +145,14 @@ export function splitUnitValue(val) {
 const execute = (v, f) => {
 	return typeof f === 'function' ? f(v) : v;
 };
-export const compose = (...fns) => (x) => fns.reduceRight(execute, x);
-export const pipe = (...fns) => (x) => fns.reduce(execute, x);
+export const compose =
+	(...fns) =>
+	(x) =>
+		fns.reduceRight(execute, x);
+export const pipe =
+	(...fns) =>
+	(x) =>
+		fns.reduce(execute, x);
 
 // true si null, undefined, ou ""
 export function isVoid(x) {
@@ -156,6 +162,12 @@ export function isVoid(x) {
 // true si null ou undefined ('' -> false)
 export function isNull(x) {
 	return x == null;
+}
+
+// renvoie un tableau s'il n'en est pas un :
+export function toArray(value) {
+	if (!value) return [];
+	return Array.isArray(value) ? value : [value];
 }
 
 export function map(fn) {

@@ -1,5 +1,5 @@
 import { doDimensions } from '../shared/dimensions';
-import { pipe } from '../shared/utils';
+import { pipe, toArray } from '../shared/utils';
 
 import { DEFAULT_STYLES, MISSING } from '../shared/constantes';
 
@@ -26,11 +26,10 @@ export function registerPersos(
 		const persos = prep(_persos, contentTypes);
 		const scenePersos: ScenePersos = new Map();
 
-		(Array.isArray(persos) ? persos : [persos]).forEach((perso: Perso) => {
+		toArray(persos).forEach((perso: Perso) => {
 			switch (perso.nature) {
 				case 'sound':
 					console.log('SOUND', perso);
-
 					break;
 				case 'polygon':
 					break;

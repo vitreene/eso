@@ -120,7 +120,9 @@ export function createEso(emitter) {
 				...state.props.get('style'),
 				...state.props.get('between'),
 			};
-
+			// this.id === 'story01.bl-01' && console.log('ESO from', this.from);
+			// this.id === 'story01.bl-01' &&
+			// 	console.log('between', state.props.get('between'));
 			// side effect : ajouter a l'historique
 			this._addToHistory(state, props.chrono);
 		}

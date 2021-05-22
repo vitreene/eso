@@ -35,6 +35,7 @@ import { Inherit, Channel } from './fetch-chapter';
 
 export function exploreFile(file: SceneEntry, inherit: Inherit) {
 	const _scenes: SceneCastEntry[] = toArray(file.scene);
+
 	const shareds: Inherit[] = toArray(file.shared);
 	const _inherit = shareds.reduce((complete, shared) => {
 		const _shared = exploreShared(shared, complete);
@@ -52,6 +53,7 @@ function exploreScene(_scene: SceneCastEntry, inherit: Inherit): Scene {
 
 	const sceneShared = exploreShared(_scene.shared, inherit);
 	const _inherit = mergeProps(sceneShared, inherit, ['stories', 'persos']);
+
 	const scene = pipe(exploreMergeStories(_inherit), tagAllIds)(_scene);
 
 	const _stories = exploreAddonsStories(scene as SceneAllIds);
@@ -68,8 +70,9 @@ function exploreMergeStories(inherit: Inherit) {
 		// expand scene.entry
 		const stories = pipe(
 			preStory,
-			map(explorePersos(inherit?.persos /* , scene */)),
+			map(explorePersos(inherit?.persos)),
 			mergeStories(inherit.stories),
+
 			addEntryInStory(inherit.stories, scene.entry)
 		)(scene.stories);
 		return { ...scene, stories };
@@ -88,9 +91,8 @@ function exploreAddonsStories(scene: SceneAllIds): Story[] {
 	return stories;
 }
 
-// NOTE ne pas utiliser resolveTemplate ici, c'est trop tôt
-function explorePersos(inherit: Perso[] /* , scene: SceneCastEntry = null */) {
-	return function explorePersosInherit(story: Story) {
+function explorePersos(inherit: Perso[]) {
+	return function _explorePersos(story: Story) {
 		if (!story.persos) return story;
 		const channel: Channel = story.channel || null;
 		const persos: Perso[] = pipe(
@@ -98,7 +100,6 @@ function explorePersos(inherit: Perso[] /* , scene: SceneCastEntry = null */) {
 			mergePersosInherit(inherit, story.ignore),
 			dispatchPersoProps(channel),
 			filterProtos
-			// resolveTemplate({ scene, story })
 		)(story.persos);
 		return { ...story, persos };
 	};
@@ -139,3 +140,9 @@ function mergeProps(obj1: unknown, obj2: unknown, props: string[]) {
 	}
 	return res;
 }
+
+const log = (message) => (obj) => {
+	console.log(message, obj);
+	debugger;
+	return obj;
+};

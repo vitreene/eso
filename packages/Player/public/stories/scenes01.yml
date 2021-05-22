@@ -51,13 +51,13 @@
                 # dimensions: {width: 400, height: 100}
                 # dimensions: {width: 100%, height: 100%}
                 style:
+                  color: 'blue'
                   background-color: red
                   position: absolute
                   font-size: 40
                   font-family: Helvetica
                   border: 0px solid purple
                   padding: 20
-                  color: blue
                 content: un texte
               actions:
                 *Q1 : {move: *Q1, transition: {to: {color: purple} }}
@@ -245,6 +245,7 @@
               initial:
                 # dimensions: {width: 400, height: 100}
                 style:
+                  color: 'blue'
                   background-color: cyan
                   position: absolute
                   font-size: 40
@@ -273,7 +274,10 @@
                   
                 *Q3 : 
                   move: *Q3
-                  transition: {to: {color: black, scale: 2},duration: 1500}
+                  transition: [ 
+                    {to: {color: black, scale: 2},duration: 1500}, 
+                    { to: { rotate: 60 }, duration: 1000  }
+                  ]
                   content: { text: encore un, effect: fade }
                   style: {font-size: 48 }
 

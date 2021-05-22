@@ -20,11 +20,6 @@ export function doTransition(perso, transition, emitter) {
 
 		// from-to
 		const interpolation = fromTo(options, perso);
-		// if (perso.id === 'story01.sprite') {
-		// 	console.log('perso', perso.from, perso.to);
-		// 	console.log('options', options);
-		// 	console.log('interpolation', interpolation);
-		// }
 		if (!interpolation) return;
 
 		// mettre à jour la position avant le rafraichissement

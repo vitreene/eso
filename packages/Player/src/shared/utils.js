@@ -158,6 +158,7 @@ export function isVoid(x) {
 
 // renvoie un tableau s'il n'en est pas un :
 export function toArray(value) {
+	if (!value) return []
 	return Array.isArray(value) ? value : [value];
 }
 

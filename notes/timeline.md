@@ -205,3 +205,72 @@ seekprogress = (seek - event)/ duration + progress
 si seekprogress > 1 seekprogress = 1
 
 dans controlAnimation, gérer la valuer progress
+
+pour faire fonctionner seek avec des transitions, il faut pouvoir fournir l'état courant qui va donner "from" . l'objet se trouvera soit à part, soit dans from directement
+this.from = {
+...this.from,
+...state.props.get('classStyle'),
+...state.props.get('style'),
+...state.props.get('between'),
+};
+-> il faut récupérer between : à chaque "nouvelle" transition (progress = 0) calculer le between obtenu à partir des transtions existantes (progress > 0)
+le meme from es passé à toutes les nouvelles transitions
+
+Organiser les passes pour move et transition.
+idée : séparer la collecte des états de move et transitions, et l'application aux snaps
+un tableau moves :
+par move : {
+move: {...}
+start: 0
+end: 500
+duration: 500
+times: [{time:0, progress:0},..., {time:500, progress:1}]
+}
+
+idem pour transitions:
+par transition:
+{
+transition: {...}
+from: {...}
+start: 0
+end: 500
+duration: 1000
+times: [{time:0, progress:0},..., {time:1000, progress:1}]
+}
+
+Comment rapprocher les valeurs ?
+
+- les tableaux sont triés par la valeur start
+
+quand une fraction est créée par move ou par transition, elle est ajoutée à chaque élément concerné (calcul du time et du progress)
+
+Transition: comment obtenir la bonne valeur pour from ?
+
+fromStyle va représenter l'état from au fur et à mesure de la progression de l'état du composant
+
+0: fromStyle = initial + classStyle + style
+from = fromStyle + transition.from
+
+après:
+ex: time === 500
+chercher les transitions qui commencent à 500 (start === 500)
+chercher les transtions en cours -> between
+-> appliquer aux premières transitions
+
+enfin : appliquer les transitions/move aux snaps
+
+## Tracks
+
+gérer des canaux d'évents. plusieurs canaux peuvent être actifs à la fois, certains peuvent recevoir des events (clicks, move...) et peuvent etre enregistrables
+declarer dans la story
+
+```yaml
+tracks
+  main: eventimes
+  pause: eventimes
+```
+
+la presence de parametres emit dans les persos crée de facto un track "interaction"
+
+créer un canal "TRACKS" pour gérer l'activation des tracks
+employer la meme terminologie que pour les classes : un préfixe ajoute, retire, substitue les canaux actifs
