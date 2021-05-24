@@ -259,6 +259,18 @@ chercher les transtions en cours -> between
 
 enfin : appliquer les transitions/move aux snaps
 
+tester :
+faire défiler les états et comparer
+
+suite :
+
+- fonction : pour un temps donné, trouver le temps le plus proche dans le passé.
+
+- Eso.set : appliquer un état qui remplace l'actuel
+
+- comment passer un état en mode "seek"
+  - reslot et transitions : si progress, renvoyer l'état, sans lancer d'animation
+
 ## Tracks
 
 gérer des canaux d'évents. plusieurs canaux peuvent être actifs à la fois, certains peuvent recevoir des events (clicks, move...) et peuvent etre enregistrables

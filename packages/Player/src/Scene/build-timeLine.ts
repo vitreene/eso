@@ -1,27 +1,27 @@
 import { interpolate } from 'shifty';
 
-import { selectTransition } from '../../../Veso/src/transitions/select-transition';
-import { fromTo } from '../../../Veso/src/transitions/from-to';
 import { toArray } from '../shared/utils.js';
+import { fromTo } from '../../../Veso/src/transitions/from-to';
+import { selectTransition } from '../../../Veso/src/transitions/select-transition';
 
-import { DEFAULT_DURATION, DEFAULT_STYLES } from '../data/constantes';
+import { DEFAULT_DURATION } from '../data/constantes';
 
-import { TimeLiner } from './runtime/timeline';
-import { Story, ScenePersos, Eso } from '../../../types/Entries-types';
 import {
-	EsoAction,
-	EsoEvent,
-	EsoMove,
-	EsoTansition,
 	Style,
+	EsoMove,
+	EsoEvent,
+	EsoAction,
+	EsoTansition,
 } from '../../../types/initial';
+import { TimeLiner } from './runtime/timeline';
+import { Story, ScenePersos, Cast } from '../../../types/Entries-types';
 
 interface Transition {
 	transition: EsoTansition;
 	end: number;
 	start: number;
 	duration: number;
-	from: Style;
+	// from: Style;
 	times: { time: number; progress: number }[];
 }
 interface Move {
@@ -32,208 +32,247 @@ interface Move {
 	times: { time: number; progress: number }[];
 }
 
-export function buildTimeLine(
-	stories: Story[],
-	timeLine: TimeLiner,
-	esoPersos: ScenePersos
-) {
+export interface Snap {
+	[t: number]: Partial<EsoAction>;
+	onScene?: {
+		enter: number | null;
+		exit: number | null;
+	};
+}
+
+interface Build {
+	stories: Story[];
+	timeLine: TimeLiner;
+	esoPersos: ScenePersos;
+}
+
+export type Snapshots = Map<{ id: string; storyId: string }, Snap>;
+
+export function buildTimeLine({
+	stories,
+	timeLine,
+	esoPersos,
+}: Build): Snapshots {
+	const snapshots: Snapshots = new Map();
 	const eventsToTime = timeLine.solved;
-	const persos = stories.flatMap((story) => story.persos);
 
-	const snapshots = new Map();
+	stories.forEach((story) => {
+		story.persos
+			.filter((perso) => perso.nature !== 'sound')
+			.forEach((perso) => {
+				const entry = story.entry && toArray(story.entry).includes(perso.id);
+				const moves: Move[] = [];
+				const transitions: Transition[] = [];
+				const esoPerso = esoPersos.get(perso.id);
+				const snaps: Snap = {};
 
-	persos
-		.filter((perso) => perso.nature !== 'sound')
-		.forEach((perso) => {
-			const esoPerso = esoPersos.get(perso.id);
-
-			console.log(perso.id, esoPerso);
-
-			const snaps: { [t: number]: Partial<EsoAction> } = {};
-
-			const moves: Move[] = [];
-			const transitions: Transition[] = [];
-
-			// map found actions to time
-			let times: Map<number, EsoEvent> = new Map();
-			for (const listen of perso.listen) {
-				const time: number[] = eventsToTime[listen.channel]?.[listen.event];
-				if (!time) continue;
-				time.forEach((t) => times.set(t, listen));
-			}
-			times = new Map([...times].sort((a, b) => a[0] - b[0]));
-
-			// compiler les propriétés cumulatives (style, classes...)
-			let prec: Partial<EsoAction> = perso.initial;
-			for (const [time, listen] of times.entries()) {
-				const { move, transition, ...action } = perso.actions.find(
-					(action) => action.name === listen.action
-				);
-				prec = updateLook(prec, action);
-				snaps[time] = { ...action, ...prec };
-			}
-
-			// move - transitions
-			for (const [time, listen] of times.entries()) {
-				const { move: moveAction, transition: transitionAction } =
-					perso.actions.find((action) => action.name === listen.action);
-
-				if (moveAction) {
-					const _move =
-						typeof moveAction === 'string' ? { slot: moveAction } : moveAction;
-					const duration = _move.duration || DEFAULT_DURATION;
-					const move = { ..._move, duration };
-					const start = Number(time);
-					const end = start + duration;
-					const times = [
-						{ time: start, progress: 0 },
-						{ time: end, progress: 1 },
-					];
-					moves.push({ move, start, end, duration, times });
+				// map found actions to time
+				let times: Map<number, EsoEvent> = new Map();
+				for (const listen of perso.listen) {
+					const time: number[] = eventsToTime[listen.channel]?.[listen.event];
+					if (!time) continue;
+					time.forEach((t) => times.set(t, listen));
 				}
-				if (transitionAction) {
-					toArray(transitionAction).forEach((_transition) => {
-						const transition = selectTransition(_transition);
-						const duration = transition.duration;
+				times = new Map([...times].sort((a, b) => a[0] - b[0]));
+
+				// compiler les propriétés cumulatives (style, classes...)
+				let prec: Partial<EsoAction> = perso.initial;
+				for (const [time, listen] of times.entries()) {
+					const { move, transition, ...action } = perso.actions.find(
+						(action) => action.name === listen.action
+					);
+					prec = updateLook(prec, action);
+					!snaps[0] && (snaps[0] = { ...action, ...prec });
+					snaps[time] = { ...action, ...prec };
+				}
+				entry && !snaps[0] && (snaps[0] = { ...prec });
+
+				// move - transitions
+				for (const [time, listen] of times.entries()) {
+					const { move: moveAction, transition: transitionAction } =
+						perso.actions.find((action) => action.name === listen.action);
+
+					if (moveAction) {
+						const _move =
+							typeof moveAction === 'string'
+								? { slot: moveAction }
+								: moveAction;
+						const duration = _move.duration || DEFAULT_DURATION;
+						const move = { ..._move, duration };
 						const start = Number(time);
 						const end = start + duration;
 						const times = [
 							{ time: start, progress: 0 },
 							{ time: end, progress: 1 },
 						];
-						transitions.push({
-							transition,
-							from: {},
-							start,
-							end,
-							duration,
-							times,
+						moves.push({ move, start, end, duration, times });
+					}
+					if (transitionAction) {
+						toArray(transitionAction).forEach((_transition) => {
+							const transition = selectTransition(_transition);
+							const duration = transition.duration;
+							const start = Number(time);
+							const end = start + duration;
+							const times = [
+								{ time: start, progress: 0 },
+								{ time: end, progress: 1 },
+							];
+							transitions.push({
+								transition,
+								start,
+								end,
+								duration,
+								times,
+							});
 						});
-					});
+					}
 				}
-			}
 
-			// moves.sort((a,b)=> b.start - a.start)
-			// transitions.sort((a,b)=> b.start - a.start)
-
-			// ajouter les fractions de move
-			moves.forEach((move) => {
-				[move.start, move.end].forEach((time) => {
-					const fractions = transitions.filter(
-						(transition) => time > transition.start && time < transition.end
-					);
-					fractions.forEach((t) => {
-						const progress = (time - t.start) / t.duration;
-						t.times.push({ time, progress });
-					});
-				});
-			});
-
-			// ajouter les fractions de transitions
-
-			let from = {
-				// ...esoPerso.to,
-				...perso.initial.classStyle,
-				...perso.initial.style,
-			};
-			console.log('fractions', perso.id, from);
-
-			// ajouts time et progress
-			transitions.forEach((transition) => {
-				[transition.start, transition.end].forEach((time) => {
-					const fractions = transitions.filter(
-						(_transition) =>
-							!Object.is(transition, _transition) &&
-							time > _transition.start &&
-							time < _transition.end
-					);
-					fractions.forEach((t) => {
-						const progress = (time - t.start) / t.duration;
-						t.times.push({ time, progress });
-					});
-				});
-
-				// chercher la dernière transition achevée ?
-				const ended = transitions
-					.filter((_transition) => _transition.end <= transition.start)
-					.map((_transition) => _transition.transition.to as Style)
-					.reduce((p, c) => ({ ...p, ...c }), {});
-
-				// chercher les transitions qui ont démarré avant celle-ci et qui ne sont pas finies,
-				// prendre leur état au moment ou la transition courante commence
-				// pour l'ajouter a from
-				const between = transitions
-					.filter(
-						(_transition) =>
-							!Object.is(transition, _transition) &&
-							_transition.start <= transition.start &&
-							_transition.end > transition.start
-					)
-					.map((_transition) => {
-						const t = _transition.times.find(
-							(t) => t.time === transition.start
+				// ajouter les fractions de move
+				moves.forEach((move) => {
+					[move.start, move.end].forEach((time) => {
+						const fractions = transitions.filter(
+							(transition) => time > transition.start && time < transition.end
 						);
-						if (!t) return;
-						const ft = fromTo(_transition.transition, {
-							from: { ...from, ...ended },
-							to: esoPerso.to,
-							id: perso.id,
+						fractions.forEach((t) => {
+							const progress = (time - t.start) / t.duration;
+							t.times.push({ time, progress });
 						});
-						const inter = interpolate(ft.from, ft.to, t.progress);
-						return inter;
-					})
-					.reduce((p, c) => ({ ...p, ...c }), {});
+					});
+				});
 
-				const snap = snaps[transition.start];
-				from = {
-					...from,
-					...snap.classStyle,
-					...snap.style,
-					...between,
+				//
+				// ajouter les fractions de transitions
+				//
+				let from = {
+					...perso.initial.classStyle,
+					...perso.initial.style,
 				};
 
-				transition.from = from;
-				transition.transition.from = from;
+				// ajouts time et progress
+				transitions.forEach((transition) => {
+					[transition.start, transition.end].forEach((time) => {
+						const fractions = transitions.filter(
+							(_transition) =>
+								!Object.is(transition, _transition) &&
+								time > _transition.start &&
+								time < _transition.end
+						);
+						fractions.forEach((t) => {
+							const progress = (time - t.start) / t.duration;
+							t.times.push({ time, progress });
+						});
+					});
+
+					// chercher la dernière transition achevée ?
+					const ended = transitions
+						.filter((_transition) => _transition.end <= transition.start)
+						.map((_transition) => _transition.transition.to as Style)
+						.reduce((p, c) => ({ ...p, ...c }), {});
+
+					// chercher les transitions qui ont démarré avant celle-ci et qui ne sont pas finies,
+					// prendre leur état au moment ou la transition courante commence
+					// pour l'ajouter a from
+					const between = transitions
+						.filter(
+							(_transition) =>
+								!Object.is(transition, _transition) &&
+								_transition.start <= transition.start &&
+								_transition.end > transition.start
+						)
+						.map((_transition) => {
+							const t = _transition.times.find(
+								(t) => t.time === transition.start
+							);
+							if (!t) return;
+							const ft = fromTo(_transition.transition, {
+								from: { ...from, ...ended },
+								to: esoPerso.to,
+								id: perso.id,
+							});
+							const inter = interpolate(ft.from, ft.to, t.progress);
+							return inter;
+						})
+						.reduce((p, c) => ({ ...p, ...c }), {});
+
+					const snap = snaps[transition.start];
+					from = {
+						...from,
+						...snap.classStyle,
+						...snap.style,
+						...between,
+					};
+					transition.transition.from = from;
+				});
+
+				// ajouter move aux snaps
+				for (const move of moves) {
+					for (const t of move.times) {
+						if (t.time in snaps) {
+							snaps[t.time].move = { ...move.move, progress: t.progress };
+						} else {
+							snaps[t.time] = {
+								...snaps[move.start],
+								move: { ...move.move, progress: t.progress },
+							};
+						}
+					}
+				}
+				// console.log('MOVE', perso.id, snaps);
+
+				// ajouter transitions aux snaps
+				for (const transition of transitions) {
+					for (const t of transition.times) {
+						if (t.time in snaps) {
+							toArray(snaps[t.time].transition).push({
+								...transition.transition,
+								progress: t.progress,
+							});
+						} else {
+							snaps[t.time] = {
+								...snaps[transition.start],
+								transition: [
+									{ ...transition.transition, progress: t.progress },
+								],
+							};
+						}
+					}
+				}
+				let lastMove = null;
+				// propager move dans les états
+				for (const time in snaps) {
+					if ('move' in snaps[time]) {
+						lastMove = snaps[time].move;
+					} else {
+						lastMove && (snaps[time].move = lastMove);
+					}
+				}
+
+				// ajouter "enter": true à la première apparition de "move"
+				// trouver exit s'il existe
+				let enter: number = null;
+				let exit: number = null;
+
+				for (const time in snaps) {
+					if ('move' in snaps[time] && !enter) {
+						snaps[time].enter = true;
+						enter = Number(time);
+					}
+					if ('exit' in snaps[time]) exit = Number(time);
+				}
+				if (entry) {
+					snaps[0].enter = true;
+					enter = 0;
+				}
+				snaps.onScene = { enter, exit };
+
+				// console.log('TRANSITION', perso.id, snaps);
+				// debugger;
+				snapshots.set({ id: perso.id, storyId: story.id }, snaps);
 			});
+	});
+	console.log('snapshots', snapshots);
 
-			// console.log(perso.id, moves);
-			// console.log(perso.id, transitions);
-
-			// ajouter move et transitions aux snaps
-			for (const move of moves) {
-				for (const t of move.times) {
-					if (t.time in snaps) {
-						snaps[t.time].move = { ...move.move, progress: t.progress };
-					} else {
-						snaps[t.time] = {
-							...snaps[move.start],
-							move: { ...move.move, progress: t.progress },
-						};
-					}
-				}
-			}
-
-			for (const transition of transitions) {
-				for (const t of transition.times) {
-					if (t.time in snaps) {
-						snaps[t.time].transition = {
-							...transition.transition,
-							progress: t.progress,
-						};
-					} else {
-						snaps[t.time] = {
-							...snaps[transition.start],
-							transition: { ...transition.transition, progress: t.progress },
-						};
-					}
-				}
-			}
-
-			snapshots.set(perso.id, snaps);
-		});
-
-	// console.log('buildTimeLine', eventsToTime, persos);
-	console.log('SNaPSHOTS', snapshots.get('story01.bl-01'));
 	return snapshots;
 }
 

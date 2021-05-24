@@ -34,6 +34,7 @@ export interface EsoAction extends EsoInitial {
 	transition?: EsoTansition | EsoTansition[];
 	move?: string | EsoMove;
 	order?: number;
+	enter?: boolean;
 	exit?: boolean;
 	leave?: boolean;
 }

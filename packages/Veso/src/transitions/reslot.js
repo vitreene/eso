@@ -1,5 +1,6 @@
 import { getElementOffset } from '../shared/get-element-offset';
 import { DEFAULT_DURATION } from '../shared/constantes';
+import { toArray } from '../shared/utils';
 /* 
 FIXME
 - rescale Bloc, doit prendre en compte la taille du bloc, pas du parent
@@ -8,11 +9,12 @@ FIXME
 
 export function reslot({ transition, ...props }) {
 	const { perso, changed, box, updateSlot } = props;
-	perso.id === 'story01.image' && console.log('RESLOT update', props);
 
+	const __pre = [...toArray(transition)];
 	let old;
 	let current;
 	const rescale = props.update.move?.rescale;
+	const progress = props.update.move?.progress;
 	const duration = props.update.move?.duration || DEFAULT_DURATION;
 
 	if (changed?.remove) {
@@ -36,6 +38,7 @@ export function reslot({ transition, ...props }) {
 			to: { dX: 0, dY: 0 },
 			duration,
 			direct: true,
+			...(progress && { progress }),
 		});
 
 		// rescale
@@ -55,9 +58,12 @@ export function reslot({ transition, ...props }) {
 				to: currentDimensions,
 				duration,
 				direct: true,
+				...(progress && { progress }),
 			});
 		}
 	}
+	console.log('reslot', perso.id, changed, props.update.move);
+	console.log('transition', __pre, transition);
 	return { ...props, transition };
 }
 

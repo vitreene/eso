@@ -135,7 +135,6 @@
                         height: 150
                       duration: 1000
                 
-
       - id: story01
         channel: story01
         stage: '4/3'
@@ -316,7 +315,7 @@
                 - { event: leave-sprite, action: leave }
               actions:
                 enter:
-                  move: {slot: *Q3 , duration: 2000}
+                  move: {slot: *Q3 , duration: 2000, progress: 0.5}
                   transition: {
                     from: { opacity: 0 }, 
                     to: { opacity: 1, x: -100, y: 10 } ,

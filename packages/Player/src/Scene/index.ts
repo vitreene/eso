@@ -11,7 +11,7 @@ import { clock, Clock } from './runtime/clock';
 import { updateAudio } from './update-audio';
 import { registerStraps } from './register/register-straps';
 import { registerActions } from './register/register-actions';
-import { buildTimeLine } from './build-timeLine';
+import { buildTimeLine, Snap, Snapshots } from './build-timeLine';
 
 import { addEventList } from './runtime/add-event-list';
 
@@ -29,8 +29,9 @@ import {
 } from '../../../types/Entries-types';
 import { Message } from '../../../types/message';
 import { Eventime } from '../../../types/eventime';
-import { ImagesCollection, Perso } from '../../../types/initial';
+import { EsoAction, ImagesCollection, Perso } from '../../../types/initial';
 import { AudioClips } from '../Chapter/register-audios';
+import { findByTime } from './runtime/seek';
 
 export interface SceneOptions {
 	messages: Message;
@@ -68,9 +69,10 @@ const onAny = (emitter) =>
 			value === 0 && console.log(emitter.eventNames(event));
 		}
 	});
-const timer = (emitter, duree = 1000) =>
+const timer = (emitter, duree = 1000, cb) =>
 	setTimeout(() => {
 		emitter.emit([TC, PAUSE]);
+		cb(duree);
 	}, duree);
 
 export const appContainer = document.getElementById(APP_ID);
@@ -84,6 +86,7 @@ export class Scene {
 		maxListeners: 0,
 		delimiter: '.',
 	});
+	root: string;
 	straps: any;
 	clock: Clock;
 	onEndQueue = [];
@@ -93,7 +96,9 @@ export class Scene {
 	audioCollection: AudioClips;
 	persos: ScenePersos = new Map(); //
 	onScene: OnScene = new OnScene();
+	persosInTime: Snapshots = new Map();
 	timeLine: TimeLiner = new TimeLiner();
+	registerPersos: InitVeso;
 	// telco: () => {};
 	// onEnd: () => {};
 	// onStart: () => {};
@@ -117,6 +122,7 @@ export class Scene {
 		console.log('mediasCollection', Array.from(mediasCollection));
 		console.log('this.audioCollection', Array.from(this.audioCollection));
 
+		this.seek = this.seek.bind(this);
 		this.slot = this.slot.bind(this);
 		this.start = this.start.bind(this);
 		this.addStory = this.addStory.bind(this);
@@ -134,44 +140,52 @@ export class Scene {
 		this.initStories(stories, scene.entry, medias);
 		console.log('this.persos', this.persos);
 
-		buildTimeLine(stories, this.timeLine, this.persos);
-		const entry = this.initOnMount(stories, scene.cast);
-		this.entryInDom(entry).then(this.start);
+		this.persosInTime = buildTimeLine({
+			stories,
+			timeLine: this.timeLine,
+			esoPersos: this.persos,
+		});
 
-		// timer(this.emitter, 1200);
+		const entry = this.findEntry(stories, scene.cast);
+		this.entryInDom(entry).then(() => {
+			this.initOnMount(stories, scene.cast);
+			this.start();
+		});
+
+		timer(this.emitter, 1500, this.seek);
 		// console.log(this.persos);
 		// onAny(this.emitter);
 	}
 
 	initStories(stories: Story[], entry: string, medias: MediasProps) {
 		this.timeLine.addStartEvent();
-		const registerPersos = this._registerComponents(medias);
-		stories
-			.sort((s) => (s.id === entry ? -1 : 0))
-			.forEach(this.addStory(registerPersos));
+		this.registerPersos = this._registerComponents(medias);
+		stories.sort((s) => (s.id === entry ? -1 : 0)).forEach(this.addStory);
 		this.timeLine.addEndEvent();
 	}
 
-	initOnMount(stories: Story[], casting: Cast[]) {
-		let entry: Story;
-		for (const cast of casting) {
-			const story = stories.find((s) => s.id === cast.id);
-			if (cast.isEntry) entry = story;
-			else {
-				this.emitter.prependListener(
-					[MAIN, cast.startAt.toString()],
-					this.onMount(story, cast)
-				);
-			}
-		}
+	findEntry(stories: Story[], casting: Cast[]) {
+		const cast: Cast = casting.find((c) => c.isEntry);
+		const entry: Story = stories.find((s) => s.id === cast.id);
 		return entry;
+	}
+
+	initOnMount(stories: Story[], casting: Cast[]) {
+		const entry = casting.find((c) => c.isEntry);
+		stories
+			.filter((s) => s.id !== entry.id)
+			.forEach((story) => {
+				const cast = casting.find((c) => c.id === story.id);
+				this.onMount(story, cast);
+			});
 	}
 
 	async entryInDom(entry: Story) {
 		await new Promise(requestAnimationFrame);
 		if (!entry) return;
 		const { root } = entry;
-		this.onMount(entry, { root })();
+		this.root = root;
+		this.onMount(entry, { root });
 		this.slot(root);
 		this.onScene.areOnScene.set(root, root);
 		appContainer.innerHTML = '';
@@ -179,11 +193,9 @@ export class Scene {
 	}
 
 	onMount(story: Story, cast) {
-		return () => {
-			console.log('onMount-->', story.id);
-			this._setStoryCast(story, cast);
-			this.activateZoom(story.id);
-		};
+		console.log('onMount-->', story.id);
+		this._setStoryCast(story, cast);
+		this.activateZoom(story.id);
 	}
 
 	start() {
@@ -205,21 +217,19 @@ export class Scene {
 		return initVeso(this.emitter, contentTypes);
 	}
 
-	addStory(registerPersos: InitVeso) {
-		return (story: Story) => {
-			const { eventimes, ...others } = story;
-			this._addEventsToTimeLine(eventimes);
-			this._register(others, registerPersos);
-		};
+	addStory(story: Story) {
+		const { eventimes, ...others } = story;
+		this._addEventsToTimeLine(eventimes);
+		this._register(others);
 	}
 
 	private _addEventsToTimeLine(eventimes: Eventime) {
 		this.timeLine.addEventList(eventimes, { level: DEFAULT_NS });
 	}
 
-	private _register(story: StoryWoEventimes, registerPersos: InitVeso) {
+	private _register(story: StoryWoEventimes) {
 		const { channel, persos } = story;
-		const { register, update } = registerPersos;
+		const { register, update } = this.registerPersos;
 		const publish = this._publish(story.id, update);
 		registerActions(channel, persos, publish, this.emitter);
 
@@ -232,15 +242,18 @@ export class Scene {
 			? this.persos.get(root).node
 			: document.getElementById(root);
 		if (!node) return;
+
 		this.cast[id] = {
-			zoom: new Stage(node, stage, this.renderOnResize(id)),
 			persos: new Set(persos.map((p) => p.id)),
+			zoom: new Stage(node, stage, this.renderOnResize(id)),
 		};
+		this.cast[id].zoom.resize();
 	}
 
 	renderOnResize = (storyId: string) => () => {
 		for (const id of this.onScene.areOnScene.keys()) {
 			this.cast[storyId].persos.has(id) &&
+				this.persos.has(id) &&
 				this.persos.get(id).prerender(this.cast[storyId].zoom.box);
 		}
 	};
@@ -256,6 +269,23 @@ export class Scene {
 
 	onEnd() {
 		this.onEndQueue.forEach((fn) => fn());
+	}
+
+	seek(time) {
+		const visibles = findVisibles(time, this.persosInTime);
+		// arreter la lecture : après start -> pause
+		// envoyer les valeurs sur le meme model que _publsh
+		this.onScene.areOnScene.clear();
+		this.onScene.areOnScene.set(this.root, this.root);
+		visibles.forEach((snap, { id, storyId }) => {
+			const up = this.onScene.update(snap);
+			const perso = this.persos.get(id);
+			const zoomBox = this.cast[storyId].zoom.box;
+			console.log(id, up);
+			console.log(storyId, this.cast);
+
+			this.registerPersos.update(perso, up, zoomBox, this.updateSlot);
+		});
 	}
 
 	private _publish = (id: string, updateComponent) => (data: any) => {
@@ -304,4 +334,25 @@ function concatMaps<K, V>(
 		}
 	}
 	return map;
+}
+
+type Visibles = Map<{ id: string; storyId: string }, Partial<EsoAction>>;
+function findVisibles(time: number, persosInTime: Snapshots): Visibles {
+	const viewed: Snapshots = new Map();
+	persosInTime.forEach((value, ids) => {
+		const { onScene, ...persoInTime } = value;
+		if (time > onScene.enter && onScene.exit ? time < onScene.exit : true)
+			viewed.set(ids, persoInTime);
+	});
+
+	const visibles: Visibles = new Map();
+	viewed.forEach((snap, ids) => {
+		const times = Object.keys(snap).map((t) => Number(t));
+		const tKey = findByTime(time, times);
+		const update = snap[tKey];
+		update.id = ids.id;
+		visibles.set(ids, update);
+	});
+	console.log('SEEK', time, visibles);
+	return visibles;
 }
