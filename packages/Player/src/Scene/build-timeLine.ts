@@ -32,23 +32,34 @@ interface Move {
 	times: { time: number; progress: number }[];
 }
 
+export type SnapAction = Partial<EsoAction> & {
+	action: string;
+	channel: string;
+};
+
 export interface Snap {
-	[t: number]: Partial<EsoAction>;
+	[t: number]: SnapAction;
 	onScene?: {
+		entry?: boolean;
 		enter: number | null;
 		exit: number | null;
 	};
 }
 
 interface Build {
+	cast: Cast[];
 	stories: Story[];
 	timeLine: TimeLiner;
 	esoPersos: ScenePersos;
 }
 
-export type Snapshots = Map<{ id: string; storyId: string }, Snap>;
+export type Snapshots = Map<
+	{ id: string; storyId: string; entry?: boolean },
+	Snap
+>;
 
 export function buildTimeLine({
+	cast,
 	stories,
 	timeLine,
 	esoPersos,
@@ -60,11 +71,12 @@ export function buildTimeLine({
 		story.persos
 			.filter((perso) => perso.nature !== 'sound')
 			.forEach((perso) => {
+				// NOTE pas besoin d'entry ?
 				const entry = story.entry && toArray(story.entry).includes(perso.id);
 				const moves: Move[] = [];
 				const transitions: Transition[] = [];
 				const esoPerso = esoPersos.get(perso.id);
-				const snaps: Snap = {};
+				const snaps: Snap = {} as Snap;
 
 				// map found actions to time
 				let times: Map<number, EsoEvent> = new Map();
@@ -82,10 +94,17 @@ export function buildTimeLine({
 						(action) => action.name === listen.action
 					);
 					prec = updateLook(prec, action);
-					!snaps[0] && (snaps[0] = { ...action, ...prec });
-					snaps[time] = { ...action, ...prec };
+					const _listen = { channel: listen.channel, action: listen.action };
+
+					entry && !snaps[0] && (snaps[0] = { ...prec, ..._listen });
+
+					!snaps[0] && (snaps[0] = { ...action, ...prec, ..._listen });
+					snaps[time] = { ...action, ...prec, ..._listen };
 				}
-				entry && !snaps[0] && (snaps[0] = { ...prec });
+
+				if (entry) {
+					!snaps[0] && (snaps[0] = { ...prec, channel: '', action: '' });
+				}
 
 				// move - transitions
 				for (const [time, listen] of times.entries()) {
@@ -141,9 +160,10 @@ export function buildTimeLine({
 					});
 				});
 
-				//
+				//////////////
 				// ajouter les fractions de transitions
-				//
+				//////////////
+
 				let from = {
 					...perso.initial.classStyle,
 					...perso.initial.style,
@@ -190,7 +210,9 @@ export function buildTimeLine({
 								to: esoPerso.to,
 								id: perso.id,
 							});
-							const inter = interpolate(ft.from, ft.to, t.progress);
+							const inter = ft
+								? interpolate(ft.from, ft.to, t.progress)
+								: undefined;
 							return inter;
 						})
 						.reduce((p, c) => ({ ...p, ...c }), {});
@@ -218,7 +240,6 @@ export function buildTimeLine({
 						}
 					}
 				}
-				// console.log('MOVE', perso.id, snaps);
 
 				// ajouter transitions aux snaps
 				for (const transition of transitions) {
@@ -264,10 +285,8 @@ export function buildTimeLine({
 					snaps[0].enter = true;
 					enter = 0;
 				}
-				snaps.onScene = { enter, exit };
+				snaps.onScene = { enter, exit, ...(entry && { entry }) };
 
-				// console.log('TRANSITION', perso.id, snaps);
-				// debugger;
 				snapshots.set({ id: perso.id, storyId: story.id }, snaps);
 			});
 	});
@@ -288,7 +307,9 @@ function updateLook(_look: Partial<EsoAction>, update: Partial<EsoAction>) {
 			case 'className':
 				look[up] = _look[up] + (update[up] ? ' ' + update[up] : '');
 				break;
+			default:
+			// look[up] = _look[up]
 		}
 	}
-	return { ...update, ...look };
+	return { ..._look, ...update, ...look };
 }

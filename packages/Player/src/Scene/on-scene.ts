@@ -1,3 +1,4 @@
+import { EsoAction } from '../../../types/initial';
 import { TELCO } from '../data/constantes';
 
 /** 
@@ -42,6 +43,18 @@ simplifier leave :
 - en fin de transition, il emet un event "leave" 
 - le composant est retiré de la scène.
 */
+export interface Update extends Partial<EsoAction> {
+	sound?: boolean;
+	action: string;
+	chrono: number;
+	channel: string;
+	entry?: boolean;
+}
+export interface Status {
+	changed: { status: string };
+	update: Update;
+	seek?: boolean;
+}
 
 export class OnScene {
 	areOnScene = new Map();
@@ -65,11 +78,10 @@ export class OnScene {
 
 	ATTENTION play et pause peuvent activer un élément; c'est neutralisé pour TELCO, mais  cela peut etre utilisé autrement et provoquer l'apparition d'un élément ?
  */
-
-	addSlots(id) {
-		this._slots.set(id, []);
+	addSlots(id: string) {
+		this._slots.set(id, new Set());
 	}
-	update(up) {
+	update(up: Update): Status {
 		if (!up.id) return this._getError('id', up);
 		if (up.channel === TELCO) return this._update(up);
 
@@ -77,25 +89,26 @@ export class OnScene {
 		if (this.areOnScene.has(up.id)) {
 			const isLeaving = up.leave;
 			const { move } = up;
-			const changeSlot = move /* && move.layer */ && move.slot;
+			const changeSlot = typeof move === 'object' ? move.slot : move;
+
 			changeSlot && (action = this._moveToSlot);
 			isLeaving && (action = this._leaveScene);
 		} else action = this._enterScene;
 		return action(up);
 	}
 
-	_update(update) {
+	_update(update: Update) {
 		return { changed: { status: 'update' }, update };
 	}
 
-	_enterScene(up) {
+	_enterScene(up: Update) {
 		if (up.move) return this._addToScene(up);
 		if (up.sound) return this._soundToScene(up);
 		console.warn('_addToScene fail', up);
-		return { update: null };
+		return { changed: { status: 'fail' }, update: null };
 	}
 
-	_soundToScene(up) {
+	_soundToScene(up: Update) {
 		this.areOnScene.set(up.id, 'sound');
 		return {
 			changed: { status: 'enter' },
@@ -109,7 +122,9 @@ export class OnScene {
 		if (!slotId || !this._slots.has(slotId)) return this._getError('slot', up);
 
 		// TODO trier selon l'ordre
-		const inslot = this._slots.get(slotId).concat(up.id);
+		const inslot = new Set(this._slots.get(slotId));
+		inslot.add(up.id);
+
 		this._slots.set(slotId, inslot);
 		this.areOnScene.set(up.id, slotId);
 		return {
@@ -118,7 +133,7 @@ export class OnScene {
 		};
 	}
 
-	_moveToSlot(up) {
+	_moveToSlot(up: Update) {
 		if (!up.move) {
 			console.warn('_moveToSlot fail', up);
 			return;
@@ -126,11 +141,13 @@ export class OnScene {
 		const { move } = up;
 
 		const oldSlotId = this.areOnScene.get(up.id);
-		const slotId = move.slot;
-		const oldInslot = this._slots.get(oldSlotId).filter((s) => s !== up.id);
+		const slotId = typeof move === 'object' ? move.slot : move;
+		const oldInslot = new Set(this._slots.get(oldSlotId));
+		oldInslot.delete(up.id);
 		if (!this._slots.get(slotId)) return this._getError('move', up);
 
-		const inslot = this._slots.get(slotId).concat(up.id);
+		const inslot = new Set(this._slots.get(slotId));
+		inslot.add(up.id);
 		this._slots.set(oldSlotId, oldInslot);
 		this._slots.set(slotId, inslot);
 		this.areOnScene.set(up.id, slotId);
@@ -164,7 +181,8 @@ export class OnScene {
 			console.warn('slot %s introuvable dans %s', slotId, id);
 			return this._getError('_leaveScene', up);
 		}
-		const inslot = this._slots.get(slotId).filter((s) => s !== id);
+		const inslot = new Set(this._slots.get(slotId));
+		inslot.delete(id);
 		this._slots.set(slotId, inslot);
 		this.areOnScene.delete(id);
 		return {

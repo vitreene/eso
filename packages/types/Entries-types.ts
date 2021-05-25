@@ -2,6 +2,7 @@ import { Eventime } from './eventime';
 import { Perso, Style } from './initial';
 import { Stage } from '../Player/src/zoom';
 import { Nature } from './ESO_enum';
+import { Update } from '../Player/src/Scene/on-scene';
 
 export interface ChapEntry {
 	defs?: string[];
@@ -123,6 +124,7 @@ export type ScenePersos = Map<string, Eso & { from?: Style; to?: Style }>;
 export interface Eso {
 	id: string;
 	node: Element;
-	update: (props: any) => void;
+	set: (props: Update) => void;
+	update: (props: Update) => void;
 	prerender: (box: Box | number) => void;
 }

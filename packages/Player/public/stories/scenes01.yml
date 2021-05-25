@@ -543,5 +543,22 @@
 
               actions:
                 go : {move: telco}
+          
+          - input:
+              id: slider
+              tag: range
+              initial:
+                className: slider
+                attr:
+                  value: 50
+                  min: 0
+                  max: 100
+              actions:
+                go : {move: telco}
+              emit:
+                onchange:
+                  event: { channel: *STRAP, name: range }
+                  data: { id: '${perso.id}',  value: '${perso.attr.value}' }
+
 
                      

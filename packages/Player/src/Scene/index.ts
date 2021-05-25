@@ -4,18 +4,18 @@ import { initVeso } from 'veso';
 
 import { Stage } from '../zoom';
 import { Slots } from './store-slots';
-import { OnScene } from './on-scene.js';
+import { OnScene, Update } from './on-scene';
 import { TimeLiner } from './runtime/timeline';
 import { clock, Clock } from './runtime/clock';
 
 import { updateAudio } from './update-audio';
 import { registerStraps } from './register/register-straps';
 import { registerActions } from './register/register-actions';
-import { buildTimeLine, Snap, Snapshots } from './build-timeLine';
+import { buildTimeLine, SnapAction, Snapshots } from './build-timeLine';
 
 import { addEventList } from './runtime/add-event-list';
 
-import { TC, MAIN, PAUSE, APP_ID, DEFAULT_NS } from '../data/constantes';
+import { TC, PAUSE, APP_ID, DEFAULT_NS } from '../data/constantes';
 
 import {
 	Cast,
@@ -29,7 +29,7 @@ import {
 } from '../../../types/Entries-types';
 import { Message } from '../../../types/message';
 import { Eventime } from '../../../types/eventime';
-import { EsoAction, ImagesCollection, Perso } from '../../../types/initial';
+import { ImagesCollection, Perso } from '../../../types/initial';
 import { AudioClips } from '../Chapter/register-audios';
 import { findByTime } from './runtime/seek';
 
@@ -47,33 +47,22 @@ export type MediasProps = Omit<
 > & {
 	slots?: Slots;
 };
-export type InitVeso = {
-	register: (_persos: Perso[]) => ScenePersos;
-	update: (
-		perso: Eso,
-		up: {
-			update: any;
-			changed: any;
-			[x: string]: any;
-		},
-		box: Box,
-		updateSlot: (slotId: string, persosIds: string[]) => void
-	) => void;
-};
 
-const onAny = (emitter) =>
-	emitter.onAny(function (event, value) {
-		if (event !== 'elapsed') {
-			console.log('EVENT->', event, value);
-			// console.log(emitter.listeners(event));
-			value === 0 && console.log(emitter.eventNames(event));
-		}
-	});
-const timer = (emitter, duree = 1000, cb) =>
-	setTimeout(() => {
-		emitter.emit([TC, PAUSE]);
-		cb(duree);
-	}, duree);
+type Register = (_persos: Perso[]) => ScenePersos;
+type UpdatePerso = (
+	perso: Eso,
+	up: {
+		update: any;
+		changed: any;
+		[x: string]: any;
+	},
+	box: Box,
+	updateSlot: (slotId: string, persosIds: Set<string>) => void
+) => void;
+export type InitVeso = {
+	register: Register;
+	update: UpdatePerso;
+};
 
 export const appContainer = document.getElementById(APP_ID);
 
@@ -142,6 +131,7 @@ export class Scene {
 
 		this.persosInTime = buildTimeLine({
 			stories,
+			cast: scene.cast,
 			timeLine: this.timeLine,
 			esoPersos: this.persos,
 		});
@@ -151,8 +141,8 @@ export class Scene {
 			this.initOnMount(stories, scene.cast);
 			this.start();
 		});
-
-		timer(this.emitter, 1500, this.seek);
+		// NOTE
+		timer(this.emitter, 2550, this.seek);
 		// console.log(this.persos);
 		// onAny(this.emitter);
 	}
@@ -271,7 +261,7 @@ export class Scene {
 		this.onEndQueue.forEach((fn) => fn());
 	}
 
-	seek(time) {
+	seek(time: number) {
 		const visibles = findVisibles(time, this.persosInTime);
 		// arreter la lecture : après start -> pause
 		// envoyer les valeurs sur le meme model que _publsh
@@ -279,42 +269,51 @@ export class Scene {
 		this.onScene.areOnScene.set(this.root, this.root);
 		visibles.forEach((snap, { id, storyId }) => {
 			const up = this.onScene.update(snap);
+			up.seek = true;
 			const perso = this.persos.get(id);
 			const zoomBox = this.cast[storyId].zoom.box;
-			console.log(id, up);
-			console.log(storyId, this.cast);
-
+			const before = { ...perso.from };
 			this.registerPersos.update(perso, up, zoomBox, this.updateSlot);
+			const after = { ...perso.from };
+			console.log(id, diff(before, after));
+			console.log(id, up);
 		});
 	}
 
-	private _publish = (id: string, updateComponent) => (data: any) => {
-		const onSceneUpdateComponent = (update: any) => {
-			// console.log('onSceneUpdateComponent UPDATE', update);
-			if (!this.persos.has(update.id) && !this.audioCollection.has(update.id)) {
-				console.warn('pas de perso ayant l’id %s', update.id);
-				return;
-			}
-			const _update = {
-				...update,
-				...(this.audioCollection.has(update.id) && { sound: true }),
+	private _publish =
+		(id: string, updateComponent: UpdatePerso) => (data: Update) => {
+			const onSceneUpdateComponent = (update: Update) => {
+				// console.log('onSceneUpdateComponent UPDATE', update);
+				if (
+					!this.persos.has(update.id) &&
+					!this.audioCollection.has(update.id)
+				) {
+					console.warn('pas de perso ayant l’id %s', update.id);
+					return;
+				}
+				const _update = {
+					...update,
+					...(this.audioCollection.has(update.id) && { sound: true }),
+				};
+
+				const up = this.onScene.update(_update);
+				if (_update.sound) {
+					const clip = this.audioCollection.get(update.id);
+					updateAudio(up, clip);
+				} else {
+					const perso = this.persos.get(update.id);
+					const zoomBox = this.cast[id].zoom.box;
+					updateComponent(perso, up, zoomBox, this.updateSlot);
+				}
 			};
-
-			const up = this.onScene.update(_update);
-			if (_update.sound) {
-				const clip = this.audioCollection.get(update.id);
-				updateAudio(up, clip);
-			} else {
-				const perso = this.persos.get(update.id);
-				const zoomBox = this.cast[id].zoom.box;
-				updateComponent(perso, up, zoomBox, this.updateSlot);
-			}
+			return (other: any) => onSceneUpdateComponent({ ...data, ...other });
 		};
-		return (other: any) => onSceneUpdateComponent({ ...data, ...other });
-	};
 
-	updateSlot(slotId: string, persosIds: string[]) {
-		const content = persosIds.map((id: string) => this.persos.get(id).node);
+	updateSlot(slotId: string, persosIds: Set<string>) {
+		const content = Array.from(
+			persosIds,
+			(id: string) => this.persos.get(id).node
+		);
 		this.slots.get(slotId)(content);
 	}
 
@@ -336,23 +335,63 @@ function concatMaps<K, V>(
 	return map;
 }
 
-type Visibles = Map<{ id: string; storyId: string }, Partial<EsoAction>>;
+type SnapActionChono = SnapAction & { chrono: number; entry?: boolean };
+type Visibles = Map<
+	{ id: string; storyId: string; entry?: boolean },
+	SnapActionChono
+>;
 function findVisibles(time: number, persosInTime: Snapshots): Visibles {
 	const viewed: Snapshots = new Map();
 	persosInTime.forEach((value, ids) => {
 		const { onScene, ...persoInTime } = value;
-		if (time > onScene.enter && onScene.exit ? time < onScene.exit : true)
-			viewed.set(ids, persoInTime);
+		if (time > onScene.enter && onScene.exit ? time < onScene.exit : true) {
+			const _ids = onScene.entry ? { entry: true, ...ids } : ids;
+			viewed.set(_ids, persoInTime);
+		}
 	});
 
 	const visibles: Visibles = new Map();
 	viewed.forEach((snap, ids) => {
 		const times = Object.keys(snap).map((t) => Number(t));
 		const tKey = findByTime(time, times);
-		const update = snap[tKey];
-		update.id = ids.id;
+		const update: SnapActionChono = {
+			...snap[tKey],
+			...(ids.entry && { entry: ids.entry }),
+			id: ids.id,
+			chrono: time,
+		};
+
 		visibles.set(ids, update);
 	});
 	console.log('SEEK', time, visibles);
 	return visibles;
+}
+
+function onAny(emitter) {
+	emitter.onAny(function (event, value) {
+		if (event !== 'elapsed') {
+			console.log('EVENT->', event, value);
+			// console.log(emitter.listeners(event));
+			value === 0 && console.log(emitter.eventNames(event));
+		}
+	});
+}
+
+function timer(emitter, duree = 1000, cb) {
+	setTimeout(() => {
+		emitter.emit([TC, PAUSE]);
+		cb(duree);
+	}, duree);
+}
+
+function diff(obj1, obj2) {
+	const _diff = {};
+	for (const k in obj1) {
+		if (!obj2[k]) _diff[k] = obj1[k];
+		if (obj1[k] !== obj2[k]) _diff[k] = [obj1[k], obj2[k]];
+	}
+	for (const k in obj2) {
+		if (!obj1[k]) _diff[k] = obj2[k];
+	}
+	return _diff;
 }

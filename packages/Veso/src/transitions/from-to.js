@@ -58,25 +58,15 @@ export function fromTo({ direct = false, ...transition }, perso) {
 			to[key] = t;
 		}
 	}
-
-	return { from, to, duration };
+	return filterEmptyTransition({ ...transition, from, to, duration });
 }
 
-/* 
-// [from, to] = removeEqualProperties(from, to);
-function removeEqualProperties(obj1, obj2) {
-	const _obj1 = {};
-	const _obj2 = {};
-
-	const keys1 = new Set(Object.keys(obj1));
-	const keys2 = new Set(Object.keys(obj2));
-	const keys = new Set(keys1, keys2);
-
-	keys.forEach((key) => {
-		if (keys1.has(key) && keys2.has(key) && obj1[key] === obj2[key]) return;
-		keys1.has(key) && (_obj1[key] = obj1[key]);
-		keys2.has(key) && (_obj2[key] = obj2[key]);
-	});
-	return [_obj1, _obj2];
+function filterEmptyTransition(transition) {
+	if (!transition) return null;
+	const isEmpty =
+		typeof transition.from === 'object' &&
+		!Object.keys(transition.from).length &&
+		typeof transition.to === 'object' &&
+		!Object.keys(transition.to).length;
+	return isEmpty ? null : transition;
 }
- */

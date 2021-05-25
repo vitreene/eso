@@ -286,3 +286,28 @@ la presence de parametres emit dans les persos crée de facto un track "interact
 
 créer un canal "TRACKS" pour gérer l'activation des tracks
 employer la meme terminologie que pour les classes : un préfixe ajoute, retire, substitue les canaux actifs
+
+Report de bugs
+scene2, image:
+
+- time:0 alors que l'image estintroduite à 500
+- move devrait indiquer sa précédente position, comme pour une transition. impossible sinon de savoir ou il se situe.
+  si un move à lieu alors qu'un précédent move n'est pas terminé, il faut indiquer sa propre progression précédente. comment calculer cette position ?
+  en imaginant que le support lui-meme ait bougé...
+  deux questions :
+- est-il possible de remonter la chaine de slots pour connaitre les positions de chaque élément ?
+- ce cas très particulier peut-il etre isolé et traité ultérieurement ?
+
+Ces retours montrent que l'idée de base:
+
+- enregistrer la progression de chaque partie,
+- sans s'appuyer sur les calculs réels
+  est bien plus complexe qu'imaginé.
+  Ce sont les propriétés spéciales :
+- move
+- transition
+  qui posent le plus de soucis.
+
+move : pour bien placer un élément en déplacement d'un parent à l'autre, il faut remonter la chaine des positions . imaginons qu'un élément glisse d'un parent qui lui-meme est en mouvement, et ainsi de suite.
+pour chaque parent, il faut se demander s'il y a une transition ou bien un move.
+-> props move et transition dans le parent au time demandé.

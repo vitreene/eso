@@ -13,6 +13,7 @@ export function selectTransition({
 	from: propFrom,
 	to: propTo,
 	duration = DEFAULT_DURATION,
+	...other
 }) {
 	let actualTo;
 	let direct = false;
@@ -53,6 +54,7 @@ export function selectTransition({
 	}
 
 	const transition = {
+		...other,
 		from,
 		...actualTo,
 		direct,
@@ -61,11 +63,12 @@ export function selectTransition({
 	return transition;
 }
 
-export function directTransition(props) {
+export function directTransition({ from, to, duration, ...other }) {
 	return {
-		from: props.from,
-		to: props.to,
-		duration: props.duration || DEFAULT_DURATION,
+		...other,
+		from,
+		to,
+		duration: duration || DEFAULT_DURATION,
 		direct: true,
 	};
 }

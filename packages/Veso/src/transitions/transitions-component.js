@@ -1,12 +1,12 @@
 import { fromTo } from './from-to';
 import { controlAnimations } from '../shared/control-animation';
 import { selectTransition, directTransition } from './select-transition';
-import { DEFAULT_DURATION } from '../shared/constantes';
+// import { DEFAULT_DURATION } from '../shared/constantes';
 
-export function doTransition(perso, transition, emitter) {
+export function doTransition(seek, perso, transition, emitter) {
 	if (!transition || !transition.length) return null;
 
-	transition.unshift(transitionToDefault(perso.to, transition));
+	// transitionToDefault(transition, perso.to);
 	const accumulate = setCumulateCallback(perso);
 	const interpolate = (between) => accumulate.add(between);
 
@@ -26,23 +26,25 @@ export function doTransition(perso, transition, emitter) {
 		accumulate.add(interpolation.from);
 
 		//lancer la ou les transitions
-		controlAnimations.tween({
-			id: perso.id,
-			interpolation,
-			update: interpolate,
-			complete() {
-				[perso?.oncomplete, transition?.oncomplete]
-					.flat()
-					.forEach(function (action) {
-						if (!action) return;
-						const { event, data } = action;
-						// console.log('action oncomplete', action);
-						accumulate.add(function emit() {
-							emitter.emit([event.channel, event.name], data);
-						});
-					});
-			},
-		});
+		seek
+			? controlAnimations.interpolate(interpolation, interpolate)
+			: controlAnimations.tween({
+					id: perso.id,
+					interpolation,
+					update: interpolate,
+					complete() {
+						[perso?.oncomplete, transition?.oncomplete]
+							.flat()
+							.forEach(function (action) {
+								if (!action) return;
+								const { event, data } = action;
+								// console.log('action oncomplete', action);
+								accumulate.add(function emit() {
+									emitter.emit([event.channel, event.name], data);
+								});
+							});
+					},
+			  });
 	}
 }
 /**
@@ -85,8 +87,11 @@ function syncRafUpdate(callback) {
 	};
 }
 
-function transitionToDefault(to, transition) {
-	let d = transition.map((t) => t.duration).filter(Boolean);
-	const duration = d.length ? Math.min(...d) : DEFAULT_DURATION;
-	return { from: {}, to, duration };
-}
+// function transitionToDefault(transition, to) {
+// 	if (Object.keys(to).length) {
+// 		let d = transition.map((t) => t.duration).filter(Boolean);
+// 		const duration = d.length ? Math.min(...d) : DEFAULT_DURATION;
+// 		transition.unshift({ from: {}, to, duration });
+// 	}
+// 	return transition;
+// }

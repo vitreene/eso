@@ -1,3 +1,5 @@
+import { DEFAULT_DURATION } from '../shared/constantes';
+
 export const effect = {
 	fromLeft: {
 		from: {
@@ -8,7 +10,7 @@ export const effect = {
 			opacity: 1,
 			x: 0,
 		},
-		duration: 600,
+		duration: DEFAULT_DURATION,
 	},
 	fromRight: {
 		from: {
@@ -19,7 +21,7 @@ export const effect = {
 			opacity: 1,
 			x: 0,
 		},
-		duration: 600,
+		duration: DEFAULT_DURATION,
 	},
 	fadeIn: {
 		from: {
@@ -28,7 +30,7 @@ export const effect = {
 		to: {
 			opacity: 1,
 		},
-		duration: 600,
+		duration: DEFAULT_DURATION,
 	},
 	fadeInScale: {
 		from: {
@@ -39,7 +41,7 @@ export const effect = {
 			opacity: 1,
 			scale: 1,
 		},
-		duration: 600,
+		duration: DEFAULT_DURATION,
 	},
 	fadeOut: {
 		from: {
@@ -48,7 +50,7 @@ export const effect = {
 		to: {
 			opacity: 0.15,
 		},
-		duration: 300,
+		duration: DEFAULT_DURATION / 2,
 	},
 	fadeOutScale: {
 		from: {
@@ -59,7 +61,7 @@ export const effect = {
 			opacity: 0.15,
 			scale: 0.25,
 		},
-		duration: 600,
+		duration: DEFAULT_DURATION,
 	},
 	fadeOutScaleOut: {
 		from: {
@@ -69,13 +71,13 @@ export const effect = {
 			opacity: 0,
 			scale: 2.5,
 		},
-		duration: 600,
+		duration: DEFAULT_DURATION,
 	},
 	fadeIn2: {
 		opacity: [{ 0: 0 }, { 100: 1 }, { duration: 1 }],
 		scale: [{ 0: 0.9 }, { 100: 1 }, { duration: 1 }],
 	},
 	default: {
-		duration: 600,
+		duration: DEFAULT_DURATION,
 	},
 };

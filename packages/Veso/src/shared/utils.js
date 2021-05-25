@@ -182,3 +182,8 @@ export function logs(obj, message = '') {
 	console.log('LOG %s', message, obj);
 	return obj;
 }
+
+export const log = (message) => (props) => {
+	console.log('transition %s --->', message, [...props.transition]);
+	return props;
+};

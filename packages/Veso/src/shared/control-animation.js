@@ -1,5 +1,5 @@
 import { nanoid } from 'nanoid';
-import { Tweenable } from 'shifty';
+import { Tweenable, interpolate } from 'shifty';
 
 import { DEFAULT_DURATION } from './constantes';
 
@@ -223,6 +223,12 @@ dX et dY sont relatives au slot, en cas de changement de slot, une interpolation
 			this.tweens.delete(uuid);
 		}
 	}
+	interpolate({ from, to, progress }, callback) {
+		const between = interpolate(from, to, progress);
+		// console.log('interpolate', between, { from, to, progress });
+		callback(between);
+	}
+
 	info(i) {
 		// console.log('this.tweens', this.tweens);
 		// console.log('this.tweenSet', this.tweenSet);

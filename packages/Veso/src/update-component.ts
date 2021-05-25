@@ -6,9 +6,9 @@ import { Box, Eso } from '../../types/Entries-types';
 export function updateComponent(transition) {
 	return function _updateComponent(
 		perso: Eso,
-		{ changed, update, ...others },
-		box: Box,
-		updateSlot: (slotId: string, persosIds: string[]) => void
+		{ seek, changed, update, ...others },
+		zoomBox: Box,
+		updateSlot: (slotId: string, persosIds: Set<string>) => void
 	) {
 		if (!update || Object.keys(update).length === 0) return;
 
@@ -22,16 +22,16 @@ export function updateComponent(transition) {
 			// Le node existe, je peux completer les props pour les transitions
 			perso = updateMissingProps(perso);
 			// zoom enter
-			perso.prerender(box.zoom);
+			perso.prerender(zoomBox.zoom);
 			update = enterMoveRescale(update);
 		}
 
 		// RESLOT , RESCALE, TRANSITIONS,
-		transition({ perso, update, changed, box, updateSlot });
+		transition({ perso, update, seek, changed, box: zoomBox, updateSlot });
 
 		// PRE : DIMENSIONS
 		const mergedUpdate = mergeDimensions(update);
-		perso.update(mergedUpdate);
+		seek ? perso.set(mergedUpdate) : perso.update(mergedUpdate);
 	};
 }
 
