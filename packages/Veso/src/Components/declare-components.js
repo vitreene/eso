@@ -4,3 +4,4 @@ export { bloc } from './Bloc';
 export { button } from './Button';
 export { img } from './Img';
 export { sprite } from './Sprite';
+export { input } from './Input';

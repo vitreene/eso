@@ -546,10 +546,11 @@
           
           - input:
               id: slider
-              tag: range
+              type: range
               initial:
                 className: slider
                 attr:
+                  type: range
                   value: 50
                   min: 0
                   max: 100

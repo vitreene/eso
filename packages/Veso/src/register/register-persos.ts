@@ -39,6 +39,7 @@ export function registerPersos(
 				case 'img':
 				case 'sprite':
 				case 'layer':
+				case 'input':
 					scenePersos.set(perso.id, createPerso.create(perso));
 					break;
 				default:
