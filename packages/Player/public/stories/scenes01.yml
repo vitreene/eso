@@ -240,6 +240,16 @@
 
         persos:
           - *BLOC :
+              id: bl-02
+              extends: proto_bloc
+              initial:
+                content: <div class="toto"> Hello, <em>World</em></div>
+                # content: COUCOU
+              actions:
+                *Q1 : 
+                  move: *Q4
+
+          - *BLOC :
               id: bl-01
               extends: proto_bloc
               initial:
@@ -282,6 +292,7 @@
                   content: { text:  A bientot pour un prochain essai, effect: letters-top-down }
 
                 move-text: {font-weight: 48px }
+
               emit:
                 mousedown:
                   event: { channel: *STRAP, name: move }
@@ -439,7 +450,7 @@
               transition: color 0.3s,
               '&:hover': { color: cyan }
              }
-            content: pause
+            content: <b>pause</b>
           listen:
             - { channel: *TC, event: play, action: play }
             - { channel: *TC, event: pause, action: pause }

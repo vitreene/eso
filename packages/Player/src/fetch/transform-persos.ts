@@ -8,6 +8,8 @@ import { pipe } from '../shared/utils';
 
 import {
 	EsoAction,
+	EsoActionEntry,
+	EsoContent,
 	EsoEvent,
 	InputEsoEvents,
 	Perso,
@@ -15,10 +17,11 @@ import {
 
 const PROTO = 'proto';
 type Channel = string | null;
+type PersoEntry = Perso & { actions: EsoActionEntry[] };
 
 // pre : conformation
-export function prePersos(persos: Perso[]) {
-	return pipe(natureSetProperty, idSetProperty)(persos);
+export function prePersos(persos: PersoEntry[]) {
+	return pipe(natureSetProperty, idSetProperty, hasContentHTML)(persos);
 }
 
 export function natureSetProperty(_persos: Perso[]) {
@@ -40,6 +43,41 @@ export function idSetProperty(_persos: Perso[]) {
 		persos.push(perso);
 	}
 	return persos;
+}
+
+export function hasContentHTML(_persos: PersoEntry[]) {
+	const persos = _persos.map((perso) => {
+		const content = stringToHTML(perso.initial.content);
+		console.log(perso.id, perso.actions);
+
+		const actions = {};
+		for (const key in perso.actions) {
+			const content = stringToHTML(perso.actions[key].content);
+			actions[key] = { ...perso.actions[key], ...(content && { content }) };
+		}
+
+		const initial = { ...perso.initial, ...(content && { content }) };
+		return {
+			...perso,
+			initial,
+			...(Object.keys(actions).length && { actions }),
+		};
+	});
+	return persos;
+}
+
+// TODO fetch html file
+
+// https://stackoverflow.com/questions/15458876/check-if-a-string-is-html-or-not/15458987
+
+function stringToHTML(str: EsoContent) {
+	if (typeof str !== 'string') return str;
+	const parser = new DOMParser();
+	const doc = parser.parseFromString(str, 'text/html');
+	const isHTML = Array.from(doc.body.childNodes).some(
+		(node) => node.nodeType === 1
+	);
+	return isHTML ? doc.body.childNodes[0] : str;
 }
 
 export function filterProtos(_persos: Perso[]) {

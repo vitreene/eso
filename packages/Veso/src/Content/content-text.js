@@ -20,7 +20,7 @@ export class TextContent {
 	}
 
 	update(content, current) {
-		if (!this.collection || isRawContent(content)) return content;
+		if (!content || !this.collection || isRawContent(content)) return content;
 
 		const {
 			ref,
@@ -47,8 +47,7 @@ export class TextContent {
 
 	// mettre tinyEffects en cache
 	prerender(content, current) {
-		const c = typeof content === 'function' ? content() : content;
-
+		// const c = typeof content === 'function' ? content() : content;
 		// console.log(c, 'NEW PRERENDER');
 		if (isRawContent(content)) return content;
 		if (content == this.content) return current;
@@ -61,5 +60,6 @@ export class TextContent {
 
 function isRawContent(content) {
 	// console.log('isRawContent', typeof content, content);
-	return !(typeof content === 'object');
+	if (content instanceof Node) return true;
+	return typeof content !== 'object';
 }

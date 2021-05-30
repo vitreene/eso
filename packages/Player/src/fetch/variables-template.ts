@@ -3,6 +3,8 @@ export function parseVariables(template: unknown, data: unknown) {
 	return parse(clone);
 
 	function parse(tpl) {
+		if (tpl instanceof Node) return tpl;
+
 		if (typeof tpl === 'object') {
 			if (Array.isArray(tpl)) {
 				tpl = tpl.map(parse);
@@ -46,6 +48,7 @@ export const pipapo = (template: unknown, data: unknown) => {
 };
 
 function deepClone(obj, hash = new WeakMap()) {
+	if (obj instanceof Node) return obj;
 	if (Object(obj) !== obj) return obj; // primitives
 	if (hash.has(obj)) return hash.get(obj); // cyclic reference
 	const result =

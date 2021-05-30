@@ -135,7 +135,7 @@ export class Scene {
 		const entry = this.initOnMount(stories, scene.cast);
 		this.entryInDom(entry).then(this.start);
 
-		// timer(this.emitter, 1200);
+		timer(this.emitter, 1200);
 		// console.log(this.persos);
 		// onAny(this.emitter);
 	}

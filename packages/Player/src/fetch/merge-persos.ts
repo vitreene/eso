@@ -1,7 +1,7 @@
 import { setClassNames } from 'veso';
 
 import {
-	EsoActions,
+	EsoAction,
 	EsoEmit,
 	EsoEvent,
 	EsoInitial,
@@ -99,7 +99,7 @@ export const merge = {
   si deux actions ont le meme nom, elles sont fusionnées, 
   sinon elles s'ajoutent
   */
-	actions(proto: EsoActions, ref: EsoActions) {
+	actions(proto: EsoAction[], ref: EsoAction[]) {
 		if (!proto || Object.keys(proto).length === 0) return ref;
 		if (!ref || Object.keys(ref).length === 0) return proto;
 		const merged = {};
