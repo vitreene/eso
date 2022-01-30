@@ -32,11 +32,21 @@ Centraliser les ressources
   - effect : tiny-effects
 
 - **slot**
-  par défaut, slot expose directement son contenu, serait-il pertineent d'ajouter d'autres propriétés, telles que :
+  par défaut, slot expose directement son contenu, serait-il pertinent d'ajouter d'autres propriétés, telles que :
 
   - src : tableau des contenus
   - order? : retient l'ordre d'insertion des elements ?
   - seat / stack ? -> rendu des éléments dans le slot
+
+  slot pourrait emettre des events onAdd - onMove - onRemove ? Cs events on toujours une autre origine.
+  Par contre, chaque evenement peut avoir une influence sur le contenu du slot, comme la réorganisation des positions, qui peut etre piloté par le slot.
+  Ex. remove. Un élémént est retiré de la liste :
+
+  - mise à jour du tableau des contenus.
+  - calcul des anciennes positions, diff avec les nouvelles
+  - update automatique des positions.
+  - un élément peut etre signalé comme fixe, et est ignoré
+  - les positions sont-elles relatives ou absolues ?
 
 - **html/svg** : déclarer explicitement du contenu du contenu demandant à etre sanitisé.
 

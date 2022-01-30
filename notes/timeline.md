@@ -311,3 +311,9 @@ Ces retours montrent que l'idée de base:
 move : pour bien placer un élément en déplacement d'un parent à l'autre, il faut remonter la chaine des positions . imaginons qu'un élément glisse d'un parent qui lui-meme est en mouvement, et ainsi de suite.
 pour chaque parent, il faut se demander s'il y a une transition ou bien un move.
 -> props move et transition dans le parent au time demandé.
+
+06/06/21
+revoir l'objet timeline
+Idée : les données doivent etre adaptées pour une visualisation graphique.
+Lire l'état courant devrait en découler logiquement.
+-> concevoir une tm graphique en meme temps ?

@@ -31,6 +31,7 @@ interface ImgSrc {
 	src: string;
 	fit?: string;
 }
+
 export async function loadImages(srcs: string[] | ImgSrc[], imagesCollection) {
 	return await Promise.all(
 		srcs.map(

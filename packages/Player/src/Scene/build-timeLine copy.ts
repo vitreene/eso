@@ -72,8 +72,7 @@ export function buildTimeLine({
 			.filter((perso) => perso.nature !== 'sound')
 			.forEach((perso) => {
 				// NOTE pas besoin d'entry ?
-				const isEntry: boolean =
-					story.entry && toArray(story.entry).includes(perso.id);
+				const entry = story.entry && toArray(story.entry).includes(perso.id);
 				const moves: Move[] = [];
 				const transitions: Transition[] = [];
 				const esoPerso = esoPersos.get(perso.id);
@@ -97,13 +96,13 @@ export function buildTimeLine({
 					prec = updateLook(prec, action);
 					const _listen = { channel: listen.channel, action: listen.action };
 
-					isEntry && !snaps[0] && (snaps[0] = { ...prec, ..._listen });
-					!snaps[0] && (snaps[0] = { ...action, ...prec, ..._listen });
+					entry && !snaps[0] && (snaps[0] = { ...prec, ..._listen });
 
+					!snaps[0] && (snaps[0] = { ...action, ...prec, ..._listen });
 					snaps[time] = { ...action, ...prec, ..._listen };
 				}
 
-				if (isEntry) {
+				if (entry) {
 					!snaps[0] && (snaps[0] = { ...prec, channel: '', action: '' });
 				}
 
@@ -121,8 +120,6 @@ export function buildTimeLine({
 						const move = { ..._move, duration };
 						const start = Number(time);
 						const end = start + duration;
-
-						// retirer times ?
 						const times = [
 							{ time: start, progress: 0 },
 							{ time: end, progress: 1 },
@@ -150,31 +147,86 @@ export function buildTimeLine({
 					}
 				}
 
-				for (const transition of transitions) {
-					const overlaps: number[] = Array.from(times.keys()).filter(
-						(time) => time > transition.start && time < transition.end
-					);
-					for (const time of overlaps) {
-						const progress = (time - transition.start) / transition.duration;
-						const _transition = toArray(snaps[time].transition);
-						_transition.unshift({ ...transition, progress });
-						snaps[time].transition = _transition;
-					}
-				}
+				// ajouter les fractions de move
+				moves.forEach((move) => {
+					[move.start, move.end].forEach((time) => {
+						const fractions = transitions.filter(
+							(transition) => time > transition.start && time < transition.end
+						);
+						fractions.forEach((t) => {
+							const progress = (time - t.start) / t.duration;
+							t.times.push({ time, progress });
+						});
+					});
+				});
 
-				/* 
-ne pas créer de nouvelles étapes
-ajouter les transitions qui ne seraient pas terminées
-si end > time et start !== time :
-- calculer le progress
-- ajouter la transition 
-utiliser le résultat pour caculer le from de nouvelles transitions
+				//////////////
+				// ajouter les fractions de transitions
+				//////////////
 
-*/
+				let from = {
+					...perso.initial.classStyle,
+					...perso.initial.style,
+				};
 
-				console.log('** snaps', snaps);
+				// ajouts time et progress
+				transitions.forEach((transition) => {
+					[transition.start, transition.end].forEach((time) => {
+						const fractions = transitions.filter(
+							(_transition) =>
+								!Object.is(transition, _transition) &&
+								time > _transition.start &&
+								time < _transition.end
+						);
+						fractions.forEach((t) => {
+							const progress = (time - t.start) / t.duration;
+							t.times.push({ time, progress });
+						});
+					});
 
-				/* 
+					// chercher la dernière transition achevée ?
+					const ended = transitions
+						.filter((_transition) => _transition.end <= transition.start)
+						.map((_transition) => _transition.transition.to as Style)
+						.reduce((p, c) => ({ ...p, ...c }), {});
+
+					// chercher les transitions qui ont démarré avant celle-ci et qui ne sont pas finies,
+					// prendre leur état au moment ou la transition courante commence
+					// pour l'ajouter a from
+					const between = transitions
+						.filter(
+							(_transition) =>
+								!Object.is(transition, _transition) &&
+								_transition.start <= transition.start &&
+								_transition.end > transition.start
+						)
+						.map((_transition) => {
+							const t = _transition.times.find(
+								(t) => t.time === transition.start
+							);
+							if (!t) return;
+							const ft = fromTo(_transition.transition, {
+								from: { ...from, ...ended },
+								to: esoPerso.to,
+								id: perso.id,
+							});
+							const inter = ft
+								? interpolate(ft.from, ft.to, t.progress)
+								: undefined;
+							return inter;
+						})
+						.reduce((p, c) => ({ ...p, ...c }), {});
+
+					const snap = snaps[transition.start];
+					from = {
+						...from,
+						...snap.classStyle,
+						...snap.style,
+						...between,
+					};
+					transition.transition.from = from;
+				});
+
 				// ajouter move aux snaps
 				for (const move of moves) {
 					for (const t of move.times) {
@@ -207,8 +259,6 @@ utiliser le résultat pour caculer le from de nouvelles transitions
 						}
 					}
 				}
-				 */
-
 				let lastMove = null;
 				// propager move dans les états
 				for (const time in snaps) {
@@ -231,11 +281,11 @@ utiliser le résultat pour caculer le from de nouvelles transitions
 					}
 					if ('exit' in snaps[time]) exit = Number(time);
 				}
-				if (isEntry) {
+				if (entry) {
 					snaps[0].enter = true;
 					enter = 0;
 				}
-				snaps.onScene = { enter, exit, ...(isEntry && { entry: isEntry }) };
+				snaps.onScene = { enter, exit, ...(entry && { entry }) };
 
 				snapshots.set({ id: perso.id, storyId: story.id }, snaps);
 			});
@@ -263,12 +313,3 @@ function updateLook(_look: Partial<EsoAction>, update: Partial<EsoAction>) {
 	}
 	return { ..._look, ...update, ...look };
 }
-
-/* 
-
-vérifier si une transition n'est pas terminée lorsque une autre action commence.
-dans ce cas seulement, dupliquer la transition
-pour chaque transition, construire from à partir de l'état courant
--> si un move à lieu vers un slot en mouvement, il faudra détecter ce mouvement pour calculer la position de l'objet déplacé.
- 
-*/

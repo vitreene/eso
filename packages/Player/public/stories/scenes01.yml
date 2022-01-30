@@ -101,6 +101,7 @@
           - *LIST :
               id: *Q1
               extends: list
+              # move: fond // alternative à entry
               initial:
                 classStyle: {grid-row: 1, grid-column: 1 }
               # actions: { go2 : { move: fond } }
