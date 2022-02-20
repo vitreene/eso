@@ -317,3 +317,85 @@ revoir l'objet timeline
 Idée : les données doivent etre adaptées pour une visualisation graphique.
 Lire l'état courant devrait en découler logiquement.
 -> concevoir une tm graphique en meme temps ?
+
+30/01/2022
+
+# Une classe Timeline
+
+La timeline est un composant principal de la librairie. Il fonctionne comme un event emitter à partir d'un stream de times.
+il peut recevoir à tout moment des lots de données à emettre
+
+L'object Clock envoie des valeurs _time_ à Timeline. Celui-ci execute les fonctions liées à cette valeur.
+
+Les valeurs renvoyées par les fonctions agissent sur le Perso auquelles elles sont liées
+
+Parmi ces valeurs renvoyées, certaines, comme les transitions, générent des side-effects: les données sont transmises à un composant qui génere à son tour des données à destination du Perso.
+
+Plutot que d'etre indépendantes, elles recoivent des valeurs de Clock pour calculer leur progression.
+Par rapport au fonctionnement jusque là, Reslot et Tween après initialisation, sont mis à jour par la Timeline, comme tous les autres events.
+Plus besoin de dupliquer la logique de progression. Par contre, le composant de transition n'est plus utile ?
+
+Questions à résoudre :
+Plusieurs transitions peuvent etre mise en route pour la meme cible ; établir des regles pour savoir quelles valeurs l'emporte en cas de conflit : valeur la plus récente, moyenne pondérée ?
+
+Dans le mode SEEK, des transitions peuvent etre demandées, qui dépendent de transitions précédentes. Une transition comme MOVE doit s'appuyer sur un arbre de transitions précédentes.
+
+Les calculs faits sur les dimensions sont toujours dans un espace virtuel, pour etre mises à l'échelle au rendu.
+
+Des events ne passent pas par la Timeline
+
+- "resize" viewport, et sans doute resize containers
+- les events de Telco : play, pause, progress..
+- les events de l'app et du projet : suspend, next-chapter, summary...
+
+Des events sont ajoutés dynamiquement à la Timeline:
+
+- clavier : inputs
+- mouse / tactile : move, drag, click...
+  Les composants chargés de gérer la saisie devront déterminer s'ils conservent les informations intermediaires (toutes les positions de la souris lors d'un déplacement, par exemple). En cas de replay, un mouvement sera ramené à une unité de temps (un déplacement hésitant de plusieurs secondes ramén)
+
+_Clock recoit-il le composant TimeLine , ou bien cela pourrait-il etre le contraire ?_
+Clock sera un composant interne mais distinct de Timeline
+
+Timeline peut recevoir des evenements différents de Clock, comme les inputs
+Tout événement est rajouté à la timeLine. Ceux qui doivent s'exécuter "immédiatement" le sont pour la frame suivante (next tick)
+
+Les events sont enregistrés sur différents tracks.
+Par défaut, les animations le sont sur le track "PLAY".
+d'autres le seront sur "PAUSE".
+D'autres découpages sont possibles, notamment par langue : "PLAY-FR" / "PAUSE-FR"
+
+comme Clock, des méthodes sont disponibles dans Timeline pour changer de track, et sont gérées par un composant comme Telco.
+Un changement de track demande à quelle position celui-ci sera fait :
+
+- play reprendra à l'endroit ou la lecture s'est interrompue,
+- pause reviendra toujours au début de sa lecture
+
+Note sur le changement de langue :
+Le changement de langue implique un rechargement de la page :
+
+- certains medias ont changé,
+- des events on pu etre déplacés.
+  Cela revient à ne garder que la position de la tete de lecture. Mais les résultats d'intéractions pourraient etre conservés
+
+## API Clock :
+
+- time : valeur au 1/100e s. du chronomètre.
+
+Des méthodes :
+
+- add, remove chrono
+- reset all
+- play, pause, seek, rewind, formward, step...
+
+Le composant Telco est l'interface chargée de piloter Clock.
+Telco associe des event emitters aux méthodes de Clock.
+
+Le sensiblité de Clock est au 1/100, Les événements sont ensuite mis en queue pour mettre à jour les Persos à chaque frame
+
+-> les progressions des interpolations sont pilotées par Clock.
+
+Note : plusieurs chronometres possibles ?
+
+- A quoi ca sert : soit une classe par chrono, soit une classe unique pour générer un ensemble de chronometres.
+- emplois : un chrono pour le temps passé depuis le début de la lecture, un pour la page courante, un pour le temps total ecoulé depuis l'ouverture du projet (pauses comprises), etc.
